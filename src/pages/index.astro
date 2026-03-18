@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Articles from '../components/Articles.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<Layout
+  title="enchufa2 — Movilidad eléctrica"
+  description="Conectamos personas y empresas con la movilidad eléctrica del futuro. Orientación independiente, instalación de puntos de carga y todo lo que necesitas para dar el paso."
+>
+  <Header />
+  <main>
+    <Hero />
+    <About />
+    <Articles />
+    <Contact />
+  </main>
+  <Footer />
+</Layout>

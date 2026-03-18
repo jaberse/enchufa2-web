@@ -1,0 +1,268 @@
+---
+---
+<section class="contact" id="contacto" aria-label="Contacto">
+  <div class="page-width contact-grid">
+
+    <!-- Left: copy -->
+    <div class="contact-copy">
+      <span class="t-small reveal" style="color: var(--gray-400)">02 — Contacto</span>
+      <h2 class="t-heading reveal">
+        Empieza la<br/><em class="t-serif">conversación</em>
+      </h2>
+      <p class="t-body reveal">
+        Cuéntanos qué necesitas. Te respondemos en menos de 24 horas
+        con información honesta y sin compromiso.
+      </p>
+
+      <address class="contact-details reveal">
+        <a href="mailto:hola@enchufa2.com" class="contact-link">
+          hola@enchufa2.com
+        </a>
+      </address>
+    </div>
+
+    <!-- Right: form -->
+    <!-- ACTION: Replace the Formspree URL with your own at https://formspree.io -->
+    <form
+      class="contact-form"
+      method="POST"
+      action="https://formspree.io/f/YOUR_FORM_ID"
+      novalidate
+    >
+      <div class="field reveal">
+        <label for="name" class="field-label t-small">Nombre</label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          placeholder="Tu nombre"
+          required
+          autocomplete="name"
+        />
+      </div>
+
+      <div class="field reveal">
+        <label for="email" class="field-label t-small">Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="tu@email.com"
+          required
+          autocomplete="email"
+        />
+      </div>
+
+      <div class="field reveal">
+        <label for="message" class="field-label t-small">Mensaje</label>
+        <textarea
+          id="message"
+          name="message"
+          rows="5"
+          placeholder="Cuéntanos en qué podemos ayudarte…"
+          required
+        ></textarea>
+      </div>
+
+      <div class="field-submit reveal">
+        <button type="submit" class="btn-submit">
+          Enviar mensaje
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <p class="form-note t-small">Sin spam, sin llamadas no deseadas.</p>
+      </div>
+    </form>
+
+  </div>
+</section>
+
+<style>
+  .contact {
+    padding-block: var(--section-pad);
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 4rem 7rem;
+    align-items: start;
+  }
+
+  @media (max-width: 860px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+  }
+
+  /* Left */
+  .contact-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 6rem;
+  }
+
+  .contact-copy h2 { color: var(--white); }
+  .contact-copy em { color: rgba(250,250,248,0.75); }
+  .contact-copy .t-body { color: rgba(250,250,248,0.5); }
+
+  .contact-details { font-style: normal; }
+
+  .contact-link {
+    font-size: 1.0625rem;
+    font-weight: 300;
+    color: var(--yellow);
+    border-bottom: 1px solid rgba(245,197,24,0.3);
+    transition: border-color 0.2s ease;
+    padding-bottom: 2px;
+  }
+  .contact-link:hover { border-color: var(--yellow); }
+
+  /* Form */
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .field-label {
+    color: rgba(250,250,248,0.4);
+    font-size: 0.75rem;
+  }
+
+  input, textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    color: var(--white);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 1rem;
+    padding: 0.75rem 0;
+    outline: none;
+    transition: border-color 0.25s ease;
+    caret-color: var(--yellow);
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: rgba(250,250,248,0.2);
+  }
+
+  input:focus, textarea:focus {
+    border-color: var(--yellow);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .field-submit {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .btn-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 2.25rem;
+    background: var(--yellow);
+    color: var(--black);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 0.9375rem;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: transform 0.25s var(--ease-out-expo),
+                box-shadow 0.25s ease;
+  }
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(245,197,24,0.2);
+  }
+  .btn-submit:active { transform: translateY(0); }
+
+  .btn-submit svg {
+    transition: transform 0.25s var(--ease-out-expo);
+  }
+  .btn-submit:hover svg {
+    transform: translateX(3px);
+  }
+
+  .form-note {
+    color: rgba(250,250,248,0.25);
+    font-size: 0.75rem;
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.utils.toArray<HTMLElement>('#contacto .reveal').forEach((el, i) => {
+    gsap.fromTo(el,
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 90%',
+          toggleActions: 'play none none none',
+        },
+        delay: i * 0.05,
+      }
+    );
+  });
+
+  // Form submission feedback
+  const form = document.querySelector('.contact-form') as HTMLFormElement;
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('.btn-submit') as HTMLButtonElement;
+      btn.textContent = 'Enviando…';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        if (res.ok) {
+          btn.textContent = '¡Mensaje enviado!';
+          form.reset();
+        } else {
+          throw new Error();
+        }
+      } catch {
+        btn.textContent = 'Error — inténtalo de nuevo';
+        btn.disabled = false;
+      }
+    });
+  }
+</script>

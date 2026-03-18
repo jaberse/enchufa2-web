@@ -1,0 +1,534 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+---
+
+<ArticleLayout
+  title="La guía técnica para cargar la batería de tu eléctrico sin acortarle la vida"
+  description="NMC, LFP, temperatura, carga rápida — todo lo que realmente importa, con datos de 22.700 vehículos reales y 15 estudios científicos."
+  readingTime="14 min de lectura"
+  publishDate="Marzo 2026"
+>
+
+  <!-- Subtítulo editorial -->
+  <p class="article-deck">NMC, LFP, temperatura, carga rápida — todo lo que realmente importa, con datos de 22.700 vehículos reales y 15 estudios científicos.</p>
+
+  <!-- Stats badges -->
+  <div class="article-stats">
+    <div class="stat">
+      <span class="stat-value">5–7×</span>
+      <span class="stat-label">Más rápida la degradación a 50°C frente a 25°C</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">2,3%</span>
+      <span class="stat-label">Degradación media anual real (Geotab, 22.700 EVs)</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">~10%</span>
+      <span class="stat-label">Diferencia de SOH a 8 años entre buenos y malos hábitos</span>
+    </div>
+  </div>
+
+  <!-- TLDR -->
+  <div class="tldr">
+    <strong>Resumen rápido</strong>
+    <ul>
+      <li><strong>NMC</strong> (mayoría de gama media-alta — BMW, Hyundai, Tesla LR): carga al 80% para uso diario. Al 100% solo antes de un viaje largo, y sal pronto.</li>
+      <li><strong>LFP</strong> (Tesla Model 3 SR post-2021, BYD Dolphin, algunos MG): carga al 100% sin problema. Tesla lo recomienda explícitamente al menos una vez por semana.</li>
+      <li><strong>La temperatura importa más que el porcentaje:</strong> a 50°C la degradación es del orden de 5–7× más rápida que a 25°C.</li>
+      <li><strong>Carga rápida ocasional:</strong> el impacto es real pero menor de lo que se piensa — datos de 22.700 vehículos cifran la diferencia en ~1,5% de degradación extra al año.</li>
+      <li><strong>Almacenamiento prolongado:</strong> deja la batería al ~50%.</li>
+    </ul>
+  </div>
+
+  <hr />
+
+  <h2>01 — Qué hay dentro de tu batería</h2>
+
+  <p>La batería de tu coche eléctrico está formada por miles de celdas individuales. Cada celda es un sándwich electroquímico: un <strong>ánodo</strong> (normalmente grafito), un <strong>cátodo</strong> (aquí es donde hay diferencias importantes entre coches), un <strong>electrolito</strong> líquido, y un <strong>separador</strong> que evita que el ánodo y el cátodo se toquen directamente.</p>
+
+  <figure>
+    <img src="/articulos/bateria/cell_photo_real.jpg" alt="Celda cilíndrica 18650 de iones de litio antes del cierre" loading="lazy" />
+    <figcaption>
+      <strong>Figura 1 — Anatomía de celda.</strong> Celda cilíndrica 18650 antes del cierre. Esta celda de iones de litio (18 mm de diámetro, 65 mm de longitud) es el elemento constructivo básico de baterías como las del Tesla Model S y Model 3 SR. Se aprecian el ánodo, el cátodo y el separador enrollados en espiral antes de la inserción en la carcasa metálica.
+      <br/><small>Foto: RudolfSimon / Wikimedia Commons — CC BY-SA 3.0</small>
+    </figcaption>
+  </figure>
+
+  <div class="component-table">
+    <div class="comp-row"><span class="comp-name">Ánodo</span><span class="comp-desc">Cobre + grafito · almacena iones Li⁺ durante la carga</span></div>
+    <div class="comp-row"><span class="comp-name">Cátodo</span><span class="comp-desc">Aluminio + NMC/LFP · define la química y el voltaje</span></div>
+    <div class="comp-row"><span class="comp-name">Separador</span><span class="comp-desc">Polímero poroso · permite el paso de iones, no de electrones</span></div>
+    <div class="comp-row"><span class="comp-name">Carcasa</span><span class="comp-desc">Acero inoxidable · contiene el electrolito líquido</span></div>
+  </div>
+
+  <p>Cuando cargas, los iones de litio viajan desde el cátodo, atraviesan el electrolito, y se insertan en la estructura cristalina del grafito. Cuando conduces, los iones hacen el viaje inverso. Este proceso se llama <strong>intercalación</strong>, y es completamente reversible… en teoría.</p>
+
+  <p>En la práctica, cada ciclo genera pequeñas reacciones secundarias. La más importante es el crecimiento de la <strong>capa SEI</strong> — una película protectora que se forma sobre el ánodo pero que sigue creciendo durante toda la vida de la batería, consumiendo litio disponible y aumentando la resistencia interna. <sup>[1][2]</sup></p>
+
+  <p>La pregunta es qué lo acelera.</p>
+
+  <hr />
+
+  <h2>02 — Los tres enemigos de tu batería</h2>
+
+  <h3>Estado de carga alto (SOC elevado)</h3>
+
+  <p>Al 100% de carga, el voltaje de la celda está en su máximo — <strong>4,20V para NMC</strong> y <strong>3,65V para LFP</strong>. A voltajes altos, el electrolito es menos estable y se descompone más rápidamente en la superficie del ánodo, acelerando el crecimiento de la SEI. <sup>[1][2]</sup></p>
+
+  <p>Keil et al. (2016) midieron esto de forma sistemática en el <em>Journal of The Electrochemical Society</em>: celdas NMC mantenidas al 100% de SOC durante 10 meses a 25°C perdieron un <strong>6,3% de capacidad</strong>, frente al 2-3% de celdas al 50%. <sup>[3]</sup> La relación no es una curva suave sino una sucesión de mesetas: a partir de SOC altos (aproximadamente >80%), la degradación es sensiblemente mayor que en rangos intermedios.</p>
+
+  <figure>
+    <img src="/articulos/bateria/degradacion_vs_soc.png" alt="Pérdida de capacidad según estado de carga tras 10 meses" loading="lazy" />
+    <figcaption>Figura 2 — Pérdida de capacidad tras ~10 meses de almacenamiento a 25°C según el estado de carga. Basado en Keil et al. (2016) <sup>[3]</sup> y Schmitt et al. (2021) <sup>[4]</sup>. Para LFP, la curva es casi plana en todo el rango.</figcaption>
+  </figure>
+
+  <h3>Temperatura</h3>
+
+  <p>Las reacciones de degradación siguen la <strong>ecuación de Arrhenius</strong>: su velocidad depende exponencialmente de la temperatura. Kucinskis et al. (2022) midieron esta relación en el <em>Journal of Power Sources</em> y encontraron una curva en forma de V: por encima de 25°C la SEI crece más rápido; por debajo de 25°C, el riesgo es el <em>lithium plating</em>. <sup>[5]</sup> Con una energía de activación típica de ~58 kJ/mol, la consecuencia práctica es directa: <strong>a 50°C la batería se degrada del orden de 5–7 veces más rápido que a 25°C</strong> (≈6× en el caso estudiado; el factor exacto varía según la celda y el mecanismo de degradación dominante).</p>
+
+  <figure>
+    <img src="/articulos/bateria/efecto_temperatura.png" alt="Velocidad de degradación según temperatura" loading="lazy" />
+    <figcaption>Figura 3 — Velocidad relativa de degradación modelada con la ecuación de Arrhenius (Ea ≈ 58 kJ/mol, referencia 25°C = 1×). Basado en Kucinskis et al. (2022) <sup>[5]</sup> y Schmalstieg et al. (2014) <sup>[6]</sup>.</figcaption>
+  </figure>
+
+  <blockquote>Cargar en verano con el coche aparcado al sol puede suponer varias décimas de punto porcentual de degradación extra al año frente a cargar de noche — potencialmente más que la diferencia entre usar o no carga rápida ocasional.<br/><small>— Estimación basada en Geotab EV Battery Health Report, 22.700 vehículos, enero 2026 <sup>[7]</sup></small></blockquote>
+
+  <p>El frío extremo también es problemático, pero por razones diferentes. A temperaturas bajo cero, los iones pueden depositarse como <em>litio metálico</em> en el ánodo en lugar de intercalarse — el <em>lithium plating</em>, que es irreversible. Yang et al. (2018) demostraron en <em>PNAS</em> que este fenómeno ocurre incluso a tasas bajas de carga por debajo de ~0°C. <sup>[10]</sup> Por eso tu coche limita la carga rápida en invierno.</p>
+
+  <h3>Profundidad de descarga y ciclos</h3>
+
+  <p>Un ciclo completo de 0% a 100% degrada más que dos ciclos parciales entre el 30% y el 80%. Los extremos someten a los electrodos a más estrés mecánico — las expansiones y contracciones del material activo del cátodo pueden generar microgrietas con el tiempo. <sup>[11]</sup></p>
+
+  <hr />
+
+  <h2>03 — NMC vs. LFP: la diferencia que cambia todas las reglas</h2>
+
+  <figure>
+    <img src="/articulos/bateria/voltaje_vs_soc.png" alt="Curvas de voltaje vs estado de carga NMC y LFP" loading="lazy" />
+    <figcaption>Figura 4 — Curvas de voltaje vs. estado de carga para NMC y LFP. La zona sombreada marca el rango de alto estrés para NMC (80-100%). La meseta plana del LFP implica bajo estrés en casi todo su rango útil — y también dificulta al BMS estimar el SOC con precisión.</figcaption>
+  </figure>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span></span><span class="ct-nmc">NMC<br/><small>Ni-Mn-Co</small></span><span class="ct-lfp">LFP<br/><small>LiFePO₄</small></span>
+    </div>
+    <div class="ct-row"><span>Voltaje máximo</span><span>4,20 V/celda</span><span>3,65 V/celda</span></div>
+    <div class="ct-row"><span>Densidad energética</span><span>Alta (~200-280 Wh/kg)</span><span>Media (~150-190 Wh/kg)</span></div>
+    <div class="ct-row"><span>Ciclos al 80% SoH</span><span>~1.000-1.500</span><span>~3.000-5.000</span></div>
+    <div class="ct-row"><span>Tolerancia al SOC alto</span><span>Baja — degrada rápido al 90-100%</span><span>Alta — estable hasta el 100%</span></div>
+    <div class="ct-row"><span>Límite carga diaria</span><span><strong>80%</strong></span><span><strong>100%</strong> (Tesla lo recomienda)</span></div>
+    <div class="ct-row"><span>BMS calibración</span><span>No requiere carga completa frecuente</span><span>Necesita llegar al 100% regularmente</span></div>
+    <div class="ct-row"><span>Coches habituales <small>(según versión y año)</small></span><span>Tesla LR/P, BMW, Hyundai Ioniq, Mercedes EQ</span><span>Tesla M3 SR (2021+), BYD Dolphin, MG4 SR</span></div>
+  </div>
+
+  <p>La razón de la diferencia está en la estructura cristalina del cátodo. El NMC tiene una estructura laminar propensa a microgrietas y a la oxidación del electrolito a voltaje alto. El LFP tiene una <strong>estructura olivina</strong> mucho más estable — y su voltaje operativo más bajo significa que el electrolito nunca llega a los niveles de estrés del NMC. <sup>[13][14]</sup></p>
+
+  <p><em>¿Y si mi coche lleva NCA u otras químicas?</em> El NCA (Níquel-Cobalto-Aluminio), presente en algunos Tesla más antiguos y en ciertos modelos de Panasonic/Samsung, se comporta de forma muy similar al NMC en términos prácticos: tolera peor el SOC alto que el LFP. Las variantes mixtas (NCM811, NCM622) siguen las mismas reglas generales, aunque los detalles de voltaje y degradación varían por fabricante. En todos estos casos, la recomendación de carga al 80% para uso diario sigue siendo válida.</p>
+
+  <hr />
+
+  <h2>04 — Las reglas prácticas, con números</h2>
+
+  <p><strong>NMC (gama media-alta: BMW, Hyundai, Tesla Long Range…) — carga diaria al 80%.</strong> Entre el 80% y el 100%, el voltaje de celda sube de ~4,05V a ~4,20V — es en ese rango donde la degradación del electrolito se acelera de forma no lineal. <sup>[3][4]</sup></p>
+
+  <p>¿Necesitas el 100% para un viaje? Cárgalo la noche anterior y sal pronto. Lo que degrada no es alcanzar el 100%, sino <strong>quedarse al 100% durante horas</strong>. Para almacenamiento largo: 50%. Nunca por debajo del 10% regularmente — el voltaje bajo también desestabiliza la SEI. <sup>[2]</sup></p>
+
+  <p><strong>LFP (Tesla Model 3 SR, BYD Dolphin, Dacia Spring…) — carga al 100% regularmente.</strong> La curva de voltaje es tan plana que el BMS necesita ver los extremos para calcular el SOC con precisión. Tesla recomienda explícitamente mantener el límite al 100% para uso diario en coches con batería LFP. <sup>[15]</sup> Si no llegas al 100% durante semanas, el indicador de autonomía se vuelve impreciso. La batería aguanta perfectamente — quien necesita la calibración es el software, no la celda.</p>
+
+  <p><em>Un matiz importante sobre el "100%":</em> el porcentaje que ves en la app no corresponde al 100% electroquímico real de la celda. Los fabricantes incorporan márgenes de seguridad arriba y abajo — el "100%" de la pantalla es, en realidad, quizás el 95-98% de la capacidad química máxima, y el "0%" deja siempre un colchón. Esto explica por qué algunos fabricantes permiten carga al 100% diario en NMC sin tanto drama: el margen de seguridad superior varía, y en algunos casos es más generoso. Las recomendaciones de este artículo se refieren al límite que marca la app, no a la electroquímica interna.</p>
+
+  <hr />
+
+  <h2>05 — ¿La carga rápida destruye la batería?</h2>
+
+  <p>Es la pregunta que más genera ansiedad y la que tiene la respuesta más matizada. La respuesta corta: <strong>no, no la destruye</strong> — pero sí suma algo de desgaste, especialmente en alta potencia.</p>
+
+  <p>Geotab analizó datos reales de <strong>22.700 vehículos</strong> de 21 marcas en su informe de enero de 2026: <sup>[7]</sup></p>
+
+  <ul>
+    <li><strong>Degradación media general:</strong> 2,3% por año.</li>
+    <li><strong>Principalmente carga AC o baja potencia:</strong> ~1,5% al año.</li>
+    <li><strong>Carga rápida DC >100 kW frecuente:</strong> ~3,0% al año.</li>
+    <li><strong>Proyección a 8 años:</strong> batería media con ~81,6% de capacidad original.</li>
+  </ul>
+
+  <p>La diferencia de 1,5 puntos porcentuales al año entre cargar siempre lento y usar carga rápida frecuentemente es significativa pero no catastrófica. Y los coches modernos gestionan activamente la temperatura durante la carga rápida — si la batería se calienta demasiado, reducen la potencia. El BMS protege mucho más de lo que la gente percibe.</p>
+
+  <hr />
+
+  <h2>06 — Proyección a 8 años: ¿cuánto importa en la práctica?</h2>
+
+  <p>Con un Tesla Model 3 Long Range (NMC, 75 kWh) y los 15.000 km/año de media española:</p>
+
+  <figure>
+    <img src="/articulos/bateria/proyeccion_8_anos.png" alt="Proyección de estado de salud de la batería a 8 años" loading="lazy" />
+    <figcaption>Figura 5 — Estado de salud de la batería proyectado a 8 años según hábitos de carga. La diferencia entre seguir buenas prácticas (80%, AC doméstica) y no hacerlo (100% + DC frecuente) equivale a ~50-75 km de autonomía adicional al cabo de 8 años.</figcaption>
+  </figure>
+
+  <p>Si extrapolamos las diferencias de degradación observadas, hablaríamos de unos <strong>50-75 km de autonomía tras 8 años</strong> en un Model 3 LR típico — una estimación aproximada, no un dato empírico directo. Poner el límite de carga al 80% — 10 segundos en la app — te ahorra esa diferencia sin ningún esfuerzo. Los 300+ km que te da el 80% de un Long Range son más que suficientes para uso diario (la conducción media en España ronda los 30–40 km diarios según datos de la DGT).</p>
+
+  <p>El otro lado de la ecuación: incluso en el escenario descuidado, la batería media a los 8 años está en torno al 79-82% de su capacidad original. Las garantías de batería exigen mantener al menos el 70-75%, así que hay margen. <strong>Tus hábitos de carga influyen en cuánto margen te queda, no en si la batería falla o no.</strong></p>
+
+  <hr />
+
+  <h2>07 — ¿Qué batería lleva mi coche? Los más vendidos en España</h2>
+
+  <p>La química de la batería determina todas las reglas de carga — y no siempre está clara en el folleto comercial. Esta tabla recoge los modelos eléctricos puros más vendidos en España (datos 2023–2024) con su tipo de batería. Atención: algunos modelos existen en variantes con distinta química según versión de potencia o año de fabricación.</p>
+
+  <div class="ev-table">
+    <div class="ev-row ev-header">
+      <span>Modelo</span>
+      <span>Versión / nota</span>
+      <span>Química</span>
+      <span>Límite recomendado</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>Tesla Model Y</span>
+      <span>Propulsión (RWD)</span>
+      <span class="badge-lfp">LFP</span>
+      <span>100% diario ✓</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Tesla Model Y</span>
+      <span>Long Range / Performance</span>
+      <span class="badge-nmc">NMC</span>
+      <span>80% diario</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>Tesla Model 3</span>
+      <span>Standard Range (desde 2021)</span>
+      <span class="badge-lfp">LFP</span>
+      <span>100% diario ✓</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Tesla Model 3</span>
+      <span>Long Range / Performance</span>
+      <span class="badge-nmc">NMC</span>
+      <span>80% diario</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>Dacia Spring</span>
+      <span>Todas las versiones</span>
+      <span class="badge-lfp">LFP</span>
+      <span>100% diario ✓</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Volkswagen ID.4</span>
+      <span>Todas las versiones</span>
+      <span class="badge-nmc">NMC</span>
+      <span>80% diario</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Volkswagen ID.3</span>
+      <span>Todas las versiones</span>
+      <span class="badge-nmc">NMC</span>
+      <span>80% diario</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Renault Megane E-Tech</span>
+      <span>Todas las versiones</span>
+      <span class="badge-nmc">NMC</span>
+      <span>80% diario</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>MG4</span>
+      <span>Standard Range (51 kWh)</span>
+      <span class="badge-lfp">LFP</span>
+      <span>100% diario ✓</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>MG4</span>
+      <span>Long Range (64 kWh+)</span>
+      <span class="badge-nmc">NMC</span>
+      <span>80% diario</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Hyundai Ioniq 5</span>
+      <span>Todas las versiones</span>
+      <span class="badge-nmc">NMC</span>
+      <span>80% diario</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Kia EV6</span>
+      <span>Todas las versiones</span>
+      <span class="badge-nmc">NMC</span>
+      <span>80% diario</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>BYD Atto 3 / Seal / Dolphin</span>
+      <span>Blade Battery</span>
+      <span class="badge-lfp">LFP</span>
+      <span>100% diario ✓</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Cupra / Seat Born</span>
+      <span>Todas las versiones</span>
+      <span class="badge-nmc">NMC</span>
+      <span>80% diario</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Peugeot e-208 / Opel Mokka-e</span>
+      <span>Todas las versiones</span>
+      <span class="badge-nmc">NMC</span>
+      <span>80% diario</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>Volvo EX30</span>
+      <span>Standard Range Single Motor</span>
+      <span class="badge-lfp">LFP</span>
+      <span>100% diario ✓</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Volvo EX30</span>
+      <span>Extended Range / Twin Motor</span>
+      <span class="badge-nmc">NMC</span>
+      <span>80% diario</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>BMW i4 / iX3</span>
+      <span>Todas las versiones</span>
+      <span class="badge-nmc">NMC</span>
+      <span>80% diario</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Renault Zoe</span>
+      <span>Todas las versiones</span>
+      <span class="badge-nmc">NMC</span>
+      <span>80% diario</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Skoda Enyaq / Ford Mach-E</span>
+      <span>Todas las versiones</span>
+      <span class="badge-nmc">NMC</span>
+      <span>80% diario</span>
+    </div>
+  </div>
+  <p class="table-note t-small">Fuente: especificaciones de fabricante y fichas técnicas de celdas (CATL, LG Energy Solution, SK Innovation, Samsung SDI). Verifica siempre con el manual de tu vehículo — la química puede variar por mercado y año de producción.</p>
+
+  <hr />
+
+  <h2>08 — Las 5 reglas que necesitas recordar</h2>
+
+  <ol>
+    <li><strong>NMC (la mayoría de gama media-alta — BMW, Hyundai, Tesla Long Range): pon el límite de carga al 80% en la app para el día a día.</strong> Al 100% solo cuando necesites la autonomía máxima para un viaje largo — y sal pronto después de cargar.</li>
+    <li><strong>LFP (Tesla Model 3 SR, BYD Dolphin, Dacia Spring, MG4 SR): carga al 100% regularmente, sin miedo.</strong> Hazlo al menos una vez a la semana — el BMS necesita ver ese extremo para calibrar correctamente el indicador de autonomía. <sup>[15]</sup></li>
+    <li><strong>Evita cargar al sol en verano: la temperatura pesa más que el porcentaje.</strong> La degradación a 45°C puede ser 3–4× mayor que a 25°C. Si puedes elegir, carga de noche o en parking cubierto. <sup>[5][7]</sup></li>
+    <li><strong>La carga rápida ocasional no destruye la batería.</strong> El desgaste adicional frente a carga lenta es real pero moderado (~1,5% más al año según Geotab). Solo se convierte en un factor relevante si usas DC de alta potencia (>100 kW) como tu único método de carga habitual. Los coches sin refrigeración líquida de batería —segmento urbano bajo— son algo más sensibles a esto. <sup>[7]</sup></li>
+    <li><strong>Para almacenamiento prolongado (más de dos semanas): deja la batería en torno al 50%.</strong> Ni llena ni vacía. Desactiva funciones que consuman en reposo (Sentry Mode, preacondicionamiento programado, etc.). <sup>[3]</sup></li>
+  </ol>
+
+  <hr />
+
+  <div class="references">
+    <p><strong>09 — Referencias científicas</strong></p>
+    <p>[1] Adenusi, H. et al. (2023). "Lithium Batteries and the SEI — Progress and Outlook." <em>Advanced Energy Materials</em>, 13(10). DOI: 10.1002/aenm.202203307</p>
+    <p>[2] Single, F. et al. (2018). "SEI During Battery Cycling: Theory of Growth Regimes." <em>Physical Review Materials</em>. PMC 7496968.</p>
+    <p>[3] Keil, P. et al. (2016). "Calendar Aging of Lithium-Ion Batteries." <em>J. Electrochem. Soc.</em>, 163(9), A1872-A1880. DOI: 10.1149/2.0411609jes</p>
+    <p>[4] Schmitt, J. et al. (2021). "Calendar Aging of Li-Ion Cells." <em>Batteries (MDPI)</em>, 7(2), 28. DOI: 10.3390/batteries7020028 [Nota: usa celdas NCA; tendencias comparables para NMC]</p>
+    <p>[5] Kucinskis, G. et al. (2022). "Arrhenius plots for Li-ion battery ageing." <em>J. Power Sources</em>, 549, 232129. DOI: 10.1016/j.jpowsour.2022.232129</p>
+    <p>[6] Schmalstieg, J. et al. (2014). "A holistic aging model for Li(NiMnCo)O₂ batteries." <em>J. Power Sources</em>, 257, 325-334. DOI: 10.1016/j.jpowsour.2014.02.012</p>
+    <p>[7] Geotab (2026). "EV Battery Health: Key Findings from 22,700 Vehicle Data Analysis." Enero 2026. geotab.com/blog/ev-battery-health/</p>
+    <p>[8] Zhu, G. et al. (2022). "Lithium-Ion Batteries under Low-Temperature Environment." <em>Materials</em>, 15(22). PMC 9698970.</p>
+    <p>[9] Waldmann, T. et al. (2014). "Lithium plating in a commercial lithium-ion battery." <em>J. Power Sources</em>, 262, 129-135.</p>
+    <p>[10] Yang, X.G. et al. (2018). "Fast charging of lithium-ion batteries at all temperatures." <em>PNAS</em>, 115(28), 7266-7271. DOI: 10.1073/pnas.1807115115</p>
+    <p>[11] Birkl, C.R. et al. (2017). "Degradation diagnostics for lithium ion cells." <em>J. Power Sources</em>, 341, 373-386.</p>
+    <p>[12] <em>Nature Energy</em> (2024). "Dynamic cycling enhances battery lifetime." DOI: 10.1038/s41560-024-01675-8</p>
+    <p>[13] Mayfield Renewables (2024). "Comparing NMC and LFP Lithium-Ion Batteries." Basado en datos de Sandia National Laboratories.</p>
+    <p>[14] Raj, H. et al. (2023). "Semi-empirical ageing model for LFP and NMC." <em>J. Energy Storage</em>, 73, 109135. DOI: 10.1016/j.est.2023.109135</p>
+    <p>[15] Tesla, Inc. Manual del Propietario del Model 3 — Sección "Carga y rango de energía."</p>
+  </div>
+
+</ArticleLayout>
+
+<style>
+  /* Deck */
+  .article-deck {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    color: var(--gray-400);
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+  }
+
+  /* Stats */
+  .article-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--gray-100);
+    margin-bottom: 2.5rem;
+    border: 1px solid var(--gray-100);
+  }
+  .stat {
+    background: var(--white);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .stat-value {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 200;
+    letter-spacing: -0.03em;
+    color: var(--black);
+  }
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--gray-400);
+    line-height: 1.4;
+  }
+  @media (max-width: 580px) {
+    .article-stats { grid-template-columns: 1fr; }
+  }
+
+  /* Component table */
+  .component-table {
+    background: var(--gray-100);
+    padding: 1rem 1.5rem;
+    margin-block: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .comp-row {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  .comp-name {
+    font-weight: 400;
+    color: var(--black);
+  }
+  .comp-desc {
+    color: var(--gray-600);
+  }
+
+  /* Blockquote */
+  blockquote {
+    border-left: 3px solid var(--yellow);
+    padding: 1rem 1.5rem;
+    margin-block: 1.75rem;
+    background: var(--gray-100);
+    font-style: normal;
+    color: var(--black);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+  blockquote small {
+    color: var(--gray-400);
+    font-size: 0.8rem;
+  }
+
+  /* NMC vs LFP comparison table */
+  .comparison-table {
+    margin-block: 2rem;
+    border: 1px solid var(--gray-100);
+    font-size: 0.875rem;
+  }
+  .ct-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .ct-row:last-child { border-bottom: none; }
+  .ct-row > span {
+    padding: 0.75rem 1rem;
+    color: var(--gray-600);
+    border-right: 1px solid var(--gray-100);
+    line-height: 1.4;
+  }
+  .ct-row > span:last-child { border-right: none; }
+  .ct-header {
+    background: var(--black);
+  }
+  .ct-header > span {
+    color: rgba(250,250,248,0.4);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .ct-nmc { color: rgba(250,250,248,0.9) !important; }
+  .ct-lfp { color: var(--yellow) !important; }
+  .ct-row > span:first-child {
+    color: var(--black);
+    font-weight: 400;
+  }
+  @media (max-width: 580px) {
+    .ct-row { grid-template-columns: 1fr; }
+    .ct-row > span { border-right: none; }
+    .ct-header > span:first-child { display: none; }
+  }
+
+  /* EV table */
+  .ev-table {
+    margin-block: 1.75rem;
+    border: 1px solid var(--gray-100);
+    font-size: 0.8125rem;
+    width: 100%;
+    overflow-x: auto;
+  }
+  .ev-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 80px 130px;
+    min-width: 520px;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .ev-row:last-child { border-bottom: none; }
+  .ev-row > span {
+    padding: 0.65rem 0.9rem;
+    color: var(--gray-600);
+    border-right: 1px solid var(--gray-100);
+    line-height: 1.4;
+  }
+  .ev-row > span:last-child { border-right: none; }
+  .ev-header {
+    background: var(--black);
+  }
+  .ev-header > span {
+    color: rgba(250,250,248,0.5);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .ev-row > span:first-child { color: var(--black); font-weight: 400; }
+  .ev-lfp { background: rgba(245,197,24,0.04); }
+
+  .badge-lfp {
+    display: inline-block;
+    background: var(--yellow);
+    color: var(--black);
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+  }
+  .badge-nmc {
+    display: inline-block;
+    background: var(--black);
+    color: var(--white);
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+  }
+
+  .table-note {
+    color: var(--gray-400);
+    font-size: 0.75rem;
+    margin-top: -0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .ev-row { grid-template-columns: 1fr 1fr; }
+    .ev-row > span:nth-child(2) { display: none; }
+    .ev-header > span:nth-child(2) { display: none; }
+  }
+</style>

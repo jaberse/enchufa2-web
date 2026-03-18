@@ -1,0 +1,165 @@
+---
+---
+<section class="about" id="nosotros" aria-label="Sobre nosotros">
+  <div class="page-width about-grid">
+
+    <!-- Left: label -->
+    <div class="about-label">
+      <span class="t-small reveal">01 — Nosotros</span>
+    </div>
+
+    <!-- Right: content -->
+    <div class="about-body">
+
+      <h2 class="t-heading reveal">
+        Somos <span class="brand-name">enchufa<span class="accent">2</span></span>
+      </h2>
+
+      <p class="t-body reveal">
+        Nacemos con la convicción de que la transición hacia la movilidad eléctrica
+        no debería ser complicada. Ayudamos a personas, empresas y comunidades a
+        dar ese paso con claridad, confianza y sin fricciones.
+      </p>
+
+      <p class="t-body reveal">
+        Desde la selección del vehículo hasta la instalación del punto de carga
+        en casa o en la empresa, acompañamos cada decisión con conocimiento
+        honesto y un servicio cercano.
+      </p>
+
+      <!-- Values / differentiators -->
+      <ul class="about-values" role="list">
+        <li class="reveal">
+          <span class="value-number accent">—</span>
+          <div>
+            <strong>Independencia</strong>
+            <p class="t-body">No vendemos marcas, orientamos personas. Nuestro único interés eres tú.</p>
+          </div>
+        </li>
+        <li class="reveal">
+          <span class="value-number accent">—</span>
+          <div>
+            <strong>Claridad</strong>
+            <p class="t-body">Tecnología compleja explicada de forma sencilla, sin tecnicismos innecesarios.</p>
+          </div>
+        </li>
+        <li class="reveal">
+          <span class="value-number accent">—</span>
+          <div>
+            <strong>Acompañamiento</strong>
+            <p class="t-body">Contigo desde el primer «¿debería pasarme al eléctrico?» hasta el primer año rodando.</p>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    padding-block: var(--section-pad);
+    background: var(--white);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 4rem 6rem;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+    .about-label { display: none; }
+  }
+
+  .about-label {
+    padding-top: 0.5rem;
+    color: var(--gray-400);
+    position: sticky;
+    top: 6rem;
+  }
+
+  .about-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .about-body h2 {
+    color: var(--black);
+  }
+
+  .brand-name {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-style: normal;
+    letter-spacing: -0.02em;
+  }
+
+  /* Values list */
+  .about-values {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-100);
+  }
+
+  .about-values li {
+    display: grid;
+    grid-template-columns: 1.5rem 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .value-number {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .about-values strong {
+    display: block;
+    font-weight: 400;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.35rem;
+    color: var(--black);
+  }
+
+  .about-values .t-body {
+    font-size: 0.9375rem;
+    margin: 0;
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.utils.toArray<HTMLElement>('#nosotros .reveal').forEach((el, i) => {
+    gsap.fromTo(el,
+      { opacity: 0, y: 36 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.75,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 88%',
+          toggleActions: 'play none none none',
+        },
+        delay: i * 0.04,
+      }
+    );
+  });
+</script>
