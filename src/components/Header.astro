@@ -3,15 +3,38 @@
 <header class="site-header" id="site-header">
   <div class="header-inner page-width">
 
-    <!-- Logo -->
+    <!-- Logo: symbol (inline SVG) + wordmark text -->
     <a href="/" class="logo" aria-label="enchufa2 inicio">
-      <img src="/logo.svg" alt="enchufa2" class="logo-img" />
+
+      <!-- Symbol — always visible. The "2" inside (.num2) fades in on scroll -->
+      <svg class="logo-symbol" viewBox="-5 -5 75 108" overflow="visible" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Top triangle -->
+        <path d="M28.9885 0V54.2171C28.9885 54.2171 0 54.2977 0 54.2171C0 54.1365 28.9885 0 28.9885 0Z" fill="currentColor"/>
+        <!-- Bottom triangle -->
+        <path d="M37.0826 98L37.0575 46.2613H65L37.0826 98Z" fill="currentColor"/>
+        <!-- The "2" — hidden by default, appears on scroll with pop effect -->
+        <path class="num2" d="M36.9959 38.8948V35.6134L47.2923 25.0953C48.3917 23.9527 49.298 22.9516 50.0112 22.0922C50.7343 21.223 51.2741 20.3978 51.6307 19.6165C51.9873 18.8352 52.1656 18.0051 52.1656 17.1262C52.1656 16.13 51.9278 15.2706 51.4524 14.5479C50.9769 13.8154 50.3282 13.2539 49.506 12.8632C48.6839 12.4628 47.7578 12.2626 46.7277 12.2626C45.6381 12.2626 44.6872 12.4824 43.875 12.9218C43.0628 13.3613 42.4388 13.9815 42.0029 14.7823C41.5671 15.5831 41.3492 16.5207 41.3492 17.5949H36.9662C36.9662 15.7687 37.3921 14.1719 38.244 12.8046C39.0958 11.4374 40.2646 10.3778 41.7504 9.62577C43.2361 8.86401 44.9249 8.48313 46.8168 8.48313C48.7285 8.48313 50.4124 8.85913 51.8684 9.61112C53.3344 10.3533 54.4784 11.369 55.3005 12.6582C56.1226 13.9375 56.5337 15.3829 56.5337 16.9943C56.5337 18.1077 56.3207 19.1966 55.8948 20.2611C55.4788 21.3256 54.7508 22.5122 53.7108 23.8208C52.6707 25.1197 51.2246 26.697 49.3723 28.5525L43.3253 34.7931V35.0128H57.024V38.8948H36.9959Z" fill="var(--yellow)"/>
+        <!-- Connector -->
+        <path d="M28.6897 46.2613H39.4483V54.2171H28.6897V46.2613Z" fill="currentColor"/>
+        <!-- Horizontal bars -->
+        <path d="M5.08046 63.9408H28.9885V69.5393H5.08046V63.9408Z" fill="currentColor"/>
+        <path d="M2.98851 66.74L5.08046 63.9408V69.5393L2.98851 66.74Z" fill="currentColor"/>
+        <path d="M5.08046 79.263H28.9885V84.8615H5.08046V79.263Z" fill="currentColor"/>
+        <path d="M2.98851 82.0622L5.08046 79.263V84.8615L2.98851 82.0622Z" fill="currentColor"/>
+      </svg>
+
+      <!-- Wordmark text — slides left and collapses on scroll -->
+      <span class="logo-wordmark-wrap">
+        <span class="logo-wordmark">enchufa<span class="logo-two">2</span></span>
+      </span>
+
     </a>
 
     <!-- Nav -->
     <nav class="nav" aria-label="Navegación principal">
-      <a href="#nosotros" class="nav-link">Nosotros</a>
-      <a href="#contacto" class="nav-link">Contacto</a>
+      <a href="/#articulos" class="nav-link">Artículos</a>
+      <a href="/#nosotros" class="nav-link">Nosotros</a>
+      <a href="/#contacto" class="nav-link">Contacto</a>
     </nav>
 
   </div>
@@ -29,11 +52,12 @@
                 backdrop-filter 0.4s ease,
                 border-color 0.4s ease;
     border-bottom: 1px solid transparent;
+    overflow: visible;
   }
 
   /* Scrolled state — added via JS */
   .site-header.scrolled {
-    background: rgba(17, 17, 17, 0.85);
+    background: rgba(17, 17, 17, 0.9);
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
     border-color: rgba(255,255,255,0.07);
@@ -45,18 +69,84 @@
     justify-content: space-between;
   }
 
+  /* ─── Logo assembly ─── */
   .logo {
     display: flex;
     align-items: center;
+    gap: 0.5rem;
+    height: 2rem;
+    color: var(--white);
     transition: opacity 0.2s ease;
   }
-  .logo:hover { opacity: 0.7; }
+  .logo:hover { opacity: 0.8; }
 
-  .logo-img {
-    height: 28px;
+  /* Symbol SVG — always visible */
+  .logo-symbol {
+    flex-shrink: 0;
+    height: 1.75rem;
     width: auto;
+    overflow: visible;
   }
 
+  /* The "2" inside the symbol — hidden by default, pops in on scroll */
+  .logo-symbol .num2 {
+    opacity: 0;
+    transform-origin: center center;
+    transform: scale(1);
+    transition: opacity .15s ease .2s,
+                transform .4s cubic-bezier(.34, 1.56, .64, 1) .2s,
+                filter .6s ease .35s;
+  }
+  .site-header.scrolled .logo-symbol .num2 {
+    opacity: 1;
+    transform: scale(1.35);
+    filter: brightness(1.4) drop-shadow(0 0 3px rgba(245, 197, 24, 0.5));
+  }
+
+  /* Settle animation — triggered by JS after the pop */
+  @keyframes num2-settle {
+    0% {
+      transform: scale(1.35);
+      filter: brightness(1.4) drop-shadow(0 0 3px rgba(245, 197, 24, 0.5));
+    }
+    100% {
+      transform: scale(1);
+      filter: brightness(1) drop-shadow(0 0 0 transparent);
+    }
+  }
+
+  /* Wordmark — slides left and collapses */
+  .logo-wordmark-wrap {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    transition: width 0.55s cubic-bezier(.25, .1, .25, 1);
+    width: 7.5rem;
+  }
+  .site-header.scrolled .logo-wordmark-wrap {
+    width: 0;
+  }
+
+  .logo-wordmark {
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 1.25rem;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    transition: transform 0.55s cubic-bezier(.25, .1, .25, 1),
+                opacity 0.4s ease 0.1s;
+    transform: translateX(0);
+  }
+  .site-header.scrolled .logo-wordmark {
+    transform: translateX(-7.5rem);
+    opacity: 0;
+  }
+
+  .logo-two {
+    color: var(--yellow);
+  }
+
+  /* ─── Navigation ─── */
   .nav {
     display: flex;
     gap: 2.5rem;
@@ -87,18 +177,50 @@
   .nav-link:hover::after {
     width: 100%;
   }
+
+  /* ─── Mobile ─── */
+  @media (max-width: 640px) {
+    .logo-wordmark-wrap {
+      width: 7rem;
+    }
+    .logo-wordmark {
+      font-size: 1.1rem;
+    }
+    .nav {
+      gap: 1.5rem;
+    }
+    .nav-link {
+      font-size: 0.8rem;
+    }
+  }
 </style>
 
 <script>
   const header = document.getElementById('site-header');
+  const num2 = document.querySelector('.logo-symbol .num2') as SVGPathElement | null;
+  let wasScrolled = false;
   let ticking = false;
 
   function updateHeader() {
-    if (window.scrollY > 60) {
+    const scrolled = window.scrollY > 80;
+
+    if (scrolled) {
       header?.classList.add('scrolled');
     } else {
       header?.classList.remove('scrolled');
     }
+
+    // Trigger the settle animation when transitioning to scrolled
+    if (scrolled && !wasScrolled && num2) {
+      setTimeout(() => {
+        num2.style.animation = 'num2-settle .35s ease-out forwards';
+      }, 550);
+    }
+    if (!scrolled && wasScrolled && num2) {
+      num2.style.animation = 'none';
+    }
+
+    wasScrolled = scrolled;
     ticking = false;
   }
 

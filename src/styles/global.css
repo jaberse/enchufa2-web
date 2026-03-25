@@ -5,9 +5,11 @@
   --black:    #111111;
   --white:    #FAFAF8;
   --yellow:   #F5C518;
-  --gray-100: #F0EFED;
-  --gray-400: #9A9A9A;
-  --gray-600: #555555;
+  --gray-50:  #F7F7F5;
+  --gray-100: #EFEFED;
+  --gray-200: #E0E0DC;
+  --gray-400: #999999;
+  --gray-600: #666666;
 
   --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
   --font-serif: 'Instrument Serif', Georgia, serif;
@@ -17,6 +19,7 @@
 
   --section-pad: clamp(5rem, 10vw, 9rem);
   --page-gutter: clamp(1.5rem, 6vw, 7rem);
+  --article-max: 780px;
 }
 
 /* ─────────────────────────────────────────────

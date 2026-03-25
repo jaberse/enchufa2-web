@@ -9,9 +9,10 @@ interface Props {
   description: string;
   readingTime: string;
   publishDate: string;
+  references?: string;
 }
 
-const { title, description, readingTime, publishDate } = Astro.props;
+const { title, description, readingTime, publishDate, references } = Astro.props;
 ---
 
 <Layout title={`${title} — enchufa2`} description={description}>
@@ -21,12 +22,11 @@ const { title, description, readingTime, publishDate } = Astro.props;
 
     <!-- Hero del artículo -->
     <div class="article-hero">
-      <div class="page-width">
-        <nav class="article-breadcrumb t-small" aria-label="Breadcrumb">
-          <a href="/">Inicio</a>
-          <span aria-hidden="true">·</span>
-          <a href="/articulos">Artículos</a>
-        </nav>
+      <div class="hero-inner page-width">
+        <div class="hero-label t-small">
+          <span class="hero-label-line" aria-hidden="true"></span>
+          Guía técnica
+        </div>
 
         <h1 class="article-title">{title}</h1>
 
@@ -34,6 +34,12 @@ const { title, description, readingTime, publishDate } = Astro.props;
           <span>{publishDate}</span>
           <span aria-hidden="true">·</span>
           <span>{readingTime}</span>
+          {references && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{references}</span>
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -76,44 +82,88 @@ const { title, description, readingTime, publishDate } = Astro.props;
   .article-hero {
     background: var(--black);
     color: var(--white);
-    /* include header height in top padding so hero starts behind it */
-    padding-top: calc(5rem + clamp(3rem, 6vw, 6rem));
-    padding-bottom: clamp(3rem, 6vw, 6rem);
+    padding-top: calc(4.5rem + clamp(2rem, 4vw, 3.5rem));
+    padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+    display: flex;
+    align-items: flex-end;
   }
 
-  .article-breadcrumb {
-    display: flex;
+  .hero-inner {
+    max-width: 900px;
+  }
+
+  .hero-label {
+    display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    color: rgba(250,250,248,0.4);
-    margin-bottom: 2rem;
+    gap: 1rem;
+    color: var(--yellow);
+    margin-bottom: 1.5rem;
   }
-  .article-breadcrumb a {
-    transition: color 0.2s ease;
+  .hero-label-line {
+    display: inline-block;
+    width: 2rem;
+    height: 1px;
+    background: var(--yellow);
   }
-  .article-breadcrumb a:hover { color: rgba(250,250,248,0.8); }
 
   .article-title {
     font-family: var(--font-sans);
     font-weight: 200;
-    font-size: clamp(1.75rem, 4.5vw, 3.5rem);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
+    font-size: clamp(2rem, 5vw, 3.75rem);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
     color: var(--white);
-    max-width: 22ch;
+    max-width: 18ch;
     margin-bottom: 1.5rem;
   }
 
   .article-meta {
-    color: rgba(250,250,248,0.4);
+    color: rgba(250,250,248,0.3);
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* ─── Stats (styled as elevated cards) ─── */
+  .article-body :global(.article-stats) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: -2.5rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 10;
+  }
+  .article-body :global(.stat) {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem 1.75rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .article-body :global(.stat:hover) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  }
+  .article-body :global(.stat-value) {
+    font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+    font-weight: 200;
+    letter-spacing: -0.03em;
+    color: var(--black);
+    margin-bottom: 0.25rem;
+  }
+  .article-body :global(.stat-label) {
+    font-size: 0.78rem;
+    color: var(--gray-400);
+    line-height: 1.45;
   }
 
   /* ─── Body ─── */
   .article-body {
-    max-width: 800px;
+    max-width: var(--article-max, 780px);
     margin-inline: auto;
     padding-inline: clamp(1.5rem, 4vw, 2.5rem);
     padding-block: clamp(3rem, 6vw, 5rem);
@@ -122,19 +172,19 @@ const { title, description, readingTime, publishDate } = Astro.props;
   /* Article content styles */
   .article-body :global(h2) {
     font-family: var(--font-sans);
-    font-weight: 300;
-    font-size: clamp(1.4rem, 2.5vw, 1.875rem);
+    font-weight: 200;
+    font-size: clamp(1.4rem, 2.8vw, 1.9rem);
     letter-spacing: -0.02em;
-    line-height: 1.2;
+    line-height: 1.15;
     color: var(--black);
-    margin-top: 3rem;
+    margin-top: 3.5rem;
     margin-bottom: 1.25rem;
   }
 
   .article-body :global(h3) {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: 1.125rem;
+    font-size: 1.1rem;
     letter-spacing: -0.01em;
     color: var(--black);
     margin-top: 2rem;
@@ -160,19 +210,34 @@ const { title, description, readingTime, publishDate } = Astro.props;
     font-size: 1.05em;
   }
 
+  .article-body :global(sup) {
+    font-size: 0.7em;
+    color: var(--gray-400);
+  }
+
   /* TLDR box */
   .article-body :global(.tldr) {
-    background: var(--gray-100);
+    background: var(--gray-50, #F7F7F5);
     border-left: 3px solid var(--yellow);
     padding: 1.5rem 1.75rem;
     margin-bottom: 2.5rem;
-    border-radius: 0 2px 2px 0;
+    border-radius: 0 6px 6px 0;
   }
-  .article-body :global(.tldr p),
+  .article-body :global(.tldr > strong) {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--black);
+    margin-bottom: 0.75rem;
+  }
   .article-body :global(.tldr li) {
     font-size: 0.9375rem;
     color: var(--black);
     margin-bottom: 0.5rem;
+    line-height: 1.6;
+    font-weight: 300;
   }
   .article-body :global(.tldr li:last-child) { margin-bottom: 0; }
 
@@ -195,37 +260,135 @@ const { title, description, readingTime, publishDate } = Astro.props;
     margin-block: 2.5rem;
   }
 
-  /* Images */
+  /* ─── Component table ─── */
+  .article-body :global(.component-table) {
+    background: var(--gray-50, #F7F7F5);
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .article-body :global(.comp-row) {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  .article-body :global(.comp-name) {
+    font-weight: 500;
+    color: var(--black);
+  }
+  .article-body :global(.comp-desc) {
+    color: var(--gray-600);
+  }
+
+  /* ─── Comparison table ─── */
+  .article-body :global(.comparison-table) {
+    margin: 2rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--gray-200, #E0E0DC);
+    font-size: 0.875rem;
+  }
+  .article-body :global(.ct-row) {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .article-body :global(.ct-row:last-child) {
+    border-bottom: none;
+  }
+  .article-body :global(.ct-row > span) {
+    padding: 0.75rem 1rem;
+    color: var(--gray-600);
+    line-height: 1.45;
+  }
+  .article-body :global(.ct-header) {
+    background: var(--black);
+  }
+  .article-body :global(.ct-header > span) {
+    color: rgba(255,255,255,0.4);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .article-body :global(.ct-nmc) {
+    color: rgba(255,255,255,0.9) !important;
+  }
+  .article-body :global(.ct-lfp) {
+    color: var(--yellow) !important;
+  }
+  .article-body :global(.ct-row > span:first-child) {
+    color: var(--black);
+    font-weight: 400;
+  }
+  .article-body :global(.ct-row:not(.ct-header):nth-child(even)) {
+    background: var(--gray-50, #F7F7F5);
+  }
+
+  /* ─── Blockquote ─── */
+  .article-body :global(blockquote) {
+    border-left: 3px solid var(--yellow);
+    padding: 1.25rem 1.75rem;
+    margin: 2rem 0;
+    background: var(--gray-50, #F7F7F5);
+    border-radius: 0 6px 6px 0;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: var(--black);
+    font-weight: 300;
+  }
+  .article-body :global(blockquote small) {
+    color: var(--gray-400);
+    font-size: 0.8rem;
+    display: block;
+    margin-top: 0.75rem;
+  }
+
+  /* ─── Images ─── */
   .article-body :global(figure) {
     margin-block: 2.5rem;
   }
   .article-body :global(figure img) {
     width: 100%;
-    border-radius: 4px;
+    border-radius: 8px;
     display: block;
   }
   .article-body :global(figcaption) {
-    font-size: 0.8125rem;
+    font-size: 0.8rem;
     color: var(--gray-400);
     margin-top: 0.75rem;
     line-height: 1.5;
   }
 
-  /* References */
+  /* ─── References ─── */
   .article-body :global(.references) {
-    font-size: 0.8125rem;
-    color: var(--gray-400);
-    line-height: 1.6;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-100);
   }
   .article-body :global(.references p) {
-    font-size: 0.8125rem;
+    font-size: 0.78rem;
     color: var(--gray-400);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
+    line-height: 1.6;
+  }
+  .article-body :global(.references p:first-child) {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    margin-bottom: 1rem;
   }
 
   /* ─── CTA ─── */
   .article-cta {
-    max-width: 800px;
+    max-width: var(--article-max, 780px);
     padding-bottom: clamp(2rem, 4vw, 4rem);
   }
 
@@ -265,7 +428,7 @@ const { title, description, readingTime, publishDate } = Astro.props;
 
   /* ─── Back ─── */
   .article-back {
-    max-width: 800px;
+    max-width: var(--article-max, 780px);
     padding-bottom: clamp(3rem, 6vw, 5rem);
   }
 
@@ -281,4 +444,24 @@ const { title, description, readingTime, publishDate } = Astro.props;
     transition: transform 0.25s var(--ease-out-expo);
   }
   .back-link:hover svg { transform: translateX(-3px); }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 640px) {
+    .article-hero {
+      min-height: auto;
+    }
+    .article-title {
+      font-size: 1.75rem;
+    }
+    .article-body :global(.article-stats) {
+      grid-template-columns: 1fr;
+      margin-top: -1.5rem;
+    }
+    .article-body :global(.ct-row) {
+      grid-template-columns: 1fr;
+    }
+    .article-body :global(.ct-header > span:first-child) {
+      display: none;
+    }
+  }
 </style>
