@@ -52,7 +52,7 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     <!-- CTA final -->
     <div class="article-cta page-width">
       <div class="cta-card">
-        <p class="t-serif">¿Tienes preguntas sobre la batería de tu coche eléctrico?</p>
+        <p class="t-serif">¿Tienes preguntas sobre tu coche eléctrico?</p>
         <a href="/#contacto" class="btn-primary">Hablemos</a>
       </div>
     </div>
@@ -127,12 +127,20 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     text-transform: uppercase;
   }
 
+  /* ─── Article deck (editorial subtitle) ─── */
+  .article-body :global(.article-deck) {
+    font-size: clamp(1.05rem, 1.8vw, 1.15rem);
+    line-height: 1.7;
+    color: var(--gray-600);
+    font-weight: 300;
+    margin-bottom: 2rem;
+  }
+
   /* ─── Stats (styled as elevated cards) ─── */
   .article-body :global(.article-stats) {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
-    margin-top: -2.5rem;
     margin-bottom: 2.5rem;
     position: relative;
     z-index: 10;
