@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="750" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="50%" stop-color="#141412"/>
+      <stop offset="100%" stop-color="#1a1917"/>
+    </linearGradient>
+    <linearGradient id="cellGrad" x1="0" y1="0" x2="0" y2="1" >
+      <stop offset="0%" stop-color="#2a2a26"/>
+      <stop offset="100%" stop-color="#1e1e1a"/>
+    </linearGradient>
+    <linearGradient id="chargeGrad" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#F5C518"/>
+      <stop offset="40%" stop-color="#F5C518" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#F5C518" stop-opacity="0.15"/>
+    </linearGradient>
+    <linearGradient id="glowGrad" cx="0.5" cy="0.5" r="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#F5C518" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#F5C518" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="20" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="cellClip">
+      <rect x="0" y="0" width="60" height="180" rx="8"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="750" fill="url(#bg)"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.03">
+    <line x1="0" y1="0" x2="0" y2="750" stroke="white" stroke-width="0.5" transform="translate(100,0)"/>
+    <line x1="0" y1="0" x2="0" y2="750" stroke="white" stroke-width="0.5" transform="translate(200,0)"/>
+    <line x1="0" y1="0" x2="0" y2="750" stroke="white" stroke-width="0.5" transform="translate(300,0)"/>
+    <line x1="0" y1="0" x2="0" y2="750" stroke="white" stroke-width="0.5" transform="translate(400,0)"/>
+    <line x1="0" y1="0" x2="0" y2="750" stroke="white" stroke-width="0.5" transform="translate(500,0)"/>
+    <line x1="0" y1="0" x2="0" y2="750" stroke="white" stroke-width="0.5" transform="translate(600,0)"/>
+    <line x1="0" y1="0" x2="0" y2="750" stroke="white" stroke-width="0.5" transform="translate(700,0)"/>
+    <line x1="0" y1="0" x2="0" y2="750" stroke="white" stroke-width="0.5" transform="translate(800,0)"/>
+    <line x1="0" y1="0" x2="0" y2="750" stroke="white" stroke-width="0.5" transform="translate(900,0)"/>
+    <line x1="0" y1="0" x2="0" y2="750" stroke="white" stroke-width="0.5" transform="translate(1000,0)"/>
+    <line x1="0" y1="0" x2="0" y2="750" stroke="white" stroke-width="0.5" transform="translate(1100,0)"/>
+    <line x1="0" y1="0" x2="1200" y2="0" stroke="white" stroke-width="0.5" transform="translate(0,100)"/>
+    <line x1="0" y1="0" x2="1200" y2="0" stroke="white" stroke-width="0.5" transform="translate(0,200)"/>
+    <line x1="0" y1="0" x2="1200" y2="0" stroke="white" stroke-width="0.5" transform="translate(0,300)"/>
+    <line x1="0" y1="0" x2="1200" y2="0" stroke="white" stroke-width="0.5" transform="translate(0,400)"/>
+    <line x1="0" y1="0" x2="1200" y2="0" stroke="white" stroke-width="0.5" transform="translate(0,500)"/>
+    <line x1="0" y1="0" x2="1200" y2="0" stroke="white" stroke-width="0.5" transform="translate(0,600)"/>
+  </g>
+
+  <!-- Ambient glow behind cells -->
+  <ellipse cx="600" cy="400" rx="350" ry="250" fill="#F5C518" opacity="0.04" filter="url(#softGlow)"/>
+
+  <!-- ═══ BATTERY CELL GROUP — 5 cylindrical cells ═══ -->
+  <g transform="translate(300, 240)">
+
+    <!-- Cell 1 -->
+    <g transform="translate(0, 30)">
+      <rect width="60" height="180" rx="8" fill="url(#cellGrad)" stroke="#333330" stroke-width="1"/>
+      <!-- Charge level -->
+      <rect x="4" y="40" width="52" height="136" rx="4" fill="#1a1a17"/>
+      <rect x="4" y="80" width="52" height="96" rx="4" fill="url(#chargeGrad)" opacity="0.5"/>
+      <!-- Terminal -->
+      <rect x="18" y="-6" width="24" height="8" rx="3" fill="#444440"/>
+      <circle cx="30" cy="-2" r="4" fill="#555550"/>
+      <!-- Label -->
+      <text x="30" y="210" text-anchor="middle" fill="#555550" font-family="Inter, sans-serif" font-size="11" font-weight="300">NMC</text>
+    </g>
+
+    <!-- Cell 2 -->
+    <g transform="translate(90, 15)">
+      <rect width="60" height="180" rx="8" fill="url(#cellGrad)" stroke="#333330" stroke-width="1"/>
+      <rect x="4" y="40" width="52" height="136" rx="4" fill="#1a1a17"/>
+      <rect x="4" y="56" width="52" height="120" rx="4" fill="url(#chargeGrad)" opacity="0.65"/>
+      <rect x="18" y="-6" width="24" height="8" rx="3" fill="#444440"/>
+      <circle cx="30" cy="-2" r="4" fill="#555550"/>
+      <text x="30" y="210" text-anchor="middle" fill="#555550" font-family="Inter, sans-serif" font-size="11" font-weight="300">NMC</text>
+    </g>
+
+    <!-- Cell 3 — Center, taller, highlighted -->
+    <g transform="translate(180, 0)">
+      <rect width="68" height="195" rx="9" fill="url(#cellGrad)" stroke="#F5C518" stroke-width="1.5" stroke-opacity="0.4"/>
+      <rect x="4" y="40" width="60" height="151" rx="5" fill="#1a1a17"/>
+      <rect x="4" y="40" width="60" height="151" rx="5" fill="url(#chargeGrad)" opacity="0.8"/>
+      <rect x="20" y="-7" width="28" height="9" rx="3.5" fill="#555550"/>
+      <circle cx="34" cy="-2.5" r="4.5" fill="#F5C518" opacity="0.6" filter="url(#glow)"/>
+      <!-- 100% label -->
+      <text x="34" y="120" text-anchor="middle" fill="#F5C518" font-family="Inter, sans-serif" font-size="22" font-weight="400" opacity="0.9">100%</text>
+      <text x="34" y="225" text-anchor="middle" fill="#F5C518" font-family="Inter, sans-serif" font-size="12" font-weight="500" letter-spacing="0.1em">LFP</text>
+    </g>
+
+    <!-- Cell 4 -->
+    <g transform="translate(278, 15)">
+      <rect width="60" height="180" rx="8" fill="url(#cellGrad)" stroke="#333330" stroke-width="1"/>
+      <rect x="4" y="40" width="52" height="136" rx="4" fill="#1a1a17"/>
+      <rect x="4" y="64" width="52" height="112" rx="4" fill="url(#chargeGrad)" opacity="0.55"/>
+      <rect x="18" y="-6" width="24" height="8" rx="3" fill="#444440"/>
+      <circle cx="30" cy="-2" r="4" fill="#555550"/>
+      <text x="30" y="210" text-anchor="middle" fill="#555550" font-family="Inter, sans-serif" font-size="11" font-weight="300">NMC</text>
+    </g>
+
+    <!-- Cell 5 -->
+    <g transform="translate(368, 30)">
+      <rect width="60" height="180" rx="8" fill="url(#cellGrad)" stroke="#333330" stroke-width="1"/>
+      <rect x="4" y="40" width="52" height="136" rx="4" fill="#1a1a17"/>
+      <rect x="4" y="90" width="52" height="86" rx="4" fill="url(#chargeGrad)" opacity="0.4"/>
+      <rect x="18" y="-6" width="24" height="8" rx="3" fill="#444440"/>
+      <circle cx="30" cy="-2" r="4" fill="#555550"/>
+      <text x="30" y="210" text-anchor="middle" fill="#555550" font-family="Inter, sans-serif" font-size="11" font-weight="300">NMC</text>
+    </g>
+
+    <!-- Connection lines between cells -->
+    <g stroke="#333330" stroke-width="1" opacity="0.4">
+      <line x1="60" y1="95" x2="90" y2="80"/>
+      <line x1="150" y1="80" x2="180" y2="65"/>
+      <line x1="248" y1="65" x2="278" y2="80"/>
+      <line x1="338" y1="80" x2="368" y2="95"/>
+    </g>
+  </g>
+
+  <!-- ═══ DATA ANNOTATIONS — floating stats ═══ -->
+
+  <!-- Top-left annotation -->
+  <g transform="translate(80, 100)">
+    <text fill="rgba(255,255,255,0.12)" font-family="Inter, sans-serif" font-size="13" font-weight="300" letter-spacing="0.12em" text-transform="uppercase">DEGRADATION RATE</text>
+    <text y="30" fill="rgba(255,255,255,0.35)" font-family="Inter, sans-serif" font-size="42" font-weight="200" letter-spacing="-0.03em">2.3%</text>
+    <text y="50" fill="rgba(255,255,255,0.1)" font-family="Inter, sans-serif" font-size="12" font-weight="300">anual · Geotab 22.700 EVs</text>
+  </g>
+
+  <!-- Top-right annotation -->
+  <g transform="translate(830, 100)">
+    <text fill="rgba(255,255,255,0.12)" font-family="Inter, sans-serif" font-size="13" font-weight="300" letter-spacing="0.12em">TEMPERATURE IMPACT</text>
+    <text y="30" fill="rgba(255,255,255,0.35)" font-family="Inter, sans-serif" font-size="42" font-weight="200" letter-spacing="-0.03em">5-7<tspan font-size="24">x</tspan></text>
+    <text y="50" fill="rgba(255,255,255,0.1)" font-family="Inter, sans-serif" font-size="12" font-weight="300">degradation at 50 °C vs 25 °C</text>
+  </g>
+
+  <!-- Bottom-left temperature curve hint -->
+  <g transform="translate(80, 560)">
+    <text fill="rgba(255,255,255,0.08)" font-family="Inter, sans-serif" font-size="11" font-weight="300" letter-spacing="0.1em">SOH PROJECTION · 8 YEARS</text>
+    <g transform="translate(0, 15)" opacity="0.15">
+      <polyline points="0,50 30,48 60,44 90,38 120,34 150,32 180,30 210,28 240,26 270,25" stroke="#F5C518" stroke-width="1.5" fill="none"/>
+      <polyline points="0,50 30,46 60,40 90,32 120,25 150,20 180,18 210,17 240,16 270,15" stroke="rgba(255,255,255,0.4)" stroke-width="1" fill="none" stroke-dasharray="4,4"/>
+    </g>
+  </g>
+
+  <!-- Bottom-right -->
+  <g transform="translate(830, 580)">
+    <text fill="rgba(255,255,255,0.08)" font-family="Inter, sans-serif" font-size="11" font-weight="300" letter-spacing="0.1em">CHARGE RECOMMENDATION</text>
+    <g transform="translate(0, 18)">
+      <rect width="90" height="26" rx="4" fill="#F5C518" opacity="0.1"/>
+      <text x="45" y="18" text-anchor="middle" fill="#F5C518" font-family="Inter, sans-serif" font-size="12" font-weight="500" opacity="0.4">LFP → 100%</text>
+    </g>
+    <g transform="translate(100, 18)">
+      <rect width="100" height="26" rx="4" fill="rgba(255,255,255,0.03)"/>
+      <text x="50" y="18" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="Inter, sans-serif" font-size="12" font-weight="400">NMC → 80%</text>
+    </g>
+  </g>
+
+  <!-- Decorative thin yellow line at bottom -->
+  <rect x="0" y="746" width="1200" height="4" fill="#F5C518" opacity="0.3"/>
+</svg>
