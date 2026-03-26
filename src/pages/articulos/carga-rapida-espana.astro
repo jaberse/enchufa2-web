@@ -1,0 +1,296 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+---
+
+<ArticleLayout
+  title="Carga rápida en España: la guía técnica definitiva"
+  description="Red de carga, precios, estándares CCS2/MCS, arquitectura 400V vs 800V y regulación AFIR. Todo con datos reales y fuentes verificables."
+  readingTime="12 min de lectura"
+  publishDate="Marzo 2026"
+  references="12 referencias"
+>
+
+  <!-- Subtítulo editorial -->
+  <p class="article-deck">53.072 puntos de recarga, ocho operadores principales, dos arquitecturas eléctricas y una regulación europea que lo va a cambiar todo. Esto es lo que necesitas saber para cargar tu eléctrico en España sin sorpresas.</p>
+
+  <!-- Stats badges -->
+  <div class="article-stats">
+    <div class="stat">
+      <span class="stat-value">53.072</span>
+      <span class="stat-label">Puntos de recarga públicos en España (ANFAC, 2025)</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">0,29 €</span>
+      <span class="stat-label">Precio mínimo por kWh en carga rápida con suscripción</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">18 min</span>
+      <span class="stat-label">Tiempo 10→80% en los mejores EVs con arquitectura 800V</span>
+    </div>
+  </div>
+
+  <!-- TLDR -->
+  <div class="tldr">
+    <strong>Resumen rápido</strong>
+    <ul>
+      <li><strong>La red crece rápido:</strong> España ha pasado de 21.573 a 53.072 puntos de recarga públicos en tres años (+146%), pero el 90% siguen siendo cargadores lentos (≤50 kW).</li>
+      <li><strong>Carga rápida ≠ potencia del cargador:</strong> tu coche decide cuánta potencia acepta. Un cargador de 350 kW no sirve de nada si tu coche solo admite 100 kW.</li>
+      <li><strong>El rango 10–80% es tu zona óptima:</strong> ahí se concentra la máxima potencia de carga. De 80 a 100% puede tardar tanto como de 10 a 80%.</li>
+      <li><strong>800V vs 400V:</strong> los coches con arquitectura de 800V cargan casi el doble de rápido con la mitad de corriente. Es la diferencia entre parar 18 o 33 minutos.</li>
+      <li><strong>Los precios varían mucho:</strong> desde 0,29 €/kWh con suscripción hasta 0,66 €/kWh sin plan. La diferencia puede ser de 5 a 12 euros por cada 100 km.</li>
+    </ul>
+  </div>
+
+  <hr />
+
+  <h2>01 — La red de carga rápida en España: dónde estamos</h2>
+
+  <p>España cerró 2025 con <strong>53.072 puntos de recarga de acceso público</strong>, según el Barómetro de Electromovilidad de ANFAC. <sup>[1]</sup> Es un número que suena bien — y lo es: en 2022 había 21.573. El crecimiento acumulado en tres años supera el 146%.</p>
+
+  <p>Pero la cifra tiene truco. De esos 53.072 puntos, <strong>más del 90% son cargadores lentos o semi-rápidos</strong> (≤50 kW): los típicos de centros comerciales, parkings públicos y hoteles. Útiles para cargar mientras haces la compra o duermes en un hotel, pero no para un viaje largo.</p>
+
+  <figure>
+    <img src="/articulos/carga-rapida-espana/evolucion_red_recarga.png" alt="Gráfico de evolución de la red de recarga pública en España entre 2022 y 2025, mostrando el crecimiento de puntos lentos y rápidos" loading="lazy" />
+    <figcaption><strong>Figura 1.</strong> Evolución de la red de recarga pública en España. El amarillo representa la carga rápida y ultrarrápida (>50 kW). Fuente: ANFAC.</figcaption>
+  </figure>
+
+  <p>Los puntos de <strong>carga rápida y ultrarrápida</strong> (>50 kW) han crecido de 1.525 en 2022 a 5.151 en 2025 — un aumento notable, pero siguen siendo menos del 10% del total. Y aquí es donde España tiene deberes pendientes: la infraestructura para viajes largos todavía depende de unos pocos corredores principales.</p>
+
+  <p>La distribución geográfica tampoco es uniforme. <strong>Cataluña, Madrid, Andalucía y la Comunidad Valenciana</strong> concentran aproximadamente el 60% de la capacidad nacional. <sup>[2]</sup> Si vives en una gran ciudad, cargar no es problema. Si planificas una ruta por la España rural, conviene llevar la app del operador descargada y un plan B.</p>
+
+  <hr />
+
+  <h2>02 — Cómo funciona la carga rápida DC</h2>
+
+  <p>Cuando conectas tu coche a un cargador rápido, estás usando <strong>corriente continua (DC)</strong>. A diferencia del cargador lento de casa (que suministra corriente alterna y deja que el conversor a bordo del coche la transforme), un cargador DC hace la conversión externamente y alimenta la batería directamente. Por eso puede ir mucho más rápido: el cuello de botella del conversor a bordo desaparece.</p>
+
+  <p>Pero "rápido" es relativo, porque hay una variable que mucha gente no tiene en cuenta: <strong>tu coche decide cuánta potencia aceptar</strong>. Un cargador de 350 kW es solo una oferta — el BMS (Battery Management System) de tu coche acepta lo que considera seguro en cada momento. Y eso cambia constantemente.</p>
+
+  <h3>La curva de carga: por qué no todo es potencia punta</h3>
+
+  <p>Este es probablemente el concepto más importante de este artículo. La carga DC <strong>no es lineal</strong>. La potencia que tu coche acepta varía según el estado de carga (SOC) de la batería, y sigue una curva característica:</p>
+
+  <figure>
+    <img src="/articulos/carga-rapida-espana/curva_carga_esquematica.png" alt="Gráfico esquemático de una curva de carga DC típica mostrando cómo la potencia varía con el estado de carga, con la zona óptima entre 10 y 80 por ciento" loading="lazy" />
+    <figcaption><strong>Figura 2.</strong> Curva de carga DC esquemática. El BMS reduce progresivamente la potencia a partir del 60-70% de SOC para proteger las celdas. Gráfico: enchufa2.</figcaption>
+  </figure>
+
+  <p>Entre el <strong>10% y el 80%</strong>, la batería acepta la máxima potencia. Es la zona donde más kilómetros ganas por minuto conectado. A partir del 80%, el BMS reduce drásticamente la corriente para evitar daño a las celdas — el voltaje de cada celda se acerca a su máximo y la resistencia interna aumenta. Cargar del 80% al 100% puede tardar tanto como de 10% a 80%. <sup>[3]</sup></p>
+
+  <blockquote>
+    La regla práctica para viajes largos: carga del 10 al 80% y sal. Ganar ese último 20% no compensa el tiempo que pierdes.
+    <small>— Estrategia de carga recomendada por fabricantes como Hyundai, Kia, Porsche y BMW</small>
+  </blockquote>
+
+  <p>Esto no es un defecto del coche ni del cargador — es electroquímica. Los iones de litio necesitan "aparcarse" ordenadamente en la estructura cristalina del ánodo, y a medida que se llena, el proceso se ralentiza. Si fuerzas corriente alta con la batería casi llena, arriesgas la formación de <strong>litio metálico</strong> (dendritas) que pueden dañar permanentemente la celda. <sup>[4]</sup></p>
+
+  <h3>La temperatura: el factor invisible</h3>
+
+  <p>Hay un factor que muchos conductores subestiman: la <strong>temperatura de la batería</strong>. Las celdas de litio funcionan de forma óptima entre 25°C y 35°C. Por debajo de 10°C, la resistencia interna aumenta y el BMS limita la potencia de carga para evitar la deposición de litio metálico en el ánodo — un fenómeno especialmente peligroso en frío. <sup>[4]</sup></p>
+
+  <p>En la práctica, esto significa que un mismo coche puede cargar en 20 minutos un día de verano y en 45 minutos un día de invierno. Por eso muchos fabricantes (Tesla, Hyundai, Kia, Porsche, BMW) incluyen sistemas de <strong>preacondicionamiento térmico</strong>: si introduces un cargador rápido como destino en el navegador, el coche calienta la batería durante el trayecto para que llegues a temperatura óptima. Es uno de esos detalles que marca la diferencia entre una buena y una mala experiencia de carga.</p>
+
+  <p>Si quieres profundizar en cómo funciona la batería de tu eléctrico y qué hábitos afectan a su degradación, lo cubrimos en detalle en <a href="/articulos/vida-bateria-ev">nuestra guía técnica sobre la vida de la batería</a>.</p>
+
+  <hr />
+
+  <h2>03 — 400V vs 800V: por qué la arquitectura eléctrica importa</h2>
+
+  <p>No todos los coches eléctricos cargan igual de rápido en el mismo cargador. La diferencia fundamental está en la <strong>arquitectura eléctrica</strong>: 400 voltios o 800 voltios.</p>
+
+  <p>La física es directa. La potencia (P) es el producto del voltaje (V) por la corriente (I). Si duplicas el voltaje, necesitas la mitad de corriente para la misma potencia:</p>
+
+  <div class="component-table">
+    <div class="comp-row"><span class="comp-name">400V × 500A</span><span class="comp-desc">= 200 kW — corriente alta, cables gruesos, más calor (pérdidas I²R)</span></div>
+    <div class="comp-row"><span class="comp-name">800V × 250A</span><span class="comp-desc">= 200 kW — misma potencia, mitad de corriente, menos calor, cables más finos</span></div>
+  </div>
+
+  <p>Pero la ventaja real va más allá. Con menos corriente, <strong>los componentes se calientan menos</strong>, lo que permite al BMS mantener potencias altas durante más tiempo. El resultado: los coches 800V pueden sostener picos de 270-350 kW donde un 400V típico se queda en 150-200 kW. <sup>[5]</sup></p>
+
+  <figure>
+    <img src="/articulos/carga-rapida-espana/arquitectura_400v_vs_800v.png" alt="Gráfico comparativo butterfly de arquitectura 400V versus 800V mostrando diferencias en pico de carga, corriente y tiempo de carga" loading="lazy" />
+    <figcaption><strong>Figura 3.</strong> Comparativa 400V vs 800V. La arquitectura de 800V permite cargar casi el doble de rápido gracias a la reducción de corriente y calor. Gráfico: enchufa2.</figcaption>
+  </figure>
+
+  <p>En la práctica, el P3 Charging Index — un estudio independiente que mide la autonomía real recuperada en 20 minutos de carga rápida — muestra las diferencias con claridad: <sup>[6]</sup></p>
+
+  <figure>
+    <img src="/articulos/carga-rapida-espana/p3_charging_index.png" alt="Gráfico de barras horizontales mostrando la autonomía recargada en 20 minutos por modelo de coche eléctrico, diferenciando entre arquitectura 800V y 400V" loading="lazy" />
+    <figcaption><strong>Figura 4.</strong> Autonomía recargada en 20 minutos de carga rápida por modelo. Los coches 800V (amarillo) dominan la parte alta del ranking. Fuente: P3 Group, Charging Index diciembre 2024.</figcaption>
+  </figure>
+
+  <p>Un <strong>Porsche Taycan</strong> recupera 383 km en 20 minutos. Un <strong>Hyundai Ioniq 6</strong> o <strong>Kia EV6</strong> (ambos 800V sobre plataforma E-GMP) alcanzan 346 y 309 km respectivamente. En el otro extremo, un Tesla Model 3 LR con arquitectura 400V se queda en 252 km — que no está mal, pero es un 34% menos que el Taycan.</p>
+
+  <p>La tendencia es clara: las próximas generaciones de vehículos eléctricos están migrando a 800V. <sup>[5]</sup> Es probable que en 2-3 años sea la norma en todo el segmento medio-alto.</p>
+
+  <hr />
+
+  <h2>04 — Cuánto cuesta cargar en rápido</h2>
+
+  <p>El precio de la carga rápida en España varía enormemente dependiendo del operador y de si tienes un plan de suscripción. Hemos recopilado los precios actualizados a marzo de 2026 de los principales operadores: <sup>[7]</sup></p>
+
+  <figure>
+    <img src="/articulos/carga-rapida-espana/comparativa_precios_operadores.png" alt="Gráfico comparativo de precios de carga rápida por operador en España, separando operadores con suscripción y sin plan" loading="lazy" />
+    <figcaption><strong>Figura 5.</strong> Precios por kWh y coste estimado por 100 km en los principales operadores de carga rápida en España. Consumo medio estimado: 18 kWh/100 km. Fuente: webs oficiales de cada operador, marzo 2026.</figcaption>
+  </figure>
+
+  <p>La diferencia entre el operador más barato con suscripción (<strong>Iberdrola y Electra+ a 0,29 €/kWh</strong>) y el más caro sin plan (<strong>Ionity a 0,66 €/kWh</strong>) es del 128%. En términos prácticos, cargar 100 km te cuesta <strong>5,1 € con Iberdrola</strong> o <strong>11,9 € con Ionity sin plan</strong>. Es la diferencia entre pagar menos que un diésel o pagar bastante más.</p>
+
+  <p>La conclusión es clara: <strong>si cargas en rápido con cierta frecuencia, una suscripción se amortiza rápido</strong>. La mayoría de planes cuestan entre 5 y 15 €/mes y ya compensan con 2-3 cargas mensuales.</p>
+
+  <p>Merece la pena mencionar el papel creciente de operadores como <strong>Electra</strong> y <strong>Fastned</strong>, que están apostando fuerte por estaciones de alta potencia (150-400 kW) con una experiencia de usuario muy cuidada. Electra tiene previsto alcanzar 1.000 puntos de carga en España para 2027 con una inversión de 100 millones de euros. <sup>[8]</sup></p>
+
+  <hr />
+
+  <h2>05 — Estándares de carga: CCS2, MCS e ISO 15118</h2>
+
+  <p>Detrás de cada sesión de carga hay tres capas de tecnología que merece la pena entender:</p>
+
+  <figure>
+    <img src="/articulos/carga-rapida-espana/estandares_carga.png" alt="Diagrama de los tres estándares principales de carga de vehículos eléctricos en Europa: CCS2, MCS e ISO 15118" loading="lazy" />
+    <figcaption><strong>Figura 6.</strong> Los tres pilares técnicos de la infraestructura de carga en Europa. Fuentes: CharIN, IEC, ISO.</figcaption>
+  </figure>
+
+  <h3>CCS2 (Combined Charging System)</h3>
+
+  <p><strong>CCS2</strong> es el estándar de carga rápida en Europa. Combina el conector Type 2 (para AC) con dos contactos adicionales de DC, permitiendo cargar tanto en corriente alterna (hasta 22 kW en trifásico) como en corriente continua (hasta 500 kW teóricos, con un máximo de 1.000V y 500A). <sup>[9]</sup></p>
+
+  <p>En la práctica, los cargadores más potentes disponibles hoy ofrecen 350 kW, y los coches que pueden aprovechar esa potencia son todavía una minoría (los 800V del ranking anterior). Pero la infraestructura se está preparando: el estándar ya soporta lo que los coches necesitarán en los próximos 5-10 años.</p>
+
+  <h3>MCS (Megawatt Charging System)</h3>
+
+  <p>Para vehículos pesados — camiones y autobuses — el CCS2 se queda corto. Aquí entra el <strong>MCS</strong>, diseñado para potencias de hasta 3.750 kW (sí, casi 4 megavatios), con conectores refrigerados por líquido que soportan hasta 3.000 amperios a 1.250V DC. <sup>[10]</sup></p>
+
+  <p>No es ciencia ficción: ABB ya comercializa cargadores MCS de 1.200 kW, y fabricantes como Scania están integrando la tecnología en sus camiones eléctricos de largo recorrido. El objetivo es que un camión pueda cargar del 20% al 80% en menos de 30 minutos — suficiente para el descanso obligatorio del conductor.</p>
+
+  <h3>ISO 15118: Plug & Charge y V2G</h3>
+
+  <p>El tercer pilar no es un conector sino un <strong>protocolo de comunicación</strong>. ISO 15118 define cómo el coche y el cargador se identifican y negocian la sesión de carga. Su función estrella es <strong>Plug & Charge</strong>: enchufas el cable y la carga empieza automáticamente — sin apps, sin tarjetas, sin QR codes. La autenticación se gestiona mediante certificados digitales cifrados con TLS. <sup>[11]</sup></p>
+
+  <p>La versión más reciente (ISO 15118-20, de 2022) añade soporte para <strong>carga bidireccional (V2G)</strong>, lo que permitirá que tu coche devuelva energía a la red cuando la electricidad esté cara y cargue cuando esté barata. Es obligatorio para cargadores DC nuevos bajo la regulación AFIR.</p>
+
+  <hr />
+
+  <h2>06 — AFIR: la regulación europea que cambiará el mapa</h2>
+
+  <p>El <strong>Reglamento AFIR</strong> (Alternative Fuels Infrastructure Regulation, UE 2023/1804) es probablemente la regulación más importante para los conductores de eléctricos en Europa. Entró en vigor en octubre de 2023 y establece requisitos mínimos obligatorios para todos los estados miembros. <sup>[12]</sup></p>
+
+  <figure>
+    <img src="/articulos/carga-rapida-espana/afir_timeline.png" alt="Línea temporal con los hitos principales de la regulación AFIR de la Unión Europea para 2025, 2027 y 2030" loading="lazy" />
+    <figcaption><strong>Figura 7.</strong> Hitos principales de la regulación AFIR. Los requisitos técnicos (arriba) van acompañados de obligaciones operativas (abajo). Fuente: Reglamento UE 2023/1804.</figcaption>
+  </figure>
+
+  <p>Los puntos clave:</p>
+
+  <div class="component-table">
+    <div class="comp-row"><span class="comp-name">2025</span><span class="comp-desc">Un cargador rápido de ≥150 kW cada 60 km en la red TEN-T. Potencia total por estación: ≥400 kW. Pago con tarjeta obligatorio.</span></div>
+    <div class="comp-row"><span class="comp-name">2027</span><span class="comp-desc">Potencia por estación ≥600 kW con ≥2 cargadores de 150 kW. Inicio de la red para vehículos pesados: ≥350 kW cada 60 km.</span></div>
+    <div class="comp-row"><span class="comp-name">2030</span><span class="comp-desc">Cobertura total de la red TEN-T para turismos y pesados. Datos abiertos y precios en tiempo real obligatorios.</span></div>
+  </div>
+
+  <p>Para España, esto significa un salto de infraestructura significativo. La red TEN-T atraviesa los principales corredores del país (mediterráneo, central, atlántico), y cada uno debe cumplir con los requisitos de potencia y distancia máxima entre puntos. Además, <strong>desde abril de 2024 está prohibido que un cargador público exija una app específica para funcionar</strong> — todos deben aceptar pago con tarjeta contactless o QR.</p>
+
+  <p>AFIR también establece <strong>objetivos de potencia agregada por país</strong>: cada estado miembro debe garantizar 1,3 kW de potencia de recarga pública por cada vehículo eléctrico de batería (BEV) registrado, y 0,8 kW por cada híbrido enchufable (PHEV). Con el ritmo actual de matriculaciones eléctricas en España, esto implica una inversión continua en infraestructura que va más allá de los corredores principales. <sup>[12]</sup></p>
+
+  <p>Para el conductor, todo esto es una buena noticia: menos fragmentación entre operadores, más garantías de cobertura en las principales rutas, transparencia de precios en tiempo real, y la certeza de que podrás pagar con tarjeta en cualquier cargador sin necesidad de descargar seis apps diferentes.</p>
+
+  <hr />
+
+  <h2>07 — Cómo planificar una carga rápida: recomendaciones prácticas</h2>
+
+  <p>Después de todo lo técnico, vamos a lo práctico. Estas son las recomendaciones que damos desde enchufa2 para aprovechar al máximo la carga rápida:</p>
+
+  <p><strong>1. Conoce la potencia máxima de tu coche.</strong> No la del cargador — la de tu coche. Un Tesla Model 3 LR acepta hasta 250 kW. Un Hyundai Ioniq 5 hasta 235 kW. Un Renault Mégane E-Tech hasta 130 kW. El cargador solo ofrece; el coche decide.</p>
+
+  <p><strong>2. Carga del 10% al 80%.</strong> Es la zona de máxima eficiencia. Si estás de viaje, dos paradas cortas de 10→80% son más rápidas que una larga de 5→100%.</p>
+
+  <p><strong>3. Precalienta la batería.</strong> Muchos coches modernos precalientan la batería si introduces el cargador como destino en el navegador. A temperatura óptima (~25-35°C), la batería acepta más potencia. En invierno, esta función puede marcar una diferencia de 15-20 minutos en el tiempo de carga. <sup>[4]</sup></p>
+
+  <p><strong>4. Compara precios y usa suscripciones.</strong> La diferencia entre operadores es enorme. Comprueba qué red tiene mejor cobertura en tus rutas habituales y valora si un plan mensual te compensa.</p>
+
+  <p><strong>5. Planifica con apps de ruta.</strong> Herramientas como ABRP (A Better Route Planner) calculan la ruta óptima considerando el consumo real de tu coche, la topografía, la temperatura y la ubicación de los cargadores.</p>
+
+  <p>La carga rápida no es perfecta — todavía hay lagunas en la cobertura rural, los precios son dispares, y la experiencia de usuario varía mucho entre operadores. Pero la tendencia es inequívoca: la infraestructura mejora cada trimestre, los coches cargan más rápido cada generación, y la regulación europea está empujando en la dirección correcta. Si estás pensando en dar el salto al eléctrico o ya lo has dado, la carga rápida en España es cada vez más una ventaja y menos una barrera.</p>
+
+  <hr />
+
+  <!-- Artículos relacionados -->
+  <div class="related-articles">
+    <h3>Artículos relacionados</h3>
+    <p>Si te ha resultado útil esta guía, estos artículos de enchufa2 profundizan en temas que hemos tocado aquí:</p>
+    <ul>
+      <li><a href="/articulos/vida-bateria-ev">La guía técnica para cargar la batería de tu eléctrico sin acortarle la vida</a> — NMC vs LFP, degradación, temperatura y carga rápida con datos de 22.700 vehículos reales.</li>
+    </ul>
+  </div>
+
+  <!-- Referencias -->
+  <div class="references">
+    <p><strong>08 — Referencias</strong></p>
+    <p>[1] ANFAC (2025). "Barómetro de Electromovilidad 2022–2025." Datos de puntos de recarga de acceso público en España. anfac.com</p>
+    <p>[2] InvestInSpain / ANFAC (2025). "Spain's Electric Vehicle Charging Infrastructure — Q1 2025." investinspain.org</p>
+    <p>[3] Tomaszewska, A. et al. (2019). "Lithium-ion battery fast charging: A review." eTransportation, 1, 100011. DOI: 10.1016/j.etran.2019.100011</p>
+    <p>[4] Yang, X.G. et al. (2018). "Fast charging of lithium-ion batteries at all temperatures." PNAS, 115(28), 7266-7271. DOI: 10.1073/pnas.1807115115</p>
+    <p>[5] DriveElectric (2025). "400V vs 800V EV Architecture Explained." drive-electric.co.uk. Datos técnicos contrastados con especificaciones de Hyundai, Porsche y Kia.</p>
+    <p>[6] P3 Group (2024). "P3 Charging Index — December 2024." Ranking de velocidad de carga real por modelo. p3-group.com</p>
+    <p>[7] Datos recopilados de las webs oficiales de Iberdrola, Electra+, Ionity, Tesla, Endesa X Way y Repsol. Precios vigentes a marzo de 2026.</p>
+    <p>[8] InvestInSpain (2024). "Electra to invest 100M€ in ultra-fast charging in Spain." investinspain.org</p>
+    <p>[9] CharIN (2025). "CCS Specification — Combined Charging System." charin.global/technology/ccs-specification/</p>
+    <p>[10] CharIN (2025). "MCS — Megawatt Charging System." charin.global/technology/mcs/. Datos adicionales: ABB e-mobility (MCS1200), Scania electrification hub.</p>
+    <p>[11] ISO (2022). "ISO 15118-20:2022 — Road vehicles — Vehicle to grid communication interface." iso.org/standard/77845.html</p>
+    <p>[12] Parlamento Europeo y Consejo (2023). "Reglamento (UE) 2023/1804 sobre la infraestructura para los combustibles alternativos." EUR-Lex: eur-lex.europa.eu/eli/reg/2023/1804/oj</p>
+  </div>
+
+</ArticleLayout>
+
+<style>
+  /* Deck */
+  .article-deck {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    color: var(--gray-400);
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+  }
+
+  /* Related articles */
+  .related-articles {
+    margin-top: 3rem;
+    padding: 1.5rem 1.75rem;
+    background: var(--gray-50, #F7F7F5);
+    border-radius: 6px;
+  }
+  .related-articles h3 {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--black);
+    margin-bottom: 0.75rem;
+    margin-top: 0;
+  }
+  .related-articles p {
+    font-size: 0.9rem;
+    color: var(--gray-600);
+    margin-bottom: 0.75rem;
+  }
+  .related-articles ul {
+    padding-left: 1.25rem;
+  }
+  .related-articles li {
+    font-size: 0.9rem;
+    color: var(--gray-600);
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+  .related-articles a {
+    color: var(--black);
+    font-weight: 400;
+    text-decoration: underline;
+    text-decoration-color: var(--yellow);
+    text-underline-offset: 3px;
+  }
+  .related-articles a:hover {
+    color: var(--yellow);
+  }
+</style>
