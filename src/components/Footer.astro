@@ -2,63 +2,130 @@
 const year = new Date().getFullYear();
 ---
 <footer class="site-footer">
-  <div class="page-width footer-inner">
+  <div class="footer-grid hub-width">
 
-    <a href="/" aria-label="enchufa2">
-      <img src="/logo.svg" alt="enchufa2" class="footer-logo" />
-    </a>
+    <div class="footer-brand">
+      <a href="/" class="footer-logo" aria-label="enchufa2 inicio">
+        <svg viewBox="-5 -5 75 108" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="16" height="24">
+          <path d="M28.9885 0V54.2171C28.9885 54.2171 0 54.2977 0 54.2171C0 54.1365 28.9885 0 28.9885 0Z" fill="currentColor"/>
+          <path d="M37.0826 98L37.0575 46.2613H65L37.0826 98Z" fill="currentColor"/>
+          <path d="M28.6897 46.2613H39.4483V54.2171H28.6897V46.2613Z" fill="currentColor"/>
+          <path d="M5.08046 63.9408H28.9885V69.5393H5.08046V63.9408Z" fill="currentColor"/>
+          <path d="M2.98851 66.74L5.08046 63.9408V69.5393L2.98851 66.74Z" fill="currentColor"/>
+          <path d="M5.08046 79.263H28.9885V84.8615H5.08046V79.263Z" fill="currentColor"/>
+          <path d="M2.98851 82.0622L5.08046 79.263V84.8615L2.98851 82.0622Z" fill="currentColor"/>
+        </svg>
+        <span>enchufa<span class="two">2</span></span>
+      </a>
+      <p>La referencia técnica en español sobre movilidad eléctrica.</p>
+    </div>
 
-    <p class="footer-copy t-small">
-      © {year} enchufa2. Todos los derechos reservados.
-    </p>
+    <div class="footer-col">
+      <h4>Contenido</h4>
+      <a href="#">Guías técnicas</a>
+      <a href="#">Comparativas</a>
+      <a href="#">Podcast <span class="soon">pronto</span></a>
+    </div>
 
-    <nav class="footer-nav" aria-label="Pie de página">
-      <a href="#nosotros">Nosotros</a>
-      <a href="#contacto">Contacto</a>
-    </nav>
+    <div class="footer-col">
+      <h4>Temas</h4>
+      <a href="/articulos/vida-bateria-ev">Batería</a>
+      <a href="#">Carga</a>
+      <a href="#">Mantenimiento</a>
+      <a href="#">Tarifas</a>
+    </div>
 
+    <div class="footer-col">
+      <h4>enchufa2</h4>
+      <a href="#">Sobre nosotros</a>
+      <a href="#">Contacto</a>
+      <a href="#newsletter">Newsletter</a>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom hub-width">
+    <span>&copy; {year} enchufa2</span>
+    <span>Hecho en España</span>
   </div>
 </footer>
 
 <style>
   .site-footer {
+    padding: 3rem 0 1.5rem;
     background: var(--black);
-    border-top: 1px solid rgba(255,255,255,0.07);
-    padding-block: 2rem;
-    color: rgba(250,250,248,0.3);
+    color: var(--gray-500);
+    border-top: 1px solid rgba(255,255,255,0.04);
   }
 
-  .footer-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
   }
 
   .footer-logo {
-    height: 22px;
-    width: auto;
-    opacity: 0.5;
-    transition: opacity 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--white);
+    letter-spacing: -0.02em;
+    transition: opacity 0.2s;
   }
-  a:hover .footer-logo { opacity: 0.8; }
+  .footer-logo:hover { opacity: 0.7; }
+  .footer-logo .two { color: var(--yellow); }
+  .footer-logo svg { opacity: 0.7; }
 
-  .footer-copy {
-    font-size: 0.75rem;
-    letter-spacing: 0.04em;
+  .footer-brand p {
+    font-size: 0.78rem;
+    color: var(--gray-600);
+    line-height: 1.6;
+    max-width: 260px;
+    margin-top: 0.75rem;
   }
 
-  .footer-nav {
-    display: flex;
-    gap: 1.75rem;
-  }
-
-  .footer-nav a {
-    font-size: 0.8125rem;
-    letter-spacing: 0.04em;
+  .footer-col h4 {
+    font-size: 0.65rem;
     text-transform: uppercase;
-    transition: color 0.2s ease;
+    letter-spacing: 0.1em;
+    color: var(--gray-600);
+    margin-bottom: 0.75rem;
+    font-weight: 500;
   }
-  .footer-nav a:hover { color: rgba(250,250,248,0.7); }
+  .footer-col a {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--gray-500);
+    padding: 0.25rem 0;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--white); }
+
+  .soon {
+    font-size: 0.55rem;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-left: 0.4rem;
+  }
+
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1.25rem;
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.2);
+  }
+
+  @media (max-width: 860px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .footer-grid { grid-template-columns: 1fr; }
+  }
 </style>

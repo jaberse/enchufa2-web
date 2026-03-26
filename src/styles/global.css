@@ -1,15 +1,19 @@
 /* ─────────────────────────────────────────────
-   DESIGN TOKENS
+   DESIGN TOKENS — Warm Minimal palette
 ───────────────────────────────────────────── */
 :root {
   --black:    #111111;
   --white:    #FAFAF8;
   --yellow:   #F5C518;
-  --gray-50:  #F7F7F5;
-  --gray-100: #EFEFED;
-  --gray-200: #E0E0DC;
-  --gray-400: #999999;
-  --gray-600: #666666;
+  --yellow-glow: rgba(245,197,24,0.15);
+  --cream:    #F8F6F1;
+  --gray-50:  #F2F1ED;
+  --gray-100: #E8E7E3;
+  --gray-200: #D5D4CF;
+  --gray-300: #C0BFB9;
+  --gray-400: #999894;
+  --gray-500: #76756F;
+  --gray-600: #555550;
 
   --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
   --font-serif: 'Instrument Serif', Georgia, serif;
@@ -19,7 +23,10 @@
 
   --section-pad: clamp(5rem, 10vw, 9rem);
   --page-gutter: clamp(1.5rem, 6vw, 7rem);
+  --hub-gutter: clamp(1.25rem, 5vw, 5rem);
+  --max-w: 1200px;
   --article-max: 780px;
+  --radius: 8px;
 }
 
 /* ─────────────────────────────────────────────
@@ -43,7 +50,7 @@ body {
   font-size: 1rem;
   line-height: 1.6;
   color: var(--black);
-  background: var(--white);
+  background: var(--cream);
   overflow-x: hidden;
 }
 
@@ -99,9 +106,15 @@ a { color: inherit; text-decoration: none; }
 .accent { color: var(--yellow); }
 
 .page-width {
-  max-width: 1200px;
+  max-width: var(--max-w);
   margin-inline: auto;
   padding-inline: var(--page-gutter);
+}
+
+.hub-width {
+  max-width: var(--max-w);
+  margin-inline: auto;
+  padding-inline: var(--hub-gutter);
 }
 
 .visually-hidden {
