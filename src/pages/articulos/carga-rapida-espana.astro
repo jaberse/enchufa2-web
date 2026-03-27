@@ -58,6 +58,11 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <p>La distribución geográfica tampoco es uniforme. <strong>Cataluña, Madrid, Andalucía y la Comunidad Valenciana</strong> concentran aproximadamente el 60% de la capacidad nacional. <sup>[2]</sup> Si vives en una gran ciudad, cargar no es problema. Si planificas una ruta por la España rural, conviene llevar la app del operador descargada y un plan B.</p>
 
+  <figure>
+    <img src="/articulos/carga-rapida-espana/mapa_puntos_recarga_ccaa.png" alt="Mapa coroplético de España mostrando la distribución de puntos de recarga pública por comunidad autónoma, con Cataluña liderando con más de 11.000 puntos" loading="lazy" />
+    <figcaption><strong>Figura 2.</strong> Distribución de puntos de recarga pública por comunidad autónoma. Cataluña concentra el 21% del total nacional. Fuente: ANFAC, Barómetro Electromovilidad Q2 2025.</figcaption>
+  </figure>
+
   <hr />
 
   <h2>02 — Cómo funciona la carga rápida DC</h2>
@@ -72,7 +77,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <figure>
     <img src="/articulos/carga-rapida-espana/curva_carga_esquematica.png" alt="Gráfico esquemático de una curva de carga DC típica mostrando cómo la potencia varía con el estado de carga, con la zona óptima entre 10 y 80 por ciento" loading="lazy" />
-    <figcaption><strong>Figura 2.</strong> Curva de carga DC esquemática. El BMS reduce progresivamente la potencia a partir del 60-70% de SOC para proteger las celdas. Gráfico: enchufa2.</figcaption>
+    <figcaption><strong>Figura 3.</strong> Curva de carga DC esquemática. El BMS reduce progresivamente la potencia a partir del 60-70% de SOC para proteger las celdas. Gráfico: enchufa2.</figcaption>
   </figure>
 
   <p>Entre el <strong>10% y el 80%</strong>, la batería acepta la máxima potencia. Es la zona donde más kilómetros ganas por minuto conectado. A partir del 80%, el BMS reduce drásticamente la corriente para evitar daño a las celdas — el voltaje de cada celda se acerca a su máximo y la resistencia interna aumenta. Cargar del 80% al 100% puede tardar tanto como de 10% a 80%. <sup>[3]</sup></p>
@@ -109,14 +114,14 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <figure>
     <img src="/articulos/carga-rapida-espana/arquitectura_400v_vs_800v.png" alt="Gráfico comparativo butterfly de arquitectura 400V versus 800V mostrando diferencias en pico de carga, corriente y tiempo de carga" loading="lazy" />
-    <figcaption><strong>Figura 3.</strong> Comparativa 400V vs 800V. La arquitectura de 800V permite cargar casi el doble de rápido gracias a la reducción de corriente y calor. Gráfico: enchufa2.</figcaption>
+    <figcaption><strong>Figura 4.</strong> Comparativa 400V vs 800V. La arquitectura de 800V permite cargar casi el doble de rápido gracias a la reducción de corriente y calor. Gráfico: enchufa2.</figcaption>
   </figure>
 
   <p>En la práctica, el P3 Charging Index — un estudio independiente que mide la autonomía real recuperada en 20 minutos de carga rápida — muestra las diferencias con claridad: <sup>[6]</sup></p>
 
   <figure>
     <img src="/articulos/carga-rapida-espana/p3_charging_index.png" alt="Gráfico de barras horizontales mostrando la autonomía recargada en 20 minutos por modelo de coche eléctrico, diferenciando entre arquitectura 800V y 400V" loading="lazy" />
-    <figcaption><strong>Figura 4.</strong> Autonomía recargada en 20 minutos de carga rápida por modelo. Los coches 800V (amarillo) dominan la parte alta del ranking. Fuente: P3 Group, Charging Index diciembre 2024.</figcaption>
+    <figcaption><strong>Figura 5.</strong> Autonomía recargada en 20 minutos de carga rápida por modelo. Los coches 800V (amarillo) dominan la parte alta del ranking. Fuente: P3 Group, Charging Index diciembre 2024.</figcaption>
   </figure>
 
   <p>Un <strong>Porsche Taycan</strong> recupera 383 km en 20 minutos. Un <strong>Hyundai Ioniq 6</strong> o <strong>Kia EV6</strong> (ambos 800V sobre plataforma E-GMP) alcanzan 346 y 309 km respectivamente. En el otro extremo, un Tesla Model 3 LR con arquitectura 400V se queda en 252 km — que no está mal, pero es un 34% menos que el Taycan.</p>
@@ -131,7 +136,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <figure>
     <img src="/articulos/carga-rapida-espana/comparativa_precios_operadores.png" alt="Gráfico comparativo de precios de carga rápida por operador en España, separando operadores con suscripción y sin plan" loading="lazy" />
-    <figcaption><strong>Figura 5.</strong> Precios por kWh y coste estimado por 100 km en los principales operadores de carga rápida en España. Consumo medio estimado: 18 kWh/100 km. Fuente: webs oficiales de cada operador, marzo 2026.</figcaption>
+    <figcaption><strong>Figura 6.</strong> Precios por kWh y coste estimado por 100 km en los principales operadores de carga rápida en España. Consumo medio estimado: 18 kWh/100 km. Fuente: webs oficiales de cada operador, marzo 2026.</figcaption>
   </figure>
 
   <p>La diferencia entre el operador más barato con suscripción (<strong>Iberdrola y Electra+ a 0,29 €/kWh</strong>) y el más caro sin plan (<strong>Ionity a 0,66 €/kWh</strong>) es del 128%. En términos prácticos, cargar 100 km te cuesta <strong>5,1 € con Iberdrola</strong> o <strong>11,9 € con Ionity sin plan</strong>. Es la diferencia entre pagar menos que un diésel o pagar bastante más.</p>
@@ -148,7 +153,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <figure>
     <img src="/articulos/carga-rapida-espana/estandares_carga.png" alt="Diagrama de los tres estándares principales de carga de vehículos eléctricos en Europa: CCS2, MCS e ISO 15118" loading="lazy" />
-    <figcaption><strong>Figura 6.</strong> Los tres pilares técnicos de la infraestructura de carga en Europa. Fuentes: CharIN, IEC, ISO.</figcaption>
+    <figcaption><strong>Figura 7.</strong> Los tres pilares técnicos de la infraestructura de carga en Europa. Fuentes: CharIN, IEC, ISO.</figcaption>
   </figure>
 
   <h3>CCS2 (Combined Charging System)</h3>
@@ -177,7 +182,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <figure>
     <img src="/articulos/carga-rapida-espana/afir_timeline.png" alt="Línea temporal con los hitos principales de la regulación AFIR de la Unión Europea para 2025, 2027 y 2030" loading="lazy" />
-    <figcaption><strong>Figura 7.</strong> Hitos principales de la regulación AFIR. Los requisitos técnicos (arriba) van acompañados de obligaciones operativas (abajo). Fuente: Reglamento UE 2023/1804.</figcaption>
+    <figcaption><strong>Figura 8.</strong> Hitos principales de la regulación AFIR. Los requisitos técnicos (arriba) van acompañados de obligaciones operativas (abajo). Fuente: Reglamento UE 2023/1804.</figcaption>
   </figure>
 
   <p>Los puntos clave:</p>
