@@ -21,7 +21,7 @@ const articles = [
     date: 'Marzo 2026',
     readingTime: '10 min de lectura',
     image: '/articulos/subvenciones-ayudas-ev-2026/hero.webp',
-    alt: 'Documentos de subvenciones para vehículos eléctricos con marcas de aprobación',
+    alt: 'Tres vehículos eléctricos nuevos estacionados — foto Unsplash',
   },
   {
     slug: 'neumaticos-coche-electrico',
@@ -32,7 +32,7 @@ const articles = [
     date: 'Marzo 2026',
     readingTime: '10 min de lectura',
     image: '/articulos/neumaticos-coche-electrico/hero.webp',
-    alt: 'Sección transversal de neumático de coche eléctrico con patrón de banda de rodadura',
+    alt: 'Primer plano de rueda y neumático en coche deportivo — foto Unsplash',
   },
   {
     slug: 'coste-real-electrico',
@@ -43,7 +43,7 @@ const articles = [
     date: 'Marzo 2026',
     readingTime: '12 min de lectura',
     image: '/articulos/coste-real-electrico/hero.webp',
-    alt: 'Balanza comparando costes de propiedad entre eléctrico y gasolina',
+    alt: 'Coche Tesla negro conduciendo por la carretera — foto Unsplash',
   },
   {
     slug: 'mantenimiento-ev-vs-combustion',
@@ -54,7 +54,7 @@ const articles = [
     date: 'Marzo 2026',
     readingTime: '11 min de lectura',
     image: '/articulos/mantenimiento-ev-vs-combustion/hero.webp',
-    alt: 'Comparativa visual: componentes de motor térmico vs motor eléctrico',
+    alt: 'Mecánico trabajando en un coche en un taller — foto Unsplash',
   },
   {
     slug: 'carga-rapida-espana',
@@ -65,7 +65,7 @@ const articles = [
     date: 'Marzo 2026',
     readingTime: '12 min de lectura',
     image: '/articulos/carga-rapida-espana/hero.webp',
-    alt: 'Rayo de carga rápida con indicadores de potencia',
+    alt: 'Coche amarillo enchufado a una estación de carga rápida — foto Unsplash',
   },
   {
     slug: 'tarifas-carga-casa',
@@ -76,7 +76,7 @@ const articles = [
     date: 'Marzo 2026',
     readingTime: '11 min de lectura',
     image: '/articulos/tarifas-carga-casa/hero.webp',
-    alt: 'Casa con wallbox y curva de precio eléctrico',
+    alt: 'Mujer enchufando coche eléctrico en cargador de pared doméstico — foto Unsplash',
   },
   {
     slug: 'vida-bateria-ev',
@@ -87,7 +87,7 @@ const articles = [
     date: 'Marzo 2026',
     readingTime: '14 min de lectura',
     image: '/articulos/vida-bateria-ev/hero.webp',
-    alt: 'Celdas de batería cilíndricas con conexiones y gestión térmica',
+    alt: 'Motor de coche eléctrico con cableado visible y componentes de batería — foto Unsplash',
   },
 ];
 
@@ -126,6 +126,7 @@ const older = articles.slice(4);
       <div class="hub-width">
         <div class="section-header">
           <h2>Artículos anteriores</h2>
+          <a href="/categoria/tecnologia" class="section-link">Ver todos &rarr;</a>
         </div>
         <div class="prev-grid">
           {previous.map((a) => (
@@ -231,6 +232,7 @@ const older = articles.slice(4);
   .hero-image {
     display: block;
     overflow: hidden;
+    aspect-ratio: 16 / 10;
   }
   .hero-image img {
     width: 100%;
@@ -244,7 +246,7 @@ const older = articles.slice(4);
   }
 
   .hero-content {
-    padding: clamp(2rem, 4vw, 3.5rem) clamp(2rem, 4vw, 3rem);
+    padding: 3rem 3rem 3rem 2.5rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -337,6 +339,16 @@ const older = articles.slice(4);
     font-weight: 500;
     letter-spacing: -0.01em;
   }
+  .section-link {
+    font-size: 0.72rem;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: color 0.2s;
+  }
+  .section-link:hover {
+    color: var(--yellow);
+  }
 
   .prev-grid {
     display: grid;
@@ -412,7 +424,7 @@ const older = articles.slice(4);
   /* ═══ OLDER ARTICLES (compact) ═══ */
   .older-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
     margin-top: 1.25rem;
   }
@@ -560,10 +572,11 @@ const older = articles.slice(4);
     .hero-latest { grid-template-columns: 1fr; }
     .hero-image { aspect-ratio: 16 / 9; }
     .prev-grid { grid-template-columns: 1fr; }
+    .older-grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 640px) {
     .cat-grid { grid-template-columns: repeat(2, 1fr); }
-    .older-grid { grid-template-columns: repeat(2, 1fr); }
+    .older-grid { grid-template-columns: 1fr; }
     .nl-form { flex-direction: column; }
     .nl-form input {
       border-right: 1px solid rgba(255, 255, 255, 0.1);
