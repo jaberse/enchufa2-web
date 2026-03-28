@@ -35,7 +35,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
       <li><strong>Plan Auto+ (nacional):</strong> €4.500 BEV, €2.250 PHEV. Se aplica en concesionario al comprar. Presupuesto limitado (€400M), máximo €45.000 en factura.</li>
       <li><strong>Ayudas autonómicas:</strong> Se suman al Plan Auto+. Madrid €5.000, Cataluña €4.000, País Vasco €3.500, Andalucía/Valencia €3.000. Cada región tiene su propia convocatoria y plazos.</li>
       <li><strong>Etiqueta CERO (desde enero 2026):</strong> Acceso a ZBE, parking gratuito/descuentos (€1.500-2.400/año en Madrid). La DGT exige ≥40 km de autonomía eléctrica a los PHEV para etiqueta CERO. Criterio Plan Auto+ para PHEV: pendiente de verificación oficial.</li>
-      <li><strong>Fiscales (IRPF, matriculación, IVTM):</strong> No hay que pedir — se aplican automáticamente. Matriculación 100% exenta para BEV. IRPF: 15% deducción hasta €3.000 (coche) + €600 (wallbox). IVTM: hasta 75% descuento municipal.</li>
+      <li><strong>Fiscales (IRPF, matriculación, IVTM):</strong> No hay que pedir — se aplican automáticamente. Matriculación 100% exenta para BEV. IRPF: 15 % deducción en cuota, hasta €3.000 (coche) + €600 (wallbox) — se resta directamente del impuesto, no de la base. IVTM: hasta 100 % de bonificación según municipio.</li>
       <li><strong>Proceso simplificado:</strong> Dealer maneja Plan Auto+ en venta. Regional 2-3 semanas después. Fiscales se reclaman en Renta 2026 (IRPF) o en ayuntamiento (IVTM).</li>
     </ul>
   </div>
@@ -181,7 +181,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <h3>IVTM (impuesto circulación)</h3>
 
-  <p><strong>BEV: exención 100 %</strong> a nivel nacional. Significa que no pagas tasa de circulación. En ciudades como Madrid donde el IVTM de un coche de gasolina ronda los €200/año, eso son <strong>€200/año × 10 años = €2.000</strong> sobre la vida útil de un contrato de seguro. <sup>[9]</sup></p>
+  <p><strong>BEV: exención de hasta el 100 %</strong>, dependiendo del municipio. No es automática ni uniforme en todo el territorio — cada ayuntamiento fija su bonificación. En Madrid, la bonificación es del 100 % para BEV, lo que significa que no pagas tasa de circulación. En un coche donde el IVTM rondaría los €200/año, eso son <strong>€200/año × 10 años = €2.000</strong> a lo largo de la vida útil. <sup>[9]</sup></p>
 
   <p>PHEV: descuento de 75% — pagas solo €50-75/año en lugar de €200-300.</p>
 
@@ -189,7 +189,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <p>Si eres trabajador por cuenta ajena o jubilado, puedes deducir el 15% del coste del vehículo hasta un máximo de <strong>€3.000 en la declaración de Renta 2026</strong> (para compras realizadas en 2025). Adicionalmente, puedes deducir el 15% del coste de instalación de punto de recarga (wallbox) hasta €600. <sup>[10]</sup></p>
 
-  <p>En la práctica: un coche de €30.000 te permite deducir €3.000 (límite). Un wallbox de €1.500 permite deducir €225 (15% de €1.500). Eso son €3.225 de deducción fiscal, que a una base de retención del 19-21 % significa <strong>€610–680 menos en la liquidación</strong>.</p>
+  <p>En la práctica: un coche de €30.000 te permite una deducción en cuota de €3.000 (15 % de €20.000, que es la base máxima). Un wallbox de €1.500 permite deducir €225 adicionales (15 % de €1.500). Son <strong>€3.225 menos directamente en tu cuota del IRPF</strong> — no es una reducción de la base imponible, sino un descuento directo del impuesto que pagas. <sup>[10]</sup></p>
 
   <p>Si eres autónomo o empresa, los beneficios fiscal-laborales son mayores aún: amortización acelerada (depreciación en 5 años en lugar de 10), gasto fiscal completo en arrendamiento operativo, e IVA deducible al 100 % si es vehículo de empresa. Consulta con tu asesoría.</p>
 
@@ -206,101 +206,104 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <h3>Primer año (costes en venta + primeros 12 meses)</h3>
 
-  <div class="ev-table">
-    <div class="ev-row ev-header">
+  <div class="finance-table">
+    <div class="fin-row fin-header">
       <span>Concepto</span>
-      <span>Tipo</span>
       <span>Ahorro</span>
-      <span>Detalle</span>
     </div>
-    <div class="ev-row ev-lfp">
-      <span>Plan Auto+</span>
-      <span class="badge-lfp">Subvención</span>
-      <span>€4.500</span>
-      <span>Aplicado en concesionario, sin papeleo</span>
+    <div class="fin-row">
+      <span>
+        <strong>Plan Auto+</strong>
+        <small>Subvención estatal · aplicada en concesionario</small>
+      </span>
+      <span class="fin-amount">€4.500</span>
     </div>
-    <div class="ev-row ev-nmc">
-      <span>Ayuda Madrid</span>
-      <span class="badge-lfp">Subvención</span>
-      <span>€5.000</span>
-      <span>Tramitada en consellería, 2-3 semanas</span>
+    <div class="fin-row">
+      <span>
+        <strong>Ayuda Comunidad de Madrid</strong>
+        <small>Subvención autonómica · tramitada en consejería, 2-3 semanas</small>
+      </span>
+      <span class="fin-amount">€5.000</span>
     </div>
-    <div class="ev-row ev-lfp">
-      <span>Matriculación (IEDMT)</span>
-      <span class="badge-nmc">Exención</span>
-      <span>€6.600</span>
-      <span>Exención 100 % BEV por ley estatal</span>
+    <div class="fin-row">
+      <span>
+        <strong>Matriculación (IEDMT)</strong>
+        <small>Exención 100 % BEV por ley estatal</small>
+      </span>
+      <span class="fin-amount">€6.600</span>
     </div>
-    <div class="ev-row ev-nmc">
-      <span>IRPF 2026</span>
-      <span class="badge-nmc">Deducción</span>
-      <span>€680</span>
-      <span>15 % × €3.000 máximo, retención 22 %</span>
+    <div class="fin-row">
+      <span>
+        <strong>IRPF 2026</strong>
+        <small>Deducción en cuota: 15 % del precio, máx. €3.000 <sup>[10]</sup></small>
+      </span>
+      <span class="fin-amount">€3.000</span>
     </div>
-    <div class="ev-row ev-lfp">
-      <span>IVTM primer año</span>
-      <span class="badge-nmc">Exención</span>
-      <span>€0</span>
-      <span>Exención 100 % BEV</span>
+    <div class="fin-row">
+      <span>
+        <strong>IVTM primer año</strong>
+        <small>Exención municipal (hasta 100 % en Madrid)</small>
+      </span>
+      <span class="fin-amount">€0</span>
     </div>
-    <div class="ev-row ev-total">
-      <span>TOTAL AÑO 1</span>
-      <span></span>
-      <span class="badge-lfp">€16.780</span>
-      <span></span>
+    <div class="fin-row fin-total">
+      <span>Total ahorro año 1</span>
+      <span class="fin-amount">€19.100</span>
     </div>
   </div>
 
-  <p>Si además instalas wallbox (€1.500 incluida mano de obra), añade €225 deducción IRPF 2026 = €43 en tu liquidación. Total realista primer año: <strong>€16.800–17.000</strong>.</p>
+  <p>Si además instalas wallbox (€1.500 incluida mano de obra), puedes deducir un 15 % adicional en cuota (hasta €600). Total realista primer año: <strong>€19.100–19.700</strong>.</p>
 
   <h3>Años 2-10 (costes recurrentes)</h3>
 
-  <div class="ev-table">
-    <div class="ev-row ev-header">
+  <div class="finance-table">
+    <div class="fin-row fin-header">
       <span>Concepto</span>
-      <span>Tipo</span>
       <span>Ahorro/año</span>
-      <span>Detalle</span>
     </div>
-    <div class="ev-row ev-lfp">
-      <span>IVTM anual</span>
-      <span class="badge-nmc">Exención</span>
-      <span>€0</span>
-      <span>Exención 100 %</span>
+    <div class="fin-row">
+      <span>
+        <strong>IVTM (impuesto de circulación)</strong>
+        <small>Exención municipal · hasta 100 % en Madrid para BEV</small>
+      </span>
+      <span class="fin-amount">~€200</span>
     </div>
-    <div class="ev-row ev-nmc">
-      <span>Parking CERO</span>
-      <span class="badge-nmc">Beneficio</span>
-      <span>~€400</span>
-      <span>Tarifa municipal €8–12/h</span>
+    <div class="fin-row">
+      <span>
+        <strong>Parking zona SER</strong>
+        <small>Etiqueta CERO: parking gratuito ilimitado en Madrid</small>
+      </span>
+      <span class="fin-amount">~€400</span>
     </div>
-    <div class="ev-row ev-lfp">
-      <span>Peajes</span>
-      <span class="badge-nmc">Beneficio</span>
-      <span>~€80</span>
-      <span>Est. 30 salidas/año × €3 media</span>
+    <div class="fin-row">
+      <span>
+        <strong>Peajes VÍA-T</strong>
+        <small>Descuento 75 % para BEV · est. 30 salidas/año</small>
+      </span>
+      <span class="fin-amount">~€80</span>
     </div>
-    <div class="ev-row ev-nmc">
-      <span>Acceso a ZBE</span>
-      <span class="badge-lfp">Acceso</span>
-      <span>€600</span>
-      <span>Si trabajas en centro diariamente</span>
+    <div class="fin-row">
+      <span>
+        <strong>Acceso libre a ZBE</strong>
+        <small>Sin restricciones 24/7 · valor estimado si trabajas en centro</small>
+      </span>
+      <span class="fin-amount">~€600</span>
     </div>
-    <div class="ev-row ev-lfp">
-      <span>Electricidad vs. gasolina</span>
-      <span class="badge-lfp">Ahorro</span>
-      <span>~€900</span>
-      <span>€0,18/km eléctrico vs €0,27/km gasolina</span>
+    <div class="fin-row">
+      <span>
+        <strong>Electricidad vs. gasolina</strong>
+        <small>18.000 km/año · ~€0,05/km eléctrico en valle vs ~€0,10/km gasolina</small>
+      </span>
+      <span class="fin-amount">~€900</span>
     </div>
-    <div class="ev-row ev-total">
-      <span>TOTAL AÑOS 2-10</span>
-      <span></span>
-      <span class="badge-lfp">€1.980/año</span>
-      <span>Con ZBE diaria · Sin ZBE: €1.380/año</span>
+    <div class="fin-row fin-total">
+      <span>Total ahorro anual (años 2-10)</span>
+      <span class="fin-amount">~€2.180/año</span>
     </div>
+    <p class="fin-note">Sin acceso diario a ZBE: ~€1.580/año</p>
   </div>
 
-  <p>Con análisis a 10 años (típica vida de pago del coche), los ahorros acumulados son: €17.000 (año 1) + €1.980 × 9 años = <strong>€34.820 sobre el total de vida útil</strong>. En un coche de €30.000, eso representa un 116% de ahorro — es decir, el coche se paga parcialmente a sí mismo solo en fiscalidad y beneficios permanentes.</p>
+  <p>Con análisis a 10 años (típica vida de pago del coche), los ahorros acumulados son: ~€19.100 (año 1) + ~€2.180 × 9 años = <strong>~€38.720 sobre el total de vida útil</strong>. En un coche de €30.000, el ahorro en fiscalidad y beneficios permanentes supera ampliamente el precio del vehículo.</p>
 
   <p><em>Nota: este análisis no incluye ahorro en mantenimiento (sin revisiones cada 15.000 km, sin cambios de aceite, sin filtros). El ahorro total es 20-30 % más alto si lo contabilizas.</em></p>
 
@@ -319,7 +322,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
   <h3>Ayuda autonómica (regional)</h3>
 
   <ol>
-    <li><strong>Dentro de 30 días de la compra:</strong> accede a la web de movilidad de tu comunidad autónoma (conselleria/secretaría de movilidad).</li>
+    <li><strong>Dentro de 30 días de la compra:</strong> accede a la web de movilidad de tu comunidad autónoma (consejería o departamento de movilidad).</li>
     <li><strong>Reúne documentos:</strong> factura original, DNI, comprobante de empadronamiento (actualizado), y a veces certificado de registrador (para verificar que es tu primer coche en el programa).</li>
     <li><strong>Rellena solicitud online:</strong> la mayoría de regiones tienen un formulario digital. Adjunta escaneados. El proceso toma 10-15 minutos.</li>
     <li><strong>Espera confirmación:</strong> entre 15-20 días hábiles recibirás correo electrónico con número de expediente y estado. Luego, 5-10 días más hasta que vea el dinero en tu cuenta.</li>
@@ -498,6 +501,85 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     .ev-row { grid-template-columns: 1fr 1fr; }
     .ev-row > span:nth-child(2) { display: none; }
     .ev-row > span:nth-child(4) { display: none; }
+  }
+
+  /* ─── Finance table ─── */
+  .finance-table {
+    margin-block: 1.75rem;
+    border: 1px solid var(--gray-100);
+    font-size: 0.875rem;
+    width: 100%;
+  }
+  .fin-row {
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    gap: 0;
+    border-bottom: 1px solid var(--gray-100);
+    align-items: center;
+  }
+  .fin-row:last-child { border-bottom: none; }
+  .fin-row > span {
+    padding: 0.75rem 1rem;
+    line-height: 1.4;
+  }
+  .fin-row > span:first-child {
+    color: var(--black);
+  }
+  .fin-row > span:first-child strong {
+    display: block;
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+  .fin-row > span:first-child small {
+    display: block;
+    color: var(--gray-600);
+    font-size: 0.75rem;
+    margin-top: 0.15rem;
+    line-height: 1.4;
+  }
+  .fin-amount {
+    text-align: right;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--black);
+    font-variant-numeric: tabular-nums;
+  }
+  .fin-header {
+    background: var(--black);
+  }
+  .fin-header > span {
+    color: rgba(250,250,248,0.5);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 400;
+    padding: 0.6rem 1rem;
+  }
+  .fin-header > span:last-child {
+    text-align: right;
+  }
+  .fin-total {
+    background: var(--black);
+  }
+  .fin-total > span {
+    color: #FAFAF8;
+    font-weight: 600;
+    padding: 0.85rem 1rem;
+  }
+  .fin-total .fin-amount {
+    color: var(--yellow);
+    font-size: 1.125rem;
+  }
+  .fin-note {
+    font-size: 0.75rem;
+    color: var(--gray-400);
+    padding: 0.5rem 1rem 0.75rem;
+    margin: 0;
+    line-height: 1.4;
+  }
+  @media (max-width: 480px) {
+    .fin-row { grid-template-columns: 1fr 90px; }
+    .fin-amount { font-size: 0.875rem; }
   }
 
   /* ─── Blockquote ─── */
