@@ -34,10 +34,10 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     <strong>Resumen rápido</strong>
     <ul>
       <li><strong>Desgaste más rápido:</strong> tu eléctrico pesa 20-30 % más y el par instantáneo acelera la fricción. En promedio, espera reemplazar neumáticos un 20-40 % antes que en combustión (típicamente 30.000-40.000 km frente a 50.000-65.000 km), aunque varía según modelo, conducción y compuesto.</li>
-      <li><strong>Elige XL o HL:</strong> los neumáticos de carga estándar (SL) son insuficientes. El índice XL agrega 23 % de capacidad; el HL, un 11 % más que XL. En Europa, HL es ahora estándar en nuevos modelos.</li>
+      <li><strong>Elige XL o HL:</strong> los neumáticos de carga estándar (SL) son insuficientes. El índice XL agrega 13-23 % de capacidad (según índice); el HL, un 10-11 % más que XL. En Europa, HL es ahora estándar en nuevos modelos.</li>
       <li><strong>La resistencia a la rodadura importa:</strong> entre un buen neumático EV y uno normal hay 5-15 % de diferencia en autonomía. A 58 kWh al año, esto es como regalar batería.</li>
       <li><strong>El ruido es el enemigo nuevo:</strong> sin motor térmico, el ruido de rodadura domina. Los neumáticos especializados con tecnología foam reducen el ruido de cavidad entre 8-10 dB(A), una diferencia audible y significativa.</li>
-      <li><strong>Presión perfecta es crítica:</strong> 1 PSI de aire de menos cuesta 3-5 % de autonomía. Revisa mensualmente.</li>
+      <li><strong>Presión perfecta es crítica:</strong> cada PSI de menos añade ~0,5-1 % de resistencia a la rodadura. Pierde 3-5 PSI y ya hablamos de un 2-4 % de autonomía real. Revisa mensualmente.</li>
     </ul>
   </div>
 
@@ -84,13 +84,13 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <p>Aquí es donde muchos propietarios de EVs cometen el error más costoso: ignorar la resistencia a la rodadura. Un neumático mal elegido puede comerte <strong>5-15 % de autonomía</strong>. En una batería de 50 kWh, eso es 20-30 km cada ciclo. Al año, cientos de kilómetros de alcance perdido. <sup>[1]</sup></p>
 
-  <p>La resistencia a la rodadura se mide como <strong>Crr (coeficiente de resistencia a la rodadura)</strong>. Un neumático estándar tiene un Crr de ~0,012-0,016. Un neumático optimizado para EV reduce esto a 0,008-0,010. Parece una diferencia minúscula, pero la física es implacable: una vez que el coche está en movimiento, la resistencia a la rodadura es la fuerza que más energía consume a velocidad constante.</p>
+  <p>La resistencia a la rodadura se mide como <strong>Crr (coeficiente de resistencia a la rodadura)</strong>. Un neumático estándar tiene un Crr de ~0,012-0,016. Un neumático optimizado para EV reduce esto a 0,008-0,010. Parece una diferencia minúscula, pero la física es implacable: a velocidades urbanas (por debajo de ~70 km/h), la resistencia a la rodadura es la fuerza dominante en el consumo de energía. Por encima de esa velocidad la aerodinámica toma el protagonismo — pero la rodadura sigue siendo un factor constante que penaliza en todo el rango de uso.</p>
 
   <p>Michelin publicó datos sobre su e.Primacy — un neumático de baja resistencia para EVs con un Crr de <strong>6,46</strong> en unidades de la EU. Los tests de conducción real mostraron un incremento de autonomía de <strong>7 %</strong> en ciclos de ruta mixta frente a neumáticos estándar del mismo fabricante. <sup>[4]</sup> Continental reclama similares con su EcoContact 6, y Bridgestone con su Turanza Eco (que reduce la resistencia a la rodadura un 30 % frente a modelos previos). <sup>[1][7]</sup></p>
 
   <h3>La presión de aire, tu variable de control</h3>
 
-  <p>Aquí está el dato que cambiar: <strong>1 PSI de presión de aire que falta cuesta 3-5 % de autonomía</strong>. <sup>[8]</sup> Un Tesla de 50 kWh bien inflado (37 PSI) versus 36 PSI significa 15-25 km de diferencia por ciclo completo.</p>
+  <p>Aquí está el dato que cambiar: <strong>cada PSI de presión por debajo de la recomendada aumenta la resistencia a la rodadura ~0,5-1 %</strong>. <sup>[8]</sup> Parece poco, pero un neumático que pierda 3-5 PSI (algo habitual si no revisas en 3-4 meses) ya penaliza un 2-4 % de autonomía real.</p>
 
   <p>Un estudio de 2024 estimó que flota global de EVs con neumáticos sistemáticamente subinflados desperdicia alrededor de <strong>58 kWh al año</strong> en resistencia adicional — equivalente a perder la electricidad de ~15-20 ciclos de carga completa de una batería mediana. <sup>[9]</sup> Multiplicado por millones de vehículos, esto es derroche masivo de energía.</p>
 
@@ -133,15 +133,15 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <p>Aquí hay un detalle técnico que la mayoría de propietarios de EVs desconocen, pero que es crítico: <strong>el índice de carga de un neumático está calculado para coches más ligeros</strong>.</p>
 
-  <p>Los neumáticos tienen una clasificación de "índice de carga" — ese número en el lateral que dice cuánta masa puede soportar. Un neumático 225/50R17 con índice de carga SL (Standard Load, índice 97) soporta hasta 730 kg por neumático. El mismo tamaño con índice XL (Extra Load, índice 101-104) soporta 825-900 kg. La diferencia: <strong>~23 % de capacidad adicional</strong>. <sup>[2]</sup></p>
+  <p>Los neumáticos tienen una clasificación de "índice de carga" — ese número en el lateral que dice cuánta masa puede soportar. Un neumático 225/50R17 con índice de carga SL (Standard Load, índice 97) soporta hasta 730 kg por neumático. El mismo tamaño con índice XL (Extra Load, índice 101-104) soporta 825-900 kg. La diferencia: <strong>~13-23 % de capacidad adicional</strong> según el índice concreto (índice 101 = 13 %, 104 = 23 %). <sup>[2]</sup></p>
 
   <p>¿Por qué importa? Un Tesla Model 3 Long Range pesa ~1.600 kg. Dividido entre 4 neumáticos, son 400 kg por rueda en estático — más en curvas, frenado y aceleración, donde las fuerzas dinámicas elevan la carga puntual. Un neumático SL con índice 97 (730 kg nominales) tiene margen en estático, pero con las cargas dinámicas de un EV pesado con par instantáneo, ese margen se consume rápidamente, acelerando la degradación del caucho. El neumático vive en sobrecarga constante, lo que acelera la degradación del caucho y la pérdida de agarre. <sup>[10]</sup></p>
 
   <p>La solución es elegir <strong>XL o HL</strong> (Heavy Load, creado por Continental y adoptado en 2021 como estándar europeo para vehículos pesados). Tecnología:</p>
 
   <ul>
-    <li><strong>XL:</strong> +23 % carga frente a SL. Recomendado para la mayoría de EVs medianos (Model 3, ID.4, Ioniq).</li>
-    <li><strong>HL:</strong> +11 % más que XL, total +35 % frente a SL. Obligatorio para SUVs eléctricos pesados (Model X, EQE SUV, iX).</li>
+    <li><strong>XL:</strong> +13-23 % carga frente a SL (según índice). Recomendado para la mayoría de EVs medianos (Model 3, ID.4, Ioniq).</li>
+    <li><strong>HL:</strong> +10-11 % más que XL del mismo índice, total +25-35 % frente a SL. Obligatorio para SUVs eléctricos pesados (Model X, EQE SUV, iX).</li>
   </ul>
 
   <p>En Europa, desde 2021 la mayoría de fabricantes de coches eléctricos nuevos montan HL de fábrica. Si tu EV es anterior a 2021 o tiene llantas de sustitución SL, vas con margen de seguridad comprometido. Cambiarlas a XL o HL es inversión que se nota en durabilidad y agarre. <sup>[2]</sup></p>
@@ -161,41 +161,41 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     <div class="ev-row ev-header">
       <span>Modelo</span>
       <span>Características clave</span>
-      <span>Crr EV</span>
+      <span>Clase energética EU</span>
       <span>Recomendación</span>
     </div>
     <div class="ev-row ev-lfp">
       <span>Michelin e.Primacy</span>
       <span>Baja resistencia, silencioso, 7 % más autonomía</span>
-      <span>6,46 EU</span>
+      <span>A</span>
       <span>Mejor general ✓</span>
     </div>
     <div class="ev-row">
       <span>Continental EcoContact 6</span>
       <span>XL/HL opcionales, eficiencia comprobada en ID.4</span>
-      <span>7,1 EU</span>
+      <span>A</span>
       <span>VW EVs</span>
     </div>
     <div class="ev-row">
       <span>Bridgestone Turanza Eco</span>
       <span>30 % menos resistencia, durable en peso pesado</span>
-      <span>6,8 EU</span>
+      <span>A</span>
       <span>SUV pesados</span>
     </div>
     <div class="ev-row ev-lfp">
       <span>Hankook iON evo</span>
       <span>Silencio, HL estándar, desarrollado para Ioniq</span>
-      <span>6,9 EU</span>
+      <span>A</span>
       <span>Compactos ✓</span>
     </div>
     <div class="ev-row">
       <span>Goodyear ElectricDrive GT</span>
       <span>Tracción en seco/mojado optimizada, bajo desgaste</span>
-      <span>7,2 EU</span>
+      <span>B</span>
       <span>Rendimiento</span>
     </div>
   </div>
-  <p class="table-note">Crr = Coeficiente de resistencia a la rodadura, escala EU (más bajo = mejor). Datos: especificaciones del fabricante, 2024-2025.</p>
+  <p class="table-note">Clase energética EU según etiquetado EC 2020/740 (escala A-E, más bajo = menor resistencia a la rodadura). Datos: especificaciones del fabricante, 2024-2025.</p>
 
   <p><strong>Recomendaciones por vehículo:</strong></p>
 
@@ -213,7 +213,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <h2>07 — Invierno y todo-tiempo: qué opciones hay</h2>
 
-  <p>El invierno acelera el desgaste y reduce la autonomía de forma dramática en EVs. Los neumáticos de verano son ilegales en Europa central después de octubre, pero más importante: <strong>pierden un 20-30 % de autonomía adicional</strong> a temperaturas bajo cero. <sup>[11]</sup></p>
+  <p>El invierno acelera el desgaste y reduce la autonomía de forma dramática en EVs. Los neumáticos de verano son ilegales en Europa central después de octubre, pero más importante: un EV puede <strong>perder un 20-30 % de autonomía total en invierno</strong>, combinando el efecto de la batería fría (15-25 %) y la mayor resistencia de neumáticos de invierno (3-8 % adicional). <sup>[11]</sup></p>
 
   <h3>Opción 1: Neumáticos de invierno dedicados (mejor desempeño)</h3>
 

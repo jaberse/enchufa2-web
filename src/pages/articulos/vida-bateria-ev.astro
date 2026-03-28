@@ -79,7 +79,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <p>La clave está en el voltaje. Al 100 % de carga, una celda NMC alcanza <strong>4,20 V</strong> — un voltaje alto que desestabiliza el electrolito y acelera las reacciones parasíticas sobre el ánodo. Una celda LFP, en cambio, solo llega a <strong>3,65 V</strong>, y su curva de voltaje es casi plana en el 90 % del rango de uso. Menos voltaje = menos estrés = menos degradación.</p>
 
-  <p>La razón de fondo es la estructura cristalina del cátodo. El NMC tiene una estructura laminar propensa a microgrietas y oxidación del electrolito a voltaje alto. El LFP tiene una <strong>estructura olivina</strong> excepcionalmente estable — tanto que puede alcanzar entre 3.000 y 5.000 ciclos al 80 % de SOH, frente a los 1.000-1.500 del NMC. <sup>[13][14]</sup></p>
+  <p>La razón de fondo es la estructura cristalina del cátodo. El NMC tiene una estructura laminar propensa a microgrietas y oxidación del electrolito a voltaje alto. El LFP tiene una <strong>estructura olivina</strong> excepcionalmente estable — tanto que puede alcanzar entre 3.000 y 10.000 ciclos al 80 % de SOH (las celdas modernas de 2024-2026 superan las 6.000), frente a los 1.000-2.000 del NMC. <sup>[13][14]</sup></p>
 
   <div class="comparison-table">
     <div class="ct-row ct-header">
@@ -87,7 +87,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     </div>
     <div class="ct-row"><span>Voltaje máximo</span><span>4,20 V/celda</span><span>3,65 V/celda</span></div>
     <div class="ct-row"><span>Densidad energética</span><span>Alta (~200-280 Wh/kg)</span><span>Media (~150-190 Wh/kg)</span></div>
-    <div class="ct-row"><span>Ciclos al 80 % SoH</span><span>~1.000-1.500</span><span>~3.000-5.000</span></div>
+    <div class="ct-row"><span>Ciclos al 80 % SoH</span><span>~1.000-2.000</span><span>~3.000-10.000</span></div>
     <div class="ct-row"><span>Tolerancia al SOC alto</span><span>Baja — degrada rápido al 90-100 %</span><span>Alta — estable hasta el 100 %</span></div>
     <div class="ct-row"><span>Límite carga diaria</span><span><strong>80 %</strong></span><span><strong>100 %</strong> (recomendado)</span></div>
     <div class="ct-row"><span>Calibración BMS</span><span>No requiere carga completa frecuente</span><span>Necesita llegar al 100 % regularmente</span></div>
@@ -310,7 +310,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <p>CATL, el mayor fabricante de baterías del mundo, ha confirmado el despliegue comercial a gran escala de sus baterías de sodio (marca Naxtra) para el segundo trimestre de 2026. Los primeros modelos con esta tecnología serán colaboraciones con AION y Changan en China. Las cifras son prometedoras: hasta <strong>175 Wh/kg</strong> de densidad energética (comparable a las primeras LFP) y autonomías de ~500 km.</p>
 
-  <p>BYD, por su parte, tiene ya operativa una línea de producción de 30 GWh de baterías de sodio, con celdas que alcanzan <strong>hasta 10.000 ciclos</strong> — un dato que, si se confirma en uso real, supondría baterías que durarían más que el propio coche.</p>
+  <p>BYD, por su parte, tiene ya operativa una línea de producción de 30 GWh de baterías de sodio, con celdas que según el fabricante alcanzan <strong>hasta 10.000 ciclos</strong> — una cifra de marketing aún sin validación independiente. Si se confirma en uso real, supondría baterías que durarían más que el propio coche.</p>
 
   <p>La ventaja del sodio es económica y geopolítica: el sodio es mucho más abundante y barato que el litio, y no depende de cadenas de suministro concentradas en pocos países. Su primera aplicación será en vehículos urbanos y de gama baja, donde la densidad energética no es tan crítica como el precio.</p>
 
@@ -357,7 +357,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     <p>[5] Kucinskis, G. et al. (2022). "Arrhenius plots for Li-ion battery ageing." <em>J. Power Sources</em>, 549, 232129. DOI: 10.1016/j.jpowsour.2022.232129</p>
     <p>[6] Schmalstieg, J. et al. (2014). "A holistic aging model for Li(NiMnCo)O2 batteries." <em>J. Power Sources</em>, 257, 325-334. DOI: 10.1016/j.jpowsour.2014.02.012</p>
     <p>[7] Geotab (2026). "EV Battery Health: Key Findings from 22,700 Vehicle Data Analysis." Enero 2026. geotab.com/blog/ev-battery-health/</p>
-    <p>[8] ScienceDirect (2025). "Quantifying Degradation Cost of Frequent Fast Charging." <em>J. Power Sources</em>. DOI: 10.1016/j.jpowsour.2025.113886</p>
+    <p>[8] "Quantifying Degradation Cost of Frequent Fast Charging." <em>J. Power Sources</em> (2025). DOI: 10.1016/j.jpowsour.2025.113886 — <em>Nota: autores pendientes de verificar; DOI no confirmado.</em></p>
     <p>[9] Recharged (2025). "Hyundai Ioniq 5 Battery Degradation Guide." recharged.com/articles/hyundai-ioniq-5-battery-degradation</p>
     <p>[10] Yang, X.G. et al. (2018). "Fast charging of lithium-ion batteries at all temperatures." <em>PNAS</em>, 115(28), 7266-7271. DOI: 10.1073/pnas.1807115115</p>
     <p>[11] Birkl, C.R. et al. (2017). "Degradation diagnostics for lithium ion cells." <em>J. Power Sources</em>, 341, 373-386.</p>
