@@ -68,13 +68,49 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <p>Las cantidades varían según región e intención política. <sup>[4][5]</sup></p>
 
-  <div class="component-table">
-    <div class="comp-row"><span class="comp-name">Madrid</span><span class="comp-desc">€5.000 BEV, €2.500 PHEV — sin límite de precio en factura. Acceso prioritario a estacionamientos municipales.</span></div>
-    <div class="comp-row"><span class="comp-name">Cataluña</span><span class="comp-desc">€4.000 BEV, €2.000 PHEV — Hasta 50% de descuento en peajes (recargo autonómico) durante 5 años.</span></div>
-    <div class="comp-row"><span class="comp-name">País Vasco</span><span class="comp-desc">€3.500 BEV, €1.750 PHEV — Tasa de tráfico reducida al 0% para BEV, 1,4% para PHEV durante 5 años.</span></div>
-    <div class="comp-row"><span class="comp-name">Andalucía</span><span class="comp-desc">€3.000 BEV, €1.500 PHEV — Exención de pago de operación cambio de titularidad.</span></div>
-    <div class="comp-row"><span class="comp-name">Comunidad Valenciana</span><span class="comp-desc">€3.000 BEV, €1.500 PHEV — Matrícula temporal para pruebas sin coste (acceso para compradores en evaluación).</span></div>
-    <div class="comp-row"><span class="comp-name">Castilla y León, Murcia, Extremadura</span><span class="comp-desc">€1.500–2.000 BEV — Convocatorias mensuales o semestrales, presupuesto limitado.</span></div>
+  <div class="ev-table">
+    <div class="ev-row ev-header">
+      <span>Comunidad</span>
+      <span>Ayuda BEV</span>
+      <span>Ayuda PHEV</span>
+      <span>Ventaja adicional</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>Madrid</span>
+      <span class="badge-lfp">€5.000</span>
+      <span class="badge-nmc">€2.500</span>
+      <span>Acceso prioritario a estacionamientos municipales</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Cataluña</span>
+      <span class="badge-lfp">€4.000</span>
+      <span class="badge-nmc">€2.000</span>
+      <span>Hasta 50 % descuento en peajes durante 5 años</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>País Vasco</span>
+      <span class="badge-lfp">€3.500</span>
+      <span class="badge-nmc">€1.750</span>
+      <span>Tasa de tráfico 0 % BEV, 1,4 % PHEV durante 5 años</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Andalucía</span>
+      <span class="badge-lfp">€3.000</span>
+      <span class="badge-nmc">€1.500</span>
+      <span>Exención cambio de titularidad</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>C. Valenciana</span>
+      <span class="badge-lfp">€3.000</span>
+      <span class="badge-nmc">€1.500</span>
+      <span>Matrícula temporal de pruebas sin coste</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>CyL, Murcia, Extrem.</span>
+      <span class="badge-lfp">€1.500–2.000</span>
+      <span class="badge-nmc">—</span>
+      <span>Convocatorias semestrales, presupuesto limitado</span>
+    </div>
   </div>
 
   <p>La tramitación es autonómica: presentas solicitud online en la web de movilidad de tu comunidad, normalmente con factura de compra, DNI y certificado de empadronamiento. El plazo típico es 15-20 días hábiles desde que cierres la compra. Lo frecuente es que te avisen por correo electrónico con el número de operación, y el dinero llega a tu cuenta en 2-3 semanas. <sup>[4]</sup></p>
@@ -148,26 +184,98 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <h3>Primer año (costes en venta + primeros 12 meses)</h3>
 
-  <div class="component-table">
-    <div class="comp-row"><span class="comp-name">Plan Auto+</span><span class="comp-desc">€4.500 (aplicado en concesionario, sin papeleo)</span></div>
-    <div class="comp-row"><span class="comp-name">Ayuda Madrid</span><span class="comp-desc">€5.000 (tramitada en conselleria, 2-3 semanas)</span></div>
-    <div class="comp-row"><span class="comp-name">Matriculación (IEDMT)</span><span class="comp-desc">€6.600 (exención 100% BEV por ley estatal)</span></div>
-    <div class="comp-row"><span class="comp-name">IRPF 2026</span><span class="comp-desc">€680 (15% × €3.000 máximo, retención 22%)</span></div>
-    <div class="comp-row"><span class="comp-name">IVTM primer año</span><span class="comp-desc">€0 (exención 100% BEV)</span></div>
-    <div class="comp-row"><span class="comp-name">TOTAL AHORROS AÑO 1</span><span class="comp-desc" style="font-weight: bold;">€16.780</span></div>
+  <div class="ev-table">
+    <div class="ev-row ev-header">
+      <span>Concepto</span>
+      <span>Tipo</span>
+      <span>Ahorro</span>
+      <span>Detalle</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>Plan Auto+</span>
+      <span class="badge-lfp">Subvención</span>
+      <span>€4.500</span>
+      <span>Aplicado en concesionario, sin papeleo</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Ayuda Madrid</span>
+      <span class="badge-lfp">Subvención</span>
+      <span>€5.000</span>
+      <span>Tramitada en consellería, 2-3 semanas</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>Matriculación (IEDMT)</span>
+      <span class="badge-nmc">Exención</span>
+      <span>€6.600</span>
+      <span>Exención 100 % BEV por ley estatal</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>IRPF 2026</span>
+      <span class="badge-nmc">Deducción</span>
+      <span>€680</span>
+      <span>15 % × €3.000 máximo, retención 22 %</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>IVTM primer año</span>
+      <span class="badge-nmc">Exención</span>
+      <span>€0</span>
+      <span>Exención 100 % BEV</span>
+    </div>
+    <div class="ev-row ev-total">
+      <span>TOTAL AÑO 1</span>
+      <span></span>
+      <span class="badge-lfp">€16.780</span>
+      <span></span>
+    </div>
   </div>
 
   <p>Si además instalas wallbox (€1.500 incluida mano de obra), añade €225 deducción IRPF 2026 = €43 en tu liquidación. Total realista primer año: <strong>€16.800–17.000</strong>.</p>
 
   <h3>Años 2-10 (costes recurrentes)</h3>
 
-  <div class="component-table">
-    <div class="comp-row"><span class="comp-name">IVTM anual</span><span class="comp-desc">€0 (exención 100%)</span></div>
-    <div class="comp-row"><span class="comp-name">Parking CERO (2h diarios gratis)</span><span class="comp-desc">~€400/año (a precio de tarifa municipal €8–12/h)</span></div>
-    <div class="comp-row"><span class="comp-name">Peajes (sin recargo autonómico)</span><span class="comp-desc">~€80/año (estimado 30 salidas/año × €3 media)</span></div>
-    <div class="comp-row"><span class="comp-name">Acceso a ZBE sin restricciones</span><span class="comp-desc">No monetizable si vives fuera, €600/año si trabajas en centro diariamente</span></div>
-    <div class="comp-row"><span class="comp-name">Electricidad vs. gasolina (18.000 km/año)</span><span class="comp-desc">~€900/año de ahorro (€0,18/km eléctrico vs €0,27/km gasolina)</span></div>
-    <div class="comp-row"><span class="comp-name">TOTAL AHORROS AÑOS 2-10</span><span class="comp-desc" style="font-weight: bold;">€1.980/año (con ZBE diaria; sin ZBE: €1.380/año)</span></div>
+  <div class="ev-table">
+    <div class="ev-row ev-header">
+      <span>Concepto</span>
+      <span>Tipo</span>
+      <span>Ahorro/año</span>
+      <span>Detalle</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>IVTM anual</span>
+      <span class="badge-nmc">Exención</span>
+      <span>€0</span>
+      <span>Exención 100 %</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Parking CERO</span>
+      <span class="badge-nmc">Beneficio</span>
+      <span>~€400</span>
+      <span>Tarifa municipal €8–12/h</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>Peajes</span>
+      <span class="badge-nmc">Beneficio</span>
+      <span>~€80</span>
+      <span>Est. 30 salidas/año × €3 media</span>
+    </div>
+    <div class="ev-row ev-nmc">
+      <span>Acceso a ZBE</span>
+      <span class="badge-lfp">Acceso</span>
+      <span>€600</span>
+      <span>Si trabajas en centro diariamente</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>Electricidad vs. gasolina</span>
+      <span class="badge-lfp">Ahorro</span>
+      <span>~€900</span>
+      <span>€0,18/km eléctrico vs €0,27/km gasolina</span>
+    </div>
+    <div class="ev-row ev-total">
+      <span>TOTAL AÑOS 2-10</span>
+      <span></span>
+      <span class="badge-lfp">€1.980/año</span>
+      <span>Con ZBE diaria · Sin ZBE: €1.380/año</span>
+    </div>
   </div>
 
   <p>Con análisis a 10 años (típica vida de pago del coche), los ahorros acumulados son: €17.000 (año 1) + €1.980 × 9 años = <strong>€34.820 sobre el total de vida útil</strong>. En un coche de €30.000, eso representa un 116% de ahorro — es decir, el coche se paga parcialmente a sí mismo solo en fiscalidad y beneficios permanentes.</p>
@@ -305,24 +413,70 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     .article-stats { grid-template-columns: 1fr; }
   }
 
-  /* ─── Component table ─── */
-  .component-table {
-    background: var(--gray-100);
-    padding: 1rem 1.5rem;
-    margin-block: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  /* ─── EV table (gold standard) ─── */
+  .ev-table {
+    margin-block: 1.75rem;
+    border: 1px solid var(--gray-100);
+    font-size: 0.8125rem;
+    width: 100%;
+    overflow-x: auto;
   }
-  .comp-row {
+  .ev-row {
     display: grid;
-    grid-template-columns: 5rem 1fr;
-    gap: 1rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
+    grid-template-columns: 160px 90px 100px 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--gray-100);
+    align-items: center;
   }
-  .comp-name { font-weight: 400; color: var(--black); }
-  .comp-desc { color: var(--gray-600); }
+  .ev-row:last-child { border-bottom: none; }
+  .ev-row > span {
+    padding: 0.6rem 0.75rem;
+    line-height: 1.4;
+    color: var(--gray-600);
+  }
+  .ev-header {
+    background: var(--black);
+  }
+  .ev-header > span {
+    color: rgba(250,250,248,0.5);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .ev-lfp > span:first-child { color: var(--black); font-weight: 500; }
+  .ev-nmc > span:first-child { color: var(--black); font-weight: 400; }
+  .ev-total {
+    background: var(--black);
+  }
+  .ev-total > span {
+    color: #FAFAF8;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+  .badge-lfp {
+    background: var(--yellow);
+    color: var(--black);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    letter-spacing: 0.05em;
+    display: inline-block;
+  }
+  .badge-nmc {
+    background: var(--gray-100);
+    color: var(--gray-600);
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 0.15rem 0.5rem;
+    letter-spacing: 0.05em;
+    display: inline-block;
+  }
+  @media (max-width: 680px) {
+    .ev-row { grid-template-columns: 1fr 1fr; }
+    .ev-row > span:nth-child(2) { display: none; }
+    .ev-row > span:nth-child(4) { display: none; }
+  }
 
   /* ─── Blockquote ─── */
   blockquote {
