@@ -21,7 +21,7 @@ const articles = [
     date: 'Marzo 2026',
     readingTime: '10 min de lectura',
     image: '/articulos/subvenciones-ayudas-ev-2026/hero.webp',
-    alt: 'Tres vehículos eléctricos nuevos estacionados — foto Unsplash',
+    alt: 'Calculadora y documentos financieros sobre un escritorio — foto Unsplash',
   },
   {
     slug: 'neumaticos-coche-electrico',
@@ -104,22 +104,24 @@ const older = articles.slice(4);
   <Search />
   <main>
 
-    <!-- ═══ HERO: Último artículo publicado (overlay) ═══ -->
-    <section class="hero-overlay">
-      <a href={`/articulos/${latest.slug}`} class="hero-image-link">
-        <img src={latest.image} alt={latest.alt} loading="eager" />
-      </a>
-      <div class="hero-overlay-content">
-        <div class="hero-label">
-          <span class="hero-label-line" aria-hidden="true"></span>
-          Último artículo
+    <!-- ═══ HERO: Último artículo publicado (overlay, contained) ═══ -->
+    <div class="hero-wrapper">
+      <section class="hero-overlay">
+        <a href={`/articulos/${latest.slug}`} class="hero-image-link">
+          <img src={latest.image} alt={latest.alt} loading="eager" />
+        </a>
+        <div class="hero-overlay-content">
+          <div class="hero-label">
+            <span class="hero-label-line" aria-hidden="true"></span>
+            Último artículo
+          </div>
+          <h1><a href={`/articulos/${latest.slug}`}>{latest.title}</a></h1>
+          <p class="hero-desc">{latest.description}</p>
+          <div class="hero-meta">{latest.category} · {latest.date} · {latest.readingTime}</div>
+          <a href={`/articulos/${latest.slug}`} class="hero-cta">Leer artículo &rarr;</a>
         </div>
-        <h1><a href={`/articulos/${latest.slug}`}>{latest.title}</a></h1>
-        <p class="hero-desc">{latest.description}</p>
-        <div class="hero-meta">{latest.category} · {latest.date} · {latest.readingTime}</div>
-        <a href={`/articulos/${latest.slug}`} class="hero-cta">Leer artículo &rarr;</a>
-      </div>
-    </section>
+      </section>
+    </div>
 
     <!-- ═══ ARTÍCULOS ANTERIORES (con imagen) ═══ -->
     <section class="prev-section">
@@ -222,12 +224,20 @@ const older = articles.slice(4);
 </Layout>
 
 <style>
-  /* ═══ HERO — Overlay (text on image) ═══ */
+  /* ═══ HERO — Overlay (text on image, contained) ═══ */
+  .hero-wrapper {
+    background: var(--black);
+    padding: clamp(1rem, 2vw, 2rem) clamp(1rem, 3vw, 2.5rem) clamp(1.5rem, 2.5vw, 2.5rem);
+  }
+
   .hero-overlay {
     position: relative;
     width: 100%;
-    height: clamp(420px, 55vh, 620px);
+    max-width: 1400px;
+    margin: 0 auto;
+    height: clamp(380px, 48vh, 540px);
     overflow: hidden;
+    border-radius: 10px;
   }
 
   .hero-image-link {
@@ -592,7 +602,8 @@ const older = articles.slice(4);
 
   /* ═══ RESPONSIVE ═══ */
   @media (max-width: 860px) {
-    .hero-overlay { height: auto; min-height: 480px; }
+    .hero-wrapper { padding: 0.75rem; }
+    .hero-overlay { height: auto; min-height: 420px; border-radius: 8px; }
     .hero-overlay::after {
       background: linear-gradient(
         0deg,
