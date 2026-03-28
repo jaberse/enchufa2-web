@@ -104,12 +104,12 @@ const older = articles.slice(4);
   <Search />
   <main>
 
-    <!-- ═══ HERO: Último artículo publicado ═══ -->
-    <section class="hero-latest">
-      <a href={`/articulos/${latest.slug}`} class="hero-image">
+    <!-- ═══ HERO: Último artículo publicado (overlay) ═══ -->
+    <section class="hero-overlay">
+      <a href={`/articulos/${latest.slug}`} class="hero-image-link">
         <img src={latest.image} alt={latest.alt} loading="eager" />
       </a>
-      <div class="hero-content">
+      <div class="hero-overlay-content">
         <div class="hero-label">
           <span class="hero-label-line" aria-hidden="true"></span>
           Último artículo
@@ -222,34 +222,57 @@ const older = articles.slice(4);
 </Layout>
 
 <style>
-  /* ═══ HERO — Latest Article ═══ */
-  .hero-latest {
-    display: grid;
-    grid-template-columns: 1.3fr 1fr;
-    background: var(--black);
+  /* ═══ HERO — Overlay (text on image) ═══ */
+  .hero-overlay {
+    position: relative;
+    width: 100%;
+    height: clamp(420px, 55vh, 620px);
+    overflow: hidden;
   }
 
-  .hero-image {
+  .hero-image-link {
     display: block;
-    overflow: hidden;
-    aspect-ratio: 16 / 10;
+    width: 100%;
+    height: 100%;
   }
-  .hero-image img {
+  .hero-image-link img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: transform 6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
-  .hero-image:hover img {
-    transform: scale(1.03);
+  .hero-overlay:hover .hero-image-link img {
+    transform: scale(1.04);
   }
 
-  .hero-content {
-    padding: 3rem 3rem 3rem 2.5rem;
+  /* Dark gradient: transparent left → dark right for text readability */
+  .hero-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(17,17,17,0.15) 0%,
+      rgba(17,17,17,0.5) 40%,
+      rgba(17,17,17,0.88) 70%,
+      rgba(17,17,17,0.95) 100%
+    );
+    pointer-events: none;
+  }
+
+  .hero-overlay-content {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    max-width: 600px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    padding: 3rem clamp(2rem, 5vw, 4rem) 3rem 2rem;
+    z-index: 2;
     color: var(--white);
   }
 
@@ -271,27 +294,27 @@ const older = articles.slice(4);
     background: var(--yellow);
   }
 
-  .hero-content h1 {
+  .hero-overlay-content h1 {
     font-family: var(--font-sans);
     font-weight: 200;
-    font-size: clamp(1.5rem, 3vw, 2.5rem);
-    line-height: 1.12;
+    font-size: clamp(1.6rem, 3.2vw, 2.8rem);
+    line-height: 1.1;
     letter-spacing: -0.03em;
     margin-bottom: 1rem;
-    max-width: 18ch;
   }
-  .hero-content h1 a {
+  .hero-overlay-content h1 a {
     color: inherit;
     transition: opacity 0.2s;
   }
-  .hero-content h1 a:hover { opacity: 0.8; }
+  .hero-overlay-content h1 a:hover { opacity: 0.85; }
 
   .hero-desc {
-    font-size: clamp(0.88rem, 1.3vw, 0.95rem);
-    color: rgba(250, 250, 248, 0.5);
+    font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+    color: rgba(250, 250, 248, 0.55);
     line-height: 1.7;
     font-weight: 300;
     margin-bottom: 1.25rem;
+    max-width: 38ch;
   }
 
   .hero-meta {
@@ -569,8 +592,22 @@ const older = articles.slice(4);
 
   /* ═══ RESPONSIVE ═══ */
   @media (max-width: 860px) {
-    .hero-latest { grid-template-columns: 1fr; }
-    .hero-image { aspect-ratio: 16 / 9; }
+    .hero-overlay { height: auto; min-height: 480px; }
+    .hero-overlay::after {
+      background: linear-gradient(
+        0deg,
+        rgba(17,17,17,0.95) 0%,
+        rgba(17,17,17,0.8) 50%,
+        rgba(17,17,17,0.2) 100%
+      );
+    }
+    .hero-overlay-content {
+      width: 100%;
+      max-width: none;
+      top: auto;
+      bottom: 0;
+      padding: 2rem 1.5rem;
+    }
     .prev-grid { grid-template-columns: 1fr; }
     .older-grid { grid-template-columns: repeat(2, 1fr); }
   }

@@ -185,9 +185,9 @@
   }
   .nl-btn:hover { filter: brightness(1.05); }
 
-  /* ─── Category nav ─── */
+  /* ─── Category nav (yellow bar) ─── */
   .cat-nav {
-    border-top: 1px solid rgba(255,255,255,0.06);
+    background: var(--yellow);
     overflow-x: auto;
     scrollbar-width: none;
   }
@@ -199,19 +199,22 @@
   }
 
   .cat-nav a {
-    padding: 0.75rem 1.25rem;
-    font-size: 0.72rem;
+    padding: 0.55rem 1.3rem;
+    font-size: 0.65rem;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--gray-400);
+    color: var(--black);
     white-space: nowrap;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
+    transition: background 0.25s ease, color 0.25s ease;
   }
-  .cat-nav a:hover { color: var(--white); }
-  .cat-nav a.active {
+  .cat-nav a:hover {
+    background: var(--black);
     color: var(--yellow);
-    border-bottom-color: var(--yellow);
+  }
+  .cat-nav a.active {
+    background: var(--black);
+    color: var(--yellow);
   }
 
   /* ─── Mobile ─── */
