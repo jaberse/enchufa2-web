@@ -159,11 +159,14 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     box-shadow: 0 8px 32px rgba(0,0,0,0.1);
   }
   .article-body :global(.stat-value) {
-    font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+    font-size: clamp(1.25rem, 3vw, 2.25rem);
     font-weight: 200;
     letter-spacing: -0.03em;
     color: var(--black);
     margin-bottom: 0.25rem;
+    word-break: break-word;
+    hyphens: none;
+    overflow-wrap: anywhere;
   }
   .article-body :global(.stat-label) {
     font-size: 0.78rem;

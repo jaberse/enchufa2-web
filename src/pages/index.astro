@@ -33,6 +33,7 @@ import '../styles/global.css';
               <span class="dot"></span>
               <span>14 min de lectura</span>
             </div>
+            <a href="/articulos/vida-bateria-ev" class="featured-cta">Leer artículo &rarr;</a>
           </div>
         </article>
 
@@ -116,7 +117,7 @@ import '../styles/global.css';
       <div class="brand-inner">
         <h2>Ayudamos a entender los coches eléctricos <em>con rigor y sin rodeos</em></h2>
         <p>enchufa2 es una publicación independiente para personas que quieren tomar decisiones informadas sobre movilidad eléctrica. Sin clickbait, sin publicidad encubierta.</p>
-        <a href="#" class="brand-link">Conoce el proyecto &rarr;</a>
+        <a href="#newsletter" class="brand-link">Suscríbete a la newsletter &rarr;</a>
       </div>
     </section>
 
@@ -203,6 +204,27 @@ import '../styles/global.css';
     gap: 0.75rem;
     align-items: center;
   }
+  .featured-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--black);
+    padding: 0.6rem 1.25rem;
+    background: var(--yellow);
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  .featured-cta:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245,197,24,0.3);
+  }
+
   .dot {
     width: 3px;
     height: 3px;
