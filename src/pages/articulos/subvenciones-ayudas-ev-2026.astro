@@ -125,15 +125,37 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <p>A partir de enero de 2026, la DGT endureció los criterios: <strong>BEV sigue siendo BEV</strong>, los PHEV necesitan al menos <strong>40 km de autonomía eléctrica</strong> para obtener etiqueta CERO. Esto mantiene la mayoría de PHEV post-2020 dentro de CERO. (Nota: el requisito de ≥90 km fue una propuesta DGT para cambios del etiquetado CERO que no fue implementada; el criterio de subvención Plan Auto+ para PHEV está pendiente de verificación oficial). <sup>[6]</sup></p>
 
-  <div class="comparison-table">
-    <div class="ct-row ct-header">
-      <span></span><span class="ct-nmc">Ciudad</span><span class="ct-lfp">Beneficio anual estimado</span>
+  <div class="ev-table">
+    <div class="ev-row ev-header" style="grid-template-columns: 120px 1fr 140px;">
+      <span>Ciudad</span>
+      <span>Beneficio etiqueta CERO</span>
+      <span>Ahorro anual est.</span>
     </div>
-    <div class="ct-row"><span>Madrid</span><span>ZBE 24/7 + parking gratuito ilimitado en zona SER</span><span>€2.400</span></div>
-    <div class="ct-row"><span>Barcelona</span><span>ZBE 24/7 + 75% descuento parking municipal</span><span>€1.800</span></div>
-    <div class="ct-row"><span>Valencia</span><span>ZBE 24/7 + parking ilimitado gratis municipal</span><span>€1.500</span></div>
-    <div class="ct-row"><span>Bilbao</span><span>ZBE horaria + parking CERO descuento 80%</span><span>€1.200</span></div>
-    <div class="ct-row"><span>Sevilla</span><span>ZBE 24/7 pero parking sin descuentos específicos</span><span>€600</span></div>
+    <div class="ev-row ev-lfp" style="grid-template-columns: 120px 1fr 140px;">
+      <span>Madrid</span>
+      <span>ZBE 24/7 + parking gratuito ilimitado en zona SER</span>
+      <span class="badge-lfp">€2.400</span>
+    </div>
+    <div class="ev-row ev-nmc" style="grid-template-columns: 120px 1fr 140px;">
+      <span>Barcelona</span>
+      <span>ZBE 24/7 + 75 % descuento parking municipal</span>
+      <span class="badge-lfp">€1.800</span>
+    </div>
+    <div class="ev-row ev-lfp" style="grid-template-columns: 120px 1fr 140px;">
+      <span>Valencia</span>
+      <span>ZBE 24/7 + parking ilimitado gratis municipal</span>
+      <span class="badge-lfp">€1.500</span>
+    </div>
+    <div class="ev-row ev-nmc" style="grid-template-columns: 120px 1fr 140px;">
+      <span>Bilbao</span>
+      <span>ZBE horaria + parking CERO descuento 80 %</span>
+      <span class="badge-nmc">€1.200</span>
+    </div>
+    <div class="ev-row ev-lfp" style="grid-template-columns: 120px 1fr 140px;">
+      <span>Sevilla</span>
+      <span>ZBE 24/7 pero parking sin descuentos específicos</span>
+      <span class="badge-nmc">€600</span>
+    </div>
   </div>
 
   <p>El verdadero ahorro viene del acceso a ZBE sin restricciones. Las zonas de bajas emisiones en España se están ampliando — Madrid, Barcelona, Valencia y Bilbao ya tienen restricciones que excluyen coches de combustión en horas punta. Un BEV o un PHEV con etiqueta CERO (≥40 km eléctricos según DGT) entra libremente. Para alguien que entra diariamente al centro de Madrid por trabajo, eso son 250+ días/año de acceso sin preocupación.</p>
@@ -492,42 +514,6 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
   blockquote small {
     color: var(--gray-400);
     font-size: 0.8rem;
-  }
-
-  /* ─── Comparison table ─── */
-  .comparison-table {
-    margin-block: 2rem;
-    border: 1px solid var(--gray-100);
-    font-size: 0.875rem;
-  }
-  .ct-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0;
-    border-bottom: 1px solid var(--gray-100);
-  }
-  .ct-row:last-child { border-bottom: none; }
-  .ct-row > span {
-    padding: 0.75rem 1rem;
-    color: var(--gray-600);
-    border-right: 1px solid var(--gray-100);
-    line-height: 1.4;
-  }
-  .ct-row > span:last-child { border-right: none; }
-  .ct-header { background: var(--black); }
-  .ct-header > span {
-    color: rgba(250,250,248,0.4);
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-  .ct-nmc { color: rgba(250,250,248,0.9) !important; }
-  .ct-lfp { color: var(--yellow) !important; }
-  .ct-row > span:first-child { color: var(--black); font-weight: 400; }
-  @media (max-width: 580px) {
-    .ct-row { grid-template-columns: 1fr; }
-    .ct-row > span { border-right: none; }
-    .ct-header > span:first-child { display: none; }
   }
 
   /* ─── TLDR ─── */

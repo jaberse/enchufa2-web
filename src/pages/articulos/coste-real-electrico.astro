@@ -143,7 +143,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <div class="comparison-table">
     <div class="ct-row ct-header">
-      <span></span><span class="ct-nmc">EV<br/><small>por año</small></span><span class="ct-lfp">Gasolina<br/><small>por año</small></span>
+      <span></span><span class="ct-col-a">EV<br/><small>por año</small></span><span class="ct-col-b">Gasolina<br/><small>por año</small></span>
     </div>
     <div class="ct-row"><span>Revisiones/diagnóstico</span><span>€100-150</span><span>€200-300</span></div>
     <div class="ct-row"><span>Neumáticos (desgaste)</span><span>€300-400</span><span>€300-400</span></div>
@@ -248,7 +248,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <div class="comparison-table">
     <div class="ct-row ct-header">
-      <span>Concepto</span><span class="ct-nmc">Tesla Model 3 SR (LFP)<br/><small>€38.990</small></span><span class="ct-lfp">BMW 320i xDrive<br/><small>€42.500</small></span>
+      <span>Concepto</span><span class="ct-col-a">Tesla Model 3 SR (LFP)<br/><small>€38.990</small></span><span class="ct-col-b">BMW 320i xDrive<br/><small>€42.500</small></span>
     </div>
     <div class="ct-row"><span><strong>1. Precio compra</strong></span><span>€38.990</span><span>€42.500</span></div>
     <div class="ct-row"><span>2. Matriculación (neto después descuentos)</span><span>€0</span><span>€4.500</span></div>
@@ -269,7 +269,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <div class="comparison-table">
     <div class="ct-row ct-header">
-      <span>Concepto</span><span class="ct-nmc">MG4 Standard (LFP)<br/><small>€22.990</small></span><span class="ct-lfp">VW Golf 1.5 TSI<br/><small>€24.500</small></span>
+      <span>Concepto</span><span class="ct-col-a">MG4 Standard (LFP)<br/><small>€22.990</small></span><span class="ct-col-b">VW Golf 1.5 TSI<br/><small>€24.500</small></span>
     </div>
     <div class="ct-row"><span><strong>1. Precio compra</strong></span><span>€22.990</span><span>€24.500</span></div>
     <div class="ct-row"><span>2. Matriculación (neto)</span><span>€0</span><span>€2.800</span></div>
@@ -471,8 +471,8 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     letter-spacing: 0.05em;
     text-transform: uppercase;
   }
-  .ct-nmc { color: rgba(250,250,248,0.9) !important; }
-  .ct-lfp { color: var(--yellow) !important; }
+  .ct-col-a { color: rgba(250,250,248,0.9) !important; }
+  .ct-col-b { color: var(--yellow) !important; }
   .ct-row > span:first-child { color: var(--black); font-weight: 400; }
   @media (max-width: 580px) {
     .ct-row { grid-template-columns: 1fr; }
