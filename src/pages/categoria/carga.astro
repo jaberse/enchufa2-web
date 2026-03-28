@@ -1,0 +1,29 @@
+---
+import CategoryLayout from '../../layouts/CategoryLayout.astro';
+
+const articles = [
+  {
+    slug: 'carga-rapida-espana',
+    title: 'Carga rápida en España: la guía técnica definitiva',
+    description: 'Redes, precios, compatibilidad y estrategia de carga. Todo lo que necesitas saber para cargar rápido sin arruinarte ni dañar tu batería.',
+    readingTime: '12 min de lectura',
+    publishDate: 'Marzo 2026',
+    category: 'Carga',
+  },
+  {
+    slug: 'tarifas-carga-casa',
+    title: 'Cuánto cuesta cargar un coche eléctrico en casa en 2026',
+    description: 'Tarifas eléctricas, franjas horarias, wallbox y paneles solares. La comparativa real de lo que pagas por kilómetro.',
+    readingTime: '11 min de lectura',
+    publishDate: 'Marzo 2026',
+    category: 'Carga',
+  },
+];
+---
+
+<CategoryLayout
+  name="Carga"
+  description="Carga rápida, carga en casa, tarifas eléctricas y todo lo que necesitas saber para mantener tu EV con energía."
+  icon="&#128268;"
+  articles={articles}
+/>

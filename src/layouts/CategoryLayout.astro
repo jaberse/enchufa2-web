@@ -1,0 +1,306 @@
+---
+import Layout from './Layout.astro';
+import Header from '../components/Header.astro';
+import Search from '../components/Search.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Article {
+  slug: string;
+  title: string;
+  description: string;
+  readingTime: string;
+  publishDate: string;
+  category: string;
+}
+
+interface Props {
+  name: string;
+  description: string;
+  icon: string;
+  articles: Article[];
+}
+
+const { name, description, icon, articles } = Astro.props;
+const hasArticles = articles.length > 0;
+---
+
+<Layout title={`${name} — enchufa2`} description={description}>
+  <Header />
+  <Search />
+
+  <main>
+    <!-- Category hero -->
+    <section class="cat-hero">
+      <div class="cat-hero-inner hub-width">
+        <div class="cat-hero-icon">{icon}</div>
+        <h1 class="cat-hero-title">{name}</h1>
+        <p class="cat-hero-desc">{description}</p>
+        <div class="cat-hero-count">
+          {hasArticles
+            ? `${articles.length} ${articles.length === 1 ? 'artículo' : 'artículos'}`
+            : 'Próximamente'}
+        </div>
+      </div>
+    </section>
+
+    <!-- Articles grid -->
+    <section class="cat-articles">
+      <div class="hub-width">
+        {hasArticles ? (
+          <div class="articles-grid">
+            {articles.map((article) => (
+              <a href={`/articulos/${article.slug}`} class="article-card">
+                <div class="ac-category">{article.category}</div>
+                <h2 class="ac-title">{article.title}</h2>
+                <p class="ac-excerpt">{article.description}</p>
+                <div class="ac-meta">
+                  <span>{article.publishDate}</span>
+                  <span class="ac-dot"></span>
+                  <span>{article.readingTime}</span>
+                </div>
+                <div class="ac-read">Leer artículo &rarr;</div>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div class="cat-empty">
+            <div class="cat-empty-icon">&#128221;</div>
+            <h2>Estamos trabajando en ello</h2>
+            <p>Pronto publicaremos guías técnicas sobre <strong>{name.toLowerCase()}</strong>. Suscríbete para no perdértelas.</p>
+            <a href="/#newsletter" class="cat-empty-cta">Avísame cuando publiquéis &rarr;</a>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Back to home -->
+    <div class="cat-back hub-width">
+      <a href="/" class="back-link t-small">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Volver al inicio
+      </a>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  /* ─── Hero ─── */
+  .cat-hero {
+    background: var(--black);
+    color: var(--white);
+    padding-top: calc(4.5rem + clamp(2rem, 4vw, 3rem));
+    padding-bottom: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .cat-hero-inner {
+    max-width: 700px;
+  }
+
+  .cat-hero-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .cat-hero-title {
+    font-family: var(--font-sans);
+    font-weight: 200;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+    margin-bottom: 0.75rem;
+  }
+
+  .cat-hero-desc {
+    font-size: clamp(0.95rem, 1.5vw, 1.0625rem);
+    color: rgba(250, 250, 248, 0.5);
+    line-height: 1.7;
+    font-weight: 300;
+    max-width: 540px;
+  }
+
+  .cat-hero-count {
+    margin-top: 1.25rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--yellow);
+    font-weight: 500;
+  }
+
+  /* ─── Articles grid ─── */
+  .cat-articles {
+    padding: clamp(2.5rem, 5vw, 4rem) 0;
+  }
+
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .article-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 2rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border-bottom: 3px solid var(--gray-200);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .article-card:hover {
+    border-bottom-color: var(--yellow);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  }
+
+  .ac-category {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    color: #8a6d00;
+    background: var(--yellow-glow);
+    display: inline-block;
+    padding: 0.25em 0.6em;
+    border-radius: 3px;
+    width: fit-content;
+  }
+
+  .ac-title {
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    color: var(--black);
+  }
+
+  .ac-excerpt {
+    font-size: 0.88rem;
+    color: var(--gray-500);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .ac-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.7rem;
+    color: var(--gray-400);
+    margin-top: 0.25rem;
+  }
+
+  .ac-dot {
+    width: 3px;
+    height: 3px;
+    background: var(--gray-300);
+    border-radius: 50%;
+  }
+
+  .ac-read {
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--black);
+    margin-top: auto;
+    padding-top: 0.75rem;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all 0.25s;
+  }
+
+  .article-card:hover .ac-read {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* ─── Empty state ─── */
+  .cat-empty {
+    text-align: center;
+    padding: clamp(3rem, 6vw, 5rem) 1rem;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .cat-empty-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .cat-empty h2 {
+    font-size: 1.3rem;
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+  }
+
+  .cat-empty p {
+    font-size: 0.9rem;
+    color: var(--gray-500);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .cat-empty-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--black);
+    padding-bottom: 0.2rem;
+    border-bottom: 1.5px solid var(--yellow);
+    transition: all 0.2s;
+  }
+
+  .cat-empty-cta:hover {
+    color: var(--yellow);
+  }
+
+  /* ─── Back ─── */
+  .cat-back {
+    padding-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gray-400);
+    transition: color 0.2s ease;
+  }
+
+  .back-link:hover {
+    color: var(--black);
+  }
+
+  .back-link svg {
+    transition: transform 0.25s var(--ease-out-expo);
+  }
+
+  .back-link:hover svg {
+    transform: translateX(-3px);
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 640px) {
+    .articles-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cat-hero-title {
+      font-size: 1.75rem;
+    }
+  }
+</style>

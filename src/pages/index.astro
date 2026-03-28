@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
+import Search from '../components/Search.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 ---
@@ -10,6 +11,7 @@ import '../styles/global.css';
   description="La referencia técnica en español sobre movilidad eléctrica. Guías basadas en datos y estudios científicos para propietarios de coches eléctricos."
 >
   <Header />
+  <Search />
   <main>
 
     <!-- ═══ FEATURED + SIDEBAR ═══ -->
@@ -66,40 +68,40 @@ import '../styles/global.css';
       <div class="hub-width">
         <div class="cat-header">
           <h2>Explora por tema</h2>
-          <a href="#">Ver todos &rarr;</a>
+          <a href="/categoria/tecnologia">Ver todos &rarr;</a>
         </div>
         <div class="cat-grid">
-          <a href="#" class="cat-card">
+          <a href="/categoria/antes-de-comprar" class="cat-card">
             <div class="cat-icon">&#128269;</div>
             <h3>Antes de comprar</h3>
             <div class="cat-count">Próximamente</div>
             <div class="cat-arrow">&rarr;</div>
           </a>
-          <a href="/articulos/vida-bateria-ev" class="cat-card">
+          <a href="/categoria/tecnologia" class="cat-card">
             <div class="cat-icon">&#9889;</div>
             <h3>Tecnología</h3>
             <div class="cat-count">1 artículo</div>
             <div class="cat-arrow">&rarr;</div>
           </a>
-          <a href="/articulos/carga-rapida-espana" class="cat-card">
+          <a href="/categoria/carga" class="cat-card">
             <div class="cat-icon">&#128268;</div>
             <h3>Carga</h3>
             <div class="cat-count">2 artículos</div>
             <div class="cat-arrow">&rarr;</div>
           </a>
-          <a href="/articulos/coste-real-electrico" class="cat-card">
+          <a href="/categoria/costes-y-ahorro" class="cat-card">
             <div class="cat-icon">&#128176;</div>
             <h3>Costes y Ahorro</h3>
             <div class="cat-count">2 artículos</div>
             <div class="cat-arrow">&rarr;</div>
           </a>
-          <a href="/articulos/mantenimiento-ev-vs-combustion" class="cat-card">
+          <a href="/categoria/mantenimiento" class="cat-card">
             <div class="cat-icon">&#128295;</div>
             <h3>Mantenimiento</h3>
             <div class="cat-count">2 artículos</div>
             <div class="cat-arrow">&rarr;</div>
           </a>
-          <a href="#" class="cat-card">
+          <a href="/categoria/en-ruta" class="cat-card">
             <div class="cat-icon">&#128663;</div>
             <h3>En ruta</h3>
             <div class="cat-count">Próximamente</div>

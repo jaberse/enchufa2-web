@@ -1,0 +1,21 @@
+---
+import CategoryLayout from '../../layouts/CategoryLayout.astro';
+
+const articles = [
+  {
+    slug: 'vida-bateria-ev',
+    title: 'La guía para cargar la batería de tu eléctrico sin acortarle la vida',
+    description: 'NMC vs LFP, temperatura, carga rápida y datos reales de degradación. Todo lo que necesitas saber para que tu batería dure más.',
+    readingTime: '14 min de lectura',
+    publishDate: 'Marzo 2026',
+    category: 'Tecnología',
+  },
+];
+---
+
+<CategoryLayout
+  name="Tecnología"
+  description="Baterías, motores, frenado regenerativo y la ingeniería detrás de tu coche eléctrico. Explicado con datos, no con hype."
+  icon="&#9889;"
+  articles={articles}
+/>

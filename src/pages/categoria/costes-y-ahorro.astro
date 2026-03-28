@@ -1,0 +1,29 @@
+---
+import CategoryLayout from '../../layouts/CategoryLayout.astro';
+
+const articles = [
+  {
+    slug: 'coste-real-electrico',
+    title: 'Cuánto cuesta realmente tener un eléctrico en España',
+    description: 'TCO completo: electricidad, seguro, mantenimiento, impuestos y depreciación. La comparativa real a 5 años entre eléctrico y gasolina.',
+    readingTime: '12 min de lectura',
+    publishDate: 'Marzo 2026',
+    category: 'Costes y Ahorro',
+  },
+  {
+    slug: 'subvenciones-ayudas-ev-2026',
+    title: 'Subvenciones y ayudas para eléctricos en 2026',
+    description: 'Plan Auto+, ayudas autonómicas, etiqueta CERO, deducciones IRPF y exenciones fiscales. Todo lo que puedes pedir y cómo hacerlo.',
+    readingTime: '10 min de lectura',
+    publishDate: 'Marzo 2026',
+    category: 'Costes y Ahorro',
+  },
+];
+---
+
+<CategoryLayout
+  name="Costes y Ahorro"
+  description="TCO, subvenciones, tarifas, impuestos y todo lo que afecta a tu bolsillo como propietario de un eléctrico."
+  icon="&#128176;"
+  articles={articles}
+/>

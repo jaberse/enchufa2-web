@@ -1,0 +1,29 @@
+---
+import CategoryLayout from '../../layouts/CategoryLayout.astro';
+
+const articles = [
+  {
+    slug: 'mantenimiento-ev-vs-combustion',
+    title: 'Mantenimiento real de un EV vs combustión',
+    description: 'Qué se cambia, cada cuánto y cuánto cuesta. Comparamos el mantenimiento real de un eléctrico con un coche de gasolina con datos.',
+    readingTime: '11 min de lectura',
+    publishDate: 'Marzo 2026',
+    category: 'Mantenimiento',
+  },
+  {
+    slug: 'neumaticos-coche-electrico',
+    title: 'Neumáticos para coche eléctrico',
+    description: 'Por qué los neumáticos importan más en un eléctrico: desgaste, autonomía, ruido y qué modelos elegir. Con datos de fabricantes.',
+    readingTime: '10 min de lectura',
+    publishDate: 'Marzo 2026',
+    category: 'Mantenimiento',
+  },
+];
+---
+
+<CategoryLayout
+  name="Mantenimiento"
+  description="Frenos, neumáticos, batería de 12V y todo lo que tu eléctrico necesita para seguir funcionando como el primer día."
+  icon="&#128295;"
+  articles={articles}
+/>
