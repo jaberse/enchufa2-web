@@ -170,7 +170,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     let selectedFields = [...DEFAULT_IDS];
     let customMode = false;
     let filterVals = {};   // { fieldId: 'value' }
-    let catVals = {};      // { catId: 'value' }
+    let catVals = {};      // { catId: ['val1','val2',...] }
     let openPopover = null; // id of currently open popover
 
     // ═══════════════════════════════════════════════════════
@@ -240,7 +240,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     }
 
     function hasAnyFilter() {
-      return Object.values(filterVals).some(v => v) || Object.values(catVals).some(v => v);
+      return Object.values(filterVals).some(v => v) || Object.values(catVals).some(v => v && v.length > 0);
     }
 
     // ═══════════════════════════════════════════════════════
@@ -394,14 +394,21 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       catChipsEl.innerHTML = '';
 
       CATS.forEach(c => {
-        const val = catVals[c.id] || '';
-        const hasF = val !== '';
+        const vals = catVals[c.id] || [];
+        const hasF = vals.length > 0;
         const isOpen = openPopover === c.id;
 
         const wrap = document.createElement('div');
         wrap.className = 'chip-wrap';
 
-        const label = hasF ? c.label + ': ' + val + (c.suffix || '') : c.label;
+        let label = c.label;
+        if (hasF) {
+          if (vals.length === 1) {
+            label = c.label + ': ' + vals[0] + (c.suffix || '');
+          } else {
+            label = c.label + ' (' + vals.length + ')';
+          }
+        }
 
         const btn = document.createElement('button');
         btn.className = 'u-chip active';
@@ -422,15 +429,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
         wrap.appendChild(btn);
 
-        // Popover for category
+        // Popover for category (multi-select)
         if (isOpen) {
           const pop = document.createElement('div');
           pop.className = 'chip-popover chip-popover-cat';
           let html = '<div class="pop-label">' + c.label + '</div>';
           html += '<div class="pop-options">';
           c.options.forEach(o => {
-            const sel = val === String(o);
-            html += '<button class="pop-option' + (sel ? ' pop-option-sel' : '') + '" data-val="' + o + '">' + o + (c.suffix || '') + '</button>';
+            const sel = vals.includes(String(o));
+            html += '<button class="pop-option' + (sel ? ' pop-option-sel' : '') + '" data-val="' + o + '">' + (sel ? '✓ ' : '') + o + (c.suffix || '') + '</button>';
           });
           html += '</div>';
           if (hasF) html += '<button class="pop-clear">Limpiar</button>';
@@ -443,9 +450,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           requestAnimationFrame(() => {
             pop.querySelectorAll('.pop-option').forEach(optBtn => {
               optBtn.addEventListener('click', () => {
-                const clicked = optBtn.dataset.val;
-                catVals[c.id] = (val === clicked) ? '' : clicked;
-                openPopover = null;
+                const clicked = String(optBtn.dataset.val);
+                const cur = catVals[c.id] || [];
+                if (cur.includes(clicked)) {
+                  catVals[c.id] = cur.filter(v => v !== clicked);
+                } else {
+                  catVals[c.id] = [...cur, clicked];
+                }
                 btnReset.style.display = hasAnyFilter() ? '' : 'none';
                 renderNumericChips();
                 renderCatChips();
@@ -455,7 +466,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
             const clearBtn = pop.querySelector('.pop-clear');
             if (clearBtn) {
               clearBtn.addEventListener('click', () => {
-                catVals[c.id] = '';
+                catVals[c.id] = [];
                 openPopover = null;
                 btnReset.style.display = hasAnyFilter() ? '' : 'none';
                 renderNumericChips();
@@ -512,12 +523,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         if (f.filterType === 'min' && (mval || 0) < n) return false;
         if (f.filterType === 'max' && (mval || Infinity) > n) return false;
       }
-      // Category filters
-      for (const [id, val] of Object.entries(catVals)) {
-        if (!val) continue;
+      // Category filters (multi-select: model must match ANY of the selected values)
+      for (const [id, vals] of Object.entries(catVals)) {
+        if (!vals || vals.length === 0) continue;
         const c = CATS.find(x => x.id === id);
         if (!c) continue;
-        if (String(m[c.key]) !== val) return false;
+        if (!vals.includes(String(m[c.key]))) return false;
       }
       return true;
     }
@@ -605,15 +616,19 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // ═══════════════════════════════════════════════════════
     // RENDER TABLE (LISTADO) — adaptive layout
     // ═══════════════════════════════════════════════════════
-    const SCROLL_THRESHOLD = 12; // beyond this many fields, switch to scroll mode
+    const SCROLL_THRESHOLD = 12; // beyond this many fields, switch to scroll mode on desktop
     const MIN_DATA_COL = 80;     // minimum px per data column in scroll mode
+    const MOBILE_BP = 768;       // px — below this, always scroll mode
+
+    function isMobile() { return window.innerWidth <= MOBILE_BP; }
 
     function renderTableHeaders() {
       const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
       const table = document.getElementById('results-table');
       const wrap = document.getElementById('results-table-wrap');
       const nCols = activeFields.length;
-      const useScroll = nCols > SCROLL_THRESHOLD;
+      const mobile = isMobile();
+      const useScroll = mobile || nCols > SCROLL_THRESHOLD;
 
       // Remove old colgroup
       let existingColgroup = table.querySelector('colgroup');
@@ -623,11 +638,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         // Scroll mode: auto layout, overflow-x, sticky first column
         table.style.tableLayout = 'auto';
         wrap.classList.add('scroll-mode');
-        // Set min-widths via colgroup
+        const modeloW = mobile ? '140px' : '200px';
+        const minCol = mobile ? '70px' : MIN_DATA_COL + 'px';
         const colgroup = document.createElement('colgroup');
-        colgroup.innerHTML = '<col style="width:200px;min-width:200px" />';
+        colgroup.innerHTML = '<col style="width:' + modeloW + ';min-width:' + modeloW + '" />';
         activeFields.forEach(() => {
-          colgroup.innerHTML += '<col style="min-width:' + MIN_DATA_COL + 'px" />';
+          colgroup.innerHTML += '<col style="min-width:' + minCol + '" />';
         });
         table.prepend(colgroup);
       } else {
@@ -642,10 +658,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         table.prepend(colgroup);
       }
 
-      // Adaptive font: shrink slightly when many columns
+      // Adaptive font: shrink on many columns and on mobile
       let fontSize = '0.8125rem';  // default 13px
       let thFontSize = '0.625rem'; // default 10px
-      if (nCols > 14) {
+      if (mobile) {
+        fontSize = '0.75rem';      // 12px
+        thFontSize = '0.5625rem';  // 9px
+      } else if (nCols > 14) {
         fontSize = '0.6875rem';    // 11px
         thFontSize = '0.5625rem';  // 9px
       } else if (nCols > 10) {
@@ -674,7 +693,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // ── Scroll navigation helpers ──
     function updateScrollNav() {
       const nCols = FIELDS.filter(f => selectedFields.includes(f.id)).length;
-      const useScroll = nCols > SCROLL_THRESHOLD;
+      const useScroll = isMobile() || nCols > SCROLL_THRESHOLD;
       if (useScroll) {
         scrollNav.classList.add('visible');
         updateScrollBtnState();
@@ -704,7 +723,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       const tr = document.createElement('tr');
       tr.className = 'ev-row';
       const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
-      const useScroll = activeFields.length > SCROLL_THRESHOLD;
+      const useScroll = isMobile() || activeFields.length > SCROLL_THRESHOLD;
 
       let html = '<td class="col-modelo' + (useScroll ? ' col-sticky' : '') + '">' +
         '<div class="row-modelo-wrap">' +
@@ -779,6 +798,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     renderNumericChips();
     renderCatChips();
     update();
+
+    // Recalculate table on resize (mobile ↔ desktop)
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (currentView === 'listado') update();
+      }, 200);
+    });
   </script>
 </Layout>
 
@@ -1522,5 +1550,34 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     color: var(--gray-600);
     line-height: 1.7;
     max-width: 680px;
+  }
+
+  /* ═══════════════════════════════════════
+     MOBILE — table always scrollable
+     ═══════════════════════════════════════ */
+  @media (max-width: 768px) {
+    .comp-hero { padding: 1.5rem 0 1.25rem; }
+    .comp-hero h1 { font-size: 1.75rem; }
+    .comp-deck { font-size: 0.875rem; }
+
+    .unified-chips { gap: 0.35rem; }
+    .u-chip { font-size: 0.6875rem; padding: 0.3rem 0.6rem; }
+
+    .view-toggle { gap: 0.25rem; }
+    .view-btn { font-size: 0.75rem; padding: 0.3rem 0.75rem; }
+
+    /* Hide photo in table rows on mobile to save space */
+    .row-photo { display: none; }
+    .row-modelo-wrap { gap: 0; }
+    .row-marca { font-size: 0.5rem; }
+    .row-nombre { font-size: 0.6875rem; white-space: normal; line-height: 1.25; }
+    .row-badges { display: none; }
+
+    .col-num { padding: 0.4rem 0.25rem; }
+
+    /* Scroll nav on mobile */
+    .scroll-nav { gap: 0.35rem; }
+    .scroll-btn { width: 32px; height: 32px; font-size: 0.875rem; }
+    .scroll-nav-hint { font-size: 0.6875rem; }
   }
 </style>
