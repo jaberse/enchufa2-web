@@ -400,8 +400,9 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
       const autoHl = active.has('autonomia') ? ' ev-highlight-active' : '';
 
       // Photo: use /comparador/[slug].webp if it exists, otherwise placeholder
+      // Cache-bust v2: photos re-oriented 2026-03-30
       const photoSrc = m.foto
-        ? '/comparador/' + m.slug + '.webp'
+        ? '/comparador/' + m.slug + '.webp?v=2'
         : '/comparador/placeholder.svg';
 
       card.innerHTML =
