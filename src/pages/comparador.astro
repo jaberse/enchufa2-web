@@ -599,31 +599,63 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     }
 
     // ═══════════════════════════════════════════════════════
-    // RENDER TABLE (LISTADO) — table-layout: fixed
+    // RENDER TABLE (LISTADO) — adaptive layout
     // ═══════════════════════════════════════════════════════
+    const SCROLL_THRESHOLD = 12; // beyond this many fields, switch to scroll mode
+    const MIN_DATA_COL = 80;     // minimum px per data column in scroll mode
+
     function renderTableHeaders() {
       const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
       const table = document.getElementById('results-table');
+      const wrap = document.getElementById('results-table-wrap');
+      const nCols = activeFields.length;
+      const useScroll = nCols > SCROLL_THRESHOLD;
 
-      // Set table-layout fixed and build colgroup
-      table.style.tableLayout = 'fixed';
+      // Remove old colgroup
       let existingColgroup = table.querySelector('colgroup');
       if (existingColgroup) existingColgroup.remove();
 
-      const colgroup = document.createElement('colgroup');
-      const modeloW = 220;
-      colgroup.innerHTML = '<col style="width:' + modeloW + 'px" />';
-      activeFields.forEach(() => {
-        colgroup.innerHTML += '<col />';
-      });
-      table.prepend(colgroup);
+      if (useScroll) {
+        // Scroll mode: auto layout, overflow-x, sticky first column
+        table.style.tableLayout = 'auto';
+        wrap.classList.add('scroll-mode');
+        // Set min-widths via colgroup
+        const colgroup = document.createElement('colgroup');
+        colgroup.innerHTML = '<col style="width:200px;min-width:200px" />';
+        activeFields.forEach(() => {
+          colgroup.innerHTML += '<col style="min-width:' + MIN_DATA_COL + 'px" />';
+        });
+        table.prepend(colgroup);
+      } else {
+        // Fixed mode: everything fits
+        table.style.tableLayout = 'fixed';
+        wrap.classList.remove('scroll-mode');
+        const colgroup = document.createElement('colgroup');
+        colgroup.innerHTML = '<col style="width:220px" />';
+        activeFields.forEach(() => {
+          colgroup.innerHTML += '<col />';
+        });
+        table.prepend(colgroup);
+      }
+
+      // Adaptive font: shrink slightly when many columns
+      let fontSize = '0.8125rem';  // default 13px
+      let thFontSize = '0.625rem'; // default 10px
+      if (nCols > 14) {
+        fontSize = '0.6875rem';    // 11px
+        thFontSize = '0.5625rem';  // 9px
+      } else if (nCols > 10) {
+        fontSize = '0.75rem';      // 12px
+        thFontSize = '0.5625rem';  // 9px
+      }
+      table.style.fontSize = fontSize;
 
       let html = '<tr>';
-      html += '<th class="col-modelo">Modelo</th>';
+      html += '<th class="col-modelo' + (useScroll ? ' col-sticky' : '') + '" style="font-size:' + thFontSize + '">Modelo</th>';
       activeFields.forEach(f => {
         const isSorted = tableSortId === f.id;
         const arrow = isSorted ? (tableSortAsc ? ' \u25B2' : ' \u25BC') : '';
-        html += '<th class="col-num col-sortable' + (isSorted ? ' th-sorted' : '') + '" data-sort-id="' + f.id + '">' + f.shortLabel + arrow + '</th>';
+        html += '<th class="col-num col-sortable' + (isSorted ? ' th-sorted' : '') + '" data-sort-id="' + f.id + '" style="font-size:' + thFontSize + '">' + f.shortLabel + arrow + '</th>';
       });
       html += '</tr>';
       thead.innerHTML = html;
@@ -637,8 +669,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       const tr = document.createElement('tr');
       tr.className = 'ev-row';
       const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
+      const useScroll = activeFields.length > SCROLL_THRESHOLD;
 
-      let html = '<td class="col-modelo">' +
+      let html = '<td class="col-modelo' + (useScroll ? ' col-sticky' : '') + '">' +
         '<div class="row-modelo-wrap">' +
           '<div class="row-photo"><img src="' + photoSrc(m) + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy" /></div>' +
           '<div class="row-modelo-info">' +
@@ -1259,6 +1292,35 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     border-radius: 10px;
     background: #fff;
     overflow: hidden;
+  }
+  .results-table-wrap.scroll-mode {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Sticky first column in scroll mode */
+  .scroll-mode .col-sticky {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: #fff;
+  }
+  .scroll-mode thead .col-sticky {
+    z-index: 3;
+    background: var(--black);
+  }
+  .scroll-mode .ev-row:nth-child(even) .col-sticky {
+    background: #fafaf8;
+  }
+  .scroll-mode .col-sticky::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -6px;
+    bottom: 0;
+    width: 6px;
+    background: linear-gradient(to right, rgba(0,0,0,0.06), transparent);
+    pointer-events: none;
   }
   .results-table {
     width: 100%;
