@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" fill="none">
+  <defs>
+    <!-- Dark gradient background matching enchufa2 palette -->
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="60%" stop-color="#111111"/>
+      <stop offset="100%" stop-color="#1a1a1a"/>
+    </linearGradient>
+    <!-- Subtle floor reflection gradient -->
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e1e1e"/>
+      <stop offset="100%" stop-color="#111111"/>
+    </linearGradient>
+    <!-- Cloth/cover gradient for realism -->
+    <linearGradient id="cloth" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#d0d0d0"/>
+      <stop offset="30%" stop-color="#e8e8e8"/>
+      <stop offset="50%" stop-color="#f0f0f0"/>
+      <stop offset="70%" stop-color="#e0e0e0"/>
+      <stop offset="100%" stop-color="#c8c8c8"/>
+    </linearGradient>
+    <!-- Subtle shadow under car -->
+    <radialGradient id="shadow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Cloth highlight -->
+    <linearGradient id="clothHL" x1="0.3" y1="0" x2="0.7" y2="0.6">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="640" height="360" fill="url(#bg)"/>
+
+  <!-- Floor line -->
+  <rect x="0" y="258" width="640" height="102" fill="url(#floor)"/>
+  <line x1="60" y1="258" x2="580" y2="258" stroke="#222222" stroke-width="0.5"/>
+
+  <!-- Shadow under car -->
+  <ellipse cx="320" cy="260" rx="220" ry="18" fill="url(#shadow)"/>
+
+  <!-- Covered car silhouette - smooth organic shape like a veiled vehicle -->
+  <!-- Main body shape -->
+  <path d="
+    M 110 258
+    C 110 258, 115 254, 125 248
+    C 135 242, 145 232, 155 222
+    C 165 212, 172 198, 180 188
+    C 188 178, 195 168, 210 158
+    C 225 148, 240 142, 258 138
+    C 276 134, 295 132, 320 131
+    C 345 130, 370 131, 395 134
+    C 420 137, 440 142, 455 148
+    C 470 154, 478 162, 486 172
+    C 494 182, 498 192, 505 204
+    C 512 216, 518 228, 522 238
+    C 526 248, 528 254, 530 258
+    Z
+  " fill="url(#cloth)" stroke="#b0b0b0" stroke-width="0.3"/>
+
+  <!-- Cloth highlight overlay for 3D effect -->
+  <path d="
+    M 110 258
+    C 110 258, 115 254, 125 248
+    C 135 242, 145 232, 155 222
+    C 165 212, 172 198, 180 188
+    C 188 178, 195 168, 210 158
+    C 225 148, 240 142, 258 138
+    C 276 134, 295 132, 320 131
+    C 345 130, 370 131, 395 134
+    C 420 137, 440 142, 455 148
+    C 470 154, 478 162, 486 172
+    C 494 182, 498 192, 505 204
+    C 512 216, 518 228, 522 238
+    C 526 248, 528 254, 530 258
+    Z
+  " fill="url(#clothHL)"/>
+
+  <!-- Fabric fold lines for realism -->
+  <path d="M 160 230 C 180 215, 220 200, 260 198 C 300 196, 350 200, 380 210"
+        stroke="#c0c0c0" stroke-width="0.5" fill="none" opacity="0.4"/>
+  <path d="M 200 248 C 240 238, 300 234, 360 236 C 420 238, 470 244, 510 252"
+        stroke="#c0c0c0" stroke-width="0.4" fill="none" opacity="0.3"/>
+  <path d="M 250 145 C 280 140, 340 138, 390 142"
+        stroke="#d8d8d8" stroke-width="0.4" fill="none" opacity="0.3"/>
+
+  <!-- Subtle draping folds on sides -->
+  <path d="M 130 250 C 135 240, 140 230, 148 222"
+        stroke="#b8b8b8" stroke-width="0.5" fill="none" opacity="0.35"/>
+  <path d="M 510 250 C 515 242, 518 235, 520 228"
+        stroke="#b8b8b8" stroke-width="0.5" fill="none" opacity="0.35"/>
+
+  <!-- Floor reflection (subtle mirror) -->
+  <path d="
+    M 130 258
+    C 130 258, 150 262, 200 265
+    C 250 268, 350 269, 440 267
+    C 490 265, 520 262, 530 258
+    C 530 270, 500 278, 440 280
+    C 380 282, 260 281, 200 278
+    C 150 275, 130 270, 130 258
+    Z
+  " fill="#1a1a1a" opacity="0.5"/>
+
+  <!-- enchufa2 logo mark (simplified plug symbol) -->
+  <g transform="translate(290, 290)" opacity="0.35">
+    <!-- Plug symbol small -->
+    <path d="M 14.5 0 V 27.1 C 14.5 27.1 0 27.15 0 27.1 C 0 27.07 14.5 0 14.5 0 Z" fill="#F5C518"/>
+    <path d="M 18.5 49 L 18.5 23.1 H 32.5 L 18.5 49 Z" fill="#F5C518"/>
+    <path d="M 14.3 23.1 H 19.7 V 27.1 H 14.3 V 23.1 Z" fill="#F5C518"/>
+    <!-- "2" tiny -->
+    <text x="38" y="40" font-family="Inter, system-ui, sans-serif" font-weight="500" font-size="18" fill="#F5C518" opacity="0.8">2</text>
+  </g>
+
+  <!-- "Próximamente" text -->
+  <text x="320" y="320" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-weight="300" font-size="11" fill="#555555" letter-spacing="0.15em" text-transform="uppercase">
+    FOTO NO DISPONIBLE
+  </text>
+</svg>
