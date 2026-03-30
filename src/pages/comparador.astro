@@ -232,7 +232,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     }
 
     function photoSrc(m) {
-      return m.foto ? '/comparador/' + m.slug + '.webp?v=6' : '/comparador/placeholder.svg';
+      return m.foto ? '/comparador/' + m.slug + '.webp?v=7' : '/comparador/placeholder.svg';
     }
 
     function hasAnyFilter() {
@@ -280,26 +280,30 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
         // Filter icon for active numeric chips without filter set
         let iconHtml = '';
-        if (!customMode && isActive && !hasF && f.filterType) {
+        if (isActive && !hasF && f.filterType) {
           iconHtml = '<svg class="chip-filter-icon" width="8" height="8" viewBox="0 0 10 10"><path d="M1 3h8M2.5 5h5M4 6.5h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
         }
-        btn.innerHTML = label + iconHtml;
+        // In custom mode, active chips get a remove ✕ button
+        let removeHtml = '';
+        if (customMode && isActive) {
+          removeHtml = '<span class="chip-remove" data-remove-id="' + f.id + '">\u00d7</span>';
+        }
+        btn.innerHTML = label + iconHtml + removeHtml;
 
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
-          if (customMode) {
-            // Toggle field visibility
-            if (selectedFields.includes(f.id)) {
-              selectedFields = selectedFields.filter(x => x !== f.id);
-            } else {
-              selectedFields.push(f.id);
-            }
+          // If clicking the ✕ remove button
+          if (e.target.classList.contains('chip-remove')) return;
+
+          if (customMode && !isActive) {
+            // Add inactive field
+            selectedFields.push(f.id);
             openPopover = null;
             renderNumericChips();
             renderCatChips();
             update();
           } else if (isActive && f.filterType) {
-            // Open/close filter popover
+            // Open/close filter popover (works in both modes)
             openPopover = isOpen ? null : f.id;
             renderNumericChips();
             renderCatChips();
@@ -308,8 +312,24 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
         wrap.appendChild(btn);
 
+        // Handle ✕ remove click
+        if (customMode && isActive) {
+          const removeBtn = btn.querySelector('.chip-remove');
+          if (removeBtn) {
+            removeBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              selectedFields = selectedFields.filter(x => x !== f.id);
+              filterVals[f.id] = '';
+              openPopover = null;
+              renderNumericChips();
+              renderCatChips();
+              update();
+            });
+          }
+        }
+
         // Popover
-        if (isOpen && !customMode) {
+        if (isOpen) {
           const pop = document.createElement('div');
           pop.className = 'chip-popover';
           const prefix = f.filterType === 'min' ? 'Mínimo' : 'Máximo';
@@ -875,6 +895,25 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     opacity: 0.35;
     flex-shrink: 0;
   }
+  .chip-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #999;
+    margin-left: 2px;
+    cursor: pointer;
+    line-height: 1;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    transition: all 0.15s;
+  }
+  .chip-remove:hover {
+    background: rgba(0,0,0,0.1);
+    color: #c33;
+  }
 
   /* ── Popover ──────────────────────────── */
   .chip-popover {
@@ -967,22 +1006,22 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   /* ── Hint ─────────────────────────────── */
   .comp-hint {
-    background: rgba(245,197,24,0.06);
+    background: rgba(245,197,24,0.12);
     border-bottom: 1px solid #e5e2dd;
-    padding: 0.55rem 0;
+    padding: 0.6rem 0;
   }
   .comp-hint .page-width {
     display: flex;
     gap: 0.4rem;
     align-items: center;
   }
-  .hint-icon { font-size: 0.75rem; }
+  .hint-icon { font-size: 0.8rem; }
   .hint-text {
     font-family: var(--font-sans);
-    font-size: 0.6875rem;
-    color: #888;
+    font-size: 0.75rem;
+    color: #555;
   }
-  .hint-text strong { color: #666; }
+  .hint-text strong { color: var(--black); font-weight: 600; }
 
   /* ── Results ─────────────────────────── */
   .comp-results {
@@ -1225,7 +1264,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     width: 100%;
     border-collapse: collapse;
     font-family: var(--font-sans);
-    font-size: 0.6875rem;
+    font-size: 0.8125rem;
   }
   .results-table thead {
     position: sticky;
@@ -1236,10 +1275,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     background: var(--black);
     color: #fff;
     font-weight: 500;
-    font-size: 0.5625rem;
+    font-size: 0.625rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    padding: 0.55rem 0.4rem;
+    padding: 0.6rem 0.5rem;
     text-align: left;
     border: none;
     overflow: hidden;
@@ -1259,7 +1298,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
 
   .results-table td {
-    padding: 0.45rem 0.4rem;
+    padding: 0.55rem 0.5rem;
     border-bottom: 1px solid #eee;
     color: var(--black);
     font-weight: 400;
@@ -1310,7 +1349,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     min-width: 0;
   }
   .row-marca {
-    font-size: 0.5rem;
+    font-size: 0.5625rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -1318,7 +1357,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     line-height: 1.2;
   }
   .row-nombre {
-    font-size: 0.6875rem;
+    font-size: 0.8125rem;
     font-weight: 500;
     color: var(--black);
     line-height: 1.3;
