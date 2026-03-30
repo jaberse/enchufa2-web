@@ -400,9 +400,9 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
       const autoHl = active.has('autonomia') ? ' ev-highlight-active' : '';
 
       // Photo: use /comparador/[slug].webp if it exists, otherwise placeholder
-      // Cache-bust v2: photos re-oriented 2026-03-30
+      // Cache-bust v4: flip 14 fotos seleccionadas por Javi 2026-03-30
       const photoSrc = m.foto
-        ? '/comparador/' + m.slug + '.webp?v=2'
+        ? '/comparador/' + m.slug + '.webp?v=4'
         : '/comparador/placeholder.svg';
 
       card.innerHTML =
@@ -1035,36 +1035,4 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
   }
 
   /* Badges inside table */
-  .col-tipo .badge { margin: 0.1rem; }
-
-  /* Alternating row colors */
-  .ev-row:nth-child(even) td { background: #fafaf8; }
-  .ev-row:hover td { background: rgba(245,197,24,0.08); }
-
-  /* ── Active-filter highlights (table) ── */
-  .th-hl {
-    background: var(--yellow) !important;
-    color: var(--black) !important;
-  }
-  .col-hl {
-    background: rgba(245,197,24,0.08) !important;
-    font-weight: 500;
-  }
-  .ev-row:nth-child(even) td.col-hl { background: rgba(245,197,24,0.10) !important; }
-  .ev-row:hover td.col-hl { background: rgba(245,197,24,0.18) !important; }
-
-  /* ── Methodology ──────────────────────── */
-  .comp-methodology {
-    padding: 2rem 0;
-    border-top: 1px solid #ddd;
-    background: #F0EDE8;
-  }
-  .comp-methodology p {
-    font-family: var(--font-sans);
-    font-size: 0.8125rem;
-    color: var(--gray-600);
-    line-height: 1.6;
-    max-width: 700px;
-  }
-  .comp-methodology .t-small { margin-bottom: 0.5rem; color: #999; }
-</style>
+  .col-ti
