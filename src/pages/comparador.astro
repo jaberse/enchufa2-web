@@ -402,7 +402,7 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
       // Photo: use /comparador/[slug].webp if it exists, otherwise placeholder
       // Cache-bust v5: fix ev6, id4, explorer 2026-03-30
       const photoSrc = m.foto
-        ? '/comparador/' + m.slug + '.webp?v=5'
+        ? '/comparador/' + m.slug + '.webp?v=6'
         : '/comparador/placeholder.svg';
 
       card.innerHTML =
