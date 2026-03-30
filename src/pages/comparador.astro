@@ -159,13 +159,28 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
       </div>
     </section>
 
+    <!-- FIELD SELECTOR -->
+    <section class="comp-fields" id="campos">
+      <div class="page-width">
+        <div class="fields-header">
+          <h2>Campos visibles</h2>
+          <label class="toggle-wrap" id="toggle-custom-wrap">
+            <span class="toggle-label">Personalizar</span>
+            <div class="toggle-switch" id="toggle-custom">
+              <div class="toggle-knob"></div>
+            </div>
+          </label>
+        </div>
+        <div class="fields-chips" id="fields-chips"></div>
+      </div>
+    </section>
+
     <!-- RESULTS -->
     <section class="comp-results" id="resultados">
       <div class="page-width">
         <div class="results-header">
           <p class="results-count"><span id="count">{data.total_modelos}</span> coches cumplen tus requisitos</p>
           <div class="results-controls">
-            <!-- View toggle -->
             <div class="view-toggle" id="view-toggle">
               <button class="view-btn active" data-view="fichas" title="Vista fichas">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="1" y="1" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="1" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="1" y="10" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="10" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>
@@ -198,21 +213,7 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
         <!-- Listado table -->
         <div class="results-table-wrap" id="results-table-wrap" style="display:none;">
           <table class="results-table" id="results-table">
-            <thead>
-              <tr>
-                <th class="col-modelo">Modelo</th>
-                <th class="col-tipo">Tipo</th>
-                <th class="col-num">Autonomía</th>
-                <th class="col-num">Potencia</th>
-                <th class="col-num">Carga DC</th>
-                <th class="col-num">Maletero</th>
-                <th class="col-num">0-100</th>
-                <th class="col-num">Consumo</th>
-                <th class="col-num">Peso</th>
-                <th class="col-num">Batería</th>
-                <th class="col-num col-precio">PVP</th>
-              </tr>
-            </thead>
+            <thead id="results-thead"></thead>
             <tbody id="results-tbody"></tbody>
           </table>
         </div>
@@ -240,19 +241,101 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
   <Footer />
 
   <script define:vars={{ modelos: data.modelos }}>
+    // ═══════════════════════════════════════════════════════
+    // FIELD DEFINITIONS — master list of all toggleable fields
+    // ═══════════════════════════════════════════════════════
+    const FIELDS = [
+      { id:'autonomia',  label:'Autonomía',     unit:'km',         key:'autonomia_wltp_km',       dflt:true,  sortAsc:false },
+      { id:'potencia_cv',label:'Potencia',       unit:'CV',         key:'potencia_cv',             dflt:true,  sortAsc:false },
+      { id:'potencia_kw',label:'Potencia (kW)',  unit:'kW',         key:'potencia_kw',             dflt:false, sortAsc:false },
+      { id:'par',        label:'Par motor',      unit:'Nm',         key:'par_nm',                  dflt:false, sortAsc:false },
+      { id:'carga_dc',   label:'Carga DC',       unit:'kW',         key:'carga_dc_max_kw',         dflt:true,  sortAsc:false },
+      { id:'carga_ac',   label:'Carga AC',       unit:'kW',         key:'carga_ac_max_kw',         dflt:false, sortAsc:false },
+      { id:'t_10_80',    label:'T 10→80%',       unit:'min',        key:'t_10_80_min',             dflt:false, sortAsc:true },
+      { id:'bateria_neta',label:'Batería neta',  unit:'kWh',        key:'bateria_neta_kwh',        dflt:true,  sortAsc:false, dec:1 },
+      { id:'bateria_bruta',label:'Batería bruta',unit:'kWh',        key:'bateria_bruta_kwh',       dflt:false, sortAsc:false },
+      { id:'maletero',   label:'Maletero',       unit:'L',          key:'maletero_l',              dflt:true,  sortAsc:false },
+      { id:'aceleracion',label:'0-100',          unit:'s',          key:'aceleracion_0_100_s',     dflt:true,  sortAsc:true, dec:1 },
+      { id:'vel_max',    label:'Vel. máx',       unit:'km/h',       key:'velocidad_max_kmh',       dflt:false, sortAsc:false },
+      { id:'consumo',    label:'Consumo',        unit:'kWh/100km',  key:'consumo_wltp_kwh100km',   dflt:true,  sortAsc:true, dec:1 },
+      { id:'peso',       label:'Peso',           unit:'kg',         key:'peso_kg',                 dflt:true,  sortAsc:true },
+      { id:'pvp',        label:'PVP',            unit:'\u20ac',     key:'pvp',                     dflt:true,  sortAsc:true, fmt:'eur' },
+      { id:'cx',         label:'Cx',             unit:'',           key:'cx',                      dflt:false, sortAsc:true, dec:3 },
+      { id:'largo',      label:'Largo',          unit:'mm',         key:'largo_mm',                dflt:false, sortAsc:false },
+      { id:'ancho',      label:'Ancho',          unit:'mm',         key:'ancho_mm',                dflt:false, sortAsc:false },
+      { id:'alto',       label:'Alto',           unit:'mm',         key:'alto_mm',                 dflt:false, sortAsc:false },
+      { id:'batalla',    label:'Batalla',        unit:'mm',         key:'batalla_mm',              dflt:false, sortAsc:false },
+      { id:'diametro_giro',label:'Diám. giro',  unit:'m',          key:'diametro_giro_m',         dflt:false, sortAsc:true, dec:1 },
+      { id:'frunk',      label:'Frunk',          unit:'L',          key:'frunk_l',                 dflt:false, sortAsc:false },
+      { id:'remolque',   label:'Remolque',       unit:'kg',         key:'capacidad_remolque_kg',   dflt:false, sortAsc:false },
+      { id:'n_motores',  label:'Motores',        unit:'',           key:'n_motores',               dflt:false, sortAsc:false },
+      { id:'garantia',   label:'Garantía bat.',  unit:'',           key:'garantia_bateria',        dflt:false, sortAsc:false, isText:true },
+    ];
+
+    const DEFAULT_IDS = FIELDS.filter(f => f.dflt).map(f => f.id);
+    let selectedFields = [...DEFAULT_IDS];
+    let customMode = false;
+
+    // ═══════════════════════════════════════════════════════
+    // DOM REFS
+    // ═══════════════════════════════════════════════════════
     const allModelos = modelos;
     let currentView = 'fichas';
+    let tableSortId = null;
+    let tableSortAsc = true;
 
     const grid = document.getElementById('results-grid');
     const tableWrap = document.getElementById('results-table-wrap');
+    const thead = document.getElementById('results-thead');
     const tbody = document.getElementById('results-tbody');
     const countEl = document.getElementById('count');
     const noResults = document.getElementById('no-results');
     const btnReset = document.getElementById('btn-reset');
     const sortSelect = document.getElementById('sort-by');
-    const tableEl = document.getElementById('results-table');
+    const chipsContainer = document.getElementById('fields-chips');
+    const toggleWrap = document.getElementById('toggle-custom-wrap');
+    const toggleSwitch = document.getElementById('toggle-custom');
 
-    // View toggle
+    // ═══════════════════════════════════════════════════════
+    // FIELD CHIP SELECTOR
+    // ═══════════════════════════════════════════════════════
+    function renderChips() {
+      chipsContainer.innerHTML = '';
+      const fieldsToShow = customMode ? FIELDS : FIELDS.filter(f => f.dflt);
+      fieldsToShow.forEach(f => {
+        const btn = document.createElement('button');
+        btn.className = 'field-chip' + (selectedFields.includes(f.id) ? ' active' : '');
+        btn.textContent = f.label;
+        btn.dataset.fieldId = f.id;
+        if (customMode) {
+          btn.addEventListener('click', () => {
+            if (selectedFields.includes(f.id)) {
+              selectedFields = selectedFields.filter(x => x !== f.id);
+            } else {
+              selectedFields.push(f.id);
+            }
+            renderChips();
+            update();
+          });
+        }
+        chipsContainer.appendChild(btn);
+      });
+    }
+
+    // Toggle custom mode
+    toggleWrap.addEventListener('click', () => {
+      customMode = !customMode;
+      toggleSwitch.classList.toggle('on', customMode);
+      if (!customMode) {
+        selectedFields = [...DEFAULT_IDS];
+      }
+      renderChips();
+      update();
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // VIEW TOGGLE
+    // ═══════════════════════════════════════════════════════
     document.querySelectorAll('.view-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
@@ -262,6 +345,9 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
       });
     });
 
+    // ═══════════════════════════════════════════════════════
+    // FILTERS
+    // ═══════════════════════════════════════════════════════
     const filters = {
       autonomia:  document.getElementById('f-autonomia'),
       potencia:   document.getElementById('f-potencia'),
@@ -279,36 +365,6 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
       bombaCalor: document.getElementById('f-bomba-calor'),
       cargaAc:    document.getElementById('f-carga-ac'),
     };
-
-    // Map filter keys to their data field names for highlight logic
-    // Each entry: { filter key, card detail label, table column index (0-based) }
-    const FIELD_MAP = [
-      { filter: 'autonomia', label: 'Autonom\u00eda', col: 2, stat: 'autonomia' },
-      { filter: 'potencia',  label: 'Potencia',  col: 3, stat: 'potencia' },
-      { filter: 'cargaDc',   label: 'Carga DC',  col: 4, stat: 'carga' },
-      { filter: 'maletero',  label: 'Maletero',  col: 5, stat: 'maletero' },
-      { filter: 'accelMax',  label: '0-100',     col: 6, detail: '0-100 km/h' },
-      { filter: 'consumoMax',label: 'Consumo',   col: 7, detail: 'Consumo' },
-      { filter: 'pesoMax',   label: 'Peso',      col: 8, detail: 'Peso' },
-      { filter: 'precioMax', label: 'PVP',       col: 10, detail: 'PVP' },
-    ];
-
-    function getActiveFilters() {
-      const active = new Set();
-      if (filters.autonomia.value) active.add('autonomia');
-      if (filters.potencia.value)  active.add('potencia');
-      if (filters.maletero.value)  active.add('maletero');
-      if (filters.pesoMax.value)   active.add('pesoMax');
-      if (filters.tipo.value)      active.add('tipo');
-      if (filters.traccion.value)  active.add('traccion');
-      if (filters.marca.value)     active.add('marca');
-      if (filters.cargaDc.value)   active.add('cargaDc');
-      if (filters.precioMax.value) active.add('precioMax');
-      if (filters.quimica.value)   active.add('quimica');
-      if (filters.accelMax.value)  active.add('accelMax');
-      if (filters.consumoMax.value) active.add('consumoMax');
-      return active;
-    }
 
     function getFilterValues() {
       return {
@@ -349,7 +405,21 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
       return true;
     }
 
+    // ═══════════════════════════════════════════════════════
+    // SORTING
+    // ═══════════════════════════════════════════════════════
     function getSortKey(m) {
+      // If table sort is active in listado view, use that
+      if (currentView === 'listado' && tableSortId) {
+        const f = FIELDS.find(x => x.id === tableSortId);
+        if (f) {
+          const val = m[f.key];
+          if (val === null || val === undefined) return tableSortAsc ? Infinity : -Infinity;
+          if (typeof val === 'string') return 0; // text fields don't sort numerically
+          return tableSortAsc ? val : -val;
+        }
+      }
+      // Dropdown sort
       const key = sortSelect.value;
       switch (key) {
         case 'autonomia':   return -(m.autonomia_wltp_km || 0);
@@ -364,10 +434,33 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
       }
     }
 
+    function sortByTableHeader(fieldId) {
+      const f = FIELDS.find(x => x.id === fieldId);
+      if (tableSortId === fieldId) {
+        tableSortAsc = !tableSortAsc;
+      } else {
+        tableSortId = fieldId;
+        tableSortAsc = f ? f.sortAsc : true;
+      }
+      update();
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // HELPERS
+    // ═══════════════════════════════════════════════════════
     function fmt(val, unit, decimals) {
       if (val === null || val === undefined) return '\u2014';
       if (decimals !== undefined) return val.toFixed(decimals) + (unit ? '\u00a0' + unit : '');
       return val.toLocaleString('es-ES') + (unit ? '\u00a0' + unit : '');
+    }
+
+    function fmtField(val, field) {
+      if (val === null || val === undefined) return '\u2014';
+      if (field.fmt === 'eur') return val.toLocaleString('es-ES') + '\u00a0\u20ac';
+      if (field.isText) return val;
+      if (field.dec !== undefined) return val.toFixed(field.dec);
+      if (typeof val === 'number') return val.toLocaleString('es-ES');
+      return val;
     }
 
     function badgeClass(quimica) {
@@ -379,35 +472,52 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
       return '';
     }
 
-    // ── Highlight helpers ──────────────────
-    // For card: adds .hl class to stats and detail rows that match active filters
-    function hlStat(key, active) {
-      return active.has(key) ? ' hl' : '';
-    }
-    function hlDetail(filterKey, active) {
-      return active.has(filterKey) ? ' ev-detail-hl' : '';
+    function makeBadgesHtml(m) {
+      let html = '';
+      if (m.tipo) html += '<span class="badge badge-tipo">' + m.tipo + '</span>';
+      if (m.traccion) html += '<span class="badge badge-traccion">' + m.traccion + '</span>';
+      if (m.quimica) html += '<span class="badge badge-quimica ' + badgeClass(m.quimica) + '">' + m.quimica + '</span>';
+      if (m.voltaje === 800) html += '<span class="badge badge-800v">800V</span>';
+      if (m.bomba_calor === 'S\u00ed') html += '<span class="badge badge-bcalor">B.Calor</span>';
+      return html;
     }
 
-    function renderCard(m, active) {
+    function photoSrc(m) {
+      return m.foto ? '/comparador/' + m.slug + '.webp?v=6' : '/comparador/placeholder.svg';
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // RENDER CARD (FICHAS)
+    // ═══════════════════════════════════════════════════════
+    function renderCard(m) {
       const card = document.createElement('article');
       card.className = 'ev-card';
 
-      const tracBadge = m.traccion ? '<span class="badge badge-traccion">' + m.traccion + '</span>' : '';
-      const quimBadge = m.quimica ? '<span class="badge badge-quimica ' + badgeClass(m.quimica) + '">' + m.quimica + '</span>' : '';
-      const tipoBadge = m.tipo ? '<span class="badge badge-tipo">' + m.tipo + '</span>' : '';
+      const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
+      const statFields = activeFields.slice(0, 4);
+      const detailFields = activeFields.slice(4);
 
-      // Autonomia is always shown as highlight; add extra glow if user filtered by it
-      const autoHl = active.has('autonomia') ? ' ev-highlight-active' : '';
+      // Stats grid
+      let statsHtml = '';
+      statFields.forEach(f => {
+        const val = fmtField(m[f.key], f);
+        const unitLabel = f.unit || f.label;
+        statsHtml += '<div class="ev-stat"><span class="ev-stat-value">' + val + '</span><span class="ev-stat-label">' + unitLabel + '</span></div>';
+      });
 
-      // Photo: use /comparador/[slug].webp if it exists, otherwise placeholder
-      // Cache-bust v5: fix ev6, id4, explorer 2026-03-30
-      const photoSrc = m.foto
-        ? '/comparador/' + m.slug + '.webp?v=6'
-        : '/comparador/placeholder.svg';
+      // Detail rows
+      let detailsHtml = '';
+      detailFields.forEach(f => {
+        const val = m[f.key];
+        let display = fmtField(val, f);
+        if (f.unit && !f.fmt && !f.isText && val != null) display += '\u00a0' + f.unit;
+        const isPrice = f.id === 'pvp';
+        detailsHtml += '<div class="ev-detail' + (isPrice ? ' ev-detail-price' : '') + '"><span>' + f.label + '</span><span>' + display + '</span></div>';
+      });
 
       card.innerHTML =
         '<div class="ev-card-photo">' +
-          '<img src="' + photoSrc + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy" />' +
+          '<img src="' + photoSrc(m) + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy" />' +
         '</div>' +
         '<div class="ev-card-body">' +
           '<div class="ev-card-header">' +
@@ -416,79 +526,78 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
               '<span class="ev-modelo">' + m.modelo + '</span>' +
               '<span class="ev-variante">' + m.variante + '</span>' +
             '</div>' +
-            '<div class="ev-card-autonomia' + autoHl + '">' +
+            '<div class="ev-card-autonomia">' +
               '<span class="ev-autonomia-value">' + fmt(m.autonomia_wltp_km) + '</span>' +
               '<span class="ev-autonomia-unit">km</span>' +
             '</div>' +
           '</div>' +
-          '<div class="ev-badges">' + tipoBadge + tracBadge + quimBadge + '</div>' +
-          '<div class="ev-card-stats">' +
-            '<div class="ev-stat' + hlStat('potencia', active) + '"><span class="ev-stat-value">' + fmt(m.potencia_cv) + '</span><span class="ev-stat-label">CV</span></div>' +
-            '<div class="ev-stat' + hlStat('cargaDc', active) + '"><span class="ev-stat-value">' + fmt(m.carga_dc_max_kw) + '</span><span class="ev-stat-label">kW DC</span></div>' +
-            '<div class="ev-stat' + hlStat('maletero', active) + '"><span class="ev-stat-value">' + fmt(m.maletero_l) + '</span><span class="ev-stat-label">L</span></div>' +
-            '<div class="ev-stat' + hlStat('accelMax', active) + '"><span class="ev-stat-value">' + fmt(m.aceleracion_0_100_s, '', 1) + '</span><span class="ev-stat-label">0-100</span></div>' +
-          '</div>' +
-          '<div class="ev-card-details">' +
-            '<div class="ev-detail' + hlDetail('consumoMax', active) + '"><span>Consumo</span><span>' + fmt(m.consumo_wltp_kwh100km, 'kWh/100km', 1) + '</span></div>' +
-            '<div class="ev-detail' + hlDetail('pesoMax', active) + '"><span>Peso</span><span>' + fmt(m.peso_kg, 'kg') + '</span></div>' +
-            '<div class="ev-detail"><span>Bater\u00eda</span><span>' + fmt(m.bateria_neta_kwh, 'kWh', 1) + ' · ' + (m.voltaje || '') + '\u00a0V</span></div>' +
-            '<div class="ev-detail"><span>Carga AC</span><span>' + fmt(m.carga_ac_max_kw, 'kW') + '</span></div>' +
-            (m.garantia_bateria ? '<div class="ev-detail"><span>Garant\u00eda bat.</span><span>' + m.garantia_bateria + '</span></div>' : '') +
-            (m.frunk_l ? '<div class="ev-detail"><span>Frunk</span><span>' + m.frunk_l + '\u00a0L</span></div>' : '') +
-            (m.capacidad_remolque_kg ? '<div class="ev-detail"><span>Remolque</span><span>' + m.capacidad_remolque_kg.toLocaleString('es-ES') + '\u00a0kg</span></div>' : '') +
-            (m.pvp ? '<div class="ev-detail ev-detail-price' + hlDetail('precioMax', active) + '"><span>PVP</span><span>' + m.pvp.toLocaleString('es-ES') + '\u00a0\u20ac</span></div>' : '') +
-          '</div>' +
+          '<div class="ev-badges">' + makeBadgesHtml(m) + '</div>' +
+          '<div class="ev-card-stats" style="grid-template-columns:repeat(' + statFields.length + ',1fr)">' + statsHtml + '</div>' +
+          (detailsHtml ? '<div class="ev-card-details">' + detailsHtml + '</div>' : '') +
         '</div>';
       return card;
     }
 
-    function renderRow(m, active) {
-      const tr = document.createElement('tr');
-      tr.className = 'ev-row';
-      const quimCls = badgeClass(m.quimica);
+    // ═══════════════════════════════════════════════════════
+    // RENDER TABLE (LISTADO)
+    // ═══════════════════════════════════════════════════════
+    function renderTableHeaders() {
+      const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
+      let html = '<tr>';
+      html += '<th class="col-modelo col-sticky">Modelo</th>';
+      activeFields.forEach(f => {
+        const isSorted = tableSortId === f.id;
+        const arrow = isSorted ? (tableSortAsc ? ' \u25B2' : ' \u25BC') : '';
+        html += '<th class="col-num col-sortable' + (isSorted ? ' th-sorted' : '') + '" data-sort-id="' + f.id + '">' + f.label + arrow + '</th>';
+      });
+      html += '</tr>';
+      thead.innerHTML = html;
 
-      // Build cells; active-filter columns get .col-hl class
-      function cell(colIdx, content, extraClass) {
-        const isHl = FIELD_MAP.some(f => f.col === colIdx && active.has(f.filter));
-        return '<td class="' + (extraClass || '') + (isHl ? ' col-hl' : '') + '">' + content + '</td>';
-      }
-
-      tr.innerHTML =
-        '<td class="col-modelo">' +
-          '<div class="row-modelo">' +
-            '<span class="row-marca">' + m.marca + '</span>' +
-            '<span class="row-nombre">' + m.modelo + ' ' + m.variante + '</span>' +
-          '</div>' +
-        '</td>' +
-        '<td class="col-tipo">' +
-          (m.tipo ? '<span class="badge badge-tipo">' + m.tipo + '</span>' : '') +
-          (m.traccion ? '<span class="badge badge-traccion">' + m.traccion + '</span>' : '') +
-          (m.quimica ? '<span class="badge badge-quimica ' + quimCls + '">' + m.quimica + '</span>' : '') +
-        '</td>' +
-        cell(2, '<strong>' + fmt(m.autonomia_wltp_km) + '</strong> <small>km</small>', 'col-num col-autonomia') +
-        cell(3, fmt(m.potencia_cv) + ' <small>CV</small>', 'col-num') +
-        cell(4, fmt(m.carga_dc_max_kw) + ' <small>kW</small>', 'col-num') +
-        cell(5, fmt(m.maletero_l) + ' <small>L</small>', 'col-num') +
-        cell(6, fmt(m.aceleracion_0_100_s, '', 1) + ' <small>s</small>', 'col-num') +
-        cell(7, fmt(m.consumo_wltp_kwh100km, '', 1) + ' <small>kWh</small>', 'col-num') +
-        cell(8, fmt(m.peso_kg) + ' <small>kg</small>', 'col-num') +
-        '<td class="col-num">' + fmt(m.bateria_neta_kwh, '', 1) + ' <small>kWh</small></td>' +
-        cell(10, (m.pvp ? m.pvp.toLocaleString('es-ES') + '\u00a0\u20ac' : '\u2014'), 'col-num col-precio');
-      return tr;
-    }
-
-    // Highlight table header columns that match active filters
-    function updateTableHeaders(active) {
-      const ths = tableEl.querySelectorAll('thead th');
-      ths.forEach((th, idx) => {
-        const isHl = FIELD_MAP.some(f => f.col === idx && active.has(f.filter));
-        th.classList.toggle('th-hl', isHl);
+      // Attach click handlers
+      thead.querySelectorAll('.col-sortable').forEach(th => {
+        th.addEventListener('click', () => {
+          sortByTableHeader(th.dataset.sortId);
+        });
       });
     }
 
+    function renderRow(m) {
+      const tr = document.createElement('tr');
+      tr.className = 'ev-row';
+      const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
+
+      let html = '<td class="col-modelo col-sticky">' +
+        '<div class="row-modelo-wrap">' +
+          '<div class="row-photo"><img src="' + photoSrc(m) + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy" /></div>' +
+          '<div class="row-modelo-info">' +
+            '<span class="row-marca">' + m.marca + '</span>' +
+            '<span class="row-nombre">' + m.modelo + ' ' + m.variante + '</span>' +
+            '<div class="row-badges">' + makeBadgesHtml(m) + '</div>' +
+          '</div>' +
+        '</div></td>';
+
+      activeFields.forEach(f => {
+        const val = m[f.key];
+        let display = fmtField(val, f);
+        let unitHtml = '';
+        if (f.unit && !f.fmt && !f.isText && val != null) {
+          unitHtml = ' <small>' + f.unit + '</small>';
+        }
+        const isPrice = f.id === 'pvp';
+        const isAuto = f.id === 'autonomia';
+        html += '<td class="col-num' + (isPrice ? ' col-precio' : '') + (isAuto ? ' col-autonomia' : '') + '">' +
+          (isAuto ? '<strong>' : '') + display + (isAuto ? '</strong>' : '') + unitHtml + '</td>';
+      });
+
+      tr.innerHTML = html;
+      return tr;
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // MAIN UPDATE
+    // ═══════════════════════════════════════════════════════
     function update() {
       const f = getFilterValues();
-      const active = getActiveFilters();
       let filtered = allModelos.filter(m => passesFilter(m, f));
       filtered.sort((a, b) => getSortKey(a) - getSortKey(b));
 
@@ -500,31 +609,39 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
         grid.style.display = hasResults ? '' : 'none';
         tableWrap.style.display = 'none';
         grid.innerHTML = '';
-        filtered.forEach(m => grid.appendChild(renderCard(m, active)));
+        filtered.forEach(m => grid.appendChild(renderCard(m)));
       } else {
         grid.style.display = 'none';
         tableWrap.style.display = hasResults ? '' : 'none';
+        renderTableHeaders();
         tbody.innerHTML = '';
-        filtered.forEach(m => tbody.appendChild(renderRow(m, active)));
-        updateTableHeaders(active);
+        filtered.forEach(m => tbody.appendChild(renderRow(m)));
       }
     }
 
-    // Event listeners
+    // ═══════════════════════════════════════════════════════
+    // EVENT LISTENERS
+    // ═══════════════════════════════════════════════════════
     Object.values(filters).forEach(el => {
       el.addEventListener('input', update);
       el.addEventListener('change', update);
     });
-    sortSelect.addEventListener('change', update);
+    sortSelect.addEventListener('change', () => {
+      tableSortId = null; // reset table sort when dropdown changes
+      update();
+    });
 
     btnReset.addEventListener('click', () => {
       Object.values(filters).forEach(el => {
         if (el.tagName === 'SELECT') el.value = '';
         else el.value = '';
       });
+      tableSortId = null;
       update();
     });
 
+    // Init
+    renderChips();
     update();
   </script>
 </Layout>
@@ -675,6 +792,93 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
   }
   .comparador select:focus { border-color: var(--yellow); }
 
+  /* ═══════════════════════════════════════
+     FIELD SELECTOR (Campos visibles)
+     ═══════════════════════════════════════ */
+  .comp-fields {
+    background: var(--white);
+    padding: 1.25rem 0;
+    border-bottom: 1px solid #e5e2dd;
+  }
+  .fields-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .fields-header h2 {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 1rem;
+    color: var(--black);
+    margin: 0;
+  }
+  .toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .toggle-label {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--gray-600);
+  }
+  .toggle-switch {
+    width: 36px;
+    height: 20px;
+    border-radius: 10px;
+    background: #ddd;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .toggle-switch.on {
+    background: var(--yellow);
+  }
+  .toggle-knob {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    background: #fff;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: left 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .toggle-switch.on .toggle-knob {
+    left: 18px;
+  }
+
+  .fields-chips {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .field-chip {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 400;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    border: none;
+    cursor: default;
+    background: #F0EDE8;
+    color: #999;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .field-chip.active {
+    background: var(--yellow);
+    color: var(--black);
+    font-weight: 500;
+  }
+  /* When custom mode is on, chips are clickable */
+  .toggle-switch.on ~ .fields-chips .field-chip,
+  .field-chip { cursor: default; }
+
   /* ── Results ─────────────────────────── */
   .comp-results {
     padding: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(3rem, 6vw, 5rem);
@@ -762,7 +966,7 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
   }
 
   /* ═══════════════════════════════════════
-     FICHAS VIEW — Propuesta F
+     FICHAS VIEW
      ═══════════════════════════════════════ */
   .results-grid {
     display: grid;
@@ -787,7 +991,6 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
     transform: translateY(-3px);
   }
 
-  /* Photo — keeps dark gradient background for contrast */
   .ev-card-photo {
     background: linear-gradient(180deg, #0e0e0e, #1a1a1a);
     aspect-ratio: 16 / 9;
@@ -808,7 +1011,6 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
 
   .ev-card-body { padding: 1rem 1.25rem 1.25rem; }
 
-  /* Header: name left, autonomy right */
   .ev-card-header {
     display: flex;
     justify-content: space-between;
@@ -840,7 +1042,6 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
     color: #999;
   }
 
-  /* Autonomy integrated in header */
   .ev-card-autonomia {
     display: flex;
     align-items: baseline;
@@ -848,10 +1049,6 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
     flex-shrink: 0;
     padding: 0.25rem 0.5rem;
     border-radius: 6px;
-    transition: background 0.2s;
-  }
-  .ev-card-autonomia.ev-highlight-active {
-    background: rgba(245,197,24,0.15);
   }
   .ev-autonomia-value {
     font-family: var(--font-sans);
@@ -870,7 +1067,7 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
     letter-spacing: 0.04em;
   }
 
-  /* Badges row */
+  /* Badges */
   .ev-badges {
     display: flex;
     gap: 0.3rem;
@@ -893,11 +1090,12 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
   .badge-lfp { background: var(--yellow); color: var(--black); }
   .badge-nmc { background: #4A90D9; }
   .badge-nca { background: #7B68EE; }
+  .badge-800v { background: #7B68EE; color: #fff; }
+  .badge-bcalor { background: #2E8B57; color: #fff; }
 
-  /* Stats row (4 cols) */
+  /* Stats grid (dynamic columns) */
   .ev-card-stats {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
     gap: 0.5rem;
     padding-bottom: 0.75rem;
     border-bottom: 1px solid #eee;
@@ -939,21 +1137,6 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
   .ev-detail span:last-child { font-weight: 400; color: var(--black); }
   .ev-detail-price span:last-child { font-weight: 600; color: var(--black); }
 
-  /* ── Active-filter highlights (cards) ── */
-  .ev-stat.hl {
-    background: rgba(245,197,24,0.12);
-    border-radius: 6px;
-    padding: 0.3rem 0.15rem;
-  }
-  .ev-stat.hl .ev-stat-value { color: var(--yellow); font-weight: 600; }
-  .ev-detail-hl {
-    background: rgba(245,197,24,0.1);
-    border-radius: 4px;
-    padding: 0.2rem 0.4rem !important;
-    margin: 0 -0.4rem;
-  }
-  .ev-detail-hl span:last-child { font-weight: 500 !important; color: var(--yellow); }
-
   /* ═══════════════════════════════════════
      LISTADO VIEW (table)
      ═══════════════════════════════════════ */
@@ -987,7 +1170,18 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
     border: none;
   }
   .results-table th.col-num { text-align: right; }
-  .results-table th.col-tipo { text-align: center; }
+  .results-table th.col-sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .results-table th.col-sortable:hover {
+    background: #333;
+  }
+  .results-table th.th-sorted {
+    background: var(--yellow) !important;
+    color: var(--black) !important;
+  }
 
   .results-table td {
     padding: 0.6rem 0.75rem;
@@ -999,26 +1193,56 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
     text-align: right;
     font-variant-numeric: tabular-nums;
   }
-  .results-table td.col-tipo {
-    text-align: center;
-  }
   .results-table td small {
     font-size: 0.625rem;
     color: #999;
     margin-left: 0.15rem;
   }
 
-  /* Autonomia column highlight */
   .col-autonomia strong {
     color: var(--yellow);
     font-weight: 600;
   }
-
-  /* Price column */
   .col-precio { font-weight: 500 !important; }
 
-  /* Row modelo info */
-  .row-modelo { display: flex; flex-direction: column; }
+  /* Sticky modelo column */
+  .col-sticky {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: #fff;
+  }
+  thead .col-sticky {
+    z-index: 3;
+    background: var(--black);
+  }
+  .ev-row:nth-child(even) .col-sticky {
+    background: #fafaf8;
+  }
+
+  /* Row with photo */
+  .row-modelo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+  .row-photo {
+    width: 80px;
+    height: 45px;
+    border-radius: 5px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #0e0e0e, #1a1a1a);
+    flex-shrink: 0;
+  }
+  .row-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .row-modelo-info {
+    display: flex;
+    flex-direction: column;
+  }
   .row-marca {
     font-size: 0.5625rem;
     font-weight: 500;
@@ -1033,6 +1257,38 @@ const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort(
     color: var(--black);
     line-height: 1.3;
   }
+  .row-badges {
+    display: flex;
+    gap: 0.2rem;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+  }
+  .row-badges .badge {
+    font-size: 0.5rem;
+    padding: 0.1rem 0.3rem;
+  }
 
-  /* Badges inside table */
-  .col-ti
+  /* ── Methodology ────────────────────── */
+  .comp-methodology {
+    background: var(--white);
+    padding: clamp(2rem, 4vw, 3rem) 0;
+    border-top: 1px solid var(--gray-100);
+  }
+  .comp-methodology .t-small {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gray-400);
+    margin-bottom: 0.5rem;
+  }
+  .comp-methodology p {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: var(--gray-600);
+    line-height: 1.7;
+    max-width: 680px;
+  }
+</style>
