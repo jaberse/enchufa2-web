@@ -21,14 +21,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   <Header />
 
   <main class="comparador">
-    <!-- DISCLAIMER -->
-    <div class="comp-disclaimer">
-      <div class="page-width">
-        <span class="disclaimer-icon">🚧</span>
-        <p>Esta herramienta está <strong>en construcción</strong>. Estamos añadiendo modelos, datos y funcionalidades. Si encuentras algún error, escríbenos.</p>
-      </div>
-    </div>
-
     <!-- HERO -->
     <section class="comp-hero">
       <div class="page-width">
@@ -38,6 +30,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           Dinos qué necesitas. Nosotros te decimos qué coches lo cumplen.<br/>
           <span class="accent">{data.total_modelos} modelos</span> · Datos verificados de fabricantes
         </p>
+        <p class="comp-beta-tag">🚧 En construcción — estamos añadiendo modelos, datos y funcionalidades. <a href="/contacto">Reportar error</a></p>
       </div>
     </section>
 
@@ -88,11 +81,18 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         <div class="results-grid" id="results-grid"></div>
 
         <!-- Listado table -->
-        <div class="results-table-wrap" id="results-table-wrap" style="display:none;">
-          <table class="results-table" id="results-table">
-            <thead id="results-thead"></thead>
-            <tbody id="results-tbody"></tbody>
-          </table>
+        <div class="results-table-outer" id="results-table-outer" style="display:none;">
+          <div class="scroll-nav" id="scroll-nav">
+            <span class="scroll-nav-hint">Desliza para ver más columnas</span>
+            <button class="scroll-btn" id="scroll-left" aria-label="Scroll izquierda">←</button>
+            <button class="scroll-btn" id="scroll-right" aria-label="Scroll derecha">→</button>
+          </div>
+          <div class="results-table-wrap" id="results-table-wrap">
+            <table class="results-table" id="results-table">
+              <thead id="results-thead"></thead>
+              <tbody id="results-tbody"></tbody>
+            </table>
+          </div>
         </div>
 
         <p class="results-empty" id="no-results" style="display:none;">
@@ -182,6 +182,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     let tableSortAsc = true;
 
     const grid = document.getElementById('results-grid');
+    const tableOuter = document.getElementById('results-table-outer');
     const tableWrap = document.getElementById('results-table-wrap');
     const thead = document.getElementById('results-thead');
     const tbody = document.getElementById('results-tbody');
@@ -190,6 +191,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     const btnReset = document.getElementById('btn-reset');
     const numericChips = document.getElementById('numeric-chips');
     const catChipsEl = document.getElementById('cat-chips');
+    const scrollNav = document.getElementById('scroll-nav');
+    const scrollLeftBtn = document.getElementById('scroll-left');
+    const scrollRightBtn = document.getElementById('scroll-right');
     const toggleWrap = document.getElementById('toggle-custom-wrap');
     const toggleSwitch = document.getElementById('toggle-custom');
 
@@ -663,7 +667,38 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       thead.querySelectorAll('.col-sortable').forEach(th => {
         th.addEventListener('click', () => handleSort(th.dataset.sortId));
       });
+
+      updateScrollNav();
     }
+
+    // ── Scroll navigation helpers ──
+    function updateScrollNav() {
+      const nCols = FIELDS.filter(f => selectedFields.includes(f.id)).length;
+      const useScroll = nCols > SCROLL_THRESHOLD;
+      if (useScroll) {
+        scrollNav.classList.add('visible');
+        updateScrollBtnState();
+      } else {
+        scrollNav.classList.remove('visible');
+      }
+    }
+
+    function updateScrollBtnState() {
+      const sl = tableWrap.scrollLeft;
+      const maxScroll = tableWrap.scrollWidth - tableWrap.clientWidth;
+      scrollLeftBtn.disabled = sl <= 2;
+      scrollRightBtn.disabled = sl >= maxScroll - 2;
+    }
+
+    scrollLeftBtn.addEventListener('click', () => {
+      tableWrap.scrollBy({ left: -300, behavior: 'smooth' });
+    });
+    scrollRightBtn.addEventListener('click', () => {
+      tableWrap.scrollBy({ left: 300, behavior: 'smooth' });
+    });
+    tableWrap.addEventListener('scroll', () => {
+      if (scrollNav.classList.contains('visible')) updateScrollBtnState();
+    });
 
     function renderRow(m) {
       const tr = document.createElement('tr');
@@ -711,15 +746,16 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
       if (currentView === 'fichas') {
         grid.style.display = hasResults ? '' : 'none';
-        tableWrap.style.display = 'none';
+        tableOuter.style.display = 'none';
         grid.innerHTML = '';
         filtered.forEach(m => grid.appendChild(renderCard(m)));
       } else {
         grid.style.display = 'none';
-        tableWrap.style.display = hasResults ? '' : 'none';
+        tableOuter.style.display = hasResults ? '' : 'none';
         renderTableHeaders();
         tbody.innerHTML = '';
         filtered.forEach(m => tbody.appendChild(renderRow(m)));
+        updateScrollNav();
       }
     }
 
@@ -753,26 +789,22 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     max-width: 1400px;
   }
 
-  /* ── Disclaimer ──────────────────────── */
-  .comp-disclaimer {
-    background: var(--yellow);
-    padding: 0.75rem 0;
-  }
-  .comp-disclaimer .page-width {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-  .disclaimer-icon { font-size: 1.25rem; flex-shrink: 0; }
-  .comp-disclaimer p {
+  /* ── Beta tag (inline in hero) ────────── */
+  .comp-beta-tag {
+    display: inline-block;
+    margin-top: 1rem;
     font-family: var(--font-sans);
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     font-weight: 400;
-    color: var(--black);
-    margin: 0;
-    line-height: 1.5;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.01em;
   }
-  .comp-disclaimer strong { font-weight: 600; }
+  .comp-beta-tag a {
+    color: var(--yellow);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .comp-beta-tag a:hover { text-decoration: underline; }
 
   /* ── Hero ─────────────────────────────── */
   .comp-hero {
@@ -1287,6 +1319,40 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   /* ═══════════════════════════════════════
      LISTADO VIEW (table) — table-layout: fixed
      ═══════════════════════════════════════ */
+  /* ── Scroll nav (arrows above table) ── */
+  .results-table-outer { position: relative; }
+  .scroll-nav {
+    display: none;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .scroll-nav.visible { display: flex; }
+  .scroll-nav-hint {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: #999;
+    margin-right: auto;
+  }
+  .scroll-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+    color: var(--black);
+    flex-shrink: 0;
+  }
+  .scroll-btn:hover { background: var(--gray-100); border-color: #bbb; }
+  .scroll-btn:disabled { opacity: 0.3; cursor: default; }
+
   .results-table-wrap {
     border: 1px solid #ddd;
     border-radius: 10px;
