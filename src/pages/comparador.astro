@@ -153,7 +153,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       { id:'diametro_giro', label:'Diám. giro',      shortLabel:'D.giro',  unit:'m',         key:'diametro_giro_m',         dflt:false, sortAsc:true,  filterType:'max', dec:1 },
       { id:'frunk',         label:'Frunk',           shortLabel:'Frunk',   unit:'L',         key:'frunk_l',                 dflt:false, sortAsc:false, filterType:'min' },
       { id:'remolque',      label:'Remolque',        shortLabel:'Remolq.', unit:'kg',        key:'capacidad_remolque_kg',   dflt:false, sortAsc:false, filterType:'min' },
-      { id:'n_motores',     label:'Motores',         shortLabel:'Mot.',    unit:'',          key:'n_motores',               dflt:false, sortAsc:false, filterType:null },
       { id:'garantia',      label:'Garantía bat.',   shortLabel:'Garant.', unit:'',          key:'garantia_bateria',        dflt:false, sortAsc:false, filterType:null, isText:true },
     ];
 
@@ -658,27 +657,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         table.prepend(colgroup);
       }
 
-      // Adaptive font: shrink on many columns and on mobile
-      let fontSize = '0.8125rem';  // default 13px
-      let thFontSize = '0.625rem'; // default 10px
-      if (mobile) {
-        fontSize = '0.75rem';      // 12px
-        thFontSize = '0.5625rem';  // 9px
-      } else if (nCols > 14) {
-        fontSize = '0.6875rem';    // 11px
-        thFontSize = '0.5625rem';  // 9px
-      } else if (nCols > 10) {
-        fontSize = '0.75rem';      // 12px
-        thFontSize = '0.5625rem';  // 9px
-      }
-      table.style.fontSize = fontSize;
-
       let html = '<tr>';
-      html += '<th class="col-modelo' + (useScroll ? ' col-sticky' : '') + '" style="font-size:' + thFontSize + '">Modelo</th>';
+      html += '<th class="col-modelo' + (useScroll ? ' col-sticky' : '') + '">Modelo</th>';
       activeFields.forEach(f => {
         const isSorted = tableSortId === f.id;
         const arrow = isSorted ? (tableSortAsc ? ' \u25B2' : ' \u25BC') : '';
-        html += '<th class="col-num col-sortable' + (isSorted ? ' th-sorted' : '') + '" data-sort-id="' + f.id + '" style="font-size:' + thFontSize + '">' + f.shortLabel + arrow + '</th>';
+        // Use full label on desktop, shortLabel on mobile
+        const thText = mobile ? f.shortLabel : f.label;
+        html += '<th class="col-num col-sortable' + (isSorted ? ' th-sorted' : '') + '" data-sort-id="' + f.id + '">' + thText + arrow + '</th>';
       });
       html += '</tr>';
       thead.innerHTML = html;
