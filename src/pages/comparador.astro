@@ -618,8 +618,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // RENDER TABLE (LISTADO) — adaptive layout
     // ═══════════════════════════════════════════════════════
     const MOBILE_BP = 768;
-    const MIN_COL_W = 90;   // never narrower than this
-    let computedColW = MIN_COL_W; // actual column width, recalculated on render
+    const MIN_COL_W = 100;  // minimum data-column width (px)
+    let computedColW = MIN_COL_W;
 
     function isMobile() { return window.innerWidth <= MOBILE_BP; }
 
@@ -633,24 +633,30 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       let existingColgroup = table.querySelector('colgroup');
       if (existingColgroup) existingColgroup.remove();
 
-      // Always scroll mode with fixed column widths
       table.style.tableLayout = 'fixed';
       wrap.classList.add('scroll-mode');
 
       const modeloW = mobile ? 140 : 200;
       const nCols = activeFields.length;
 
-      // Available width for data columns = container minus modelo column
-      const availW = wrap.clientWidth - modeloW;
-      // How many full columns fit?
+      // 2px for border (1px each side)
+      const containerW = wrap.clientWidth;
+      const availW = containerW - modeloW;
+
+      // How many full columns fit at minimum width?
       const fitCols = Math.max(1, Math.floor(availW / MIN_COL_W));
-      // If all columns fit, divide space evenly; otherwise use MIN_COL_W
+
+      // Column width = exact division of available space by visible columns
+      // This guarantees fitCols columns fill the viewport perfectly
       if (nCols <= fitCols) {
-        computedColW = Math.floor(availW / nCols);
+        // All columns fit — each gets equal share, no scroll needed
+        computedColW = availW / nCols;
       } else {
-        computedColW = Math.max(MIN_COL_W, Math.floor(availW / fitCols));
+        // More columns than fit — size so visible ones fill exactly
+        computedColW = availW / fitCols;
       }
 
+      // Total table width = modelo + all data columns at computed width
       const totalW = modeloW + (nCols * computedColW);
       table.style.width = totalW + 'px';
 
@@ -701,11 +707,19 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     }
 
     scrollLeftBtn.addEventListener('click', () => {
-      // Scroll by exactly one column width so columns always align
-      tableWrap.scrollBy({ left: -computedColW, behavior: 'smooth' });
+      // Snap scroll: move by exactly N columns so edges always align
+      const step = computedColW * 2;
+      const sl = tableWrap.scrollLeft;
+      // Round down to nearest column boundary
+      const target = Math.max(0, Math.round((sl - step) / computedColW) * computedColW);
+      tableWrap.scrollTo({ left: target, behavior: 'smooth' });
     });
     scrollRightBtn.addEventListener('click', () => {
-      tableWrap.scrollBy({ left: computedColW, behavior: 'smooth' });
+      const step = computedColW * 2;
+      const sl = tableWrap.scrollLeft;
+      const maxScroll = tableWrap.scrollWidth - tableWrap.clientWidth;
+      const target = Math.min(maxScroll, Math.round((sl + step) / computedColW) * computedColW);
+      tableWrap.scrollTo({ left: target, behavior: 'smooth' });
     });
     tableWrap.addEventListener('scroll', () => {
       if (scrollNav.classList.contains('visible')) updateScrollBtnState();
@@ -1436,7 +1450,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     padding: 0.6rem 0.5rem;
     text-align: left;
     border: none;
-    white-space: nowrap;
   }
   .results-table th.col-num { text-align: right; }
   .results-table th.col-sortable {
