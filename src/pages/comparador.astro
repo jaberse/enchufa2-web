@@ -928,7 +928,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-family: var(--font-sans);
     font-size: 0.75rem;
     font-weight: 400;
-    color: var(--gray-600);
+    color: var(--text-secondary);
   }
   .toggle-switch {
     width: 36px;
@@ -990,14 +990,17 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .u-chip.active {
     background: var(--yellow);
-    color: var(--text);
+    color: var(--black);
     font-weight: 500;
   }
   .u-chip.has-filter {
     background: var(--yellow-glow);
     border-color: var(--yellow);
-    color: var(--text);
+    color: var(--black);
     font-weight: 500;
+  }
+  [data-theme="dark"] .u-chip.has-filter {
+    color: var(--yellow);
   }
   .chip-filter-icon {
     opacity: 0.35;
@@ -1149,7 +1152,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-family: var(--font-sans);
     font-weight: 300;
     font-size: 0.875rem;
-    color: var(--gray-600);
+    color: var(--text-secondary);
     margin: 0;
   }
   .results-count span { font-weight: 500; color: var(--text); }
@@ -1166,7 +1169,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-family: var(--font-sans);
     font-size: 0.6875rem;
     font-weight: 400;
-    color: var(--gray-600);
+    color: var(--text-secondary);
     background: transparent;
     border: none;
     padding: 0.4rem 0.85rem;
@@ -1184,7 +1187,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-family: var(--font-serif);
     font-style: italic;
     font-size: 1.25rem;
-    color: var(--gray-600);
+    color: var(--text-secondary);
     text-align: center;
     padding: 4rem 0;
   }
@@ -1544,7 +1547,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .comp-methodology {
     background: var(--surface);
     padding: clamp(2rem, 4vw, 3rem) 0;
-    border-top: 1px solid var(--gray-100);
+    border-top: 1px solid var(--border);
   }
   .comp-methodology .t-small {
     font-family: var(--font-sans);
@@ -1552,14 +1555,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--gray-400);
+    color: var(--text-muted);
     margin-bottom: 0.5rem;
   }
   .comp-methodology p {
     font-family: var(--font-sans);
     font-size: 0.875rem;
     font-weight: 300;
-    color: var(--gray-600);
+    color: var(--text-secondary);
     line-height: 1.7;
     max-width: 680px;
   }

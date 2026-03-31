@@ -312,19 +312,24 @@
   }
 </style>
 
-<script>
+<script is:inline>
   // ── Theme toggle ──
-  const themeBtn = document.getElementById('theme-toggle');
-  themeBtn?.addEventListener('click', () => {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    if (isDark) {
-      document.documentElement.removeAttribute('data-theme');
-      localStorage.setItem('theme', 'light');
-    } else {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      localStorage.setItem('theme', 'dark');
-    }
-  });
+  (function() {
+    var themeBtn = document.getElementById('theme-toggle');
+    if (!themeBtn) return;
+    themeBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+  })();
 
   // ── Scroll header ──
   const header = document.getElementById('site-header');
