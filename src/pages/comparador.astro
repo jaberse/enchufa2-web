@@ -636,7 +636,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       table.style.tableLayout = 'fixed';
       wrap.classList.add('scroll-mode');
 
-      const modeloW = mobile ? 140 : 200;
+      const modeloW = mobile ? 160 : 260;
       const nCols = activeFields.length;
 
       // 2px for border (1px each side)
@@ -946,13 +946,17 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .toggle-switch.on .toggle-knob { left: 18px; }
 
-  /* Chips container — single line with scroll */
+  /* Chips container — always one horizontal line */
   .unified-chips {
     display: flex;
     gap: 0.35rem;
-    flex-wrap: wrap;
     align-items: center;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;        /* Firefox */
+    padding-bottom: 2px;
   }
+  .unified-chips::-webkit-scrollbar { display: none; }
   .unified-chips > span {
     display: contents;
   }
@@ -968,6 +972,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .chip-wrap {
     position: relative;
     display: inline-flex;
+    flex-shrink: 0;
   }
   .u-chip {
     font-family: var(--font-sans);
