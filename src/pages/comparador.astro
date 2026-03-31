@@ -617,8 +617,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // ═══════════════════════════════════════════════════════
     // RENDER TABLE (LISTADO) — adaptive layout
     // ═══════════════════════════════════════════════════════
-    const MIN_DATA_COL = 90;     // minimum px per data column
     const MOBILE_BP = 768;
+    const MIN_COL_W = 90;   // never narrower than this
+    let computedColW = MIN_COL_W; // actual column width, recalculated on render
 
     function isMobile() { return window.innerWidth <= MOBILE_BP; }
 
@@ -632,15 +633,31 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       let existingColgroup = table.querySelector('colgroup');
       if (existingColgroup) existingColgroup.remove();
 
-      // Always scroll mode — auto layout, overflow-x, sticky first column
-      table.style.tableLayout = 'auto';
+      // Always scroll mode with fixed column widths
+      table.style.tableLayout = 'fixed';
       wrap.classList.add('scroll-mode');
-      const modeloW = mobile ? '140px' : '200px';
-      const minCol = mobile ? '70px' : MIN_DATA_COL + 'px';
+
+      const modeloW = mobile ? 140 : 200;
+      const nCols = activeFields.length;
+
+      // Available width for data columns = container minus modelo column
+      const availW = wrap.clientWidth - modeloW;
+      // How many full columns fit?
+      const fitCols = Math.max(1, Math.floor(availW / MIN_COL_W));
+      // If all columns fit, divide space evenly; otherwise use MIN_COL_W
+      if (nCols <= fitCols) {
+        computedColW = Math.floor(availW / nCols);
+      } else {
+        computedColW = Math.max(MIN_COL_W, Math.floor(availW / fitCols));
+      }
+
+      const totalW = modeloW + (nCols * computedColW);
+      table.style.width = totalW + 'px';
+
       const colgroup = document.createElement('colgroup');
-      colgroup.innerHTML = '<col style="width:' + modeloW + ';min-width:' + modeloW + '" />';
+      colgroup.innerHTML = '<col style="width:' + modeloW + 'px" />';
       activeFields.forEach(() => {
-        colgroup.innerHTML += '<col style="min-width:' + minCol + '" />';
+        colgroup.innerHTML += '<col style="width:' + computedColW + 'px" />';
       });
       table.prepend(colgroup);
 
@@ -684,10 +701,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     }
 
     scrollLeftBtn.addEventListener('click', () => {
-      tableWrap.scrollBy({ left: -300, behavior: 'smooth' });
+      // Scroll by exactly one column width so columns always align
+      tableWrap.scrollBy({ left: -computedColW, behavior: 'smooth' });
     });
     scrollRightBtn.addEventListener('click', () => {
-      tableWrap.scrollBy({ left: 300, behavior: 'smooth' });
+      tableWrap.scrollBy({ left: computedColW, behavior: 'smooth' });
     });
     tableWrap.addEventListener('scroll', () => {
       if (scrollNav.classList.contains('visible')) updateScrollBtnState();
