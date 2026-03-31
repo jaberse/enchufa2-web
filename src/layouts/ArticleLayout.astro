@@ -148,7 +148,7 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     z-index: 10;
   }
   .article-body :global(.stat) {
-    background: #fff;
+    background: var(--surface);
     border-radius: 8px;
     padding: 1.5rem 1.75rem;
     box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
@@ -162,7 +162,7 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     font-size: clamp(1.25rem, 3vw, 2.25rem);
     font-weight: 200;
     letter-spacing: -0.03em;
-    color: var(--black);
+    color: var(--text);
     margin-bottom: 0.25rem;
     word-break: break-word;
     hyphens: none;
@@ -189,7 +189,7 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     font-size: clamp(1.4rem, 2.8vw, 1.9rem);
     letter-spacing: -0.02em;
     line-height: 1.15;
-    color: var(--black);
+    color: var(--text);
     margin-top: 3.5rem;
     margin-bottom: 1.25rem;
   }
@@ -199,7 +199,7 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     font-weight: 400;
     font-size: 1.1rem;
     letter-spacing: -0.01em;
-    color: var(--black);
+    color: var(--text);
     margin-top: 2rem;
     margin-bottom: 0.875rem;
   }
@@ -215,7 +215,7 @@ const { title, description, readingTime, publishDate, references } = Astro.props
 
   .article-body :global(strong) {
     font-weight: 400;
-    color: var(--black);
+    color: var(--text);
   }
 
   .article-body :global(em) {
@@ -242,12 +242,12 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     font-weight: 600;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--black);
+    color: var(--text);
     margin-bottom: 0.75rem;
   }
   .article-body :global(.tldr li) {
     font-size: 0.9375rem;
-    color: var(--black);
+    color: var(--text);
     margin-bottom: 0.5rem;
     line-height: 1.6;
     font-weight: 300;
@@ -292,7 +292,7 @@ const { title, description, readingTime, publishDate, references } = Astro.props
   }
   .article-body :global(.comp-name) {
     font-weight: 500;
-    color: var(--black);
+    color: var(--text);
   }
   .article-body :global(.comp-desc) {
     color: var(--gray-600);
@@ -336,7 +336,7 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     color: var(--yellow) !important;
   }
   .article-body :global(.ct-row > span:first-child) {
-    color: var(--black);
+    color: var(--text);
     font-weight: 400;
   }
   .article-body :global(.ct-row:not(.ct-header):nth-child(even)) {
@@ -352,7 +352,7 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     border-radius: 0 6px 6px 0;
     font-size: 0.95rem;
     line-height: 1.75;
-    color: var(--black);
+    color: var(--text);
     font-weight: 300;
   }
   .article-body :global(blockquote small) {
@@ -452,7 +452,7 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     color: var(--gray-400);
     transition: color 0.2s ease;
   }
-  .back-link:hover { color: var(--black); }
+  .back-link:hover { color: var(--text); }
   .back-link svg {
     transition: transform 0.25s var(--ease-out-expo);
   }

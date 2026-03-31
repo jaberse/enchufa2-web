@@ -15,6 +15,21 @@
   --gray-500: #76756F;
   --gray-600: #555550;
 
+  /* Semantic aliases (overridden by dark theme) */
+  --bg:       var(--cream);
+  --surface:  #FFFFFF;
+  --surface-alt: var(--gray-50);
+  --text:     var(--black);
+  --text-secondary: var(--gray-600);
+  --text-muted: var(--gray-400);
+  --border:   var(--gray-100);
+  --header-bg: var(--black);
+  --header-text: var(--white);
+  --table-header-bg: var(--black);
+  --table-row-even: #fafaf8;
+  --card-bg:  #FFFFFF;
+  --yellow-text: #8a6d00;
+
   --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
   --font-serif: 'Instrument Serif', Georgia, serif;
 
@@ -27,6 +42,26 @@
   --max-w: 1200px;
   --article-max: 780px;
   --radius: 8px;
+}
+
+/* ─────────────────────────────────────────────
+   DARK THEME — Midnight
+───────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg:       #0D0F14;
+  --surface:  #161921;
+  --surface-alt: #1C1F2A;
+  --text:     #E8E7E3;
+  --text-secondary: #A0A0A0;
+  --text-muted: #666680;
+  --border:   #2A2D3A;
+  --header-bg: #0A0C10;
+  --header-text: #E8E7E3;
+  --table-header-bg: #161921;
+  --table-row-even: #1C1F2A;
+  --card-bg:  #161921;
+  --yellow-text: #F5C518;
+  --yellow-glow: rgba(245,197,24,0.10);
 }
 
 /* ─────────────────────────────────────────────
@@ -49,9 +84,10 @@ body {
   font-weight: 300;
   font-size: 1rem;
   line-height: 1.6;
-  color: var(--black);
-  background: var(--cream);
+  color: var(--text);
+  background: var(--bg);
   overflow-x: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 img, svg { display: block; max-width: 100%; }
@@ -90,7 +126,7 @@ a { color: inherit; text-decoration: none; }
   font-weight: 300;
   font-size: clamp(1rem, 1.5vw, 1.125rem);
   line-height: 1.75;
-  color: var(--gray-600);
+  color: var(--text-secondary);
 }
 
 .t-small {

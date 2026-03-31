@@ -847,8 +847,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   /* ── Hero ─────────────────────────────── */
   .comp-hero {
-    background: var(--black);
-    color: var(--white);
+    background: var(--header-bg);
+    color: var(--header-text);
     padding: 2.5rem 0 2rem;
   }
   .comp-label {
@@ -871,7 +871,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-family: var(--font-sans);
     font-weight: 300;
     font-size: 0.8125rem;
-    color: var(--gray-600);
+    color: rgba(255,255,255,0.6);
     line-height: 1.6;
     margin: 0;
   }
@@ -880,9 +880,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
      UNIFIED BAR
      ═══════════════════════════════════════ */
   .comp-unified {
-    background: var(--white);
+    background: var(--surface);
     padding: 1rem 0 0.85rem;
-    border-bottom: 1px solid #e5e2dd;
+    border-bottom: 1px solid var(--border);
   }
   .unified-header {
     display: flex;
@@ -899,22 +899,22 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-family: var(--font-sans);
     font-weight: 400;
     font-size: 0.9375rem;
-    color: var(--black);
+    color: var(--text);
     margin: 0;
   }
   .btn-reset {
     font-family: var(--font-sans);
     font-size: 0.6875rem;
     font-weight: 400;
-    color: #999;
+    color: var(--text-muted);
     background: none;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
     padding: 0.15rem 0.6rem;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s;
   }
-  .btn-reset:hover { color: var(--black); border-color: var(--gray-400); }
+  .btn-reset:hover { color: var(--text); border-color: var(--gray-400); }
 
   /* Toggle switch */
   .toggle-wrap {
@@ -934,7 +934,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     width: 36px;
     height: 20px;
     border-radius: 10px;
-    background: #ddd;
+    background: var(--gray-200);
     position: relative;
     transition: background 0.2s;
   }
@@ -943,7 +943,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     width: 16px;
     height: 16px;
     border-radius: 8px;
-    background: #fff;
+    background: var(--surface);
     position: absolute;
     top: 2px;
     left: 2px;
@@ -962,7 +962,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .chips-separator {
     width: 1px;
     height: 1.25rem;
-    background: #ddd;
+    background: var(--gray-200);
     flex-shrink: 0;
   }
 
@@ -979,8 +979,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     border-radius: 20px;
     border: 1.5px solid transparent;
     cursor: pointer;
-    background: #EDEAE5;
-    color: #aaa;
+    background: var(--surface-alt);
+    color: var(--text-muted);
     transition: all 0.15s;
     white-space: nowrap;
     display: inline-flex;
@@ -990,13 +990,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .u-chip.active {
     background: var(--yellow);
-    color: var(--black);
+    color: var(--text);
     font-weight: 500;
   }
   .u-chip.has-filter {
-    background: #FFF8DC;
-    border-color: #d4a800;
-    color: var(--black);
+    background: var(--yellow-glow);
+    border-color: var(--yellow);
+    color: var(--text);
     font-weight: 500;
   }
   .chip-filter-icon {
@@ -1009,7 +1009,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     justify-content: center;
     font-size: 0.85rem;
     font-weight: 400;
-    color: #999;
+    color: var(--text-muted);
     margin-left: 2px;
     cursor: pointer;
     line-height: 1;
@@ -1029,8 +1029,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     top: calc(100% + 8px);
     left: 50%;
     transform: translateX(-50%);
-    background: #fff;
-    border: 1px solid #e0e0e0;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 10px;
     padding: 0.75rem 0.85rem;
     box-shadow: 0 8px 32px rgba(0,0,0,0.12);
@@ -1043,15 +1043,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: #999;
+    color: var(--text-muted);
     margin-bottom: 0.5rem;
   }
   .pop-input-wrap {
     display: flex;
     align-items: center;
-    background: #f8f8f6;
+    background: var(--surface-alt);
     border-radius: 6px;
-    border: 1px solid #eee;
+    border: 1px solid var(--border);
     padding: 0 0.65rem;
   }
   .pop-input {
@@ -1063,12 +1063,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     padding: 0.5rem 0;
     outline: none;
     width: 70px;
-    color: var(--black);
+    color: var(--text);
   }
   .pop-unit {
     font-family: var(--font-sans);
     font-size: 0.6875rem;
-    color: #999;
+    color: var(--text-muted);
     flex-shrink: 0;
   }
   .pop-clear {
@@ -1100,12 +1100,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     border: none;
     cursor: pointer;
     text-align: left;
-    background: #f8f8f6;
-    color: #666;
+    background: var(--surface-alt);
+    color: var(--text-secondary);
     font-weight: 400;
     transition: all 0.1s;
   }
-  .pop-option:hover { background: #eee; }
+  .pop-option:hover { background: var(--gray-100); }
   .pop-option-sel {
     background: var(--yellow) !important;
     color: var(--black) !important;
@@ -1115,7 +1115,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   /* ── Hint ─────────────────────────────── */
   .comp-hint {
     background: rgba(245,197,24,0.12);
-    border-bottom: 1px solid #e5e2dd;
+    border-bottom: 1px solid var(--border);
     padding: 0.6rem 0;
   }
   .comp-hint .page-width {
@@ -1127,14 +1127,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .hint-text {
     font-family: var(--font-sans);
     font-size: 0.75rem;
-    color: #555;
+    color: var(--text-secondary);
   }
-  .hint-text strong { color: var(--black); font-weight: 600; }
+  .hint-text strong { color: var(--text); font-weight: 600; }
 
   /* ── Results ─────────────────────────── */
   .comp-results {
     padding: 1.25rem 0 3.5rem;
-    background: #F0EDE8;
+    background: var(--surface-alt);
     min-height: 60vh;
   }
   .results-header {
@@ -1152,13 +1152,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     color: var(--gray-600);
     margin: 0;
   }
-  .results-count span { font-weight: 500; color: var(--black); }
+  .results-count span { font-weight: 500; color: var(--text); }
 
   /* View toggle */
   .view-toggle {
     display: flex;
-    background: #fff;
-    border: 1px solid #ddd;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 6px;
     overflow: hidden;
   }
@@ -1173,7 +1173,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     cursor: pointer;
     transition: all 0.15s;
   }
-  .view-btn:not(:last-child) { border-right: 1px solid #ddd; }
+  .view-btn:not(:last-child) { border-right: 1px solid var(--border); }
   .view-btn.active {
     background: var(--yellow);
     color: var(--black);
@@ -1202,7 +1202,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   @media (max-width: 500px)  { .results-grid { grid-template-columns: 1fr; } }
 
   .ev-card {
-    background: #fff;
+    background: var(--surface);
     border: none;
     border-left: 3px solid var(--yellow);
     border-radius: 10px;
@@ -1249,13 +1249,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: #999;
+    color: var(--text-muted);
   }
   .ev-modelo {
     font-family: var(--font-sans);
     font-size: 0.9375rem;
     font-weight: 500;
-    color: var(--black);
+    color: var(--text);
     letter-spacing: -0.01em;
     line-height: 1.25;
   }
@@ -1263,7 +1263,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-family: var(--font-sans);
     font-size: 0.75rem;
     font-weight: 300;
-    color: #999;
+    color: var(--text-muted);
   }
 
   .ev-card-autonomia {
@@ -1284,7 +1284,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-family: var(--font-sans);
     font-size: 0.55rem;
     font-weight: 400;
-    color: #999;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.04em;
   }
@@ -1307,20 +1307,20 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     white-space: nowrap;
   }
   .badge-sm { font-size: 0.5rem; padding: 0.075rem 0.25rem; }
-  .badge-tipo { background: #F0EDE8; color: var(--gray-600); }
-  .badge-traccion { background: var(--black); color: #fff; }
+  .badge-tipo { background: var(--surface-alt); color: var(--text-secondary); }
+  .badge-traccion { background: var(--black); color: var(--white); }
   .badge-lfp { background: var(--yellow); color: var(--black); }
-  .badge-nmc { background: #4A90D9; color: #fff; }
-  .badge-nca { background: #7B68EE; color: #fff; }
-  .badge-800v { background: #7B68EE; color: #fff; }
-  .badge-bcalor { background: #2E8B57; color: #fff; }
+  .badge-nmc { background: #4A90D9; color: #fff; font-weight: 600; }
+  .badge-nca { background: #7B68EE; color: #fff; font-weight: 600; }
+  .badge-800v { background: #7B68EE; color: #fff; font-weight: 600; }
+  .badge-bcalor { background: #2E8B57; color: #fff; font-weight: 600; }
 
   /* Stats grid (dynamic columns) */
   .ev-card-stats {
     display: grid;
     gap: 0.35rem;
     padding-bottom: 0.6rem;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border);
     margin-bottom: 0.5rem;
   }
   .ev-stat {
@@ -1333,7 +1333,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-family: var(--font-sans);
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--black);
+    color: var(--text);
     line-height: 1.2;
   }
   .ev-stat-label {
@@ -1342,7 +1342,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: #999;
+    color: var(--text-muted);
     margin-top: 0.05rem;
   }
 
@@ -1353,11 +1353,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     justify-content: space-between;
     font-family: var(--font-sans);
     font-size: 0.75rem;
-    color: #999;
+    color: var(--text-muted);
     padding: 0.1rem 0;
   }
-  .ev-detail span:last-child { font-weight: 400; color: var(--black); }
-  .ev-detail-price span:last-child { font-weight: 600; color: var(--black); }
+  .ev-detail span:last-child { font-weight: 400; color: var(--text); }
+  .ev-detail-price span:last-child { font-weight: 600; color: var(--text); }
 
   /* ═══════════════════════════════════════
      LISTADO VIEW (table) — table-layout: fixed
@@ -1375,31 +1375,31 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .scroll-nav-hint {
     font-family: var(--font-sans);
     font-size: 0.75rem;
-    color: #999;
+    color: var(--text-muted);
     margin-right: auto;
   }
   .scroll-btn {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    border: 1px solid #ddd;
-    background: #fff;
+    border: 1px solid var(--border);
+    background: var(--surface);
     font-size: 1rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: background 0.15s, border-color 0.15s;
-    color: var(--black);
+    color: var(--text);
     flex-shrink: 0;
   }
-  .scroll-btn:hover { background: var(--gray-100); border-color: #bbb; }
+  .scroll-btn:hover { background: var(--gray-100); border-color: var(--gray-300); }
   .scroll-btn:disabled { opacity: 0.3; cursor: default; }
 
   .results-table-wrap {
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
     border-radius: 10px;
-    background: #fff;
+    background: var(--surface);
     overflow: hidden;
   }
   .results-table-wrap.scroll-mode {
@@ -1412,14 +1412,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     position: sticky;
     left: 0;
     z-index: 1;
-    background: #fff;
+    background: var(--surface);
   }
   .scroll-mode thead .col-sticky {
     z-index: 3;
-    background: var(--black);
+    background: var(--table-header-bg);
   }
   .scroll-mode .ev-row:nth-child(even) .col-sticky {
-    background: #fafaf8;
+    background: var(--table-row-even);
   }
   .scroll-mode .col-sticky::after {
     content: '';
@@ -1443,8 +1443,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     z-index: 2;
   }
   .results-table th {
-    background: var(--black);
-    color: #fff;
+    background: var(--table-header-bg);
+    color: var(--header-text);
     font-weight: 500;
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -1459,7 +1459,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     user-select: none;
     transition: background 0.15s;
   }
-  .results-table th.col-sortable:hover { background: #333; }
+  .results-table th.col-sortable:hover { background: rgba(255,255,255,0.1); }
   .results-table th.th-sorted {
     background: var(--yellow) !important;
     color: var(--black) !important;
@@ -1467,8 +1467,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   .results-table td {
     padding: 0.55rem 0.5rem;
-    border-bottom: 1px solid #eee;
-    color: var(--black);
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
     font-weight: 400;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1480,7 +1480,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .results-table td small {
     font-size: 0.5625rem;
-    color: #999;
+    color: var(--text-muted);
     margin-left: 0.1rem;
   }
 
@@ -1490,7 +1490,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .col-precio { font-weight: 500 !important; }
 
-  .ev-row:nth-child(even) td { background: #fafaf8; }
+  .ev-row:nth-child(even) td { background: var(--table-row-even); }
 
   /* Row with photo */
   .row-modelo-wrap {
@@ -1521,13 +1521,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: #999;
+    color: var(--text-muted);
     line-height: 1.2;
   }
   .row-nombre {
     font-size: 0.8125rem;
     font-weight: 500;
-    color: var(--black);
+    color: var(--text);
     line-height: 1.3;
     white-space: nowrap;
     overflow: hidden;
@@ -1542,7 +1542,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   /* ── Methodology ────────────────────── */
   .comp-methodology {
-    background: var(--white);
+    background: var(--surface);
     padding: clamp(2rem, 4vw, 3rem) 0;
     border-top: 1px solid var(--gray-100);
   }
