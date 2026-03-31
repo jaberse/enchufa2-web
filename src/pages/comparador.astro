@@ -49,12 +49,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
             </div>
           </label>
         </div>
-        <!-- All chips in one line -->
-        <div class="unified-chips" id="all-chips">
-          <span id="numeric-chips"></span>
-          <span class="chips-separator"></span>
-          <span id="cat-chips"></span>
-        </div>
+        <!-- All chips -->
+        <div class="unified-chips" id="all-chips"></div>
       </div>
     </section>
 
@@ -190,8 +186,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     const countEl = document.getElementById('count');
     const noResults = document.getElementById('no-results');
     const btnReset = document.getElementById('btn-reset');
-    const numericChips = document.getElementById('numeric-chips');
-    const catChipsEl = document.getElementById('cat-chips');
+    const allChipsEl = document.getElementById('all-chips');
     const scrollNav = document.getElementById('scroll-nav');
     const scrollLeftBtn = document.getElementById('scroll-left');
     const scrollRightBtn = document.getElementById('scroll-right');
@@ -237,7 +232,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     }
 
     function photoSrc(m) {
-      return m.foto ? '/comparador/' + m.slug + '.webp?v=7' : '/comparador/placeholder.svg';
+      return m.foto ? '/comparador/' + m.slug + '.webp?v=8' : '/comparador/placeholder.svg';
     }
 
     function hasAnyFilter() {
@@ -258,8 +253,21 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // ═══════════════════════════════════════════════════════
     // RENDER NUMERIC CHIPS
     // ═══════════════════════════════════════════════════════
-    function renderNumericChips() {
-      numericChips.innerHTML = '';
+    function renderAllChips() {
+      allChipsEl.innerHTML = '';
+      _renderNumericChipsInto(allChipsEl);
+      // Separator
+      const sep = document.createElement('div');
+      sep.className = 'chips-separator';
+      allChipsEl.appendChild(sep);
+      _renderCatChipsInto(allChipsEl);
+    }
+
+    // Keep old names as aliases for all call-sites
+    function renderNumericChips() { renderAllChips(); }
+    function renderCatChips() { /* no-op, renderNumericChips already renders all */ }
+
+    function _renderNumericChipsInto(container) {
       const fieldsToShow = customMode ? FIELDS : FIELDS.filter(f => f.dflt);
 
       fieldsToShow.forEach(f => {
@@ -384,16 +392,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           });
         }
 
-        numericChips.appendChild(wrap);
+        container.appendChild(wrap);
       });
     }
 
     // ═══════════════════════════════════════════════════════
     // RENDER CATEGORY CHIPS
     // ═══════════════════════════════════════════════════════
-    function renderCatChips() {
-      catChipsEl.innerHTML = '';
-
+    function _renderCatChipsInto(container) {
       CATS.forEach(c => {
         const vals = catVals[c.id] || [];
         const hasF = vals.length > 0;
@@ -478,7 +484,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           });
         }
 
-        catChipsEl.appendChild(wrap);
+        container.appendChild(wrap);
       });
     }
 
@@ -952,9 +958,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     gap: 0.35rem;
     align-items: center;
     flex-wrap: wrap;
-  }
-  .unified-chips > span {
-    display: contents;
   }
   .chips-separator {
     width: 1px;
