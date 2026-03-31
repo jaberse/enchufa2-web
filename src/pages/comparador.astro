@@ -742,7 +742,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
       activeFields.forEach(f => {
         const val = m[f.key];
-        let display = f.fmt === 'eur' ? fmtCompact(val, f) : fmtField(val, f);
+        let display = fmtField(val, f);
         let unitHtml = '';
         if (f.unit && !f.fmt && !f.isText && val != null) {
           unitHtml = ' <small>' + f.unit + '</small>';
@@ -946,17 +946,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .toggle-switch.on .toggle-knob { left: 18px; }
 
-  /* Chips container — always one horizontal line */
+  /* Chips container — wrap freely, all chips together */
   .unified-chips {
     display: flex;
     gap: 0.35rem;
     align-items: center;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;        /* Firefox */
-    padding-bottom: 2px;
+    flex-wrap: wrap;
   }
-  .unified-chips::-webkit-scrollbar { display: none; }
   .unified-chips > span {
     display: contents;
   }
@@ -965,14 +961,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     height: 1.25rem;
     background: #ddd;
     flex-shrink: 0;
-    display: block !important;
   }
 
   /* Individual chip */
   .chip-wrap {
     position: relative;
     display: inline-flex;
-    flex-shrink: 0;
   }
   .u-chip {
     font-family: var(--font-sans);
