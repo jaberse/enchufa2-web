@@ -49,10 +49,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
             </div>
           </label>
         </div>
-        <!-- Numeric field chips -->
-        <div class="unified-chips" id="numeric-chips"></div>
-        <!-- Category chips -->
-        <div class="unified-chips unified-chips-cats" id="cat-chips"></div>
+        <!-- All chips in one line -->
+        <div class="unified-chips" id="all-chips">
+          <span id="numeric-chips"></span>
+          <span class="chips-separator"></span>
+          <span id="cat-chips"></span>
+        </div>
       </div>
     </section>
 
@@ -615,9 +617,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // ═══════════════════════════════════════════════════════
     // RENDER TABLE (LISTADO) — adaptive layout
     // ═══════════════════════════════════════════════════════
-    const SCROLL_THRESHOLD = 12; // beyond this many fields, switch to scroll mode on desktop
-    const MIN_DATA_COL = 80;     // minimum px per data column in scroll mode
-    const MOBILE_BP = 768;       // px — below this, always scroll mode
+    const MIN_DATA_COL = 90;     // minimum px per data column
+    const MOBILE_BP = 768;
 
     function isMobile() { return window.innerWidth <= MOBILE_BP; }
 
@@ -625,44 +626,29 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
       const table = document.getElementById('results-table');
       const wrap = document.getElementById('results-table-wrap');
-      const nCols = activeFields.length;
       const mobile = isMobile();
-      const useScroll = mobile || nCols > SCROLL_THRESHOLD;
 
       // Remove old colgroup
       let existingColgroup = table.querySelector('colgroup');
       if (existingColgroup) existingColgroup.remove();
 
-      if (useScroll) {
-        // Scroll mode: auto layout, overflow-x, sticky first column
-        table.style.tableLayout = 'auto';
-        wrap.classList.add('scroll-mode');
-        const modeloW = mobile ? '140px' : '200px';
-        const minCol = mobile ? '70px' : MIN_DATA_COL + 'px';
-        const colgroup = document.createElement('colgroup');
-        colgroup.innerHTML = '<col style="width:' + modeloW + ';min-width:' + modeloW + '" />';
-        activeFields.forEach(() => {
-          colgroup.innerHTML += '<col style="min-width:' + minCol + '" />';
-        });
-        table.prepend(colgroup);
-      } else {
-        // Fixed mode: everything fits
-        table.style.tableLayout = 'fixed';
-        wrap.classList.remove('scroll-mode');
-        const colgroup = document.createElement('colgroup');
-        colgroup.innerHTML = '<col style="width:220px" />';
-        activeFields.forEach(() => {
-          colgroup.innerHTML += '<col />';
-        });
-        table.prepend(colgroup);
-      }
+      // Always scroll mode — auto layout, overflow-x, sticky first column
+      table.style.tableLayout = 'auto';
+      wrap.classList.add('scroll-mode');
+      const modeloW = mobile ? '140px' : '200px';
+      const minCol = mobile ? '70px' : MIN_DATA_COL + 'px';
+      const colgroup = document.createElement('colgroup');
+      colgroup.innerHTML = '<col style="width:' + modeloW + ';min-width:' + modeloW + '" />';
+      activeFields.forEach(() => {
+        colgroup.innerHTML += '<col style="min-width:' + minCol + '" />';
+      });
+      table.prepend(colgroup);
 
       let html = '<tr>';
-      html += '<th class="col-modelo' + (useScroll ? ' col-sticky' : '') + '">Modelo</th>';
+      html += '<th class="col-modelo col-sticky">Modelo</th>';
       activeFields.forEach(f => {
         const isSorted = tableSortId === f.id;
         const arrow = isSorted ? (tableSortAsc ? ' \u25B2' : ' \u25BC') : '';
-        // Use full label on desktop, shortLabel on mobile
         const thText = mobile ? f.shortLabel : f.label;
         html += '<th class="col-num col-sortable' + (isSorted ? ' th-sorted' : '') + '" data-sort-id="' + f.id + '">' + thText + arrow + '</th>';
       });
@@ -678,14 +664,16 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
     // ── Scroll navigation helpers ──
     function updateScrollNav() {
-      const nCols = FIELDS.filter(f => selectedFields.includes(f.id)).length;
-      const useScroll = isMobile() || nCols > SCROLL_THRESHOLD;
-      if (useScroll) {
-        scrollNav.classList.add('visible');
-        updateScrollBtnState();
-      } else {
-        scrollNav.classList.remove('visible');
-      }
+      // Show scroll nav when table overflows its container
+      requestAnimationFrame(() => {
+        const overflows = tableWrap.scrollWidth > tableWrap.clientWidth;
+        if (overflows) {
+          scrollNav.classList.add('visible');
+          updateScrollBtnState();
+        } else {
+          scrollNav.classList.remove('visible');
+        }
+      });
     }
 
     function updateScrollBtnState() {
@@ -709,9 +697,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       const tr = document.createElement('tr');
       tr.className = 'ev-row';
       const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
-      const useScroll = isMobile() || activeFields.length > SCROLL_THRESHOLD;
 
-      let html = '<td class="col-modelo' + (useScroll ? ' col-sticky' : '') + '">' +
+      let html = '<td class="col-modelo col-sticky">' +
         '<div class="row-modelo-wrap">' +
           '<div class="row-photo"><img src="' + photoSrc(m) + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy" /></div>' +
           '<div class="row-modelo-info">' +
@@ -927,14 +914,22 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .toggle-switch.on .toggle-knob { left: 18px; }
 
-  /* Chips container */
+  /* Chips container — single line with scroll */
   .unified-chips {
     display: flex;
     gap: 0.35rem;
     flex-wrap: wrap;
+    align-items: center;
   }
-  .unified-chips-cats {
-    margin-top: 0.5rem;
+  .unified-chips > span {
+    display: contents;
+  }
+  .chips-separator {
+    width: 1px;
+    height: 1.25rem;
+    background: #ddd;
+    flex-shrink: 0;
+    display: block !important;
   }
 
   /* Individual chip */
@@ -1406,7 +1401,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     width: 100%;
     border-collapse: collapse;
     font-family: var(--font-sans);
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
   }
   .results-table thead {
     position: sticky;
@@ -1417,14 +1412,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     background: var(--black);
     color: #fff;
     font-weight: 500;
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     padding: 0.6rem 0.5rem;
     text-align: left;
     border: none;
-    overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
   }
   .results-table th.col-num { text-align: right; }
