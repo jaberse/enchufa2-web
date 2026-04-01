@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "Schema del comparador EV de enchufa2.com — define la estructura de cada modelo para tabla filtrable + fichas individuales",
+
+  "type": "object",
+  "properties": {
+    "modelos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "marca", "modelo", "variante", "slug"],
+        "properties": {
+
+          "id": {
+            "type": "string",
+            "description": "ID único: marca-modelo-variante en kebab-case",
+            "examples": ["tesla-model-y-rwd-long-range"]
+          },
+          "slug": {
+            "type": "string",
+            "description": "URL slug para la ficha individual: /comparador/[slug]",
+            "examples": ["tesla-model-y-rwd-long-range"]
+          },
+
+          "marca": { "type": "string" },
+          "modelo": { "type": "string" },
+          "variante": { "type": "string" },
+          "segmento": {
+            "type": "string",
+            "enum": ["A", "B", "B-SUV", "C", "C-SUV", "D", "D-SUV", "E", "E-SUV", "F"]
+          },
+          "ano_comercializacion": { "type": "integer" },
+          "pais_fabricacion": { "type": "string" },
+          "plataforma": { "type": "string" },
+          "imagen_principal": {
+            "type": "string",
+            "description": "Ruta a imagen del modelo (press kit o libre de derechos)"
+          },
+
+          "specs": {
+            "type": "object",
+            "description": "Cada spec es un objeto con valor, unidad, fuente y confianza",
+            "additionalProperties": {
+              "$ref": "#/$defs/spec_field"
+            }
+          },
+
+          "filtros": {
+            "type": "object",
+            "description": "Campos derivados precalculados para filtrado rápido en la tabla",
+            "properties": {
+              "rango_precio": { "enum": ["<25k", "25-35k", "35-45k", "45-60k", ">60k"] },
+              "rango_autonomia": { "enum": ["<300", "300-400", "400-500", "500-600", ">600"] },
+              "traccion": { "enum": ["FWD", "RWD", "AWD"] },
+              "quimica": { "enum": ["LFP", "NMC", "NCA"] },
+              "voltaje": { "enum": ["400V", "800V"] },
+              "plan_auto_plus": { "enum": ["si", "no", "parcial"] },
+              "bomba_calor": { "enum": ["si", "no", "opcional"] },
+              "carga_rapida": { "enum": ["<100kW", "100-200kW", ">200kW"] }
+            }
+          },
+
+          "meta": {
+            "type": "object",
+            "properties": {
+              "fecha_actualizacion": {
+                "type": "string",
+                "format": "date",
+                "description": "Última fecha en que se verificaron los datos"
+              },
+              "estado": {
+                "enum": ["verificado", "parcial", "pendiente"],
+                "description": "Estado global de verificación del modelo"
+              },
+              "notas": {
+                "type": "string",
+                "description": "Notas internas sobre el modelo (no se muestra al usuario)"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "$defs": {
+    "spec_field": {
+      "type": "object",
+      "description": "Un campo de especificación con trazabilidad completa",
+      "required": ["valor", "fuente_tipo"],
+      "properties": {
+        "valor": {
+          "description": "El valor numérico o textual del dato"
+        },
+        "unidad": {
+          "type": "string",
+          "description": "Unidad de medida",
+          "examples": ["kW", "km", "kWh", "mm", "kg", "s", "km/h", "€", "L", "kWh/100km"]
+        },
+        "fuente_tipo": {
+          "enum": ["fabricante", "homologacion", "test_independiente", "base_datos", "calculo_propio"],
+          "description": "Tipo de fuente — determina el nivel de confianza y el disclaimer"
+        },
+        "fuente_nombre": {
+          "type": "string",
+          "description": "Nombre de la fuente concreta",
+          "examples": ["Tesla España", "ADAC", "Bjørn Nyland", "DGT"]
+        },
+        "fuente_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL directa a la página donde se encontró el dato"
+        },
+        "fuente_fecha": {
+          "type": "string",
+          "format": "date",
+          "description": "Fecha en que se consultó la fuente"
+        },
+        "disclaimer": {
+          "type": "string",
+          "description": "Texto de disclaimer si la fuente no es el fabricante",
+          "examples": [
+            "Dato del fabricante. Condiciones WLTP, resultados reales pueden variar.",
+            "Test independiente realizado por Bjørn Nyland. enchufa2 no ha realizado esta prueba.",
+            "Dato de ev-database.org. No verificado contra fuente primaria."
+          ]
+        },
+        "verificado": {
+          "type": "boolean",
+          "description": "true = verificado contra fuente primaria del fabricante"
+        }
+      }
+    }
+  }
+}
