@@ -1,0 +1,406 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+---
+
+<ArticleLayout
+  title="Cómo comprar un coche eléctrico de segunda mano sin comprar un problema"
+  description="Protocolo técnico completo para evaluar un EV de ocasión: batería, motor, sistema de carga y electrónica. Con datos reales y herramientas por modelo."
+  readingTime="12 min de lectura"
+  publishDate="Marzo 2026"
+  references="6 referencias"
+>
+
+  <p class="article-deck">El mercado de EV de segunda mano en España creció un 53% en 2025. La mayoría de esos coches están bien. Pero comprar uno sin saber qué mirar puede dejarte con una batería al 78%, un puerto de carga oxidado o una batería auxiliar a punto de dejarte tirado en el arcén.</p>
+
+  <div class="article-stats">
+    <div class="stat">
+      <span class="stat-value">95,15%</span>
+      <span class="stat-label">SoH medio de los EVs de segunda mano analizados</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">50,5%</span>
+      <span class="stat-label">de averías en EV causadas por la batería auxiliar de 12V</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">29.893</span>
+      <span class="stat-label">coches eléctricos de ocasión vendidos en España en 2025</span>
+    </div>
+  </div>
+
+  <div class="tldr">
+    <strong>Resumen rápido</strong>
+    <ul>
+      <li><strong>La batería principal no suele ser el problema que la gente teme:</strong> el SoH medio del mercado de ocasión es del 95,15%. Lo que sí mata muchos coches es la batería auxiliar de 12V.</li>
+      <li><strong>Antes de ver el coche, pide el diagnóstico del BMS.</strong> No lo hagas al revés. Si el vendedor no puede darte el SoH exacto, lleva tú el escáner.</li>
+      <li><strong>La excepción real:</strong> el Nissan Leaf de primera generación (2011–2016) con refrigeración por aire degrada de forma notable en climas cálidos. Verifica siempre su SoH con LeafSpy.</li>
+      <li><strong>El sistema de carga es más frágil que el motor:</strong> inspecciona los puertos AC y DC y escanea los fallos del convertidor DC-DC antes de firmar.</li>
+      <li><strong>Negocia con datos:</strong> el coste real de una batería de reemplazo (5.000–12.000€ según modelo) es tu argumento más sólido si el SoH está por debajo de la media.</li>
+    </ul>
+  </div>
+
+  <hr />
+
+  <h2>01 — La batería de alta tensión: el examen más importante</h2>
+
+  <p>La batería de alta tensión es lo primero que todo el mundo pregunta. Y con razón: es el componente más caro del vehículo y el que más impacta en la experiencia de uso. Pero los datos son más tranquilizadores de lo que la mayoría espera.</p>
+
+  <p>El estudio más amplio disponible en el mercado europeo a fecha de hoy es el <strong>Generational 2025 Battery Performance Index</strong>, publicado en febrero de 2026 con datos de más de 8.000 evaluaciones de salud de batería en vehículos de entre 0 y 12 años de antigüedad. El hallazgo principal: el <strong>SoH medio en el mercado de segunda mano es del 95,15%</strong>. Ocho de cada diez EVs usados retienen más del 90% de su capacidad original.<sup>[1]</sup></p>
+
+  <p>El matiz importante está en la dispersión. La media se mantiene alta, pero la varianza aumenta con la edad: dos vehículos del mismo modelo con cinco años pueden tener una diferencia de SoH de 10 puntos dependiendo de cómo se hayan cargado y en qué condiciones térmicas hayan operado. Esa dispersión es lo que hay que saber leer.</p>
+
+  <h3>Qué es el SoH y qué umbral usar</h3>
+
+  <p>El <strong>Estado de Salud</strong> (State of Health) expresa qué porcentaje de su capacidad original conserva la batería. Un coche con batería de 77 kWh y SoH del 90% tiene, en la práctica, 69,3 kWh disponibles. Si el fabricante anunciaba 450 km WLTP con la batería nueva, ese mismo coche da hoy unos 405 km en condiciones equivalentes.</p>
+
+  <blockquote>
+    El SoH medio de los EVs usados analizados en 2025 es del 95,15%. El umbral de garantía OEM (70%) rara vez se alcanza en la práctica.
+    <br/><small>— Generational 2025 Battery Performance Index, febrero 2026 <sup>[1]</sup></small>
+  </blockquote>
+
+  <figure>
+    <img src="/articulos/guia-compra-ev-segunda-mano/soh_por_antiguedad.png"
+         alt="Gráfico de barras mostrando el SoH de baterías EV por antigüedad del vehículo: percentil 25, mediana y percentil 75 para los grupos de 4-5 años y 8-12 años"
+         loading="lazy" />
+    <figcaption>
+      <strong>Figura 1 — SoH de baterías EV según antigüedad.</strong> Los vehículos de 4–5 años tienen una mediana de SoH del 93,53%; los de 8–12 años, del 85,04%. La dispersión aumenta con la edad. El límite de garantía OEM (70%) rara vez se alcanza. Fuente: Generational 2025 Battery Performance Index <sup>[1]</sup>.
+    </figcaption>
+  </figure>
+
+  <p>No existe un umbral único válido para todos los modelos, pero el gráfico anterior da una referencia estadística clara. Si el coche que estás mirando está más de 4 puntos por debajo de la mediana para su edad, tienes base para negociar o para desestimar la compra.</p>
+
+  <h3>La excepción: Nissan Leaf de primera generación</h3>
+
+  <p>El <strong>Nissan Leaf de primera generación</strong> (2011–2016, baterías de 24 kWh) usa refrigeración pasiva por aire, sin sistema térmico activo. En el clima continental del norte de Europa degrada razonablemente. En España —con veranos de 35–42°C en gran parte del territorio— es otra historia. Modelos de 2011–2013 con uso normal pueden presentar SoH por debajo del 75% en 2026, lo que se traduce en una autonomía real inferior a 100 km. No es que el Leaf sea un mal coche para trayectos cortos urbanos; es que comprarlo sin verificar el SoH con LeafSpy es apostar a ciegas.</p>
+
+  <h3>Cómo leer el SoH tú mismo</h3>
+
+  <p>No necesitas llevar el coche a un taller. Necesitas un adaptador OBD2 y la app compatible con el modelo. Un adaptador ELM327 Bluetooth básico cuesta entre 15 y 35€. El OBDLink MX+ (~90€) es más fiable para modelos con protocolos propietarios como Tesla. Es la mejor inversión que puedes hacer antes de firmar nada.</p>
+
+  <div class="ev-table">
+    <div class="ev-row ev-header">
+      <span>Modelo</span>
+      <span>App recomendada</span>
+      <span>Adaptador</span>
+      <span>Qué puedes leer</span>
+    </div>
+    <div class="ev-row">
+      <span>Tesla Model 3/Y/S/X</span>
+      <span>Scan My Tesla</span>
+      <span class="badge-nmc">OBDLink MX+</span>
+      <span>SoH, degradación, historial cargas</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>Nissan Leaf (todos)</span>
+      <span>LeafSpy Lite / Pro</span>
+      <span class="badge-lfp">ELM327 BT</span>
+      <span>SoH exacto, cell bars, temperatura</span>
+    </div>
+    <div class="ev-row">
+      <span>VW ID.3/4, Skoda Enyaq, CUPRA Born</span>
+      <span>OBD11 / VCDS</span>
+      <span class="badge-nmc">OBD11 dongle</span>
+      <span>SoH, celdas, errores BMS</span>
+    </div>
+    <div class="ev-row ev-lfp">
+      <span>Hyundai Ioniq 5/6, Kia EV6</span>
+      <span>Car Scanner ELM OBD2</span>
+      <span class="badge-lfp">ELM327 BT</span>
+      <span>SoH, voltajes de celdas</span>
+    </div>
+    <div class="ev-row">
+      <span>Renault Zoe (batería propia)</span>
+      <span>Car Scanner / CAN Zoe</span>
+      <span class="badge-nmc">ELM327 BT</span>
+      <span>SoH, historial de carga</span>
+    </div>
+  </div>
+  <p class="table-note">Herramientas verificadas para los modelos más vendidos en ocasión en España (2025). En todos los casos, leer también el delta de celdas y el historial de cargas rápidas.</p>
+
+  <p>Además del SoH total, hay dos parámetros que vale la pena revisar. El <strong>delta de celdas</strong> es la diferencia de voltaje entre la celda más cargada y la más descargada del pack. En un pack sano, este valor es pequeño (por debajo de 30 mV). Un delta elevado indica celdas envejecidas de forma desigual, lo que puede provocar cortes prematuros del BMS mucho antes de que el SoH total lo justifique. El <strong>historial de cargas rápidas</strong> (algunos modelos lo registran) es también relevante: muchas sesiones DC sin alternancia con carga AC lenta es la combinación que más acelera la degradación.</p>
+
+  <h3>La garantía de batería: qué queda y cuánto vale</h3>
+
+  <p>Todos los fabricantes ofrecen garantía específica de batería, separada de la garantía general del vehículo. El estándar europeo vigente es 8 años o 160.000 km con un mínimo de retención del 70% de capacidad. Algunos fabricantes superan ese mínimo:</p>
+
+  <figure>
+    <img src="/articulos/guia-compra-ev-segunda-mano/garantias_fabricantes.png"
+         alt="Gráfico comparativo de garantías de batería por fabricante: años de cobertura y kilómetros máximos, con la retención mínima garantizada"
+         loading="lazy" />
+    <figcaption>
+      <strong>Figura 2 — Garantías de batería por fabricante (España 2026).</strong> Hyundai/Kia y Mercedes EQ ofrecen 10 años de cobertura. El límite de km o años se aplica el que se alcance primero. Fuente: documentación oficial de cada fabricante.
+    </figcaption>
+  </figure>
+
+  <p>Antes de comprar, calcula cuánta garantía de batería queda. Si el coche tiene 6 años y 90.000 km y tiene garantía estándar (8 años/160.000 km), le restan 2 años y 70.000 km de cobertura. Ese margen tiene valor monetario real: si la batería falla dentro de ese período, el fabricante corre con los costes. Si ya está fuera de garantía, esos costes son tuyos: entre 5.000 y 12.000€ dependiendo del modelo y la capacidad de la batería.</p>
+
+  <hr />
+
+  <h2>02 — El sistema de carga: donde más falla la electrónica</h2>
+
+  <p>El motor eléctrico raramente da problemas. El sistema de carga, algo más. Hay tres puntos concretos que revisar antes de cualquier decisión de compra.</p>
+
+  <h3>Los puertos de carga</h3>
+
+  <p>Antes de conectar nada, inspecciona visualmente ambos puertos. En el <strong>puerto AC (Type 2)</strong>, busca pines doblados, corrosión en los contactos y daños en el clip de retención. Un pin doblado puede hacer que el cable no encaje bien o que la carga sea errática o lenta. En el <strong>puerto DC (CCS o CHAdeMO)</strong>, misma inspección, más revisar el estado del sellado. Un sello deteriorado permite que entre humedad durante la carga en lluvia, lo que puede generar errores de sistema de carga que son caros de diagnosticar. Prueba ambos puertos durante la visita: conecta un cable Type 2 si puedes llevarlo.</p>
+
+  <h3>El convertidor DC-DC: el asesino silencioso</h3>
+
+  <p>El <strong>cargador a bordo (OBC)</strong> convierte la corriente alterna de la red en corriente continua para cargar la batería principal. Junto a él trabaja el <strong>convertidor DC-DC</strong>, que transforma el voltaje de alta tensión del pack (300–800V) a 12V para alimentar los accesorios y mantener cargada la batería auxiliar.</p>
+
+  <p>Cuando el convertidor DC-DC empieza a fallar, lo hace de forma gradual: la batería de 12V no se recarga bien, el coche empieza a dar errores esporádicos y, en el peor caso, el vehículo queda completamente inmovilizado aunque la batería principal esté al 100%. Pide un volcado de errores de ambos módulos antes de comprar. Si hay fallos activos en el OBC o en el DC-DC, es una señal de alerta seria.<sup>[2]</sup></p>
+
+  <h3>La batería auxiliar de 12V: el gran olvidado</h3>
+
+  <p>Aquí viene el dato que sorprende a la mayoría. Según el <strong>informe de averías ADAC 2024</strong>, el <strong>50,5% de todas las incidencias registradas en vehículos eléctricos</strong> son causadas por la batería auxiliar de 12V, no por la batería principal.<sup>[3]</sup> Es exactamente el mismo problema que en los coches de combustión, y sin embargo la mayoría de compradores de EVs usados ni la menciona.</p>
+
+  <p>La batería de 12V en un EV alimenta los sistemas de arranque del software del vehículo, las luces, los accesorios y el relay de precarga del circuito de alta tensión. Sin ella, el coche no arranca aunque el pack principal esté lleno. Su vida útil típica es de 4 a 6 años. Si el coche tiene más de 4 años y no hay registro de sustitución, cuenta esa pieza como gasto inmediato (50–150€ según modelo). Comprueba tú mismo la tensión en reposo con un polímetro básico: una batería 12V sana mide 12,6V; por debajo de 12,2V está en zona de riesgo.</p>
+
+  <hr />
+
+  <h2>03 — Motor y reductor: fiables, con matices</h2>
+
+  <p>El motor eléctrico es uno de los componentes más robustos de un EV. Tiene menos piezas móviles que un motor de combustión, no necesita aceite de motor, no tiene correa de distribución y no experimenta la vibración térmica que degrada los ICE con el tiempo. En la práctica, los fallos de motor propiamente dichos son raros. Lo que sí puede dar señales con el tiempo son los sistemas adyacentes.</p>
+
+  <h3>Rodamientos y reductor</h3>
+
+  <p>Los <strong>rodamientos del eje del motor</strong> pueden desgastarse en vehículos de alta cota (más de 120.000 km) o con historial de conducción muy agresiva. El síntoma clásico es un zumbido proporcional a la velocidad que aumenta al acelerar. Para detectarlo: circula a 80–100 km/h en una vía tranquila con radio y climatizador apagados. Si hay un zumbido que crece con la velocidad, investiga.</p>
+
+  <p>Los EVs no tienen caja de cambios convencional, pero sí un <strong>reductor</strong> que adapta las altas RPM del motor a los valores útiles para las ruedas. Este reductor tiene aceite. Algunos fabricantes lo califican como "aceite de por vida", pero en la práctica muchos talleres especializados recomiendan revisarlo a partir de los 80.000–100.000 km. Si compras un coche con más de esa cota y no hay registro de revisión del reductor, es algo a contemplar.</p>
+
+  <h3>Juntas homocinéticas</h3>
+
+  <p>En EVs de tracción delantera o integral, las <strong>juntas homocinéticas</strong> son exactamente iguales a las de cualquier coche con motor delantero. Se desgastan, se agrietan los fuelles y si no se revisan pueden fallar. La detección es simple: giro lento a volante tope mientras avanzas despacio. Si hay un "clac-clac" rítmico, las juntas están avisando.</p>
+
+  <h3>La prueba de conducción para el tren motriz</h3>
+
+  <p>Haz la prueba de conducción con radio y climatizador apagados. Busca zumbido proporcional a la velocidad (rodamientos), "clac" en giros lentos a tope (juntas), vibración al acelerar desde parado (montura de motor desgastada) y deceleración brusca o errática con frenada regenerativa activa (puede indicar un problema del BMS o del motor). La ausencia de ruido del motor eléctrico hace que cualquier sonido anómalo sea inmediatamente audible — esa es, de hecho, una ventaja clara para la inspección.</p>
+
+  <hr />
+
+  <h2>04 — Software, electrónica y actualizaciones</h2>
+
+  <p>Los EVs modernos son básicamente ordenadores con ruedas. Eso tiene consecuencias concretas al comprarlos de segunda mano.</p>
+
+  <p><strong>Actualizaciones de firmware:</strong> Tesla es el caso más conocido, pero no el único. Las actualizaciones OTA (over-the-air) pueden mejorar la autonomía real, ajustar el comportamiento del BMS o corregir bugs de degradación. Un coche que lleva años sin conectarse a WiFi puede tener versiones de firmware con problemas ya corregidos en unidades más recientes. Para los modelos del grupo VAG (VW, Audi, CUPRA, Skoda), algunas actualizaciones han corregido comportamientos erróneos del BMS que aceleraban la degradación. Pide al concesionario oficial que verifique el estado de actualizaciones con el número de bastidor.</p>
+
+  <p><strong>Errores almacenados en el BMS:</strong> el escáner OBD2 puede leer los Diagnostic Trouble Codes (DTCs) almacenados. Algunos serán históricos e irrelevantes. Otros pueden indicar problemas activos. Ante cualquier DTC que no sepas interpretar, consúltalo en los foros específicos del modelo (forococheselectricos.com para los más comunes en España) antes de decidir.</p>
+
+  <p><strong>Pantallas y sistemas ADAS:</strong> los grandes displays táctiles y los sistemas de asistencia a la conducción son caros de reparar. Una pantalla central de Tesla puede costar 1.500–2.000€ en sustitución. Comprueba que todas las pantallas funcionan, que el sistema de navegación responde y que las cámaras y sensores no muestran errores. Son diez minutos bien invertidos.</p>
+
+  <hr />
+
+  <h2>05 — Inspección física: lo que no cambia</h2>
+
+  <p>Un EV de segunda mano sigue siendo un coche de segunda mano. Todo lo que aplica a cualquier vehículo de ocasión aplica aquí.</p>
+
+  <p><strong>Carrocería e integridad del pack:</strong> en los EVs modernos con plataforma de suelo plano (VW MEB, Hyundai E-GMP, Tesla), el pack de baterías ocupa todo el suelo del vehículo. Un golpe lateral significativo puede afectar la integridad del pack aunque el daño visible en la carrocería parezca menor. Comprueba el historial de accidentes (DGT) y revisa físicamente los bajos del coche: marcas de impacto, deformaciones en la estructura del pack o soldaduras reparadas son señales de alerta seria.</p>
+
+  <p><strong>Frenos:</strong> en un EV, la frenada regenerativa asume parte del trabajo que en un combustión haría el sistema hidráulico, por lo que discos y pastillas duran más. Pero hay una consecuencia no obvia: si el conductor siempre usa regeneración máxima y rara vez pisa el freno mecánico, los <strong>discos se oxidan y pueden agarrotarse</strong>. Prueba los frenos con firmeza al inicio de la prueba de conducción y comprueba que la deceleración es uniforme en ambos ejes.</p>
+
+  <p><strong>Neumáticos:</strong> los EVs tienen par motor instantáneo superior y peso mayor por el pack de baterías. Los <strong>neumáticos específicos para EV</strong> (marcados como "EV", "Elect" o "e-" según el fabricante) tienen costado reforzado y compuesto adaptado a ese par y ese peso. Verifica que el coche lleva neumáticos adecuados para el modelo. Si lleva neumáticos genéricos de bajo coste en las cuatro ruedas, inclúyelos en la negociación: unos neumáticos de calidad para un EV medio cuestan entre 400 y 700€ el juego completo.<sup>[4]</sup></p>
+
+  <hr />
+
+  <h2>06 — El precio: negociar con datos, no con intuición</h2>
+
+  <p>El precio medio de un EV de segunda mano en España en 2025 fue de 31.471€, con una caída del 10,2% respecto al año anterior.<sup>[5]</sup> Ese descenso crea oportunidades reales de compra, pero también significa que los precios ya están más ajustados que hace dos años. El margen de negociación existe, pero hay que justificarlo con datos.</p>
+
+  <p>Dos palancas concretas. La primera es el <strong>SoH como argumento cuantificado</strong>: si el coche tiene el SoH por debajo de la mediana para su edad, estás asumiendo un riesgo de degradación acelerada y un menor rango de autonomía. El coste de reemplazo de una batería (5.000–12.000€ según modelo y capacidad) es el suelo de tu argumento. La segunda palanca es la <strong>garantía restante como activo</strong>: la diferencia entre un coche con dos años de cobertura de batería y otro equivalente ya fuera de garantía debería reflejarse en el precio. Cuantificarlo depende del modelo, pero 1.000–2.500€ es un rango razonable para la mayoría de los EVs de tamaño medio.</p>
+
+  <hr />
+
+  <h2>07 — Protocolo resumen: 10 pasos antes de firmar</h2>
+
+  <ol>
+    <li><strong>Pide el historial de averías y mantenimiento</strong> antes de ver el coche físicamente. Si el vendedor no puede darlo, es una señal de alerta.</li>
+    <li><strong>Comprueba el historial de accidentes</strong> (DGT). No firmes nada si hay golpes sin documentar.</li>
+    <li><strong>Lleva tu adaptador OBD2 y lee el SoH</strong> con la app específica del modelo. Es el primer dato que necesitas.</li>
+    <li><strong>Compara el SoH con la referencia para su edad.</strong> Más de 4 puntos por debajo de la mediana es motivo de negociación o descarte.</li>
+    <li><strong>Lee el delta de celdas y el historial de cargas rápidas.</strong> Un delta alto o un uso intensivo de DC son factores de riesgo.</li>
+    <li><strong>Verifica la garantía de batería restante</strong> con el número de bastidor en el SAT oficial del fabricante.</li>
+    <li><strong>Inspecciona los puertos de carga AC y DC</strong> visualmente antes de conectar nada. Prueba ambos.</li>
+    <li><strong>Escanea los DTCs del OBC y el DC-DC.</strong> Pregunta por cualquier error almacenado.</li>
+    <li><strong>Comprueba la batería auxiliar de 12V.</strong> Mide en reposo: debe superar 12,4V. Si tiene más de 4 años sin cambio, presupuesta su sustitución.</li>
+    <li><strong>Haz la prueba de conducción con radio y climatizador apagados.</strong> Escucha rodamientos, juntas y comportamiento de la frenada regenerativa. Negocia después, con los datos en la mano.</li>
+  </ol>
+
+  <hr />
+
+  <div class="references">
+    <p><strong>08 — Referencias</strong></p>
+    <p>[1] Generational (2026). <em>2025 Battery Performance Index — Industry Benchmark Report.</em> Publicado febrero 2026. <a href="https://www.generational.ac/2025-battery-performance-index/" target="_blank" rel="noopener">generational.ac</a></p>
+    <p>[2] AUTOBICS (2026). "The Ultimate Used EV Checklist: 5 Critical Things to Verify Before You Buy." <a href="https://www.autobics.com/2026/03/the-ultimate-used-ev-checklist-5-critical-things-to-verify-before-you-buy-2026/" target="_blank" rel="noopener">autobics.com</a></p>
+    <p>[3] ADAC (2024). <em>ADAC Pannenstatistik 2024.</em> ADAC Fahrzeugtechnik. <a href="https://www.adac.de" target="_blank" rel="noopener">adac.de</a> [VERIFICAR enlace exacto al informe]</p>
+    <p>[4] ev.com (2025). "Used EV Buying Checklist." <a href="https://ev.com/news/used-ev-buying-checklist" target="_blank" rel="noopener">ev.com</a></p>
+    <p>[5] Motor.es (2025). "El éxito de Renault y Smart en el ranking de eléctricos usados más vendidos en 2025." <a href="https://www.motor.es/noticias/coches-electricos-ocasion-mas-vendidos-2025-2026112309.html" target="_blank" rel="noopener">motor.es</a></p>
+    <p>[6] Geotab (2023). "EV Battery Health: Key Findings from 22,700 Vehicle Data Analysis." <a href="https://www.geotab.com/blog/ev-battery-health/" target="_blank" rel="noopener">geotab.com</a></p>
+  </div>
+
+</ArticleLayout>
+
+<style>
+  /* ─── Deck ─── */
+  .article-deck {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+  }
+
+  /* ─── Stats ─── */
+  .article-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--surface-alt);
+    margin-bottom: 2.5rem;
+    border: 1px solid var(--border);
+  }
+  .stat {
+    background: var(--white);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .stat-value {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 200;
+    letter-spacing: -0.03em;
+    color: var(--black);
+  }
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+  @media (max-width: 580px) {
+    .article-stats { grid-template-columns: 1fr; }
+  }
+
+  /* ─── TLDR ─── */
+  .tldr {
+    background: var(--surface-alt);
+    border-left: 3px solid var(--yellow);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .tldr strong {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--yellow);
+    margin-bottom: 0.75rem;
+  }
+  .tldr ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0;
+  }
+  .tldr li {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    padding-left: 1rem;
+    position: relative;
+  }
+  .tldr li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--yellow);
+    font-size: 0.8rem;
+  }
+
+  /* ─── Blockquote ─── */
+  blockquote {
+    border-left: 3px solid var(--yellow);
+    padding: 1rem 1.5rem;
+    margin-block: 1.75rem;
+    background: var(--surface-alt);
+    font-style: normal;
+    color: var(--black);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+  blockquote small {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+
+  /* ─── EV table ─── */
+  .ev-table {
+    margin-block: 1.75rem;
+    border: 1px solid var(--border);
+    font-size: 0.8125rem;
+    width: 100%;
+    overflow-x: auto;
+  }
+  .ev-row {
+    display: grid;
+    grid-template-columns: 200px 150px 110px 1fr;
+    min-width: 580px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ev-row:last-child { border-bottom: none; }
+  .ev-row > span {
+    padding: 0.65rem 0.9rem;
+    color: var(--text-secondary);
+    border-right: 1px solid var(--border);
+    line-height: 1.4;
+  }
+  .ev-row > span:last-child { border-right: none; }
+  .ev-header { background: var(--black); }
+  .ev-header > span {
+    color: rgba(250,250,248,0.5);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .ev-row > span:first-child { color: var(--black); font-weight: 400; }
+  .ev-lfp { background: rgba(245,197,24,0.04); }
+  .badge-lfp {
+    display: inline-block;
+    background: var(--yellow);
+    color: var(--black);
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+  }
+  .badge-nmc {
+    display: inline-block;
+    background: var(--black);
+    color: var(--white);
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+  }
+  .table-note {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    margin-top: -0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ─── References ─── */
+  .references {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8125rem;
+    color: var(--gray-500);
+    line-height: 1.7;
+  }
+  .references p { margin-bottom: 0.5rem; }
+  .references a { color: var(--text-muted); text-decoration: underline; }
+</style>

@@ -193,7 +193,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     <div class="ct-row"><span>Filtro aire cabina</span><span>€20-30</span><span>€20-30</span></div>
     <div class="ct-row"><span>Refrigerante coolant (amortizado)</span><span>€40-50</span><span>€30-40</span></div>
     <div class="ct-row"><span>ITV y revisiones generales</span><span>€80-100</span><span>€80-100</span></div>
-    <div class="ct-row" style="background: var(--gray-100); font-weight: 600;"><span><strong>TOTAL ANUAL</strong></span><span><strong>€565-840</strong></span><span><strong>€410-630</strong></span></div>
+    <div class="ct-row" style="background: var(--surface-alt); font-weight: 600;"><span><strong>TOTAL ANUAL</strong></span><span><strong>€565-840</strong></span><span><strong>€410-630</strong></span></div>
   </div>
 
   <p class="table-note t-small">Costos para coche de gama media (compacto/SUV) en España 2026. Incluye piezas + mano de obra. Excluye: neumáticos si duran más de 5 años, reparaciones no preventivas, daños por accidente.</p>
@@ -218,7 +218,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     <div class="ct-row"><span>Mantenimiento programado</span><span>€2.825-4.200</span><span>€2.050-3.150</span></div>
     <div class="ct-row"><span>Cambio neumáticos (típico 1-2 veces)</span><span>€400-1.400</span><span>€1.200-2.400</span></div>
     <div class="ct-row"><span>Reparaciones imprevistas</span><span>€300-800</span><span>€100-300</span></div>
-    <div class="ct-row" style="background: var(--gray-100); font-weight: 600;"><span><strong>TOTAL 5 AÑOS</strong></span><span><strong>€3.525-6.400</strong></span><span><strong>€3.350-5.850</strong></span></div>
+    <div class="ct-row" style="background: var(--surface-alt); font-weight: 600;"><span><strong>TOTAL 5 AÑOS</strong></span><span><strong>€3.525-6.400</strong></span><span><strong>€3.350-5.850</strong></span></div>
   </div>
 
   <blockquote>
@@ -407,7 +407,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     font-family: var(--font-sans);
     font-weight: 300;
     font-size: clamp(1rem, 1.8vw, 1.2rem);
-    color: var(--gray-400);
+    color: var(--text-muted);
     line-height: 1.6;
     margin-bottom: 2.5rem;
   }
@@ -417,9 +417,9 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1px;
-    background: var(--gray-100);
+    background: var(--surface-alt);
     margin-bottom: 2.5rem;
-    border: 1px solid var(--gray-100);
+    border: 1px solid var(--border);
   }
   .stat {
     background: var(--white);
@@ -436,7 +436,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
   }
   .stat-label {
     font-size: 0.8rem;
-    color: var(--gray-400);
+    color: var(--text-muted);
     line-height: 1.4;
   }
   @media (max-width: 580px) {
@@ -445,7 +445,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   /* Component table */
   .component-table {
-    background: var(--gray-100);
+    background: var(--surface-alt);
     padding: 1rem 1.5rem;
     margin-block: 1.5rem;
     display: flex;
@@ -464,7 +464,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     color: var(--black);
   }
   .comp-desc {
-    color: var(--gray-600);
+    color: var(--text-secondary);
   }
 
   /* Blockquote */
@@ -472,34 +472,34 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     border-left: 3px solid var(--yellow);
     padding: 1rem 1.5rem;
     margin-block: 1.75rem;
-    background: var(--gray-100);
+    background: var(--surface-alt);
     font-style: normal;
     color: var(--black);
     font-size: 0.9375rem;
     line-height: 1.7;
   }
   blockquote small {
-    color: var(--gray-400);
+    color: var(--text-muted);
     font-size: 0.8rem;
   }
 
   /* Comparison table */
   .comparison-table {
     margin-block: 2rem;
-    border: 1px solid var(--gray-100);
+    border: 1px solid var(--border);
     font-size: 0.875rem;
   }
   .ct-row {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 0;
-    border-bottom: 1px solid var(--gray-100);
+    border-bottom: 1px solid var(--border);
   }
   .ct-row:last-child { border-bottom: none; }
   .ct-row > span {
     padding: 0.75rem 1rem;
-    color: var(--gray-600);
-    border-right: 1px solid var(--gray-100);
+    color: var(--text-secondary);
+    border-right: 1px solid var(--border);
     line-height: 1.4;
   }
   .ct-row > span:last-child { border-right: none; }
@@ -527,7 +527,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
   /* EV table */
   .ev-table {
     margin-block: 1.75rem;
-    border: 1px solid var(--gray-100);
+    border: 1px solid var(--border);
     font-size: 0.8125rem;
     width: 100%;
     overflow-x: auto;
@@ -536,13 +536,13 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     display: grid;
     grid-template-columns: 160px 1fr 80px 130px;
     min-width: 520px;
-    border-bottom: 1px solid var(--gray-100);
+    border-bottom: 1px solid var(--border);
   }
   .ev-row:last-child { border-bottom: none; }
   .ev-row > span {
     padding: 0.65rem 0.9rem;
-    color: var(--gray-600);
-    border-right: 1px solid var(--gray-100);
+    color: var(--text-secondary);
+    border-right: 1px solid var(--border);
     line-height: 1.4;
   }
   .ev-row > span:last-child { border-right: none; }
@@ -577,7 +577,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     border-radius: 2px;
   }
   .table-note {
-    color: var(--gray-400);
+    color: var(--text-muted);
     font-size: 0.75rem;
     margin-top: -0.5rem;
     margin-bottom: 1.5rem;
@@ -590,7 +590,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   /* TLDR */
   .tldr {
-    border: 1px solid var(--gray-200);
+    border: 1px solid var(--border);
     padding: 1.5rem;
     margin-block: 2rem;
     background: var(--white);
@@ -611,7 +611,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
   .tldr li {
     margin-bottom: 0.75rem;
     line-height: 1.6;
-    color: var(--gray-600);
+    color: var(--text-secondary);
   }
   .tldr li strong {
     display: inline;
@@ -623,7 +623,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
   .related-articles {
     margin-top: 3rem;
     padding-top: 2rem;
-    border-top: 1px solid var(--gray-200);
+    border-top: 1px solid var(--border);
   }
   .related-articles h2 {
     font-size: 1.25rem;
@@ -650,12 +650,12 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
   .references {
     margin-top: 3rem;
     padding-top: 2rem;
-    border-top: 1px solid var(--gray-200);
+    border-top: 1px solid var(--border);
     font-size: 0.875rem;
   }
   .references p {
     margin-bottom: 0.75rem;
-    color: var(--gray-600);
+    color: var(--text-secondary);
     line-height: 1.6;
   }
   .references strong {
@@ -676,7 +676,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
   }
   figcaption {
     font-size: 0.8125rem;
-    color: var(--gray-600);
+    color: var(--text-secondary);
     line-height: 1.6;
   }
 
@@ -724,7 +724,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
   hr {
     border: none;
     height: 1px;
-    background: var(--gray-100);
+    background: var(--surface-alt);
     margin: 3rem 0;
   }
 

@@ -373,7 +373,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     font-family: var(--font-sans);
     font-weight: 300;
     font-size: clamp(1rem, 1.8vw, 1.2rem);
-    color: var(--gray-400);
+    color: var(--text-muted);
     line-height: 1.6;
     margin-bottom: 2.5rem;
   }
@@ -383,9 +383,9 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1px;
-    background: var(--gray-100);
+    background: var(--surface-alt);
     margin-bottom: 2.5rem;
-    border: 1px solid var(--gray-100);
+    border: 1px solid var(--border);
   }
   .stat {
     background: var(--white);
@@ -402,7 +402,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
   }
   .stat-label {
     font-size: 0.8rem;
-    color: var(--gray-400);
+    color: var(--text-muted);
     line-height: 1.4;
   }
   @media (max-width: 580px) {
@@ -411,7 +411,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   /* Component table */
   .component-table {
-    background: var(--gray-100);
+    background: var(--surface-alt);
     padding: 1rem 1.5rem;
     margin-block: 1.5rem;
     display: flex;
@@ -426,41 +426,41 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     line-height: 1.5;
   }
   .comp-name { font-weight: 400; color: var(--black); }
-  .comp-desc { color: var(--gray-600); }
+  .comp-desc { color: var(--text-secondary); }
 
   /* Blockquote */
   blockquote {
     border-left: 3px solid var(--yellow);
     padding: 1rem 1.5rem;
     margin-block: 1.75rem;
-    background: var(--gray-100);
+    background: var(--surface-alt);
     font-style: normal;
     color: var(--black);
     font-size: 0.9375rem;
     line-height: 1.7;
   }
   blockquote small {
-    color: var(--gray-400);
+    color: var(--text-muted);
     font-size: 0.8rem;
   }
 
   /* Comparison table */
   .comparison-table {
     margin-block: 2rem;
-    border: 1px solid var(--gray-100);
+    border: 1px solid var(--border);
     font-size: 0.875rem;
   }
   .ct-row {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 0;
-    border-bottom: 1px solid var(--gray-100);
+    border-bottom: 1px solid var(--border);
   }
   .ct-row:last-child { border-bottom: none; }
   .ct-row > span {
     padding: 0.75rem 1rem;
-    color: var(--gray-600);
-    border-right: 1px solid var(--gray-100);
+    color: var(--text-secondary);
+    border-right: 1px solid var(--border);
     line-height: 1.4;
   }
   .ct-row > span:last-child { border-right: none; }
@@ -484,7 +484,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
   .related-articles {
     margin-block: 2rem;
     padding: 1.5rem;
-    background: var(--gray-100);
+    background: var(--surface-alt);
   }
   .related-articles h2 {
     font-size: 1rem;
@@ -505,12 +505,12 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     text-decoration: underline;
   }
   .related-articles a:hover {
-    color: var(--gray-600);
+    color: var(--text-secondary);
   }
 
   /* Table note */
   .table-note {
-    color: var(--gray-400);
+    color: var(--text-muted);
     font-size: 0.75rem;
     margin-top: -0.5rem;
     margin-bottom: 1.5rem;
@@ -520,13 +520,13 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
   .references {
     margin-top: 3rem;
     padding-top: 2rem;
-    border-top: 1px solid var(--gray-100);
+    border-top: 1px solid var(--border);
   }
   .references p {
     font-size: 0.875rem;
     line-height: 1.7;
     margin-bottom: 0.75rem;
-    color: var(--gray-600);
+    color: var(--text-secondary);
   }
   .references p:first-child {
     font-weight: 400;
