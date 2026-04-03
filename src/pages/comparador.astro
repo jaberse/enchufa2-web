@@ -1095,9 +1095,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   /* ══════════════════════════════════════════
      CONTENT CONTAINER
      ══════════════════════════════════════════ */
-  /* Block 3: Results — continuous border, no border-top */
+  /* Block 3: Results — continuous border, white background for contrast */
   .comp-results {
-    background: var(--bg);
+    background: var(--surface);
     border-left: 1px solid var(--border);
     border-right: 1px solid var(--border);
     border-top: none;
@@ -1276,11 +1276,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   /* ── Results ─────────────────────────── */
   .comp-results {
     padding: 1.75rem 0 3.5rem;
-    background: var(--bg);
+    background: var(--surface);
     min-height: 60vh;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
   }
   [data-theme="dark"] .comp-results {
-    background: var(--bg);
+    background: var(--surface);
   }
   .results-header {
     display: flex;
@@ -1352,66 +1354,79 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .ev-card {
     display: flex;
     flex-direction: column;
-    background: var(--surface);
+    background: var(--bg);
     border-radius: 12px;
     border: 1px solid var(--border);
-    border-bottom: 2px solid var(--border);
     overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0,0,0,.08), 0 8px 20px rgba(0,0,0,.06);
-    transition: transform .35s cubic-bezier(.25,.46,.45,.94), box-shadow .35s, border-color .2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,.07), 0 8px 24px rgba(0,0,0,.05);
+    transition: transform .35s cubic-bezier(.25,.46,.45,.94), box-shadow .35s;
     cursor: pointer;
   }
   [data-theme="dark"] .ev-card {
     background: var(--surface-alt);
-    box-shadow: 0 2px 6px rgba(0,0,0,.25), 0 8px 20px rgba(0,0,0,.18);
+    box-shadow: 0 2px 8px rgba(0,0,0,.25), 0 8px 24px rgba(0,0,0,.18);
   }
   .ev-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 32px rgba(0,0,0,.14), 0 2px 8px rgba(0,0,0,.08);
-    border-bottom-color: var(--yellow);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(0,0,0,.12), 0 2px 8px rgba(0,0,0,.06);
   }
   [data-theme="dark"] .ev-card:hover {
     box-shadow: 0 8px 32px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.25);
-    border-bottom-color: var(--yellow);
   }
 
-  /* Photo area — transparent PNGs on card background */
+  /* Photo area — Option D: same bg as card, gradient floor, yellow accent */
   .ev-card-photo {
     aspect-ratio: 16 / 9;
     overflow: hidden;
     position: relative;
-    background: var(--surface-alt);
+    background: var(--bg);
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
   }
   [data-theme="dark"] .ev-card-photo {
     background: var(--surface-alt);
   }
-  .ev-card-photo img {
-    width: 92%;
-    height: 88%;
-    object-fit: contain;
-    display: block;
-    transition: transform .5s cubic-bezier(.25,.46,.45,.94);
-    filter: drop-shadow(0 4px 12px rgba(0,0,0,.15));
+  /* Subtle gradient "floor" under the car */
+  .ev-card-photo::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to top, var(--surface-alt), transparent);
+    z-index: 0;
   }
-  [data-theme="dark"] .ev-card-photo img {
-    filter: drop-shadow(0 4px 16px rgba(0,0,0,.4));
+  [data-theme="dark"] .ev-card-photo::before {
+    background: linear-gradient(to top, rgba(0,0,0,.2), transparent);
   }
-  .ev-card:hover .ev-card-photo img {
-    transform: scale(1.05);
-  }
-  /* Soft divider between photo and body */
+  /* Yellow accent line separating photo from body */
   .ev-card-photo::after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 1px;
-    background: var(--border);
-    opacity: .5;
+    height: 3px;
+    background: linear-gradient(90deg, var(--yellow), rgba(245,197,24,.3));
+    z-index: 2;
+  }
+  .ev-card-photo img {
+    width: 92%;
+    height: 85%;
+    object-fit: contain;
+    display: block;
+    position: relative;
+    z-index: 1;
+    transition: transform .5s cubic-bezier(.25,.46,.45,.94);
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,.08));
+  }
+  [data-theme="dark"] .ev-card-photo img {
+    filter: drop-shadow(0 4px 16px rgba(0,0,0,.4));
+  }
+  .ev-card:hover .ev-card-photo img {
+    transform: scale(1.05);
   }
 
   /* Autonomy badge — now in card body, not on photo */
