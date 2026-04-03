@@ -56,8 +56,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
             </div>
           </div>
           <div class="result-count-bar"><span id="count">{data.total_modelos}</span> de {data.total_modelos} vehículos</div>
-          <!-- Hidden chips container for JavaScript compatibility -->
-          <div id="all-chips" style="display: none;"></div>
+          <label class="toggle-wrap" id="toggle-custom-wrap">
+            <span class="toggle-label">Personalizar</span>
+            <div class="toggle-switch" id="toggle-custom">
+              <div class="toggle-knob"></div>
+            </div>
+          </label>
+          <div class="unified-chips" id="all-chips"></div>
         </div>
       </div>
 
@@ -70,11 +75,18 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
         <!-- Listado table -->
         <div class="listado-view" id="listado-view" style="display:none;">
-          <div class="listado-wrap">
-            <table class="listado-table" id="results-table">
-              <thead id="results-thead"></thead>
-              <tbody id="results-tbody"></tbody>
-            </table>
+          <div class="results-table-outer" id="results-table-outer">
+            <div class="scroll-nav" id="scroll-nav">
+              <span class="scroll-nav-hint">Desliza para ver más columnas</span>
+              <button class="scroll-btn" id="scroll-left" aria-label="Scroll izquierda">←</button>
+              <button class="scroll-btn" id="scroll-right" aria-label="Scroll derecha">→</button>
+            </div>
+            <div class="results-table-wrap" id="results-table-wrap">
+              <table class="listado-table" id="results-table">
+                <thead id="results-thead"></thead>
+                <tbody id="results-tbody"></tbody>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -992,6 +1004,54 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     border: 1px solid var(--border);
     border-radius: 8px;
     overflow: hidden;
+  }
+
+  .toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .toggle-label {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+  }
+  .toggle-switch {
+    width: 36px;
+    height: 20px;
+    border-radius: 10px;
+    background: var(--surface-alt);
+    position: relative;
+    transition: background 0.2s;
+  }
+  .toggle-switch.on { background: var(--yellow); }
+  .toggle-knob {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    background: var(--surface);
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: left 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .toggle-switch.on .toggle-knob { left: 18px; }
+
+  .unified-chips {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .chips-separator {
+    width: 1px;
+    height: 1.25rem;
+    background: var(--surface-alt);
+    flex-shrink: 0;
   }
 
   .reset-btn {
