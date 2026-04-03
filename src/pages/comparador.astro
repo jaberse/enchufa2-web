@@ -55,13 +55,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
               <button class="reset-btn" id="btn-reset" style="display:none;">Limpiar</button>
             </div>
           </div>
-          <div class="result-count-bar"><span id="count">{data.total_modelos}</span> de {data.total_modelos} vehículos</div>
-          <label class="toggle-wrap" id="toggle-custom-wrap">
-            <span class="toggle-label">Personalizar</span>
-            <div class="toggle-switch" id="toggle-custom">
-              <div class="toggle-knob"></div>
-            </div>
-          </label>
+          <div class="filter-subrow">
+            <div class="result-count-bar"><span id="count">{data.total_modelos}</span> de {data.total_modelos} vehículos</div>
+            <label class="toggle-wrap" id="toggle-custom-wrap">
+              <span class="toggle-label">Personalizar</span>
+              <div class="toggle-switch" id="toggle-custom">
+                <div class="toggle-knob"></div>
+              </div>
+            </label>
+          </div>
           <div class="unified-chips" id="all-chips"></div>
         </div>
       </div>
@@ -599,7 +601,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       statFields.forEach(f => {
         const val = fmtField(m[f.key], f);
         const unitLabel = f.unit || f.label;
-        statsHtml += '<div class="ev-stat"><span class="ev-stat-value">' + val + '</span><span class="ev-stat-label">' + unitLabel + '</span></div>';
+        statsHtml += '<div class="ev-stat"><span class="ev-stat-label">' + unitLabel + '</span><span class="ev-stat-value">' + val + '</span></div>';
       });
 
       let detailsHtml = '';
@@ -625,10 +627,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
               '<span class="ev-marca">' + m.marca + '</span>' +
               '<span class="ev-modelo">' + m.modelo + '</span>' +
               '<span class="ev-variante">' + m.variante + '</span>' +
-            '</div>' +
-            '<div class="ev-card-autonomia">' +
-              '<span class="ev-autonomia-value">' + fmt(m.autonomia_wltp_km) + '</span>' +
-              '<span class="ev-autonomia-unit">km</span>' +
             '</div>' +
           '</div>' +
           '<div class="ev-badges">' + makeBadgesHtml(m) + '</div>' +
@@ -984,11 +982,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
 
   .filter-header h3 {
-    font-size: .78rem;
-    font-weight: 600;
+    font-size: .72rem;
+    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: .08em;
-    color: var(--text-secondary);
+    letter-spacing: .06em;
+    color: var(--text-muted);
     margin: 0;
   }
 
@@ -1071,10 +1069,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     color: var(--text);
   }
 
+  .filter-subrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: .5rem;
+  }
   .result-count-bar {
-    font-size: .78rem;
+    font-size: .75rem;
     color: var(--text-secondary);
-    margin-top: .65rem;
     font-weight: 400;
   }
   .result-count-bar strong {
@@ -1090,9 +1093,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     margin-inline: auto;
     padding-inline: var(--hub-gutter);
     padding-block: 1.5rem 3rem;
-    border: 1px solid var(--border);
-    border-top: none;
-    background: var(--surface);
   }
 
   /* Individual chip */
@@ -1424,7 +1424,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     min-width: 0;
   }
   .ev-marca {
-    font-size: .52rem;
+    font-size: .62rem;
     text-transform: uppercase;
     letter-spacing: .08em;
     font-weight: 600;
@@ -1487,39 +1487,75 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     color: var(--text-secondary);
     border: 1px solid var(--border);
   }
-  .badge-traccion { background: var(--black); color: var(--white); }
+  .badge-traccion {
+    background: var(--gray-50);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
   .badge-lfp { background: var(--yellow); color: var(--black); }
-  .badge-nmc { background: #4A90D9; color: #fff; }
-  .badge-nca { background: #7B68EE; color: #fff; }
-  .badge-800v { background: #7B68EE; color: #fff; }
-  .badge-bcalor { background: #2E8B57; color: #fff; }
-  [data-theme="dark"] .badge-tipo {
+  .badge-nmc {
+    background: rgba(74,144,217,.1);
+    color: #4A90D9;
+    border: 1px solid rgba(74,144,217,.25);
+  }
+  .badge-nca {
+    background: rgba(123,104,238,.1);
+    color: #7B68EE;
+    border: 1px solid rgba(123,104,238,.25);
+  }
+  .badge-800v {
+    background: rgba(123,104,238,.1);
+    color: #7B68EE;
+    border: 1px solid rgba(123,104,238,.25);
+  }
+  .badge-bcalor {
+    background: rgba(46,139,87,.1);
+    color: #2E8B57;
+    border: 1px solid rgba(46,139,87,.25);
+  }
+  [data-theme="dark"] .badge-tipo,
+  [data-theme="dark"] .badge-traccion {
     background: rgba(255,255,255,.06);
     border-color: var(--border);
   }
+  [data-theme="dark"] .badge-nmc {
+    background: rgba(74,144,217,.15);
+    border-color: rgba(74,144,217,.3);
+  }
+  [data-theme="dark"] .badge-nca,
+  [data-theme="dark"] .badge-800v {
+    background: rgba(123,104,238,.15);
+    border-color: rgba(123,104,238,.3);
+  }
+  [data-theme="dark"] .badge-bcalor {
+    background: rgba(46,139,87,.15);
+    border-color: rgba(46,139,87,.3);
+  }
   [data-theme="dark"] .badge-traccion { background: rgba(255,255,255,.12); }
 
-  /* Stats — 2x2 grid */
+  /* Stats — compact grid, label above value */
   .ev-card-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: .25rem .5rem;
+    gap: .35rem .5rem;
     margin-top: .4rem;
     padding-top: .5rem;
     border-top: 1px solid var(--border);
   }
   .ev-stat {
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
+    flex-direction: column;
+    gap: .05rem;
   }
   .ev-stat-label {
-    font-size: .58rem;
+    font-size: .55rem;
     color: var(--text-muted);
     font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: .04em;
   }
   .ev-stat-value {
-    font-size: .78rem;
+    font-size: .82rem;
     font-weight: 500;
     color: var(--text);
     font-variant-numeric: tabular-nums;
