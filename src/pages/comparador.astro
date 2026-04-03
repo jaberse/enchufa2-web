@@ -128,7 +128,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // FIELD DEFINITIONS
     // ═══════════════════════════════════════════════════════
     const FIELDS = [
-      { id:'autonomia',     label:'Autonomía',      shortLabel:'Auton.',  unit:'km',        key:'autonomia_wltp_km',       dflt:true,  sortAsc:false, filterType:'min' },
+      { id:'autonomia',     label:'Autonomía',      shortLabel:'Auton.',  unit:'km',        key:'autonomia_wltp_km',       dflt:false, sortAsc:false, filterType:'min' },
       { id:'potencia_cv',   label:'Potencia',        shortLabel:'Pot.',    unit:'CV',        key:'potencia_cv',             dflt:true,  sortAsc:false, filterType:'min' },
       { id:'potencia_kw',   label:'Potencia (kW)',   shortLabel:'Pot.kW',  unit:'kW',        key:'potencia_kw',             dflt:false, sortAsc:false, filterType:'min' },
       { id:'par',           label:'Par motor',       shortLabel:'Par',     unit:'Nm',        key:'par_nm',                  dflt:false, sortAsc:false, filterType:'min' },
@@ -599,9 +599,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
       let statsHtml = '';
       statFields.forEach(f => {
-        const val = fmtField(m[f.key], f);
-        const unitLabel = f.unit || f.label;
-        statsHtml += '<div class="ev-stat"><span class="ev-stat-label">' + unitLabel + '</span><span class="ev-stat-value">' + val + '</span></div>';
+        let val = fmtField(m[f.key], f);
+        if (f.unit && !f.fmt && !f.isText && m[f.key] != null) val += '\u00a0' + f.unit;
+        statsHtml += '<div class="ev-stat"><span class="ev-stat-label">' + f.label + '</span><span class="ev-stat-value">' + val + '</span></div>';
       });
 
       let detailsHtml = '';
