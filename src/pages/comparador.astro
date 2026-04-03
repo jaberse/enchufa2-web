@@ -38,75 +38,70 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           </div>
         </div>
 
-        <!-- Block 2: Filter bar (no border-top = continuous with intro) -->
-        <div class="comp-filters" id="filter-bar">
-          <!-- Row 1: Controls -->
-          <div class="comp-filters-row">
-            <div class="filters-left">
-              <div class="result-count-bar"><span id="count">{data.total_modelos}</span> de {data.total_modelos}</div>
-              <span class="filters-sep"></span>
-              <div class="sort-control" id="sort-control">
-                <label for="sort-select" class="sort-label">Ordenar</label>
-                <select id="sort-select" class="sort-select">
-                  <option value="">Autonomía ↓</option>
-                  <option value="pvp-asc">Precio ↑</option>
-                  <option value="pvp-desc">Precio ↓</option>
-                  <option value="potencia_cv-desc">Potencia ↓</option>
-                  <option value="carga_dc-desc">Carga DC ↓</option>
-                  <option value="aceleracion-asc">0-100 ↑</option>
-                  <option value="consumo-asc">Consumo ↑</option>
-                  <option value="peso-asc">Peso ↑</option>
-                  <option value="maletero-desc">Maletero ↓</option>
-                </select>
-              </div>
-              <button class="reset-btn" id="btn-reset" style="display:none;">Limpiar</button>
-            </div>
-            <div class="filters-right">
-              <label class="toggle-wrap" id="toggle-custom-wrap">
-                <span class="toggle-label">Personalizar</span>
-                <div class="toggle-switch" id="toggle-custom">
-                  <div class="toggle-knob"></div>
-                </div>
-              </label>
-              <span class="filters-sep"></span>
-              <div class="view-toggle" id="view-toggle">
-                <button class="view-btn active" data-view="fichas">Fichas</button>
-                <button class="view-btn" data-view="listado">Listado</button>
-              </div>
-            </div>
+        <!-- Block 2: Top bar (count + sort + view) -->
+        <div class="comp-topbar" id="filter-bar">
+          <div class="result-count-bar"><span id="count">{data.total_modelos}</span> de {data.total_modelos}</div>
+          <span class="topbar-sep"></span>
+          <div class="sort-control" id="sort-control">
+            <label for="sort-select" class="sort-label">Ordenar</label>
+            <select id="sort-select" class="sort-select">
+              <option value="">Autonomía ↓</option>
+              <option value="pvp-asc">Precio ↑</option>
+              <option value="pvp-desc">Precio ↓</option>
+              <option value="potencia_cv-desc">Potencia ↓</option>
+              <option value="carga_dc-desc">Carga DC ↓</option>
+              <option value="aceleracion-asc">0-100 ↑</option>
+              <option value="consumo-asc">Consumo ↑</option>
+              <option value="peso-asc">Peso ↑</option>
+              <option value="maletero-desc">Maletero ↓</option>
+            </select>
           </div>
-          <!-- Row 2: Filter chips -->
-          <div class="comp-chips-row">
-            <span class="chips-label">Filtros</span>
-            <div class="unified-chips" id="all-chips"></div>
+          <button class="reset-btn" id="btn-reset" style="display:none;">Limpiar</button>
+          <div class="topbar-spacer"></div>
+          <div class="view-toggle" id="view-toggle">
+            <button class="view-btn active" data-view="fichas">Fichas</button>
+            <button class="view-btn" data-view="listado">Listado</button>
           </div>
         </div>
 
-        <!-- Block 3: Results (no border-top = continuous) -->
-        <div class="comp-results">
-          <div class="fichas-view active" id="fichas-view">
-            <div class="fichas-grid" id="results-grid"></div>
-          </div>
+        <!-- Block 3: Body = Sidebar + Results -->
+        <div class="comp-body">
+          <aside class="comp-sidebar" id="comp-sidebar">
+            <div class="sb-section">
+              <div class="sb-heading">Campos</div>
+              <div class="sb-fields" id="sidebar-fields"></div>
+            </div>
+            <div class="sb-divider"></div>
+            <div class="sb-section">
+              <div class="sb-heading">Categorías</div>
+              <div class="sb-fields" id="sidebar-cats"></div>
+            </div>
+          </aside>
+          <div class="comp-results">
+            <div class="fichas-view active" id="fichas-view">
+              <div class="fichas-grid" id="results-grid"></div>
+            </div>
 
-          <div class="listado-view" id="listado-view" style="display:none;">
-            <div class="results-table-outer" id="results-table-outer">
-              <div class="scroll-nav" id="scroll-nav">
-                <span class="scroll-nav-hint">Desliza para ver más columnas</span>
-                <button class="scroll-btn" id="scroll-left" aria-label="Scroll izquierda">←</button>
-                <button class="scroll-btn" id="scroll-right" aria-label="Scroll derecha">→</button>
-              </div>
-              <div class="results-table-wrap" id="results-table-wrap">
-                <table class="listado-table" id="results-table">
-                  <thead id="results-thead"></thead>
-                  <tbody id="results-tbody"></tbody>
-                </table>
+            <div class="listado-view" id="listado-view" style="display:none;">
+              <div class="results-table-outer" id="results-table-outer">
+                <div class="scroll-nav" id="scroll-nav">
+                  <span class="scroll-nav-hint">Desliza para ver más columnas</span>
+                  <button class="scroll-btn" id="scroll-left" aria-label="Scroll izquierda">←</button>
+                  <button class="scroll-btn" id="scroll-right" aria-label="Scroll derecha">→</button>
+                </div>
+                <div class="results-table-wrap" id="results-table-wrap">
+                  <table class="listado-table" id="results-table">
+                    <thead id="results-thead"></thead>
+                    <tbody id="results-tbody"></tbody>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
 
-          <p class="results-empty" id="no-results" style="display:none;">
-            Ningún modelo cumple todos tus requisitos. Prueba a relajar algún filtro.
-          </p>
+            <p class="results-empty" id="no-results" style="display:none;">
+              Ningún modelo cumple todos tus requisitos. Prueba a relajar algún filtro.
+            </p>
+          </div>
         </div>
 
         <!-- Block 4: Methodology (rounded bottom = closes panel) -->
@@ -179,7 +174,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
     const DEFAULT_IDS = FIELDS.filter(f => f.dflt).map(f => f.id);
     let selectedFields = [...DEFAULT_IDS];
-    let customMode = false;
     let filterVals = {};   // { fieldId: 'value' }
     let catVals = {};      // { catId: ['val1','val2',...] }
     let openPopover = null; // id of currently open popover
@@ -200,12 +194,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     const countEl = document.getElementById('count');
     const noResults = document.getElementById('no-results');
     const btnReset = document.getElementById('btn-reset');
-    const allChipsEl = document.getElementById('all-chips');
+    const sidebarFieldsEl = document.getElementById('sidebar-fields');
+    const sidebarCatsEl = document.getElementById('sidebar-cats');
     const scrollNav = document.getElementById('scroll-nav');
     const scrollLeftBtn = document.getElementById('scroll-left');
     const scrollRightBtn = document.getElementById('scroll-right');
-    const toggleWrap = document.getElementById('toggle-custom-wrap');
-    const toggleSwitch = document.getElementById('toggle-custom');
 
     // ═══════════════════════════════════════════════════════
     // HELPERS
@@ -257,122 +250,88 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // CLOSE POPOVERS ON OUTSIDE CLICK
     // ═══════════════════════════════════════════════════════
     document.addEventListener('mousedown', (e) => {
-      if (openPopover && !e.target.closest('.chip-wrap')) {
+      if (openPopover && !e.target.closest('.sb-item')) {
         openPopover = null;
-        renderNumericChips();
-        renderCatChips();
+        renderSidebar();
       }
     });
 
     // ═══════════════════════════════════════════════════════
-    // RENDER NUMERIC CHIPS
+    // RENDER SIDEBAR
     // ═══════════════════════════════════════════════════════
-    function renderAllChips() {
-      allChipsEl.innerHTML = '';
-      _renderNumericChipsInto(allChipsEl);
-      // Separator
-      const sep = document.createElement('div');
-      sep.className = 'chips-separator';
-      allChipsEl.appendChild(sep);
-      _renderCatChipsInto(allChipsEl);
+    function renderSidebar() {
+      renderSidebarFields();
+      renderSidebarCats();
     }
 
-    // Keep old names as aliases for all call-sites
-    function renderNumericChips() { renderAllChips(); }
-    function renderCatChips() { /* no-op, renderNumericChips already renders all */ }
-
-    function _renderNumericChipsInto(container) {
-      const fieldsToShow = customMode ? FIELDS : FIELDS.filter(f => f.dflt);
-
-      fieldsToShow.forEach(f => {
-        const isActive = selectedFields.includes(f.id);
+    function renderSidebarFields() {
+      sidebarFieldsEl.innerHTML = '';
+      FIELDS.forEach(f => {
+        const isOn = selectedFields.includes(f.id);
         const fv = filterVals[f.id] || '';
         const hasF = fv !== '';
         const isOpen = openPopover === f.id;
 
-        const wrap = document.createElement('div');
-        wrap.className = 'chip-wrap';
+        const item = document.createElement('div');
+        item.className = 'sb-item' + (isOpen ? ' sb-open' : '');
 
-        // Build label
-        let label = f.label;
-        if (hasF) {
-          const sym = f.filterType === 'min' ? '\u2265' : '\u2264';
-          label = f.label + ' ' + sym + ' ' + fv;
-        }
+        // Row: toggle + label + filter indicator
+        const row = document.createElement('div');
+        row.className = 'sb-row';
 
-        const btn = document.createElement('button');
-        btn.className = 'u-chip';
-        if (isActive) btn.classList.add('active');
-        if (hasF) btn.classList.add('has-filter');
-
-        // Filter icon for active numeric chips without filter set
-        let iconHtml = '';
-        if (isActive && !hasF && f.filterType) {
-          iconHtml = '<svg class="chip-filter-icon" width="8" height="8" viewBox="0 0 10 10"><path d="M1 3h8M2.5 5h5M4 6.5h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
-        }
-        // In custom mode, active chips get a remove ✕ button
-        let removeHtml = '';
-        if (customMode && isActive) {
-          removeHtml = '<span class="chip-remove" data-remove-id="' + f.id + '">\u00d7</span>';
-        }
-        btn.innerHTML = label + iconHtml + removeHtml;
-
-        btn.addEventListener('click', (e) => {
+        // Mini toggle
+        const toggle = document.createElement('button');
+        toggle.className = 'sb-toggle' + (isOn ? ' on' : '');
+        toggle.setAttribute('aria-label', (isOn ? 'Ocultar ' : 'Mostrar ') + f.label);
+        toggle.innerHTML = '<span class="sb-toggle-knob"></span>';
+        toggle.addEventListener('click', (e) => {
           e.stopPropagation();
-          // If clicking the ✕ remove button
-          if (e.target.classList.contains('chip-remove')) return;
-
-          if (customMode && !isActive) {
-            // Add inactive field
+          if (isOn) {
+            selectedFields = selectedFields.filter(x => x !== f.id);
+          } else {
             selectedFields.push(f.id);
-            openPopover = null;
-            renderNumericChips();
-            renderCatChips();
-            update();
-          } else if (isActive && f.filterType) {
-            // Open/close filter popover (works in both modes)
-            openPopover = isOpen ? null : f.id;
-            renderNumericChips();
-            renderCatChips();
           }
+          renderSidebar();
+          update();
         });
 
-        wrap.appendChild(btn);
-
-        // Handle ✕ remove click
-        if (customMode && isActive) {
-          const removeBtn = btn.querySelector('.chip-remove');
-          if (removeBtn) {
-            removeBtn.addEventListener('click', (e) => {
-              e.stopPropagation();
-              selectedFields = selectedFields.filter(x => x !== f.id);
-              filterVals[f.id] = '';
-              openPopover = null;
-              renderNumericChips();
-              renderCatChips();
-              update();
-            });
-          }
+        // Label (clickable for filter)
+        const label = document.createElement('button');
+        label.className = 'sb-label' + (hasF ? ' has-filter' : '');
+        let labelText = f.label;
+        if (hasF) {
+          const sym = f.filterType === 'min' ? '\u2265' : '\u2264';
+          labelText += ' ' + sym + ' ' + fv + (f.unit ? ' ' + f.unit : '');
+        }
+        label.textContent = labelText;
+        if (f.filterType) {
+          label.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openPopover = isOpen ? null : f.id;
+            renderSidebar();
+          });
         }
 
-        // Popover
-        if (isOpen) {
+        row.appendChild(toggle);
+        row.appendChild(label);
+        item.appendChild(row);
+
+        // Filter popover (inline, below the row)
+        if (isOpen && f.filterType) {
           const pop = document.createElement('div');
-          pop.className = 'chip-popover';
-          const prefix = f.filterType === 'min' ? 'Mínimo' : 'Máximo';
+          pop.className = 'sb-popover';
+          const prefix = f.filterType === 'min' ? 'M\u00edn.' : 'M\u00e1x.';
           pop.innerHTML =
-            '<div class="pop-label">' + prefix + ' ' + f.label + '</div>' +
             '<div class="pop-input-wrap">' +
+              '<span class="pop-prefix">' + prefix + '</span>' +
               '<input type="number" class="pop-input" value="' + fv + '" placeholder="..." />' +
               '<span class="pop-unit">' + f.unit + '</span>' +
             '</div>' +
             (hasF ? '<button class="pop-clear">Limpiar</button>' : '');
 
           pop.addEventListener('mousedown', e => e.stopPropagation());
+          item.appendChild(pop);
 
-          wrap.appendChild(pop);
-
-          // Focus + events after append
           requestAnimationFrame(() => {
             const input = pop.querySelector('.pop-input');
             if (input) {
@@ -380,16 +339,16 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
               input.addEventListener('input', () => {
                 filterVals[f.id] = input.value;
                 btnReset.style.display = hasAnyFilter() ? '' : 'none';
-                update();
-                // Update chip label without full re-render
-                const sym = f.filterType === 'min' ? '\u2265' : '\u2264';
+                // Update label text live
                 if (input.value) {
-                  btn.textContent = f.label + ' ' + sym + ' ' + input.value;
-                  btn.classList.add('has-filter');
+                  const sym = f.filterType === 'min' ? '\u2265' : '\u2264';
+                  label.textContent = f.label + ' ' + sym + ' ' + input.value + (f.unit ? ' ' + f.unit : '');
+                  label.classList.add('has-filter');
                 } else {
-                  btn.innerHTML = f.label + iconHtml;
-                  btn.classList.remove('has-filter');
+                  label.textContent = f.label;
+                  label.classList.remove('has-filter');
                 }
+                update();
               });
             }
             const clearBtn = pop.querySelector('.pop-clear');
@@ -398,75 +357,71 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
                 filterVals[f.id] = '';
                 openPopover = null;
                 btnReset.style.display = hasAnyFilter() ? '' : 'none';
-                renderNumericChips();
-                renderCatChips();
+                renderSidebar();
                 update();
               });
             }
           });
         }
 
-        container.appendChild(wrap);
+        sidebarFieldsEl.appendChild(item);
       });
     }
 
-    // ═══════════════════════════════════════════════════════
-    // RENDER CATEGORY CHIPS
-    // ═══════════════════════════════════════════════════════
-    function _renderCatChipsInto(container) {
+    function renderSidebarCats() {
+      sidebarCatsEl.innerHTML = '';
       CATS.forEach(c => {
         const vals = catVals[c.id] || [];
         const hasF = vals.length > 0;
         const isOpen = openPopover === c.id;
 
-        const wrap = document.createElement('div');
-        wrap.className = 'chip-wrap';
+        const item = document.createElement('div');
+        item.className = 'sb-item' + (isOpen ? ' sb-open' : '');
 
-        let label = c.label;
+        const row = document.createElement('div');
+        row.className = 'sb-row sb-row-cat';
+
+        const label = document.createElement('button');
+        label.className = 'sb-label' + (hasF ? ' has-filter' : '');
+        let labelText = c.label;
         if (hasF) {
           if (vals.length === 1) {
-            label = c.label + ': ' + vals[0] + (c.suffix || '');
+            labelText = c.label + ': ' + vals[0] + (c.suffix || '');
           } else {
-            label = c.label + ' (' + vals.length + ')';
+            labelText = c.label + ' (' + vals.length + ')';
           }
         }
-
-        const btn = document.createElement('button');
-        btn.className = 'u-chip active';
-        if (hasF) btn.classList.add('has-filter');
-
-        let iconHtml = '';
-        if (!customMode && !hasF) {
-          iconHtml = '<svg class="chip-filter-icon" width="8" height="8" viewBox="0 0 10 10"><path d="M1 3h8M2.5 5h5M4 6.5h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
-        }
-        btn.innerHTML = label + iconHtml;
-
-        btn.addEventListener('click', (e) => {
+        label.textContent = labelText;
+        label.addEventListener('click', (e) => {
           e.stopPropagation();
           openPopover = isOpen ? null : c.id;
-          renderNumericChips();
-          renderCatChips();
+          renderSidebar();
         });
 
-        wrap.appendChild(btn);
+        // Chevron
+        const chevron = document.createElement('span');
+        chevron.className = 'sb-chevron' + (isOpen ? ' open' : '');
+        chevron.innerHTML = '<svg width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>';
 
-        // Popover for category (multi-select)
+        row.appendChild(label);
+        row.appendChild(chevron);
+        item.appendChild(row);
+
+        // Category popover (multi-select options)
         if (isOpen) {
           const pop = document.createElement('div');
-          pop.className = 'chip-popover chip-popover-cat';
-          let html = '<div class="pop-label">' + c.label + '</div>';
-          html += '<div class="pop-options">';
+          pop.className = 'sb-popover sb-popover-cat';
+          let html = '<div class="pop-options">';
           c.options.forEach(o => {
             const sel = vals.includes(String(o));
-            html += '<button class="pop-option' + (sel ? ' pop-option-sel' : '') + '" data-val="' + o + '">' + (sel ? '✓ ' : '') + o + (c.suffix || '') + '</button>';
+            html += '<button class="pop-option' + (sel ? ' pop-option-sel' : '') + '" data-val="' + o + '">' + (sel ? '\u2713 ' : '') + o + (c.suffix || '') + '</button>';
           });
           html += '</div>';
           if (hasF) html += '<button class="pop-clear">Limpiar</button>';
           pop.innerHTML = html;
 
           pop.addEventListener('mousedown', e => e.stopPropagation());
-
-          wrap.appendChild(pop);
+          item.appendChild(pop);
 
           requestAnimationFrame(() => {
             pop.querySelectorAll('.pop-option').forEach(optBtn => {
@@ -479,8 +434,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
                   catVals[c.id] = [...cur, clicked];
                 }
                 btnReset.style.display = hasAnyFilter() ? '' : 'none';
-                renderNumericChips();
-                renderCatChips();
+                renderSidebar();
                 update();
               });
             });
@@ -490,32 +444,16 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
                 catVals[c.id] = [];
                 openPopover = null;
                 btnReset.style.display = hasAnyFilter() ? '' : 'none';
-                renderNumericChips();
-                renderCatChips();
+                renderSidebar();
                 update();
               });
             }
           });
         }
 
-        container.appendChild(wrap);
+        sidebarCatsEl.appendChild(item);
       });
     }
-
-    // ═══════════════════════════════════════════════════════
-    // TOGGLE CUSTOM MODE
-    // ═══════════════════════════════════════════════════════
-    toggleWrap.addEventListener('click', () => {
-      customMode = !customMode;
-      toggleSwitch.classList.toggle('on', customMode);
-      if (!customMode) {
-        selectedFields = [...DEFAULT_IDS];
-      }
-      openPopover = null;
-      renderNumericChips();
-      renderCatChips();
-      update();
-    });
 
     // ═══════════════════════════════════════════════════════
     // VIEW TOGGLE
@@ -812,13 +750,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     btnReset.addEventListener('click', () => {
       filterVals = {};
       catVals = {};
+      selectedFields = [...DEFAULT_IDS];
       tableSortId = null;
       tableSortAsc = true;
       document.getElementById('sort-select').value = '';
       btnReset.style.display = 'none';
       openPopover = null;
-      renderNumericChips();
-      renderCatChips();
+      renderSidebar();
       update();
     });
 
@@ -842,8 +780,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // ═══════════════════════════════════════════════════════
     // INIT
     // ═══════════════════════════════════════════════════════
-    renderNumericChips();
-    renderCatChips();
+    renderSidebar();
     update();
 
     // Recalculate table on resize (mobile ↔ desktop)
@@ -855,14 +792,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       }, 200);
     });
 
-    // Filter bar shadow when stuck
-    const compFilters = document.getElementById('filter-bar');
-    if (compFilters) {
+    // Top bar shadow when stuck
+    const compTopbar = document.getElementById('filter-bar');
+    if (compTopbar) {
       const sentinel = document.createElement('div');
       sentinel.style.height = '1px';
-      compFilters.parentNode.insertBefore(sentinel, compFilters);
+      compTopbar.parentNode.insertBefore(sentinel, compTopbar);
       const obs = new IntersectionObserver(([e]) => {
-        compFilters.classList.toggle('scrolled', !e.isIntersecting);
+        compTopbar.classList.toggle('scrolled', !e.isIntersecting);
       }, { threshold: [0] });
       obs.observe(sentinel);
     }
@@ -956,37 +893,31 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-weight: 600;
   }
 
-  /* Block 2: Filters — continuous border, no border-top */
-  .comp-filters {
+  /* Block 2: Top bar — single row, sticky */
+  .comp-topbar {
     background: var(--surface);
     border: 1px solid var(--border);
     border-top: none;
-    padding: .6rem clamp(1.5rem, 3vw, 2.5rem);
+    padding: .55rem clamp(1.5rem, 3vw, 2.5rem);
+    display: flex;
+    align-items: center;
+    gap: .75rem;
     position: sticky;
     top: 0;
     z-index: 50;
     transition: box-shadow .3s;
   }
-  .comp-filters.scrolled {
+  .comp-topbar.scrolled {
     box-shadow: 0 4px 20px rgba(0,0,0,.08);
   }
-  .comp-filters-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: .65rem 0;
-  }
-  .filters-left, .filters-right {
-    display: flex;
-    align-items: center;
-    gap: .75rem;
-  }
-  .filters-sep {
+  .topbar-sep {
     width: 1px;
     height: 20px;
     background: var(--border);
     flex-shrink: 0;
+  }
+  .topbar-spacer {
+    flex: 1;
   }
   .sort-control {
     display: flex;
@@ -1023,79 +954,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   [data-theme="dark"] .sort-select {
     background-color: var(--surface-alt);
   }
-  /* Chips row — visually separated from controls */
-  .comp-chips-row {
-    display: flex;
-    align-items: center;
-    gap: .75rem;
-    padding: .6rem 0 .7rem;
-    border-top: 1px solid var(--border);
-  }
-  .chips-label {
-    font-size: .65rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    color: var(--text-muted);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .view-toggle {
-    display: flex;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .toggle-wrap {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    user-select: none;
-  }
-  .toggle-label {
-    font-family: var(--font-sans);
-    font-size: 0.75rem;
-    font-weight: 400;
-    color: var(--text-secondary);
-  }
-  .toggle-switch {
-    width: 36px;
-    height: 20px;
-    border-radius: 10px;
-    background: var(--surface-alt);
-    position: relative;
-    transition: background 0.2s;
-  }
-  .toggle-switch.on { background: var(--yellow); }
-  .toggle-knob {
-    width: 16px;
-    height: 16px;
-    border-radius: 8px;
-    background: var(--surface);
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    transition: left 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-  }
-  .toggle-switch.on .toggle-knob { left: 18px; }
-
-  .unified-chips {
-    display: flex;
-    gap: 0.45rem;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .chips-separator {
-    width: 1px;
-    height: 1.25rem;
-    background: var(--surface-alt);
-    flex-shrink: 0;
-  }
 
   .reset-btn {
     background: none;
@@ -1118,6 +976,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-size: .78rem;
     color: var(--text-secondary);
     font-weight: 300;
+    white-space: nowrap;
   }
   .result-count-bar span {
     font-weight: 500;
@@ -1125,141 +984,196 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
 
   /* ══════════════════════════════════════════
-     CONTENT CONTAINER
+     BODY = SIDEBAR + RESULTS GRID
      ══════════════════════════════════════════ */
-  /* Block 3: Results — continuous border, white background for contrast */
-  .comp-results {
-    background: var(--surface);
+  .comp-body {
+    display: grid;
+    grid-template-columns: 220px 1fr;
     border-left: 1px solid var(--border);
     border-right: 1px solid var(--border);
     border-top: none;
-    border-bottom: none;
-    padding: 1.75rem clamp(1rem, 2vw, 1.5rem) 1.5rem;
+    background: var(--surface);
   }
 
-  /* Individual chip */
-  .chip-wrap {
-    position: relative;
-    display: inline-flex;
+  /* Sidebar */
+  .comp-sidebar {
+    border-right: 1px solid var(--border);
+    padding: 1rem 0;
+    overflow-y: auto;
+    max-height: calc(100vh - 120px);
+    position: sticky;
+    top: 48px;
+    align-self: start;
   }
-  .u-chip {
-    font-family: var(--font-sans);
-    font-size: 0.7rem;
-    font-weight: 400;
-    padding: 0.3rem 0.65rem;
-    border-radius: 20px;
-    border: 1.5px solid transparent;
-    cursor: pointer;
-    background: var(--surface-alt);
+  .sb-section {
+    padding: 0 .85rem;
+  }
+  .sb-heading {
+    font-size: .58rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .08em;
     color: var(--text-muted);
-    transition: all 0.15s;
-    white-space: nowrap;
-    display: inline-flex;
+    padding: .3rem 0 .5rem;
+  }
+  .sb-divider {
+    height: 1px;
+    background: var(--border);
+    margin: .75rem 0;
+  }
+  .sb-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  /* Sidebar item (field or category) */
+  .sb-item {
+    position: relative;
+    border-radius: 6px;
+    transition: background .15s;
+  }
+  .sb-item:hover {
+    background: var(--surface-alt);
+  }
+  .sb-item.sb-open {
+    background: var(--surface-alt);
+    border-radius: 6px;
+  }
+  .sb-row {
+    display: flex;
     align-items: center;
-    gap: 3px;
+    gap: .45rem;
+    padding: .35rem .4rem;
+  }
+  .sb-row-cat {
+    justify-content: space-between;
+  }
+
+  /* Mini toggle for fields */
+  .sb-toggle {
+    width: 26px;
+    height: 14px;
+    border-radius: 7px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background .2s, border-color .2s;
+    padding: 0;
+  }
+  .sb-toggle.on {
+    background: var(--yellow);
+    border-color: var(--yellow);
+  }
+  .sb-toggle-knob {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--surface);
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    transition: left .2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,.15);
+  }
+  .sb-toggle.on .sb-toggle-knob {
+    left: 13px;
+  }
+
+  /* Sidebar label (clickable for filter) */
+  .sb-label {
+    font-family: var(--font-sans);
+    font-size: .7rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: .15rem .2rem;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+    transition: color .15s;
     line-height: 1.3;
   }
-  .u-chip.active {
-    background: var(--yellow);
-    color: var(--black);
-    font-weight: 500;
+  .sb-label:hover {
+    color: var(--text);
   }
-  .u-chip.has-filter {
-    background: var(--yellow-glow);
-    border-color: var(--yellow);
-    color: var(--black);
-    font-weight: 500;
-  }
-  [data-theme="dark"] .u-chip.has-filter {
+  .sb-label.has-filter {
     color: var(--yellow);
-  }
-  .chip-filter-icon {
-    opacity: 0.35;
-    flex-shrink: 0;
-  }
-  .chip-remove {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    font-weight: 400;
-    color: var(--text-muted);
-    margin-left: 2px;
-    cursor: pointer;
-    line-height: 1;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    transition: all 0.15s;
-  }
-  .chip-remove:hover {
-    background: rgba(0,0,0,0.1);
-    color: #c33;
+    font-weight: 500;
   }
 
-  /* ── Popover ──────────────────────────── */
-  .chip-popover {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.75rem 0.85rem;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    z-index: 200;
-    min-width: 180px;
-  }
-  .pop-label {
-    font-family: var(--font-sans);
-    font-size: 0.625rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+  /* Chevron for categories */
+  .sb-chevron {
     color: var(--text-muted);
-    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    transition: transform .2s;
+    flex-shrink: 0;
   }
+  .sb-chevron.open {
+    transform: rotate(180deg);
+  }
+
+  /* Sidebar popover (inline, below row) */
+  .sb-popover {
+    padding: .5rem .55rem .6rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2px;
+  }
+
+  /* ══════════════════════════════════════════
+     POPOVER SHARED STYLES (sidebar)
+     ══════════════════════════════════════════ */
   .pop-input-wrap {
     display: flex;
     align-items: center;
-    background: var(--surface-alt);
+    background: var(--surface);
     border-radius: 6px;
     border: 1px solid var(--border);
-    padding: 0 0.65rem;
+    padding: 0 .5rem;
+  }
+  .pop-prefix {
+    font-family: var(--font-sans);
+    font-size: .6rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    margin-right: .3rem;
   }
   .pop-input {
     flex: 1;
     border: none;
     background: transparent;
     font-family: var(--font-sans);
-    font-size: 0.9375rem;
-    padding: 0.5rem 0;
+    font-size: .8rem;
+    padding: .4rem 0;
     outline: none;
-    width: 70px;
+    width: 50px;
     color: var(--text);
   }
   .pop-unit {
     font-family: var(--font-sans);
-    font-size: 0.6875rem;
+    font-size: .6rem;
     color: var(--text-muted);
     flex-shrink: 0;
   }
   .pop-clear {
     font-family: var(--font-sans);
-    font-size: 0.6875rem;
+    font-size: .6rem;
     color: #c33;
     background: none;
     border: none;
     cursor: pointer;
-    margin-top: 0.4rem;
+    margin-top: .35rem;
     padding: 0;
     display: block;
-  }
-
-  /* Category popover */
-  .chip-popover-cat {
-    min-width: 140px;
   }
   .pop-options {
     display: flex;
@@ -1268,50 +1182,29 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .pop-option {
     font-family: var(--font-sans);
-    font-size: 0.75rem;
-    padding: 0.4rem 0.65rem;
-    border-radius: 6px;
+    font-size: .7rem;
+    padding: .3rem .5rem;
+    border-radius: 5px;
     border: none;
     cursor: pointer;
     text-align: left;
-    background: var(--surface-alt);
+    background: var(--surface);
     color: var(--text-secondary);
     font-weight: 400;
     transition: all 0.1s;
   }
-  .pop-option:hover { background: var(--surface-alt); }
+  .pop-option:hover { background: var(--bg); }
   .pop-option-sel {
     background: var(--yellow) !important;
     color: var(--black) !important;
     font-weight: 600 !important;
   }
 
-  /* ── Hint ─────────────────────────────── */
-  .comp-hint {
-    background: rgba(245,197,24,0.12);
-    border-bottom: 1px solid var(--border);
-    padding: 0.6rem 0;
-  }
-  .comp-hint .page-width {
-    display: flex;
-    gap: 0.4rem;
-    align-items: center;
-  }
-  .hint-icon { font-size: 0.8rem; }
-  .hint-text {
-    font-family: var(--font-sans);
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-  }
-  .hint-text strong { color: var(--text); font-weight: 600; }
-
   /* ── Results ─────────────────────────── */
   .comp-results {
-    padding: 1.75rem 0 3.5rem;
+    padding: 1.5rem clamp(.75rem, 1.5vw, 1.25rem);
     background: var(--surface);
     min-height: 60vh;
-    border-left: 1px solid var(--border);
-    border-right: 1px solid var(--border);
   }
   [data-theme="dark"] .comp-results {
     background: var(--surface);
@@ -1373,9 +1266,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
      ══════════════════════════════════════════ */
   .fichas-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    padding: 0 clamp(1rem, 2.5vw, 2rem);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    padding: 0;
   }
 
   /* ══════════════════════════════════════════
@@ -1992,11 +1885,24 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   @media (max-width: 850px) {
     .fichas-grid { grid-template-columns: repeat(2, 1fr); }
+    .comp-body { grid-template-columns: 190px 1fr; }
   }
   @media (max-width: 640px) {
-    .comp-filters-row { flex-direction: column; align-items: flex-start; gap: .5rem; }
-    .filters-left, .filters-right { flex-wrap: wrap; }
-    .comp-chips-row { flex-direction: column; align-items: flex-start; gap: .4rem; }
+    .comp-body {
+      grid-template-columns: 1fr;
+    }
+    .comp-sidebar {
+      position: relative;
+      top: 0;
+      max-height: none;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      padding: .75rem 0;
+    }
+    .comp-topbar {
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
     .fichas-grid { grid-template-columns: 1fr 1fr; gap: .8rem; padding: 0 .5rem; }
     .ev-card-body { padding: .75rem .85rem .85rem; }
     .ev-modelo { font-size: .82rem; }
