@@ -590,18 +590,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       card.className = 'ev-card';
 
       const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
-      const statFields = activeFields.slice(0, 4);
-      const detailFields = activeFields.slice(4);
 
-      let statsHtml = '';
-      statFields.forEach(f => {
-        let val = fmtField(m[f.key], f);
-        if (f.unit && !f.fmt && !f.isText && m[f.key] != null) val += '\u00a0' + f.unit;
-        statsHtml += '<div class="ev-stat"><span class="ev-stat-label">' + f.label + '</span><span class="ev-stat-value">' + val + '</span></div>';
-      });
-
+      // All fields as clean detail rows (no stats grid)
       let detailsHtml = '';
-      detailFields.forEach(f => {
+      activeFields.forEach(f => {
         const val = m[f.key];
         let display = fmtField(val, f);
         if (f.unit && !f.fmt && !f.isText && val != null) display += '\u00a0' + f.unit;
@@ -626,7 +618,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
             '</div>' +
           '</div>' +
           '<div class="ev-badges">' + makeBadgesHtml(m) + '</div>' +
-          '<div class="ev-card-stats" style="grid-template-columns:repeat(' + statFields.length + ',1fr)">' + statsHtml + '</div>' +
           (detailsHtml ? '<div class="ev-card-details">' + detailsHtml + '</div>' : '') +
         '</div>';
       return card;
@@ -852,7 +843,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     --photo-bg: linear-gradient(180deg, #131313, #1a1a1a);
   }
   [data-theme="dark"] {
-    --photo-bg: linear-gradient(180deg, #0a0a0a, #111111);
+    --photo-bg: linear-gradient(180deg, #12141a, #161921);
   }
 
   /* ══════════════════════════════════════════
@@ -1352,7 +1343,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     box-shadow: 0 12px 32px rgba(0,0,0,.1);
   }
 
-  /* Photo area — edge to edge, dark bg, no inner box */
+  /* Photo area — truly edge to edge, no padding, no inner box */
   .ev-card-photo {
     aspect-ratio: 16 / 7;
     overflow: hidden;
@@ -1361,14 +1352,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4px 8px;
   }
   .ev-card-photo img {
-    width: 100%;
-    height: 100%;
+    width: 92%;
+    height: 90%;
     object-fit: contain;
     transition: transform .4s cubic-bezier(.25,.46,.45,.94);
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,.25));
   }
   .ev-card:hover .ev-card-photo img {
     transform: scale(1.05);
@@ -1474,105 +1464,68 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     margin-top: .15rem;
   }
   .badge {
-    font-size: .5rem;
-    padding: .12rem .35rem;
+    font-size: .48rem;
+    padding: .1rem .3rem;
     border-radius: 3px;
-    font-weight: 600;
+    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: .05em;
+    letter-spacing: .04em;
     white-space: nowrap;
   }
-  .badge-tipo {
-    background: var(--gray-50);
-    color: var(--text-secondary);
-    border: 1px solid var(--border);
-  }
-  .badge-traccion {
-    background: var(--gray-50);
-    color: var(--text-secondary);
-    border: 1px solid var(--border);
-  }
-  .badge-lfp { background: var(--yellow); color: var(--black); }
-  .badge-nmc {
-    background: rgba(74,144,217,.1);
-    color: #4A90D9;
-    border: 1px solid rgba(74,144,217,.25);
-  }
-  .badge-nca {
-    background: rgba(123,104,238,.1);
-    color: #7B68EE;
-    border: 1px solid rgba(123,104,238,.25);
-  }
-  .badge-800v {
-    background: rgba(123,104,238,.1);
-    color: #7B68EE;
-    border: 1px solid rgba(123,104,238,.25);
-  }
+  /* All badges start neutral — only LFP gets color */
+  .badge-tipo,
+  .badge-traccion,
+  .badge-nmc,
+  .badge-nca,
+  .badge-800v,
   .badge-bcalor {
-    background: rgba(46,139,87,.1);
-    color: #2E8B57;
-    border: 1px solid rgba(46,139,87,.25);
+    background: var(--bg);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+  .badge-lfp {
+    background: var(--yellow);
+    color: var(--black);
+    border: 1px solid var(--yellow);
   }
   [data-theme="dark"] .badge-tipo,
-  [data-theme="dark"] .badge-traccion {
-    background: rgba(255,255,255,.06);
-    border-color: var(--border);
-  }
-  [data-theme="dark"] .badge-nmc {
-    background: rgba(74,144,217,.15);
-    border-color: rgba(74,144,217,.3);
-  }
+  [data-theme="dark"] .badge-traccion,
+  [data-theme="dark"] .badge-nmc,
   [data-theme="dark"] .badge-nca,
-  [data-theme="dark"] .badge-800v {
-    background: rgba(123,104,238,.15);
-    border-color: rgba(123,104,238,.3);
-  }
+  [data-theme="dark"] .badge-800v,
   [data-theme="dark"] .badge-bcalor {
-    background: rgba(46,139,87,.15);
-    border-color: rgba(46,139,87,.3);
+    background: rgba(255,255,255,.06);
+    color: var(--text-muted);
+    border-color: rgba(255,255,255,.08);
   }
   [data-theme="dark"] .badge-traccion { background: rgba(255,255,255,.12); }
 
-  /* Stats — compact grid, label above value */
-  .ev-card-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: .35rem .5rem;
-    margin-top: .4rem;
-    padding-top: .5rem;
-    border-top: 1px solid var(--border);
-  }
-  .ev-stat {
+  /* Detail rows — clean, compact, the only data display */
+  .ev-card-details {
     display: flex;
     flex-direction: column;
-    gap: .05rem;
+    gap: 0;
+    margin-top: .35rem;
+    padding-top: .4rem;
+    border-top: 1px solid var(--border);
   }
-  .ev-stat-label {
-    font-size: .55rem;
-    color: var(--text-muted);
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-  }
-  .ev-stat-value {
-    font-size: .82rem;
-    font-weight: 500;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* Detail rows */
-  .ev-card-details { display: flex; flex-direction: column; gap: 0.15rem; }
   .ev-detail {
     display: flex;
     justify-content: space-between;
     font-family: var(--font-sans);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: var(--text-muted);
-    padding: 0.1rem 0;
+    padding: .18rem 0;
   }
-  .ev-detail span:last-child { font-weight: 400; color: var(--text); }
-  .ev-detail-price span:last-child { font-weight: 600; color: var(--text); }
+  .ev-detail span:last-child {
+    font-weight: 500;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .ev-detail-price span:last-child {
+    font-weight: 600;
+    color: var(--text);
+  }
 
   /* View control */
   .fichas-view { display: block; }
