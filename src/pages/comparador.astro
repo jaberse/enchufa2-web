@@ -28,7 +28,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   <main class="comparador">
     <!-- COMPARADOR SECTION with intro card + sticky filter bar -->
     <section class="comparador-section">
-      <div class="comparador-intro">
+      <!-- Unified wrapper: same max-width for intro + filters + content -->
+      <div class="comparador-wrapper">
         <div class="comparador-intro-card">
           <div class="comparador-intro-text">
             <h2>Comparador de <em>eléctricos</em></h2>
@@ -42,27 +43,26 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         </div>
       </div>
 
-      <!-- STICKY FILTER BAR: Campos y filtros -->
+      <!-- STICKY FILTER BAR -->
       <div class="filter-bar">
         <div class="filter-bar-inner">
           <div class="filter-header">
-            <h3>Campos y filtros</h3>
+            <div class="filter-header-left">
+              <div class="result-count-bar"><span id="count">{data.total_modelos}</span> de {data.total_modelos} vehículos</div>
+            </div>
             <div class="filter-controls">
+              <label class="toggle-wrap" id="toggle-custom-wrap">
+                <span class="toggle-label">Personalizar</span>
+                <div class="toggle-switch" id="toggle-custom">
+                  <div class="toggle-knob"></div>
+                </div>
+              </label>
               <div class="view-toggle" id="view-toggle">
                 <button class="view-btn active" data-view="fichas">Fichas</button>
                 <button class="view-btn" data-view="listado">Listado</button>
               </div>
               <button class="reset-btn" id="btn-reset" style="display:none;">Limpiar</button>
             </div>
-          </div>
-          <div class="filter-subrow">
-            <div class="result-count-bar"><span id="count">{data.total_modelos}</span> de {data.total_modelos} vehículos</div>
-            <label class="toggle-wrap" id="toggle-custom-wrap">
-              <span class="toggle-label">Personalizar</span>
-              <div class="toggle-switch" id="toggle-custom">
-                <div class="toggle-knob"></div>
-              </div>
-            </label>
           </div>
           <div class="unified-chips" id="all-chips"></div>
         </div>
@@ -880,6 +880,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
 
   /* ══════════════════════════════════════════
+     COMPARADOR MAIN — subtle bg for card contrast
+     ══════════════════════════════════════════ */
+  .comparador {
+    background: var(--bg);
+    padding-bottom: 2rem;
+  }
+
+  /* ══════════════════════════════════════════
      COMPARADOR SECTION — overlaps hero
      ══════════════════════════════════════════ */
   .comparador-section {
@@ -888,7 +896,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     margin-top: -3rem;
   }
 
-  .comparador-intro {
+  .comparador-wrapper {
     max-width: var(--max-w);
     margin-inline: auto;
     padding-inline: var(--hub-gutter);
@@ -897,7 +905,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .comparador-intro-card {
     background: var(--surface);
     border-radius: 12px 12px 0 0;
-    padding: clamp(1.5rem, 3vw, 2.5rem);
+    padding: clamp(1.5rem, 3vw, 2rem);
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -962,7 +970,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
-    padding: .85rem var(--hub-gutter);
+    padding: .7rem 0;
     transition: all .3s;
   }
   [data-theme="dark"] .filter-bar {
@@ -972,6 +980,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .filter-bar-inner {
     max-width: var(--max-w);
     margin-inline: auto;
+    padding-inline: var(--hub-gutter);
   }
 
   .filter-header {
@@ -981,13 +990,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     gap: 1rem;
   }
 
-  .filter-header h3 {
-    font-size: .72rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    color: var(--text-muted);
-    margin: 0;
+  .filter-header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
   }
 
   .filter-controls {
@@ -1069,12 +1075,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     color: var(--text);
   }
 
-  .filter-subrow {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: .5rem;
-  }
   .result-count-bar {
     font-size: .75rem;
     color: var(--text-secondary);
@@ -1092,7 +1092,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     max-width: var(--max-w);
     margin-inline: auto;
     padding-inline: var(--hub-gutter);
-    padding-block: 1.5rem 3rem;
+    padding-block: 1.25rem 3rem;
   }
 
   /* Individual chip */
@@ -1338,18 +1338,33 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .ev-card {
     display: flex;
     flex-direction: column;
-    background: var(--bg);
-    border-radius: 8px;
+    background: var(--surface);
+    border-radius: 10px;
     border: 1px solid var(--border);
-    border-left: 3px solid var(--border);
     overflow: hidden;
-    transition: all .3s cubic-bezier(.25,.46,.45,.94);
+    transition: all .35s cubic-bezier(.25,.46,.45,.94);
     cursor: pointer;
+    position: relative;
+  }
+  .ev-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: transparent;
+    border-radius: 10px 0 0 10px;
+    transition: background .35s;
+    z-index: 2;
   }
   .ev-card:hover {
-    border-left-color: var(--yellow);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(0,0,0,.12);
+    transform: translateY(-5px);
+    box-shadow: 0 16px 40px rgba(0,0,0,.1), 0 2px 8px rgba(0,0,0,.06);
+    border-color: rgba(245,197,24,.3);
+  }
+  .ev-card:hover::before {
+    background: var(--yellow);
   }
 
   /* Photo area — controlled dark bg, 16:7 aspect */
@@ -1371,7 +1386,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
   }
   .ev-card:hover .ev-card-photo img {
-    transform: scale(1.04);
+    transform: scale(1.06);
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,.4));
   }
 
   /* Autonomy badge on photo */
