@@ -25,28 +25,23 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     <img src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1600&q=80&auto=format" alt="Estación de carga eléctrica" loading="eager">
   </div>
 
-  <main class="comparador">
-    <section class="comparador-section">
-      <!-- PANEL: single continuous container like homepage -->
-      <div class="comp-panel-wrap">
+  <main>
+    <!-- Continuous panel: same pattern as homepage guias-section → cat-blocks -->
+    <section class="comp-section">
+      <div class="comp-outer">
 
-        <!-- Intro header (overlaps hero) -->
-        <div class="comp-panel-header">
-          <div class="comp-panel-header-text">
+        <!-- Block 1: Intro (overlaps hero, rounded top) -->
+        <div class="comp-intro">
+          <div class="comp-intro-inner">
             <h2>Comparador de <em>eléctricos</em></h2>
-            <p>Dinos qué necesitas. Nosotros te decimos qué coches lo cumplen.</p>
-          </div>
-          <div class="comp-panel-pills">
-            <div class="comp-pill"><strong>{data.total_modelos}</strong>&nbsp;modelos</div>
-            <div class="comp-pill">Datos&nbsp;<strong>verificados</strong></div>
-            <div class="comp-pill"><strong>Beta</strong></div>
+            <p>Dinos qué necesitas. Nosotros te decimos qué coches lo cumplen. <strong>{data.total_modelos} modelos</strong> con datos verificados.</p>
           </div>
         </div>
 
-        <!-- Filter bar (sticky, inside panel) -->
-        <div class="filter-bar" id="filter-bar">
-          <div class="filter-header">
-            <div class="result-count-bar"><span id="count">{data.total_modelos}</span> de {data.total_modelos} vehículos</div>
+        <!-- Block 2: Filter bar (no border-top = continuous with intro) -->
+        <div class="comp-filters" id="filter-bar">
+          <div class="comp-filters-row">
+            <div class="result-count-bar"><span id="count">{data.total_modelos}</span> de {data.total_modelos}</div>
             <div class="filter-controls">
               <label class="toggle-wrap" id="toggle-custom-wrap">
                 <span class="toggle-label">Personalizar</span>
@@ -64,8 +59,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           <div class="unified-chips" id="all-chips"></div>
         </div>
 
-        <!-- Content area (inside panel, bg contrast) -->
-        <div class="comp-panel-content">
+        <!-- Block 3: Results (no border-top = continuous) -->
+        <div class="comp-results">
           <div class="fichas-view active" id="fichas-view">
             <div class="fichas-grid" id="results-grid"></div>
           </div>
@@ -91,7 +86,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           </p>
         </div>
 
-        <!-- METHODOLOGY (inside panel) -->
+        <!-- Block 4: Methodology (rounded bottom = closes panel) -->
         <div class="comp-methodology">
           <p class="meth-label">Sobre estos datos</p>
           <p>
@@ -105,7 +100,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           </p>
         </div>
 
-      </div><!-- /comp-panel-wrap -->
+      </div>
     </section>
   </main>
 
@@ -818,32 +813,30 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       }, 200);
     });
 
-    // Filter bar scrolled class for glass effect
-    const filterBar = document.getElementById('filter-bar');
-    if (filterBar) {
-      const fbObserver = new IntersectionObserver(([e]) => {
-        filterBar.classList.toggle('scrolled', e.intersectionRatio < 1);
-      }, { threshold: [1], rootMargin: '-1px 0px 0px 0px' });
-      fbObserver.observe(filterBar);
+    // Filter bar shadow when stuck
+    const compFilters = document.getElementById('filter-bar');
+    if (compFilters) {
+      const sentinel = document.createElement('div');
+      sentinel.style.height = '1px';
+      compFilters.parentNode.insertBefore(sentinel, compFilters);
+      const obs = new IntersectionObserver(([e]) => {
+        compFilters.classList.toggle('scrolled', !e.isIntersecting);
+      }, { threshold: [0] });
+      obs.observe(sentinel);
     }
   </script>
 </Layout>
 
 <!-- Use is:global so styles apply to JS-rendered elements -->
 <style is:global>
-  /* Override max-width for comparador */
-  .comparador .page-width {
-    max-width: 1400px;
-  }
-
   /* ══════════════════════════════════════════
-     PHOTO BACKGROUND VARIABLE
+     TOKENS
      ══════════════════════════════════════════ */
   :root {
     --photo-bg: linear-gradient(180deg, #131313, #1a1a1a);
   }
   [data-theme="dark"] {
-    --photo-bg: linear-gradient(180deg, #12141a, #161921);
+    --photo-bg: linear-gradient(180deg, #111318, #161921);
   }
 
   /* ══════════════════════════════════════════
@@ -852,7 +845,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .hero-band {
     position: relative;
     width: 100%;
-    height: clamp(180px, 25vh, 340px);
+    height: clamp(200px, 30vh, 360px);
     overflow: hidden;
     background: var(--black);
   }
@@ -868,128 +861,83 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     position: absolute;
     inset: 0;
     z-index: 3;
-    background: linear-gradient(to bottom, transparent 30%, rgba(17,17,17,.2) 60%, rgba(17,17,17,.55) 100%);
+    background: linear-gradient(to bottom, transparent 40%, rgba(17,17,17,.15) 70%, rgba(17,17,17,.5) 100%);
     pointer-events: none;
   }
   [data-theme="dark"] .hero-band::after {
-    background: linear-gradient(to bottom, transparent 30%, rgba(13,15,20,.3) 60%, rgba(13,15,20,.75) 100%);
+    background: linear-gradient(to bottom, transparent 40%, rgba(13,15,20,.2) 70%, rgba(13,15,20,.7) 100%);
   }
 
   /* ══════════════════════════════════════════
-     COMPARADOR SECTION — overlaps hero
-     Follows same continuous panel pattern as homepage
+     COMP SECTION — continuous panel, same as homepage
      ══════════════════════════════════════════ */
-  .comparador-section {
+  .comp-section {
     position: relative;
     z-index: 10;
     margin-top: -4rem;
   }
 
-  /* Single panel wrap — all children share same width */
-  .comp-panel-wrap {
+  .comp-outer {
     max-width: var(--max-w);
     margin-inline: auto;
     padding-inline: var(--hub-gutter);
     padding-bottom: clamp(2rem, 4vw, 3rem);
   }
 
-  /* Panel header — overlaps hero, rounded top */
-  .comp-panel-header {
+  /* Block 1: Intro — rounded top, overlaps hero */
+  .comp-intro {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px 12px 0 0;
-    padding: clamp(1.5rem, 3vw, 2rem) clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 2vw, 1.5rem);
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 2rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 2vw, 1.75rem);
     box-shadow: 0 -8px 40px rgba(0,0,0,.12);
-    flex-wrap: wrap;
   }
-
-  .comp-panel-header-text h2 {
+  .comp-intro h2 {
     font-size: clamp(1.5rem, 2.8vw, 2.2rem);
     font-weight: 200;
     letter-spacing: -.03em;
     line-height: 1.1;
     margin-bottom: .4rem;
   }
-  .comp-panel-header-text h2 em {
+  .comp-intro h2 em {
     font-family: var(--font-serif);
     font-style: italic;
   }
-  .comp-panel-header-text p {
+  .comp-intro p {
     font-size: .85rem;
     color: var(--text-secondary);
-    max-width: 48ch;
+    max-width: 60ch;
     line-height: 1.6;
   }
-
-  .comp-panel-pills {
-    display: flex;
-    gap: .5rem;
-    flex-wrap: wrap;
-    flex-shrink: 0;
-  }
-  .comp-pill {
-    display: flex;
-    align-items: center;
-    gap: .3rem;
-    font-size: .62rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    padding: .35rem .75rem;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-  }
-  .comp-pill strong {
+  .comp-intro p strong {
     color: var(--yellow);
     font-weight: 600;
-    font-size: .75rem;
   }
 
-  /* ══════════════════════════════════════════
-     FILTER BAR — part of continuous panel
-     ══════════════════════════════════════════ */
-  .filter-bar {
+  /* Block 2: Filters — continuous border, no border-top */
+  .comp-filters {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: .6rem clamp(1.5rem, 3vw, 2.5rem);
     position: sticky;
     top: 0;
     z-index: 50;
-    background: var(--surface);
-    border-left: 1px solid var(--border);
-    border-right: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: .65rem clamp(1rem, 2vw, 1.5rem);
-    transition: background .3s, box-shadow .3s;
+    transition: box-shadow .3s;
   }
-  .filter-bar.scrolled {
-    background: rgba(255,255,255,.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  .comp-filters.scrolled {
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
   }
-  [data-theme="dark"] .filter-bar {
-    background: var(--surface);
-  }
-  [data-theme="dark"] .filter-bar.scrolled {
-    background: rgba(22, 25, 33, .95);
-  }
-
-  .filter-header {
+  .comp-filters-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
   }
-
   .filter-controls {
     display: flex;
     align-items: center;
-    gap: .65rem;
+    gap: .6rem;
   }
 
   .view-toggle {
@@ -1066,24 +1014,24 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
 
   .result-count-bar {
-    font-size: .75rem;
+    font-size: .78rem;
     color: var(--text-secondary);
-    font-weight: 400;
+    font-weight: 300;
   }
-  .result-count-bar strong {
-    color: var(--text);
+  .result-count-bar span {
     font-weight: 500;
+    color: var(--text);
   }
 
   /* ══════════════════════════════════════════
      CONTENT CONTAINER
      ══════════════════════════════════════════ */
-  /* Content area — inside panel, subtle bg for card contrast */
-  .comp-panel-content {
-    background: var(--bg);
-    border-left: 1px solid var(--border);
-    border-right: 1px solid var(--border);
-    padding: 1.25rem clamp(1rem, 2vw, 1.5rem) 1.5rem;
+  /* Block 3: Results — continuous border, no border-top */
+  .comp-results {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 1.25rem clamp(1.5rem, 3vw, 2.5rem) 1.5rem;
   }
 
   /* Individual chip */
@@ -1329,7 +1277,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .ev-card {
     display: flex;
     flex-direction: column;
-    background: var(--surface);
+    background: var(--bg);
     border-radius: var(--radius);
     border: 1px solid var(--border);
     border-bottom: 2px solid var(--border);
@@ -1339,13 +1287,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .ev-card:hover {
     border-bottom-color: var(--yellow);
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(0,0,0,.1);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
   }
 
-  /* Photo area — truly edge to edge, no padding, no inner box */
+  /* Photo area — dark bg, car profile, edge-to-edge */
   .ev-card-photo {
-    aspect-ratio: 16 / 7;
+    aspect-ratio: 5 / 2;
     overflow: hidden;
     background: var(--photo-bg);
     position: relative;
@@ -1354,14 +1302,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     justify-content: center;
   }
   .ev-card-photo img {
-    width: 92%;
-    height: 90%;
+    width: 88%;
+    height: 82%;
     object-fit: contain;
     transition: transform .4s cubic-bezier(.25,.46,.45,.94);
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,.25));
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,.2));
   }
   .ev-card:hover .ev-card-photo img {
-    transform: scale(1.05);
+    transform: scale(1.04);
   }
 
   /* Autonomy badge on photo */
@@ -1831,8 +1779,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   /* ══════════════════════════════════════════
      METHODOLOGY
      ══════════════════════════════════════════ */
+  /* Block 4: Methodology — closes the panel, rounded bottom */
   .comp-methodology {
-    padding: clamp(1.5rem, 3vw, 2rem) clamp(1rem, 2vw, 1.5rem);
+    padding: clamp(1.5rem, 3vw, 2rem) clamp(1.5rem, 3vw, 2.5rem);
     border: 1px solid var(--border);
     border-top: none;
     background: var(--surface);
@@ -1861,19 +1810,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     .fichas-grid { grid-template-columns: repeat(3, 1fr); }
   }
   @media (max-width: 850px) {
-    .comparador-intro-card { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
     .fichas-grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 640px) {
-    .filter-header { flex-direction: column; align-items: flex-start; gap: .5rem; }
+    .comp-filters-row { flex-direction: column; align-items: flex-start; gap: .5rem; }
     .fichas-grid { grid-template-columns: 1fr 1fr; gap: .6rem; }
-    .ev-card-body { padding: .5rem .65rem .7rem; }
+    .ev-card-body { padding: .5rem .65rem .65rem; }
     .ev-modelo { font-size: .82rem; }
-    .ev-card-stats { gap: .2rem .35rem; }
-    .ev-stat-label { font-size: .5rem; }
-    .ev-stat-value { font-size: .7rem; }
     .hero-band { height: clamp(120px, 22vw, 200px); }
-    .comparador-section { margin-top: -2rem; }
+    .comp-section { margin-top: -2rem; }
   }
   @media (max-width: 400px) {
     .fichas-grid { grid-template-columns: 1fr; }
