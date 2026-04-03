@@ -1406,18 +1406,18 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     box-shadow: 0 8px 32px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.25);
   }
 
-  /* Photo area — dark bg for contrast, yellow accent line */
+  /* Photo area — neutral gray gradient bg, yellow accent line */
   .ev-card-photo {
     aspect-ratio: 16 / 9;
     overflow: hidden;
     position: relative;
-    background: linear-gradient(175deg, #1e1f23 0%, #141518 100%);
+    background: linear-gradient(180deg, #e2e0db 0%, #d0cec8 100%);
     display: flex;
     align-items: center;
     justify-content: center;
   }
   [data-theme="dark"] .ev-card-photo {
-    background: linear-gradient(175deg, #1a1b1f 0%, #111115 100%);
+    background: linear-gradient(180deg, #2a2a2e 0%, #1e1e22 100%);
   }
   /* Yellow accent line separating photo from body */
   .ev-card-photo::after {
@@ -1438,7 +1438,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     position: relative;
     z-index: 1;
     transition: transform .5s cubic-bezier(.25,.46,.45,.94);
-    filter: drop-shadow(0 6px 20px rgba(0,0,0,.4));
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,.18));
   }
   .ev-card:hover .ev-card-photo img {
     transform: scale(1.05);
