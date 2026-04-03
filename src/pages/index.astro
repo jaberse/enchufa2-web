@@ -6,94 +6,102 @@ import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
 /*
-  Articles ordered by publish date (newest first).
-  When publishing a new article, add it to the top of this array.
-  The first entry becomes the hero; entries 1-3 become the "previous" grid;
-  the rest become the compact "older" row.
+  Guía data structure with 5 categories and guides
 */
-const articles = [
+const categories = [
   {
-    slug: 'subvenciones-ayudas-ev-2026',
-    title: 'Subvenciones y ayudas para eléctricos en 2026',
-    description: 'Plan Auto+, ayudas autonómicas, etiqueta CERO, deducciones IRPF y exenciones fiscales. Todo lo que puedes pedir y cómo hacerlo.',
-    category: 'Costes y Ahorro',
-    categorySlug: 'costes-y-ahorro',
-    date: 'Marzo 2026',
-    readingTime: '10 min de lectura',
-    image: '/articulos/subvenciones-ayudas-ev-2026/hero.webp?v=2',
-    alt: 'Calculadora y documentos financieros sobre un escritorio — foto Unsplash',
+    id: 'me-compensa',
+    num: '01',
+    label: 'Precio y rentabilidad',
+    question: '¿Me <em>compensa</em>?',
+    photo: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1600&q=80&auto=format',
+    barrierpct: '28%',
+    barrierdesc: 'de los españoles descarta el eléctrico por precio',
+    barriersource: 'Deloitte EV Consumer Survey 2025',
+    sidebarbio: 'Demostramos con números reales cuándo compensa y cuándo no. TCO completo, subvenciones actualizadas, comparativas sin trampa.',
+    guides: [
+      { num: '1.1', tag: 'Comparativa', title: 'Eléctrico, híbrido o gasolina: comparativa honesta', time: '~12 min', photo: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80&auto=format' },
+      { num: '1.2', tag: 'Guía de costes', title: 'Cuánto cuesta realmente un EV en España', time: '~10 min', photo: 'https://images.unsplash.com/photo-1580519542220-4ab36369d114?w=400&q=80&auto=format' },
+      { num: '1.3', tag: 'Actualizado 2026', title: 'Subvenciones y ventajas fiscales completas', time: '~10 min', photo: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80&auto=format' },
+      { num: '1.4', tag: 'Guía', title: 'Comprar EV de segunda mano sin riesgos', time: '~8 min', photo: 'https://images.unsplash.com/photo-1583121274602-3e2722c03d57?w=400&q=80&auto=format' },
+      { num: '1.5', tag: 'Guía', title: 'Qué modelo elegir según tu perfil de uso', time: '~9 min', photo: 'https://images.unsplash.com/photo-1494905998402-395d579af36f?w=400&q=80&auto=format' },
+    ],
   },
   {
-    slug: 'neumaticos-coche-electrico',
-    title: 'Neumáticos para coche eléctrico',
-    description: 'Por qué los neumáticos importan más en un eléctrico: desgaste, autonomía, ruido y qué modelos elegir.',
-    category: 'Mantenimiento',
-    categorySlug: 'mantenimiento',
-    date: 'Marzo 2026',
-    readingTime: '10 min de lectura',
-    image: '/articulos/neumaticos-coche-electrico/hero.webp',
-    alt: 'Primer plano de rueda y neumático en coche deportivo — foto Unsplash',
+    id: 'como-cargo',
+    num: '02',
+    label: 'Infraestructura de carga',
+    question: '¿Cómo <em>cargo</em>?',
+    photo: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1600&q=80&auto=format',
+    barrierpct: '23%',
+    barrierdesc: 'no compra por miedo a la infraestructura o no saber cómo cargar',
+    barriersource: 'ANFAC Observatorio EV 2025',
+    sidebarbio: 'Desde instalar un wallbox hasta usar las redes públicas de forma inteligente. Todo para cargar sin estrés.',
+    guides: [
+      { num: '2.1', tag: 'Guía completa', title: 'Cómo cargar en casa: todo lo que necesitas saber', time: '~11 min', photo: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=400&q=80&auto=format' },
+      { num: '2.2', tag: 'Instalación', title: 'Wallbox: cuál comprar y cómo instalarlo', time: '~10 min', photo: 'https://images.unsplash.com/photo-1558618047-3c8d698fa7b9?w=400&q=80&auto=format' },
+      { num: '2.3', tag: 'Publicado', title: 'Carga rápida en España: la guía técnica', time: '~12 min', photo: 'https://images.unsplash.com/photo-1621905251189-8ac98e2e60c6?w=400&q=80&auto=format' },
+      { num: '2.4', tag: 'Comparativa', title: 'Redes públicas: Iberdrola, Repsol, Tesla, Ionity', time: '~9 min', photo: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&q=80&auto=format' },
+      { num: '2.5', tag: 'Publicado', title: 'Tarifa eléctrica óptima para cargar en casa', time: '~11 min', photo: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80&auto=format' },
+    ],
   },
   {
-    slug: 'coste-real-electrico',
-    title: 'Cuánto cuesta realmente tener un eléctrico en España',
-    description: 'TCO completo: electricidad, seguro, mantenimiento, impuestos y depreciación a 5 años.',
-    category: 'Costes y Ahorro',
-    categorySlug: 'costes-y-ahorro',
-    date: 'Marzo 2026',
-    readingTime: '12 min de lectura',
-    image: '/articulos/coste-real-electrico/hero.webp',
-    alt: 'Coche Tesla negro conduciendo por la carretera — foto Unsplash',
+    id: 'puedo-viajar',
+    num: '03',
+    label: 'Autonomía y viajes largos',
+    question: '¿Puedo <em>viajar</em>?',
+    photo: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1600&q=80&auto=format',
+    barrierpct: '26%',
+    barrierdesc: 'tiene ansiedad por autonomía y miedo a quedarse tirado en ruta',
+    barriersource: 'McKinsey EV Index 2024',
+    sidebarbio: 'Con planificación básica, viajar en EV es más fácil de lo que parece. Desmontamos el mayor mito del eléctrico con datos reales.',
+    guides: [
+      { num: '3.1', tag: 'Guía práctica', title: 'Planificar un viaje largo en eléctrico por España', time: '~10 min', photo: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&q=80&auto=format' },
+      { num: '3.2', tag: 'Técnica', title: 'Autonomía real vs oficial WLTP: por qué difieren', time: '~8 min', photo: 'https://images.unsplash.com/photo-1502877338535-766f1a90c9e7?w=400&q=80&auto=format' },
+      { num: '3.3', tag: 'Conducción', title: 'Conducción eficiente: técnicas para más km por carga', time: '~9 min', photo: 'https://images.unsplash.com/photo-1494783367193-149034c05e8f?w=400&q=80&auto=format' },
+      { num: '3.4', tag: 'Emergencias', title: 'Qué hacer si te quedas sin batería en ruta', time: '~6 min', photo: 'https://images.unsplash.com/photo-1507136566006-cfc505b114fc?w=400&q=80&auto=format' },
+      { num: '3.5', tag: 'Apps', title: 'Apps y herramientas para planificar la carga en viaje', time: '~7 min', photo: 'https://images.unsplash.com/photo-1512054502976-b16e09600a39?w=400&q=80&auto=format' },
+    ],
   },
   {
-    slug: 'mantenimiento-ev-vs-combustion',
-    title: 'Mantenimiento real de un EV vs combustión',
-    description: 'Qué se cambia, cada cuánto y cuánto cuesta. Con datos de fabricantes, AAA y LeasePlan.',
-    category: 'Mantenimiento',
-    categorySlug: 'mantenimiento',
-    date: 'Marzo 2026',
-    readingTime: '11 min de lectura',
-    image: '/articulos/mantenimiento-ev-vs-combustion/hero.webp',
-    alt: 'Mecánico trabajando en un coche en un taller — foto Unsplash',
+    id: 'como-funciona',
+    num: '04',
+    label: 'Tecnología y fundamentos',
+    question: '¿Cómo <em>funciona</em>?',
+    photo: 'https://images.unsplash.com/photo-1620714223084-8fcacc2020ce?w=1600&q=80&auto=format',
+    barrierpct: '15%',
+    barrierdesc: 'rechaza el eléctrico por no entender ni confiar en la tecnología',
+    barriersource: 'Deloitte EV Consumer Survey 2025',
+    sidebarbio: 'NMC vs LFP, conectores, V2G, gestión térmica. Rigor técnico en lenguaje humano: explicamos sin simplificar en exceso.',
+    guides: [
+      { num: '4.1', tag: 'Publicado', title: 'NMC vs LFP: qué batería tiene tu coche y qué implica', time: '~14 min', photo: 'https://images.unsplash.com/photo-1620714223084-8fcacc2020ce?w=400&q=80&auto=format' },
+      { num: '4.2', tag: 'Técnica', title: 'Cómo funciona la carga: AC, DC y protocolos', time: '~10 min', photo: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=400&q=80&auto=format' },
+      { num: '4.3', tag: 'Guía', title: 'Conectores y estándares: Type 2, CCS, CHAdeMO', time: '~8 min', photo: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&q=80&auto=format' },
+      { num: '4.4', tag: 'Explicación', title: 'El motor eléctrico: cómo funciona de verdad', time: '~9 min', photo: 'https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=400&q=80&auto=format' },
+      { num: '4.5', tag: 'Futuro', title: 'V2G y carga bidireccional: el EV como batería del hogar', time: '~11 min', photo: 'https://images.unsplash.com/photo-1558002016-8f4f3e4ba5e4?w=400&q=80&auto=format' },
+    ],
   },
   {
-    slug: 'carga-rapida-espana',
-    title: 'Carga rápida en España: la guía técnica definitiva',
-    description: 'Redes, precios, compatibilidad y estrategia de carga rápida en España.',
-    category: 'Carga',
-    categorySlug: 'carga',
-    date: 'Marzo 2026',
-    readingTime: '12 min de lectura',
-    image: '/articulos/carga-rapida-espana/hero.webp',
-    alt: 'Coche amarillo enchufado a una estación de carga rápida — foto Unsplash',
-  },
-  {
-    slug: 'tarifas-carga-casa',
-    title: 'Cuánto cuesta cargar un coche eléctrico en casa en 2026',
-    description: 'Tarifas eléctricas, franjas horarias, wallbox y paneles solares.',
-    category: 'Carga',
-    categorySlug: 'carga',
-    date: 'Marzo 2026',
-    readingTime: '11 min de lectura',
-    image: '/articulos/tarifas-carga-casa/hero.webp',
-    alt: 'Mujer enchufando coche eléctrico en cargador de pared doméstico — foto Unsplash',
-  },
-  {
-    slug: 'vida-bateria-ev',
-    title: 'La guía para cargar la batería de tu eléctrico sin acortarle la vida',
-    description: 'NMC vs LFP, temperatura, carga rápida y datos reales de degradación.',
-    category: 'Tecnología',
-    categorySlug: 'tecnologia',
-    date: 'Marzo 2026',
-    readingTime: '14 min de lectura',
-    image: '/articulos/vida-bateria-ev/hero.webp',
-    alt: 'Motor de coche eléctrico con cableado visible y componentes de batería — foto Unsplash',
+    id: 'como-cuido',
+    num: '05',
+    label: 'Mantenimiento y cuidado',
+    question: '¿Cómo lo <em>cuido</em>?',
+    photo: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=1600&q=80&auto=format',
+    barrierpct: '6×',
+    barrierdesc: 'menos piezas móviles que un motor de combustión, pero no todo es igual',
+    barriersource: 'US DOE Office of Energy Efficiency',
+    sidebarbio: 'El EV requiere menos mantenimiento, pero diferente. Batería, neumáticos, frenos y software tienen sus propias reglas.',
+    guides: [
+      { num: '5.1', tag: 'Publicado', title: 'Mantenimiento real de un EV vs combustión', time: '~11 min', photo: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&q=80&auto=format' },
+      { num: '5.2', tag: 'Publicado', title: 'Neumáticos para eléctrico: por qué importan más', time: '~10 min', photo: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&q=80&auto=format' },
+      { num: '5.3', tag: 'Técnica', title: 'Degradación de batería: qué esperar a 5 y 10 años', time: '~10 min', photo: 'https://images.unsplash.com/photo-1620714223084-8fcacc2020ce?w=400&q=80&auto=format' },
+      { num: '5.4', tag: 'Guía', title: 'Actualizar el software OTA: qué cambia y cómo funciona', time: '~7 min', photo: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=80&auto=format' },
+      { num: '5.5', tag: 'Estacional', title: 'Preparar tu EV para el invierno', time: '~8 min', photo: 'https://images.unsplash.com/photo-1516715094483-75da50515394?w=400&q=80&auto=format' },
+    ],
   },
 ];
 
-const latest = articles[0];
-const previous = articles.slice(1, 4);
-const older = articles.slice(4);
+const totalGuides = categories.reduce((sum, cat) => sum + cat.guides.length, 0);
 ---
 
 <Layout
@@ -104,112 +112,82 @@ const older = articles.slice(4);
   <Search />
   <main>
 
-    <!-- ═══ HERO: Último artículo publicado (overlay, contained) ═══ -->
-    <div class="hero-wrapper">
-      <section class="hero-overlay">
-        <a href={`/articulos/${latest.slug}`} class="hero-image-link">
-          <img src={latest.image} alt={latest.alt} loading="eager" />
-        </a>
-        <div class="hero-overlay-content">
-          <div class="hero-label">
-            <span class="hero-label-line" aria-hidden="true"></span>
-            Último artículo
-          </div>
-          <h1><a href={`/articulos/${latest.slug}`}>{latest.title}</a></h1>
-          <p class="hero-desc">{latest.description}</p>
-          <div class="hero-meta">{latest.category} · {latest.date} · {latest.readingTime}</div>
-          <a href={`/articulos/${latest.slug}`} class="hero-cta">Leer artículo &rarr;</a>
-        </div>
-      </section>
+    <!-- ═══ HERO BAND ═══ -->
+    <div class="hero-band">
+      <div class="hero-band-light">
+        <img src="/hero-light.png" alt="Espacio con logo enchufa2 en relieve, cargador amarillo y cable enrollado" loading="eager"/>
+      </div>
+      <div class="hero-band-dark">
+        <img src="/hero-dark.png" alt="Espacio con logo enchufa2 en relieve — modo oscuro" loading="eager"/>
+      </div>
     </div>
 
-    <!-- ═══ ARTÍCULOS ANTERIORES (con imagen) ═══ -->
-    <section class="prev-section">
-      <div class="hub-width">
-        <div class="section-header">
-          <h2>Artículos anteriores</h2>
-          <a href="/categoria/tecnologia" class="section-link">Ver todos &rarr;</a>
-        </div>
-        <div class="prev-grid">
-          {previous.map((a) => (
-            <a href={`/articulos/${a.slug}`} class="prev-card">
-              <div class="prev-image">
-                <img src={a.image} alt={a.alt} loading="lazy" />
-              </div>
-              <div class="prev-body">
-                <span class="prev-badge">{a.category}</span>
-                <h3>{a.title}</h3>
-                <p>{a.description}</p>
-                <div class="prev-meta">{a.date} · {a.readingTime}</div>
-              </div>
-            </a>
-          ))}
-        </div>
+    <!-- ═══ GUÍAS SECTION (solapado sobre hero) ═══ -->
+    <section class="guias-section">
 
-        <!-- Older articles (compact, no image) -->
-        <div class="older-grid">
-          {older.map((a) => (
-            <a href={`/articulos/${a.slug}`} class="older-card">
-              <span class="prev-badge">{a.category}</span>
-              <h3>{a.title}</h3>
-              <div class="older-meta">{a.date} · {a.readingTime}</div>
-            </a>
-          ))}
+      <!-- Cabecera solapada -->
+      <div class="guias-intro">
+        <div class="guias-intro-card reveal">
+          <div class="guias-intro-text">
+            <h2>Todo lo que necesitas saber<br>sobre tu <em>eléctrico</em></h2>
+            <p>{totalGuides} guías organizadas por las 5 dudas reales que frenan a los conductores. Basadas en datos, con fuentes citadas, sin rodeos.</p>
+          </div>
+          <div class="guias-pills">
+            <span class="guias-pill"><strong>{totalGuides}</strong>&nbsp;guías</span>
+            <span class="guias-pill"><strong>141</strong>&nbsp;preguntas</span>
+            <span class="guias-pill"><strong>47</strong>&nbsp;fuentes</span>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- ═══ CATEGORY TILES ═══ -->
-    <section class="categories">
-      <div class="hub-width">
-        <div class="section-header">
-          <h2>Explora por tema</h2>
-        </div>
-        <div class="cat-grid">
-          <a href="/categoria/antes-de-comprar" class="cat-card">
-            <div class="cat-icon">&#128269;</div>
-            <h3>Antes de comprar</h3>
-            <div class="cat-count">Próximamente</div>
-            <div class="cat-arrow">&rarr;</div>
-          </a>
-          <a href="/categoria/tecnologia" class="cat-card">
-            <div class="cat-icon">&#9889;</div>
-            <h3>Tecnología</h3>
-            <div class="cat-count">1 artículo</div>
-            <div class="cat-arrow">&rarr;</div>
-          </a>
-          <a href="/categoria/carga" class="cat-card">
-            <div class="cat-icon">&#128268;</div>
-            <h3>Carga</h3>
-            <div class="cat-count">2 artículos</div>
-            <div class="cat-arrow">&rarr;</div>
-          </a>
-          <a href="/categoria/costes-y-ahorro" class="cat-card">
-            <div class="cat-icon">&#128176;</div>
-            <h3>Costes y Ahorro</h3>
-            <div class="cat-count">2 artículos</div>
-            <div class="cat-arrow">&rarr;</div>
-          </a>
-          <a href="/categoria/mantenimiento" class="cat-card">
-            <div class="cat-icon">&#128295;</div>
-            <h3>Mantenimiento</h3>
-            <div class="cat-count">2 artículos</div>
-            <div class="cat-arrow">&rarr;</div>
-          </a>
-          <a href="/categoria/en-ruta" class="cat-card">
-            <div class="cat-icon">&#128663;</div>
-            <h3>En ruta</h3>
-            <div class="cat-count">Próximamente</div>
-            <div class="cat-arrow">&rarr;</div>
-          </a>
-        </div>
-      </div>
+      <!-- 5 bloques de categoría -->
+      <div class="cat-blocks">
+        {categories.map((cat) => (
+          <div class="cat-block reveal" id={cat.id}>
+            <div class="cat-band">
+              <img src={cat.photo} alt="" loading="lazy"/>
+              <div class="cat-band-overlay dark-bg">
+                <div>
+                  <div class="cat-num">{cat.num} — {cat.label}</div>
+                  <div class="cat-question" set:html={cat.question}></div>
+                </div>
+              </div>
+            </div>
+            <div class="cat-body">
+              <div class="cat-sidebar">
+                <div class="cat-sidebar-label">Barrera de adopción</div>
+                <div class="cat-barrier-block">
+                  <div class="cat-barrier-pct">{cat.barrierpct}</div>
+                  <div class="cat-barrier-desc">{cat.barrierdesc}<small>{cat.barriersource}</small></div>
+                </div>
+                <p class="cat-sidebar-text">{cat.sidebarbio}</p>
+              </div>
+              <div class="cat-guides">
+                <div class="guide-list">
+                  {cat.guides.map((guide) => (
+                    <a href="#" class="guide-card" style={`--card-photo: url('${guide.photo}')`}>
+                      <span class="guide-num">{guide.num}</span>
+                      <span class="guide-tag">{guide.tag}</span>
+                      <h3 class="guide-title">{guide.title}</h3>
+                      <div class="guide-footer">
+                        <span class="guide-reading">{guide.time}</span>
+                        <span class="guide-arrow">→</span>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div class="cat-see-all"><a href={`/guias/${cat.id}`}>Ver las {cat.guides.length} guías →</a></div>
+          </div>
+        ))}
+      </div><!-- /cat-blocks -->
     </section>
 
     <!-- ═══ NEWSLETTER ═══ -->
     <section class="newsletter" id="newsletter">
       <div class="nl-inner">
-        <h2>Cada artículo nuevo, <em>en tu bandeja</em></h2>
+        <h2>Cada guía nueva, <em>en tu bandeja</em></h2>
         <p>Sin spam, sin relleno. Solo te escribimos cuando publicamos algo que merece tu tiempo.</p>
         <form class="nl-form" action="#" method="post">
           <input type="email" placeholder="tu@email.com" required aria-label="Tu email" />
@@ -223,347 +201,552 @@ const older = articles.slice(4);
   <Footer />
 </Layout>
 
-<style>
-  /* ═══ HERO — Overlay (text on image, contained) ═══ */
-  .hero-wrapper {
-    background: var(--black);
-    padding: clamp(1rem, 2vw, 2rem) clamp(1rem, 3vw, 2.5rem) clamp(1.5rem, 2.5vw, 2.5rem);
-  }
+<script is:inline>
+  (function() {
+    // Scroll reveal with IntersectionObserver
+    const revealElements = document.querySelectorAll('.reveal');
+    if (revealElements.length > 0) {
+      const observerOptions = {
+        threshold: 0.06,
+        rootMargin: '0px 0px -20px 0px'
+      };
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+      revealElements.forEach((el) => observer.observe(el));
+    }
 
-  .hero-overlay {
+    // Scroll progress bar at top
+    const scrollProgress = document.createElement('div');
+    scrollProgress.className = 'scroll-progress';
+    scrollProgress.id = 'scrollProgress';
+    document.body.prepend(scrollProgress);
+
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const totalHeight = document.body.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        const progress = (scrollTop / totalHeight) * 100;
+        scrollProgress.style.width = progress + '%';
+      }
+    }, { passive: true });
+
+    // Subtle parallax on hero band
+    const heroBand = document.querySelector('.hero-band');
+    if (heroBand) {
+      const heroImages = heroBand.querySelectorAll('img');
+      window.addEventListener('scroll', () => {
+        const rect = heroBand.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+        const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+        const offset = (progress - 0.5) * 24;
+        heroImages.forEach((img) => {
+          img.style.transform = `translateY(${offset}px) scale(1.04)`;
+        });
+      }, { passive: true });
+    }
+  })();
+</script>
+
+<style>
+  /* Scroll progress bar */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0;
+    background: var(--yellow);
+    z-index: 300;
+    box-shadow: 0 0 8px rgba(245, 197, 24, 0.4);
+    transition: width 0.1s linear;
+  }
+</style>
+
+<style>
+  /* ═══ HERO BAND — full-width image with dark/light theme crossfade ═══ */
+  .hero-band {
     position: relative;
     width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
-    height: clamp(380px, 48vh, 540px);
+    height: clamp(180px, 38vh, 420px);
     overflow: hidden;
-    border-radius: 10px;
+    background: var(--black);
   }
 
-  .hero-image-link {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-  .hero-image-link img {
+  .hero-band img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 35%;
     display: block;
-    transition: transform 6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  .hero-overlay:hover .hero-image-link img {
-    transform: scale(1.04);
+    transition: opacity 0.6s ease;
+    will-change: transform;
   }
 
-  /* Dark gradient: transparent left → dark right for text readability */
-  .hero-overlay::after {
+  .hero-band-light {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-band-dark {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    opacity: 0;
+  }
+
+  :global([data-theme="dark"]) .hero-band-dark {
+    opacity: 1;
+  }
+
+  :global([data-theme="dark"]) .hero-band-light img {
+    opacity: 0;
+  }
+
+  /* Gradient overlay at bottom */
+  .hero-band::after {
     content: '';
     position: absolute;
     inset: 0;
+    z-index: 3;
     background: linear-gradient(
-      90deg,
-      rgba(17,17,17,0.15) 0%,
-      rgba(17,17,17,0.5) 40%,
-      rgba(17,17,17,0.88) 70%,
-      rgba(17,17,17,0.95) 100%
+      to bottom,
+      transparent 40%,
+      rgba(17, 17, 17, 0.15) 70%,
+      rgba(17, 17, 17, 0.5) 100%
     );
     pointer-events: none;
   }
 
-  .hero-overlay-content {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 50%;
-    max-width: 600px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 3rem clamp(2rem, 5vw, 4rem) 3rem 2rem;
-    z-index: 2;
-    color: var(--white);
+  :global([data-theme="dark"]) .hero-band::after {
+    background: linear-gradient(
+      to bottom,
+      transparent 40%,
+      rgba(13, 15, 20, 0.2) 70%,
+      rgba(13, 15, 20, 0.7) 100%
+    );
   }
 
-  .hero-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--yellow);
-    margin-bottom: 1.5rem;
-    font-weight: 500;
-  }
-  .hero-label-line {
-    display: inline-block;
-    width: 2rem;
-    height: 1px;
-    background: var(--yellow);
+  /* ═══ GUÍAS SECTION — Negative margin to overlap hero ═══ */
+  .guias-section {
+    position: relative;
+    z-index: 10;
+    margin-top: -4rem;
   }
 
-  .hero-overlay-content h1 {
-    font-family: var(--font-sans);
-    font-weight: 200;
-    font-size: clamp(1.6rem, 3.2vw, 2.8rem);
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-    margin-bottom: 1rem;
-  }
-  .hero-overlay-content h1 a {
-    color: inherit;
-    transition: opacity 0.2s;
-  }
-  .hero-overlay-content h1 a:hover { opacity: 0.85; }
-
-  .hero-desc {
-    font-size: clamp(0.85rem, 1.2vw, 0.95rem);
-    color: rgba(250, 250, 248, 0.55);
-    line-height: 1.7;
-    font-weight: 300;
-    margin-bottom: 1.25rem;
-    max-width: 38ch;
+  .guias-intro {
+    max-width: var(--max-w);
+    margin-inline: auto;
+    padding-inline: var(--hub-gutter);
+    margin-bottom: 0;
   }
 
-  .hero-meta {
-    font-size: 0.68rem;
-    color: rgba(250, 250, 248, 0.25);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 1.5rem;
-  }
-
-  .hero-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--black);
-    padding: 0.7rem 1.5rem;
-    background: var(--yellow);
-    border-radius: 4px;
-    width: fit-content;
-    transition: all 0.2s;
-  }
-  .hero-cta:hover {
-    filter: brightness(1.05);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(245, 197, 24, 0.3);
-  }
-
-  /* ═══ PREVIOUS ARTICLES ═══ */
-  .prev-section {
-    padding: clamp(2rem, 4vw, 3rem) 0;
-  }
-
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 1.25rem;
-  }
-  .section-header h2 {
-    font-size: 1.05rem;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-  }
-  .section-link {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    transition: color 0.2s;
-  }
-  .section-link:hover {
-    color: var(--yellow);
-  }
-
-  .prev-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.25rem;
-  }
-
-  .prev-card {
+  .guias-intro-card {
     background: var(--surface);
-    border-radius: var(--radius);
-    overflow: hidden;
-    border-bottom: 3px solid var(--border);
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  .prev-card:hover {
-    border-bottom-color: var(--yellow);
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    border-radius: 12px 12px 0 0;
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 2.5vw, 2rem);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.12);
   }
 
-  .prev-image {
-    width: 100%;
-    aspect-ratio: 16 / 9;
+  .guias-intro-text h2 {
+    font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+    font-weight: 200;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+
+  .guias-intro-text h2 em {
+    font-family: var(--font-serif);
+    font-style: italic;
+  }
+
+  .guias-intro-text p {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    max-width: 50ch;
+    line-height: 1.65;
+  }
+
+  .guias-pills {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+
+  .guias-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.4rem 0.9rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .guias-pill strong {
+    color: var(--yellow);
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+
+  /* ═══ CATEGORY BLOCKS ═══ */
+  .cat-blocks {
+    max-width: var(--max-w);
+    margin-inline: auto;
+    padding-inline: var(--hub-gutter);
+    padding-bottom: clamp(2rem, 5vw, 4rem);
+  }
+
+  .cat-block {
+    border: 1px solid var(--border);
+    border-top: none;
+    background: var(--surface);
     overflow: hidden;
   }
-  .prev-image img {
+
+  .cat-block:last-child {
+    border-radius: 0 0 12px 12px;
+  }
+
+  /* Photo band per category */
+  .cat-band {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+    cursor: default;
+  }
+
+  .cat-band img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
-    transition: transform 0.4s ease;
-  }
-  .prev-card:hover .prev-image img {
-    transform: scale(1.04);
+    transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
-  .prev-body {
-    padding: 1.25rem;
+  .cat-block:hover .cat-band img {
+    transform: scale(1.03);
   }
 
-  .prev-badge {
-    display: inline-block;
-    font-size: 0.55rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+  .cat-band-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 1.5rem clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .cat-band-overlay.dark-bg {
+    background: linear-gradient(90deg, rgba(17, 17, 17, 0.82) 0%, rgba(17, 17, 17, 0.4) 55%, transparent 100%);
+  }
+
+  .cat-band-overlay.light-bg {
+    background: linear-gradient(90deg, rgba(248, 246, 241, 0.9) 0%, rgba(248, 246, 241, 0.5) 55%, transparent 100%);
+  }
+
+  .cat-num {
+    font-size: 0.6rem;
     font-weight: 500;
-    padding: 0.2em 0.55em;
-    background: var(--yellow-glow);
-    color: var(--yellow-text);
-    border-radius: 3px;
-    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.7;
+    margin-bottom: 0.3rem;
   }
 
-  .prev-body h3 {
-    font-size: 0.95rem;
-    font-weight: 400;
-    line-height: 1.35;
-    letter-spacing: -0.01em;
-    margin-bottom: 0.35rem;
-  }
-  .prev-body p {
-    font-size: 0.8rem;
-    color: var(--gray-500);
-    line-height: 1.55;
-    font-weight: 300;
-  }
-  .prev-meta {
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    margin-top: 0.5rem;
+  .cat-question {
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-weight: 200;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
   }
 
-  /* ═══ OLDER ARTICLES (compact) ═══ */
-  .older-grid {
+  .cat-question em {
+    font-family: var(--font-serif);
+    font-style: italic;
+  }
+
+  .dark-bg .cat-num,
+  .dark-bg .cat-question {
+    color: var(--white);
+  }
+
+  .light-bg .cat-num,
+  .light-bg .cat-question {
+    color: var(--black);
+  }
+
+  /* Category body */
+  .cat-body {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    margin-top: 1.25rem;
+    grid-template-columns: 260px 1fr;
+    border-top: 1px solid var(--border);
   }
 
-  .older-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 1.25rem;
-    border-bottom: 3px solid var(--border);
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  .older-card:hover {
-    border-bottom-color: var(--yellow);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-  }
-  .older-card h3 {
-    font-size: 0.88rem;
-    font-weight: 400;
-    line-height: 1.35;
-  }
-  .older-meta {
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    margin-top: 0.35rem;
-  }
-
-  /* ═══ CATEGORY TILES ═══ */
-  .categories {
-    padding: 0.5rem 0 clamp(2rem, 4vw, 3rem);
-  }
-  .cat-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-    gap: 0.75rem;
-  }
-  .cat-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 1.5rem 1.25rem;
+  .cat-sidebar {
+    padding: 1.5rem clamp(1rem, 2.5vw, 1.75rem);
+    border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    cursor: pointer;
-    position: relative;
-    border-bottom: 3px solid var(--border);
+    gap: 0.85rem;
   }
-  .cat-card:hover {
+
+  .cat-sidebar-label {
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .cat-barrier-block {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .cat-barrier-pct {
+    font-size: 2.2rem;
+    font-weight: 200;
+    letter-spacing: -0.04em;
+    color: var(--yellow);
+    line-height: 1;
+  }
+
+  .cat-barrier-desc {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .cat-barrier-desc small {
+    font-size: 0.58rem;
+    color: var(--text-muted);
+    display: block;
+    margin-top: 0.2rem;
+  }
+
+  .cat-sidebar-text {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  .cat-guides {
+    padding: 1.25rem clamp(1rem, 2.5vw, 1.75rem);
+  }
+
+  /* Guide cards — hover reveals photo */
+  .guide-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+    gap: 0.6rem;
+  }
+
+  .guide-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-bottom: 2px solid var(--border);
+    transition: border-bottom-color 0.3s, transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-height: 130px;
+  }
+
+  /* Photo layer (initially invisible) */
+  .guide-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--card-photo);
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    z-index: 0;
+  }
+
+  /* Dark overlay over photo */
+  .guide-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(17, 17, 17, 0.72);
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    z-index: 1;
+  }
+
+  .guide-card:hover {
     border-bottom-color: var(--yellow);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   }
-  .cat-card:hover .cat-icon { transform: scale(1.08); }
-  .cat-card:hover .cat-arrow { opacity: 1; transform: translateX(0); }
-  .cat-icon {
-    font-size: 1.6rem;
-    margin-bottom: 0.3rem;
-    transition: transform 0.3s;
+
+  .guide-card:hover::before,
+  .guide-card:hover::after {
+    opacity: 1;
   }
-  .cat-card h3 { font-size: 0.88rem; font-weight: 500; }
-  .cat-count { font-size: 0.68rem; color: var(--text-muted); }
-  .cat-arrow {
-    position: absolute;
-    top: 1.25rem;
-    right: 1.25rem;
-    font-size: 0.85rem;
-    opacity: 0;
+
+  /* Content above photo */
+  .guide-card > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  .guide-num {
+    font-size: 0.52rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     color: var(--yellow);
-    transition: all 0.25s;
+    transition: color 0.3s;
+  }
+
+  .guide-tag {
+    font-size: 0.52rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    transition: color 0.3s;
+  }
+
+  .guide-title {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    transition: color 0.3s;
+    flex: 1;
+  }
+
+  .guide-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.4rem;
+  }
+
+  .guide-reading {
+    font-size: 0.58rem;
+    color: var(--text-muted);
+    transition: color 0.3s;
+  }
+
+  .guide-arrow {
+    font-size: 0.8rem;
+    color: var(--yellow);
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
     transform: translateX(-4px);
+  }
+
+  .guide-card:hover .guide-title {
+    color: var(--white);
+  }
+
+  .guide-card:hover .guide-tag {
+    color: rgba(250, 250, 248, 0.55);
+  }
+
+  .guide-card:hover .guide-reading {
+    color: rgba(250, 250, 248, 0.4);
+  }
+
+  .guide-card:hover .guide-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* See all link */
+  .cat-see-all {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.7rem clamp(1rem, 2.5vw, 1.75rem);
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .cat-see-all a {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.2s;
+  }
+
+  .cat-see-all a:hover {
+    color: var(--yellow);
   }
 
   /* ═══ NEWSLETTER ═══ */
   .newsletter {
-    padding: clamp(3rem, 6vw, 4.5rem) var(--hub-gutter);
+    padding: clamp(3rem, 6vw, 5rem) var(--hub-gutter);
     background: var(--black);
     color: var(--white);
     text-align: center;
   }
+
   .nl-inner {
     max-width: 460px;
     margin: 0 auto;
   }
+
   .newsletter h2 {
     font-size: clamp(1.2rem, 2vw, 1.6rem);
     font-weight: 300;
     letter-spacing: -0.02em;
     margin-bottom: 0.5rem;
   }
+
   .newsletter h2 em {
     font-family: var(--font-serif);
     font-style: italic;
   }
+
   .newsletter p {
     color: var(--gray-500);
     font-size: 0.85rem;
     line-height: 1.6;
     margin-bottom: 1.5rem;
   }
+
   .nl-form {
     display: flex;
     gap: 0;
     max-width: 380px;
     margin: 0 auto;
   }
+
   .nl-form input {
     flex: 1;
     padding: 0.75rem 1rem;
@@ -577,8 +760,15 @@ const older = articles.slice(4);
     outline: none;
     border-radius: 6px 0 0 6px;
   }
-  .nl-form input::placeholder { color: var(--text-secondary); }
-  .nl-form input:focus { border-color: var(--yellow); }
+
+  .nl-form input::placeholder {
+    color: var(--gray-500);
+  }
+
+  .nl-form input:focus {
+    border-color: var(--yellow);
+  }
+
   .nl-form button {
     padding: 0.75rem 1.25rem;
     background: var(--yellow);
@@ -593,39 +783,58 @@ const older = articles.slice(4);
     border-radius: 0 6px 6px 0;
     transition: filter 0.2s;
   }
-  .nl-form button:hover { filter: brightness(1.05); }
+
+  .nl-form button:hover {
+    filter: brightness(1.05);
+  }
+
   .nl-note {
     font-size: 0.68rem;
-    color: var(--text-secondary);
+    color: var(--gray-500);
     margin-top: 0.6rem;
   }
 
-  /* ═══ RESPONSIVE ═══ */
-  @media (max-width: 860px) {
-    .hero-wrapper { padding: 0.75rem; }
-    .hero-overlay { height: auto; min-height: 420px; border-radius: 8px; }
-    .hero-overlay::after {
-      background: linear-gradient(
-        0deg,
-        rgba(17,17,17,0.95) 0%,
-        rgba(17,17,17,0.8) 50%,
-        rgba(17,17,17,0.2) 100%
-      );
-    }
-    .hero-overlay-content {
-      width: 100%;
-      max-width: none;
-      top: auto;
-      bottom: 0;
-      padding: 2rem 1.5rem;
-    }
-    .prev-grid { grid-template-columns: 1fr; }
-    .older-grid { grid-template-columns: repeat(2, 1fr); }
+  /* ═══ SCROLL REVEAL ═══ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
   }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ═══ RESPONSIVE ═══ */
+  @media (max-width: 900px) {
+    .cat-body {
+      grid-template-columns: 1fr;
+    }
+    .cat-sidebar {
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .guide-list {
+      grid-template-columns: 1fr 1fr;
+    }
+    .guias-intro-card {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.25rem;
+    }
+    .guias-pills {
+      flex-direction: row;
+    }
+  }
+
   @media (max-width: 640px) {
-    .cat-grid { grid-template-columns: repeat(2, 1fr); }
-    .older-grid { grid-template-columns: 1fr; }
-    .nl-form { flex-direction: column; }
+    .guide-list {
+      grid-template-columns: 1fr;
+    }
+    .nl-form {
+      flex-direction: column;
+    }
     .nl-form input {
       border-right: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 6px;
@@ -634,5 +843,81 @@ const older = articles.slice(4);
       border-radius: 6px;
       margin-top: 0.5rem;
     }
+    .cat-band {
+      height: 140px;
+    }
+    .hero-band {
+      height: clamp(140px, 28vw, 240px);
+    }
+    .guias-section {
+      margin-top: -2.5rem;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function() {
+    // Scroll reveal with IntersectionObserver
+    const revealElements = document.querySelectorAll('.reveal');
+    if (revealElements.length > 0) {
+      const observerOptions = {
+        threshold: 0.06,
+        rootMargin: '0px 0px -20px 0px'
+      };
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+      revealElements.forEach((el) => observer.observe(el));
+    }
+
+    // Scroll progress bar at top
+    const scrollProgress = document.createElement('div');
+    scrollProgress.className = 'scroll-progress';
+    scrollProgress.id = 'scrollProgress';
+    document.body.prepend(scrollProgress);
+
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const totalHeight = document.body.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        const progress = (scrollTop / totalHeight) * 100;
+        scrollProgress.style.width = progress + '%';
+      }
+    }, { passive: true });
+
+    // Subtle parallax on hero band
+    const heroBand = document.querySelector('.hero-band');
+    if (heroBand) {
+      const heroImages = heroBand.querySelectorAll('img');
+      window.addEventListener('scroll', () => {
+        const rect = heroBand.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+        const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+        const offset = (progress - 0.5) * 24;
+        heroImages.forEach((img) => {
+          img.style.transform = `translateY(${offset}px) scale(1.04)`;
+        });
+      }, { passive: true });
+    }
+  })();
+</script>
+
+<style>
+  /* Scroll progress bar */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0;
+    background: var(--yellow);
+    z-index: 300;
+    box-shadow: 0 0 8px rgba(245, 197, 24, 0.4);
+    transition: width 0.1s linear;
   }
 </style>
