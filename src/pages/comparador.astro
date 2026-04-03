@@ -1028,10 +1028,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
      ══════════════════════════════════════════ */
   /* Block 3: Results — continuous border, no border-top */
   .comp-results {
-    background: var(--surface);
+    background: var(--bg);
     border: 1px solid var(--border);
     border-top: none;
-    padding: 1.25rem clamp(1.5rem, 3vw, 2.5rem) 1.5rem;
+    padding: 1.75rem clamp(1rem, 2vw, 1.5rem) 1.5rem;
   }
 
   /* Individual chip */
@@ -1204,9 +1204,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   /* ── Results ─────────────────────────── */
   .comp-results {
-    padding: 1.25rem 0 3.5rem;
-    background: var(--surface-alt);
+    padding: 1.75rem 0 3.5rem;
+    background: var(--bg);
     min-height: 60vh;
+  }
+  [data-theme="dark"] .comp-results {
+    background: var(--bg);
   }
   .results-header {
     display: flex;
@@ -1266,7 +1269,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .fichas-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    gap: 1.5rem;
+    padding: 0 clamp(1rem, 2.5vw, 2rem);
   }
 
   /* ══════════════════════════════════════════
@@ -1277,54 +1281,71 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .ev-card {
     display: flex;
     flex-direction: column;
-    background: var(--bg);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    border-bottom: 2px solid var(--border);
+    background: var(--surface);
+    border-radius: 12px;
+    border: none;
     overflow: hidden;
-    transition: border-bottom-color .3s, transform .3s cubic-bezier(.25,.46,.45,.94), box-shadow .3s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
+    transition: transform .35s cubic-bezier(.25,.46,.45,.94), box-shadow .35s;
     cursor: pointer;
   }
+  [data-theme="dark"] .ev-card {
+    background: var(--surface-alt);
+    box-shadow: 0 1px 4px rgba(0,0,0,.2), 0 4px 16px rgba(0,0,0,.15);
+  }
   .ev-card:hover {
-    border-bottom-color: var(--yellow);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0,0,0,.12), 0 2px 8px rgba(0,0,0,.06);
+  }
+  [data-theme="dark"] .ev-card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.2);
   }
 
-  /* Photo area — dark bg, car profile, edge-to-edge */
+  /* Photo area — edge-to-edge, gradient fade into card body */
   .ev-card-photo {
-    aspect-ratio: 5 / 2;
+    aspect-ratio: 16 / 7;
     overflow: hidden;
-    background: var(--photo-bg);
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
   .ev-card-photo img {
-    width: 88%;
-    height: 82%;
-    object-fit: contain;
-    transition: transform .4s cubic-bezier(.25,.46,.45,.94);
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,.2));
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 55%;
+    transition: transform .5s cubic-bezier(.25,.46,.45,.94);
   }
   .ev-card:hover .ev-card-photo img {
-    transform: scale(1.04);
+    transform: scale(1.06);
+  }
+  /* Gradient fade at bottom — blends photo into card body */
+  .ev-card-photo::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 45%;
+    background: linear-gradient(to bottom, transparent, var(--surface));
+    pointer-events: none;
+  }
+  [data-theme="dark"] .ev-card-photo::after {
+    background: linear-gradient(to bottom, transparent, var(--surface-alt));
   }
 
   /* Autonomy badge on photo */
   .ev-photo-badge {
     position: absolute;
-    bottom: 6px;
-    right: 8px;
+    bottom: 10px;
+    right: 10px;
     display: flex;
     align-items: baseline;
-    gap: 2px;
-    background: rgba(0,0,0,.6);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    padding: .2rem .5rem;
-    border-radius: 4px;
+    gap: 3px;
+    background: rgba(0,0,0,.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: .25rem .6rem;
+    border-radius: 6px;
+    z-index: 2;
   }
   .ev-photo-badge .val {
     font-size: .95rem;
@@ -1343,10 +1364,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   /* Card body */
   .ev-card-body {
-    padding: .65rem .85rem .85rem;
+    padding: .85rem 1rem 1.1rem;
     display: flex;
     flex-direction: column;
-    gap: .3rem;
+    gap: .4rem;
     flex: 1;
   }
 
@@ -1453,8 +1474,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     display: flex;
     flex-direction: column;
     gap: 0;
-    margin-top: .35rem;
-    padding-top: .4rem;
+    margin-top: .5rem;
+    padding-top: .55rem;
     border-top: 1px solid var(--border);
   }
   .ev-detail {
@@ -1463,7 +1484,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-family: var(--font-sans);
     font-size: 0.72rem;
     color: var(--text-muted);
-    padding: .18rem 0;
+    padding: .25rem 0;
   }
   .ev-detail span:last-child {
     font-weight: 500;
@@ -1814,8 +1835,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   @media (max-width: 640px) {
     .comp-filters-row { flex-direction: column; align-items: flex-start; gap: .5rem; }
-    .fichas-grid { grid-template-columns: 1fr 1fr; gap: .6rem; }
-    .ev-card-body { padding: .5rem .65rem .65rem; }
+    .fichas-grid { grid-template-columns: 1fr 1fr; gap: .8rem; padding: 0 .5rem; }
+    .ev-card-body { padding: .6rem .75rem .75rem; }
     .ev-modelo { font-size: .82rem; }
     .hero-band { height: clamp(120px, 22vw, 200px); }
     .comp-section { margin-top: -2rem; }
