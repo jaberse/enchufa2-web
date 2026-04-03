@@ -20,36 +20,33 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 >
   <Header />
 
-  <!-- HERO BAND (outside main, overlaps with intro card) -->
+  <!-- HERO BAND -->
   <div class="hero-band">
     <img src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1600&q=80&auto=format" alt="Estación de carga eléctrica" loading="eager">
   </div>
 
   <main class="comparador">
-    <!-- COMPARADOR SECTION with intro card + sticky filter bar -->
     <section class="comparador-section">
-      <!-- Unified wrapper: same max-width for intro + filters + content -->
-      <div class="comparador-wrapper">
-        <div class="comparador-intro-card">
-          <div class="comparador-intro-text">
+      <!-- PANEL: single continuous container like homepage -->
+      <div class="comp-panel-wrap">
+
+        <!-- Intro header (overlaps hero) -->
+        <div class="comp-panel-header">
+          <div class="comp-panel-header-text">
             <h2>Comparador de <em>eléctricos</em></h2>
-            <p>Dinos qué necesitas. Nosotros te decimos qué coches lo cumplen. Datos verificados de fabricantes.</p>
+            <p>Dinos qué necesitas. Nosotros te decimos qué coches lo cumplen.</p>
           </div>
-          <div class="comparador-pills">
-            <div class="comparador-pill"><strong>{data.total_modelos}</strong>&nbsp;modelos</div>
-            <div class="comparador-pill">Datos&nbsp;<strong>verificados</strong></div>
-            <div class="comparador-pill"><strong>Beta</strong></div>
+          <div class="comp-panel-pills">
+            <div class="comp-pill"><strong>{data.total_modelos}</strong>&nbsp;modelos</div>
+            <div class="comp-pill">Datos&nbsp;<strong>verificados</strong></div>
+            <div class="comp-pill"><strong>Beta</strong></div>
           </div>
         </div>
-      </div>
 
-      <!-- STICKY FILTER BAR -->
-      <div class="filter-bar">
-        <div class="filter-bar-inner">
+        <!-- Filter bar (sticky, inside panel) -->
+        <div class="filter-bar" id="filter-bar">
           <div class="filter-header">
-            <div class="filter-header-left">
-              <div class="result-count-bar"><span id="count">{data.total_modelos}</span> de {data.total_modelos} vehículos</div>
-            </div>
+            <div class="result-count-bar"><span id="count">{data.total_modelos}</span> de {data.total_modelos} vehículos</div>
             <div class="filter-controls">
               <label class="toggle-wrap" id="toggle-custom-wrap">
                 <span class="toggle-label">Personalizar</span>
@@ -66,50 +63,49 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           </div>
           <div class="unified-chips" id="all-chips"></div>
         </div>
-      </div>
 
-      <!-- CONTENT CONTAINER -->
-      <div class="comparador-content">
-        <!-- Fichas grid -->
-        <div class="fichas-view active" id="fichas-view">
-          <div class="fichas-grid" id="results-grid"></div>
-        </div>
+        <!-- Content area (inside panel, bg contrast) -->
+        <div class="comp-panel-content">
+          <div class="fichas-view active" id="fichas-view">
+            <div class="fichas-grid" id="results-grid"></div>
+          </div>
 
-        <!-- Listado table -->
-        <div class="listado-view" id="listado-view" style="display:none;">
-          <div class="results-table-outer" id="results-table-outer">
-            <div class="scroll-nav" id="scroll-nav">
-              <span class="scroll-nav-hint">Desliza para ver más columnas</span>
-              <button class="scroll-btn" id="scroll-left" aria-label="Scroll izquierda">←</button>
-              <button class="scroll-btn" id="scroll-right" aria-label="Scroll derecha">→</button>
-            </div>
-            <div class="results-table-wrap" id="results-table-wrap">
-              <table class="listado-table" id="results-table">
-                <thead id="results-thead"></thead>
-                <tbody id="results-tbody"></tbody>
-              </table>
+          <div class="listado-view" id="listado-view" style="display:none;">
+            <div class="results-table-outer" id="results-table-outer">
+              <div class="scroll-nav" id="scroll-nav">
+                <span class="scroll-nav-hint">Desliza para ver más columnas</span>
+                <button class="scroll-btn" id="scroll-left" aria-label="Scroll izquierda">←</button>
+                <button class="scroll-btn" id="scroll-right" aria-label="Scroll derecha">→</button>
+              </div>
+              <div class="results-table-wrap" id="results-table-wrap">
+                <table class="listado-table" id="results-table">
+                  <thead id="results-thead"></thead>
+                  <tbody id="results-tbody"></tbody>
+                </table>
+              </div>
             </div>
           </div>
+
+          <p class="results-empty" id="no-results" style="display:none;">
+            Ningún modelo cumple todos tus requisitos. Prueba a relajar algún filtro.
+          </p>
         </div>
 
-        <p class="results-empty" id="no-results" style="display:none;">
-          Ningún modelo cumple todos tus requisitos. Prueba a relajar algún filtro.
-        </p>
-      </div>
+        <!-- METHODOLOGY (inside panel) -->
+        <div class="comp-methodology">
+          <p class="meth-label">Sobre estos datos</p>
+          <p>
+            Todos los datos provienen de las fichas técnicas oficiales de cada fabricante
+            para el mercado español. Cuando no hay dato oficial disponible, se usa
+            ev-database.org como fuente de referencia. Las cifras de autonomía corresponden al ciclo WLTP combinado.
+            Los precios (PVP) son orientativos, corresponden al mes indicado y pueden variar
+            según configuración, promociones o actualizaciones del fabricante. Consulta siempre
+            la web oficial del fabricante para el precio vigente.
+            Última actualización: abril 2026.
+          </p>
+        </div>
 
-      <!-- METHODOLOGY -->
-      <div class="comp-methodology">
-        <p class="meth-label">Sobre estos datos</p>
-        <p>
-          Todos los datos provienen de las fichas técnicas oficiales de cada fabricante
-          para el mercado español. Cuando no hay dato oficial disponible, se usa
-          ev-database.org como fuente de referencia. Las cifras de autonomía corresponden al ciclo WLTP combinado.
-          Los precios (PVP) son orientativos, corresponden al mes indicado y pueden variar
-          según configuración, promociones o actualizaciones del fabricante. Consulta siempre
-          la web oficial del fabricante para el precio vigente.
-          Última actualización: abril 2026.
-        </p>
-      </div>
+      </div><!-- /comp-panel-wrap -->
     </section>
   </main>
 
@@ -830,6 +826,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         if (currentView === 'listado') update();
       }, 200);
     });
+
+    // Filter bar scrolled class for glass effect
+    const filterBar = document.getElementById('filter-bar');
+    if (filterBar) {
+      const fbObserver = new IntersectionObserver(([e]) => {
+        filterBar.classList.toggle('scrolled', e.intersectionRatio < 1);
+      }, { threshold: [1], rootMargin: '-1px 0px 0px 0px' });
+      fbObserver.observe(filterBar);
+    }
   </script>
 </Layout>
 
@@ -880,32 +885,29 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
 
   /* ══════════════════════════════════════════
-     COMPARADOR MAIN — subtle bg for card contrast
-     ══════════════════════════════════════════ */
-  .comparador {
-    background: var(--bg);
-    padding-bottom: 2rem;
-  }
-
-  /* ══════════════════════════════════════════
      COMPARADOR SECTION — overlaps hero
+     Follows same continuous panel pattern as homepage
      ══════════════════════════════════════════ */
   .comparador-section {
     position: relative;
     z-index: 10;
-    margin-top: -3rem;
+    margin-top: -4rem;
   }
 
-  .comparador-wrapper {
+  /* Single panel wrap — all children share same width */
+  .comp-panel-wrap {
     max-width: var(--max-w);
     margin-inline: auto;
     padding-inline: var(--hub-gutter);
+    padding-bottom: clamp(2rem, 4vw, 3rem);
   }
 
-  .comparador-intro-card {
+  /* Panel header — overlaps hero, rounded top */
+  .comp-panel-header {
     background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 12px 12px 0 0;
-    padding: clamp(1.5rem, 3vw, 2rem);
+    padding: clamp(1.5rem, 3vw, 2rem) clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 2vw, 1.5rem);
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -914,73 +916,76 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     flex-wrap: wrap;
   }
 
-  .comparador-intro-text h2 {
-    font-size: clamp(1.8rem, 3vw, 2.4rem);
+  .comp-panel-header-text h2 {
+    font-size: clamp(1.5rem, 2.8vw, 2.2rem);
     font-weight: 200;
     letter-spacing: -.03em;
     line-height: 1.1;
-    margin-bottom: .5rem;
+    margin-bottom: .4rem;
   }
-  .comparador-intro-text h2 em {
+  .comp-panel-header-text h2 em {
     font-family: var(--font-serif);
     font-style: italic;
   }
-  .comparador-intro-text p {
-    font-size: .88rem;
+  .comp-panel-header-text p {
+    font-size: .85rem;
     color: var(--text-secondary);
-    max-width: 50ch;
-    line-height: 1.65;
+    max-width: 48ch;
+    line-height: 1.6;
   }
 
-  .comparador-pills {
+  .comp-panel-pills {
     display: flex;
-    gap: .6rem;
+    gap: .5rem;
     flex-wrap: wrap;
     flex-shrink: 0;
   }
-  .comparador-pill {
+  .comp-pill {
     display: flex;
     align-items: center;
-    gap: .4rem;
-    font-size: .65rem;
+    gap: .3rem;
+    font-size: .62rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: .06em;
-    padding: .4rem .9rem;
+    padding: .35rem .75rem;
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 100px;
     color: var(--text-secondary);
     white-space: nowrap;
   }
-  .comparador-pill strong {
+  .comp-pill strong {
     color: var(--yellow);
     font-weight: 600;
-    font-size: .8rem;
+    font-size: .75rem;
   }
 
   /* ══════════════════════════════════════════
-     FILTER BAR (STICKY GLASS)
+     FILTER BAR — part of continuous panel
      ══════════════════════════════════════════ */
   .filter-bar {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(255, 255, 255, .92);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
-    padding: .7rem 0;
-    transition: all .3s;
+    padding: .65rem clamp(1rem, 2vw, 1.5rem);
+    transition: background .3s, box-shadow .3s;
+  }
+  .filter-bar.scrolled {
+    background: rgba(255,255,255,.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 2px 12px rgba(0,0,0,.06);
   }
   [data-theme="dark"] .filter-bar {
-    background: rgba(22, 25, 33, .9);
+    background: var(--surface);
   }
-
-  .filter-bar-inner {
-    max-width: var(--max-w);
-    margin-inline: auto;
-    padding-inline: var(--hub-gutter);
+  [data-theme="dark"] .filter-bar.scrolled {
+    background: rgba(22, 25, 33, .95);
   }
 
   .filter-header {
@@ -990,16 +995,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     gap: 1rem;
   }
 
-  .filter-header-left {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
   .filter-controls {
     display: flex;
     align-items: center;
-    gap: .75rem;
+    gap: .65rem;
   }
 
   .view-toggle {
@@ -1088,11 +1087,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   /* ══════════════════════════════════════════
      CONTENT CONTAINER
      ══════════════════════════════════════════ */
-  .comparador-content {
-    max-width: var(--max-w);
-    margin-inline: auto;
-    padding-inline: var(--hub-gutter);
-    padding-block: 1.25rem 3rem;
+  /* Content area — inside panel, subtle bg for card contrast */
+  .comp-panel-content {
+    background: var(--bg);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    padding: 1.25rem clamp(1rem, 2vw, 1.5rem) 1.5rem;
   }
 
   /* Individual chip */
@@ -1339,35 +1339,20 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     display: flex;
     flex-direction: column;
     background: var(--surface);
-    border-radius: 10px;
+    border-radius: var(--radius);
     border: 1px solid var(--border);
+    border-bottom: 2px solid var(--border);
     overflow: hidden;
-    transition: all .35s cubic-bezier(.25,.46,.45,.94);
+    transition: border-bottom-color .3s, transform .3s cubic-bezier(.25,.46,.45,.94), box-shadow .3s;
     cursor: pointer;
-    position: relative;
-  }
-  .ev-card::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: transparent;
-    border-radius: 10px 0 0 10px;
-    transition: background .35s;
-    z-index: 2;
   }
   .ev-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 16px 40px rgba(0,0,0,.1), 0 2px 8px rgba(0,0,0,.06);
-    border-color: rgba(245,197,24,.3);
-  }
-  .ev-card:hover::before {
-    background: var(--yellow);
+    border-bottom-color: var(--yellow);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0,0,0,.1);
   }
 
-  /* Photo area — controlled dark bg, 16:7 aspect */
+  /* Photo area — edge to edge, dark bg, no inner box */
   .ev-card-photo {
     aspect-ratio: 16 / 7;
     overflow: hidden;
@@ -1376,7 +1361,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px 10px;
+    padding: 4px 8px;
   }
   .ev-card-photo img {
     width: 100%;
@@ -1386,8 +1371,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
   }
   .ev-card:hover .ev-card-photo img {
-    transform: scale(1.06);
-    filter: drop-shadow(0 4px 12px rgba(0,0,0,.4));
+    transform: scale(1.05);
   }
 
   /* Autonomy badge on photo */
@@ -1895,13 +1879,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
      METHODOLOGY
      ══════════════════════════════════════════ */
   .comp-methodology {
-    max-width: var(--max-w);
-    margin-inline: auto;
-    padding: clamp(1.5rem, 3vw, 2.5rem) var(--hub-gutter);
+    padding: clamp(1.5rem, 3vw, 2rem) clamp(1rem, 2vw, 1.5rem);
     border: 1px solid var(--border);
     border-top: none;
-    border-radius: 0 0 8px 8px;
     background: var(--surface);
+    border-radius: 0 0 12px 12px;
   }
   .comp-methodology .meth-label {
     font-size: .6rem;
