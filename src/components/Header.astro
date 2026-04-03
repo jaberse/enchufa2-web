@@ -29,12 +29,8 @@
     <!-- Header actions -->
     <div class="header-actions">
       <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema">
-        <div class="theme-toggle-track">
-          <div class="theme-toggle-knob">
-            <span class="theme-icon theme-icon-light">☀</span>
-            <span class="theme-icon theme-icon-dark">⚡</span>
-          </div>
-        </div>
+        <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
       <div class="search-toggle" role="button" tabindex="0" aria-label="Buscar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -237,69 +233,54 @@
 
   /* ─── Theme toggle ─── */
   .theme-toggle {
-    background: none;
-    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1.5px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.06);
     cursor: pointer;
     padding: 0;
     outline: none;
     display: flex;
     align-items: center;
-  }
-  .theme-toggle-track {
-    width: 52px;
-    height: 28px;
-    border-radius: 14px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.1);
-    position: relative;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    padding: 2px;
-  }
-  :global([data-theme="dark"]) .theme-toggle-track {
-    background: rgba(245,197,24,0.12);
-    border-color: rgba(245,197,24,0.25);
-    box-shadow: 0 0 12px rgba(245,197,24,0.1);
-  }
-  .theme-toggle-knob {
-    width: 22px;
-    height: 22px;
-    border-radius: 11px;
-    background: #fff;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    display: flex;
-    align-items: center;
     justify-content: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: all .3s cubic-bezier(.16,1,.3,1);
   }
-  :global([data-theme="dark"]) .theme-toggle-knob {
-    left: 26px;
-    background: var(--yellow);
-    box-shadow: 0 0 8px rgba(245,197,24,0.4), 0 1px 3px rgba(0,0,0,0.3);
+  .theme-toggle:hover {
+    background: rgba(255,255,255,.12);
+    border-color: rgba(255,255,255,.25);
   }
-  .theme-icon {
-    font-size: 12px;
-    line-height: 1;
+  :global([data-theme="dark"]) .theme-toggle {
+    border-color: rgba(245,197,24,.25);
+    background: rgba(245,197,24,.08);
+  }
+  :global([data-theme="dark"]) .theme-toggle:hover {
+    background: rgba(245,197,24,.15);
+    border-color: rgba(245,197,24,.4);
+  }
+  .theme-toggle svg {
+    width: 18px;
+    height: 18px;
+    transition: opacity .3s, transform .4s cubic-bezier(.16,1,.3,1);
+  }
+  .theme-icon-sun {
+    stroke: #fff;
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+  .theme-icon-moon {
+    stroke: var(--yellow);
     position: absolute;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-  }
-  .theme-icon-light {
-    opacity: 1;
-    transform: scale(1);
-  }
-  .theme-icon-dark {
     opacity: 0;
-    transform: scale(0.5);
+    transform: rotate(-90deg);
   }
-  :global([data-theme="dark"]) .theme-icon-light {
+  :global([data-theme="dark"]) .theme-icon-sun {
     opacity: 0;
-    transform: scale(0.5);
+    transform: rotate(90deg);
   }
-  :global([data-theme="dark"]) .theme-icon-dark {
+  :global([data-theme="dark"]) .theme-icon-moon {
     opacity: 1;
-    transform: scale(1);
+    transform: rotate(0deg);
   }
 
   /* ─── Mobile ─── */

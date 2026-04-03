@@ -599,10 +599,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       card.innerHTML =
         '<div class="ev-card-photo">' +
           '<img src="' + photoSrc(m) + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy" />' +
-          '<div class="ev-photo-badge">' +
-            '<span class="val">' + fmt(m.autonomia_wltp_km) + '</span>' +
-            '<span class="unit">km</span>' +
-          '</div>' +
         '</div>' +
         '<div class="ev-card-body">' +
           '<div class="ev-card-header">' +
@@ -610,6 +606,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
               '<span class="ev-marca">' + m.marca + '</span>' +
               '<span class="ev-modelo">' + m.modelo + '</span>' +
               '<span class="ev-variante">' + m.variante + '</span>' +
+            '</div>' +
+            '<div class="ev-autonomia-inline">' +
+              '<span class="val">' + fmt(m.autonomia_wltp_km) + '</span>' +
+              '<span class="unit">km</span>' +
             '</div>' +
           '</div>' +
           '<div class="ev-badges">' + makeBadgesHtml(m) + '</div>' +
@@ -1304,52 +1304,66 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.2);
   }
 
-  /* Photo area — edge-to-edge, no visible container */
+  /* Photo area — car fully visible, subtle bottom fade */
   .ev-card-photo {
-    aspect-ratio: 16 / 7;
+    aspect-ratio: 5 / 2;
     overflow: hidden;
     position: relative;
-    /* Prevent subpixel gap between photo and body */
     margin-bottom: -1px;
+    background: var(--photo-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .ev-card-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 55%;
+    width: 90%;
+    height: 85%;
+    object-fit: contain;
     display: block;
     transition: transform .5s cubic-bezier(.25,.46,.45,.94);
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
   }
   .ev-card:hover .ev-card-photo img {
-    transform: scale(1.06);
+    transform: scale(1.05);
+  }
+  /* Subtle gradient — only bottom 18%, just softens the edge */
+  .ev-card-photo::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 18%;
+    background: linear-gradient(to bottom, transparent, var(--surface));
+    pointer-events: none;
+    z-index: 1;
+  }
+  [data-theme="dark"] .ev-card-photo::after {
+    background: linear-gradient(to bottom, transparent, var(--surface-alt));
   }
 
-  /* Autonomy badge on photo */
+  /* Autonomy badge — now in card body, not on photo */
   .ev-photo-badge {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+    display: none; /* Hidden — autonomy now shown in card header */
+  }
+  .ev-autonomia-inline {
     display: flex;
     align-items: baseline;
     gap: 3px;
-    background: rgba(0,0,0,.55);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    padding: .25rem .6rem;
-    border-radius: 6px;
-    z-index: 2;
+    margin-left: auto;
+    flex-shrink: 0;
   }
-  .ev-photo-badge .val {
-    font-size: .95rem;
+  .ev-autonomia-inline .val {
+    font-size: 1.1rem;
     font-weight: 600;
     color: var(--yellow);
     line-height: 1;
     letter-spacing: -.02em;
   }
-  .ev-photo-badge .unit {
-    font-size: .42rem;
+  .ev-autonomia-inline .unit {
+    font-size: .55rem;
     font-weight: 400;
-    color: rgba(255,255,255,.55);
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: .04em;
   }
