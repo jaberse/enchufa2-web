@@ -1059,9 +1059,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       });
 
       // Render 4 groups — filter rows by selectedFields
-      const selSet = new Set(selectedFields);
+      const selKeys = new Set(selectedFields.map(id => FIELDS.find(f => f.id === id)).filter(Boolean).map(f => f.key));
       COMPARE_GROUPS.forEach(g => {
-        const visibleRows = g.rows.filter(r => selSet.has(r.key));
+        const visibleRows = g.rows.filter(r => r.isText || selKeys.has(r.key));
         if (visibleRows.length === 0) return;
         html += '<div class="cmp-group">' +
           '<div class="cmp-group-inner">' +
@@ -1102,9 +1102,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       };
       const header = ['Especificación', ...picked.map(m => (m.marca + ' ' + m.modelo + (m.variante ? ' ' + m.variante : '')).trim())];
       const lines = [header.join(';')];
-      const selSet = new Set(selectedFields);
+      const selKeys = new Set(selectedFields.map(id => FIELDS.find(f => f.id === id)).filter(Boolean).map(f => f.key));
       COMPARE_GROUPS.forEach(g => {
-        const visibleRows = g.rows.filter(r => selSet.has(r.key));
+        const visibleRows = g.rows.filter(r => r.isText || selKeys.has(r.key));
         if (visibleRows.length === 0) return;
         lines.push('');
         lines.push(esc(g.num + ' — ' + g.name));
