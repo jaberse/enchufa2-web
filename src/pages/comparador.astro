@@ -1727,13 +1727,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     text-transform: uppercase;
     letter-spacing: .06em;
     white-space: nowrap;
-  }
+    background: #111111;
+}
   .listado-table th.col-num { text-align: right; }
 
   .listado-table th:first-child {
     position: sticky;
     left: 0;
-    background: var(--black);
+    background: #111111;
     z-index: 21;
     min-width: 220px;
   }
