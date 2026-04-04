@@ -99,6 +99,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
             </div>
           </div>
 
+          <!-- Comparison view (side-by-side table · 1·B) -->
+          <div class="compare-view" id="compare-view" style="display:none;">
+            <div class="compare-wrap" id="compare-wrap"></div>
+          </div>
+
           <p class="results-empty" id="no-results" style="display:none;">
             Ningún modelo cumple todos tus requisitos. Prueba a relajar algún filtro.
           </p>
@@ -209,6 +214,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     let tableSortAsc = true;
 
     const grid = document.getElementById('results-grid');
+    const compareView = document.getElementById('compare-view');
+    const compareWrap = document.getElementById('compare-wrap');
+    const fichasView = document.getElementById('fichas-view');
+    const listadoView = document.getElementById('listado-view');
     const tableOuter = document.getElementById('results-table-outer');
     const tableWrap = document.getElementById('results-table-wrap');
     const thead = document.getElementById('results-thead');
@@ -646,6 +655,103 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     }
 
     // ═══════════════════════════════════════════════════════
+    // RENDER COMPARE TABLE (side-by-side · 1·B)
+    // ═══════════════════════════════════════════════════════
+    function renderCompareTable(picked) {
+      const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
+      const n = picked.length;
+      const cols = 'minmax(140px, 1fr) repeat(' + n + ', minmax(120px, 1fr))';
+      let html = '<div class="cmp-table" style="grid-template-columns:' + cols + '">';
+
+      // Header row: photos + brand/model/variant
+      html += '<div class="cmp-label cmp-label-head"></div>';
+      picked.forEach(m => {
+        html += '<div class="cmp-head">' +
+          '<div class="cmp-head-photo">' +
+            '<img src="' + photoSrc(m) + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy">' +
+          '</div>' +
+          '<div class="cmp-head-title">' +
+            '<span class="cmp-head-marca">' + m.marca + '</span>' +
+            '<span class="cmp-head-modelo">' + m.modelo + '</span>' +
+            '<span class="cmp-head-variante">' + (m.variante || '') + '</span>' +
+          '</div>' +
+        '</div>';
+      });
+
+      // Autonomy hero row
+      html += '<div class="cmp-label cmp-label-hero">Autonomía WLTP</div>';
+      const autoBest = (function() {
+        const vals = picked.map(m => m.autonomia_wltp_km).filter(v => v != null);
+        return vals.length > 0 ? Math.max(...vals) : null;
+      })();
+      picked.forEach(m => {
+        const isBest = m.autonomia_wltp_km === autoBest && autoBest != null;
+        html += '<div class="cmp-cell cmp-cell-hero' + (isBest ? ' cmp-cell-best' : '') + '">' +
+          '<span class="cmp-hero-val">' + fmt(m.autonomia_wltp_km) + '</span>' +
+          '<span class="cmp-hero-unit">km</span>' +
+        '</div>';
+      });
+
+      // Badges row
+      html += '<div class="cmp-label">Etiquetas</div>';
+      picked.forEach(m => {
+        html += '<div class="cmp-cell cmp-cell-badges">' + makeBadgesHtml(m) + '</div>';
+      });
+
+      // Group separators + field rows
+      const groups = [
+        { label: 'Batería y carga', fields: ['bateria_neta','bateria_bruta','quimica','voltaje','carga_dc','carga_ac','t_10_80','bomba_calor'] },
+        { label: 'Prestaciones', fields: ['potencia_cv','potencia_kw','par','aceleracion','v_max','traccion'] },
+        { label: 'Dimensiones', fields: ['maletero','largo','ancho','diam_giro','frunk','plazas'] },
+        { label: 'Eficiencia', fields: ['consumo','peso'] },
+        { label: 'Precio y garantía', fields: ['pvp','garantia_bateria','garantia_general'] },
+      ];
+      const shownIds = new Set();
+      groups.forEach(g => {
+        const groupFields = activeFields.filter(f => g.fields.includes(f.id) && !shownIds.has(f.id));
+        if (groupFields.length === 0) return;
+        // Group title row spans all columns
+        html += '<div class="cmp-group" style="grid-column: 1 / -1">' + g.label + '</div>';
+        groupFields.forEach(f => {
+          shownIds.add(f.id);
+          html += '<div class="cmp-label">' + f.label + '</div>';
+          picked.forEach(m => {
+            const val = m[f.key];
+            let display = fmtField(val, f);
+            if (f.unit && !f.fmt && !f.isText && val != null) display += '\u00a0' + f.unit;
+            const isBest = !f.isText && bestValues[f.id] != null && val === bestValues[f.id];
+            html += '<div class="cmp-cell' + (isBest ? ' cmp-cell-best' : '') + '">' +
+              display +
+              (isBest ? ' <em class="best-mark" title="Mejor del grupo">★</em>' : '') +
+            '</div>';
+          });
+        });
+      });
+
+      // Any remaining active fields that didn't fit a group
+      const rest = activeFields.filter(f => !shownIds.has(f.id) && f.id !== 'autonomia');
+      if (rest.length > 0) {
+        html += '<div class="cmp-group" style="grid-column: 1 / -1">Otros</div>';
+        rest.forEach(f => {
+          html += '<div class="cmp-label">' + f.label + '</div>';
+          picked.forEach(m => {
+            const val = m[f.key];
+            let display = fmtField(val, f);
+            if (f.unit && !f.fmt && !f.isText && val != null) display += '\u00a0' + f.unit;
+            const isBest = !f.isText && bestValues[f.id] != null && val === bestValues[f.id];
+            html += '<div class="cmp-cell' + (isBest ? ' cmp-cell-best' : '') + '">' +
+              display +
+              (isBest ? ' <em class="best-mark">★</em>' : '') +
+            '</div>';
+          });
+        });
+      }
+
+      html += '</div>';
+      compareWrap.innerHTML = html;
+    }
+
+    // ═══════════════════════════════════════════════════════
     // RENDER TABLE (LISTADO) — adaptive layout
     // ═══════════════════════════════════════════════════════
     const MOBILE_BP = 768;
@@ -805,14 +911,28 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
       computeBestValues();
 
-      if (currentView === 'fichas') {
-        grid.innerHTML = '';
-        filtered.forEach(m => grid.appendChild(renderCard(m)));
+      // Active comparison mode with 2+ cars → show comparative table (1·B)
+      const useCompareTable = compareMode && filtered.length >= 2;
+      if (useCompareTable) {
+        fichasView.style.display = 'none';
+        listadoView.style.display = 'none';
+        compareView.style.display = '';
+        renderCompareTable(filtered);
       } else {
-        renderTableHeaders();
-        tbody.innerHTML = '';
-        filtered.forEach(m => tbody.appendChild(renderRow(m)));
-        updateScrollNav();
+        compareView.style.display = 'none';
+        if (currentView === 'fichas') {
+          fichasView.style.display = '';
+          listadoView.style.display = 'none';
+          grid.innerHTML = '';
+          filtered.forEach(m => grid.appendChild(renderCard(m)));
+        } else {
+          fichasView.style.display = 'none';
+          listadoView.style.display = '';
+          renderTableHeaders();
+          tbody.innerHTML = '';
+          filtered.forEach(m => tbody.appendChild(renderRow(m)));
+          updateScrollNav();
+        }
       }
     }
 
@@ -890,8 +1010,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           thumb.innerHTML =
             '<div class="sel-thumb-img">' +
               '<img src="' + photoSrc(m) + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy">' +
-              '<button class="sel-thumb-remove" type="button" aria-label="Quitar ' + m.marca + ' ' + m.modelo + '">×</button>' +
             '</div>' +
+            '<button class="sel-thumb-remove" type="button" aria-label="Quitar ' + m.marca + ' ' + m.modelo + '">×</button>' +
             '<span class="sel-thumb-brand">' + m.marca + '</span>' +
             '<span class="sel-thumb-name">' + m.modelo + '</span>';
           thumb.querySelector('.sel-thumb-remove').addEventListener('click', (e) => {
@@ -2236,6 +2356,169 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .fichas-view:not(.active) { display: none; }
   .listado-view { display: none; }
   .listado-view.active { display: block; }
+
+  /* ══════════════════════════════════════════
+     COMPARE VIEW (side-by-side table · 1·B)
+     ══════════════════════════════════════════ */
+  .compare-view { padding: 1.5rem clamp(1rem, 3vw, 2rem); }
+  .compare-wrap { width: 100%; overflow-x: auto; }
+  .cmp-table {
+    display: grid;
+    gap: 0;
+    font-family: var(--font-sans);
+    min-width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--card-bg, #fff);
+  }
+  /* Label column (left, sticky-ish) */
+  .cmp-label {
+    padding: .65rem .85rem;
+    font-size: .72rem;
+    color: var(--text-muted);
+    background: var(--bg-muted, #F5F5F3);
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    font-weight: 400;
+  }
+  .cmp-label-head { background: var(--card-bg, #fff); border-bottom: 2px solid var(--black); }
+  .cmp-label-hero {
+    font-weight: 500;
+    color: var(--text);
+    background: var(--bg-muted, #F5F5F3);
+  }
+  [data-theme="dark"] .cmp-label { background: #1a1a1a; }
+  [data-theme="dark"] .cmp-label-head { background: #0f0f0f; border-bottom-color: var(--yellow); }
+  [data-theme="dark"] .cmp-label-hero { background: #1a1a1a; color: #fff; }
+
+  /* Data cells (car columns) */
+  .cmp-cell {
+    padding: .65rem .85rem;
+    font-size: .78rem;
+    color: var(--text);
+    background: var(--card-bg, #fff);
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+  .cmp-cell:last-child { border-right: none; }
+  [data-theme="dark"] .cmp-cell { background: #0f0f0f; color: #fff; }
+
+  /* Best value highlight */
+  .cmp-cell-best {
+    background: rgba(245,197,24,.15);
+    font-weight: 600;
+  }
+  [data-theme="dark"] .cmp-cell-best { background: rgba(245,197,24,.12); color: var(--yellow); }
+
+  /* Header (photos + names) */
+  .cmp-head {
+    padding: 1.1rem .85rem .9rem;
+    background: var(--card-bg, #fff);
+    border-bottom: 2px solid var(--black);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .55rem;
+    text-align: center;
+  }
+  .cmp-head:last-child { border-right: none; }
+  [data-theme="dark"] .cmp-head { background: #0f0f0f; border-bottom-color: var(--yellow); }
+  .cmp-head-photo {
+    width: 100%;
+    max-width: 140px;
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cmp-head-photo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  .cmp-head-title { display: flex; flex-direction: column; line-height: 1.25; gap: .05rem; }
+  .cmp-head-marca {
+    font-size: .58rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .cmp-head-modelo {
+    font-size: .95rem;
+    color: var(--text);
+    font-weight: 500;
+    font-family: var(--font-serif);
+    font-style: italic;
+  }
+  .cmp-head-variante {
+    font-size: .68rem;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  /* Hero row (autonomía) */
+  .cmp-cell-hero {
+    padding: .9rem .85rem;
+    font-family: var(--font-serif);
+    font-style: italic;
+  }
+  .cmp-hero-val {
+    font-size: 1.75rem;
+    color: var(--text);
+    font-weight: 400;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .cmp-hero-unit {
+    font-size: .75rem;
+    color: var(--text-muted);
+    margin-left: .3rem;
+    font-style: normal;
+    font-family: var(--font-sans);
+  }
+  .cmp-cell-hero.cmp-cell-best .cmp-hero-val { color: var(--black); }
+  [data-theme="dark"] .cmp-cell-hero.cmp-cell-best .cmp-hero-val { color: var(--yellow); }
+
+  /* Badges row */
+  .cmp-cell-badges {
+    padding: .55rem .75rem;
+    flex-wrap: wrap;
+    gap: .3rem;
+  }
+  .cmp-cell-badges .badge { font-size: .58rem; padding: .2rem .45rem; }
+
+  /* Group title row */
+  .cmp-group {
+    padding: .7rem .85rem .4rem;
+    font-size: .62rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--card-bg, #fff);
+    border-bottom: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    font-weight: 500;
+  }
+  [data-theme="dark"] .cmp-group { background: #0f0f0f; color: #888; }
+
+  /* Mobile: horizontal scroll, wider columns */
+  @media (max-width: 700px) {
+    .compare-view { padding: 1rem .5rem; }
+    .cmp-head-modelo { font-size: .85rem; }
+    .cmp-hero-val { font-size: 1.4rem; }
+    .cmp-cell, .cmp-label { padding: .5rem .65rem; font-size: .72rem; }
+    .cmp-head { padding: .85rem .55rem .7rem; }
+    .cmp-head-photo { max-width: 90px; }
+  }
 
   /* ══════════════════════════════════════════
      LISTADO VIEW (Table)
