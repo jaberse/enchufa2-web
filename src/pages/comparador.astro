@@ -15,26 +15,26 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 ---
 
 <Layout
-  title="Comparador de coches elÃ©ctricos â€” enchufa2"
-  description="Compara los 37 coches elÃ©ctricos mÃ¡s vendidos en Europa. Filtra por autonomÃ­a, potencia, maletero, tracciÃ³n y mÃ¡s."
+  title="Comparador de coches eléctricos — enchufa2"
+  description="Compara los 37 coches eléctricos más vendidos en Europa. Filtra por autonomía, potencia, maletero, tracción y más."
 >
   <Header />
 
   <!-- HERO BAND -->
   <div class="hero-band">
-    <img src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1600&q=80&auto=format" alt="EstaciÃ³n de carga elÃ©ctrica" loading="eager">
+    <img src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1600&q=80&auto=format" alt="Estación de carga eléctrica" loading="eager">
   </div>
 
   <main>
-    <!-- Continuous panel: same pattern as homepage guias-section â†’ cat-blocks -->
+    <!-- Continuous panel: same pattern as homepage guias-section → cat-blocks -->
     <section class="comp-section">
       <div class="comp-outer">
 
         <!-- Block 1: Intro (overlaps hero, rounded top) -->
         <div class="comp-intro">
           <div class="comp-intro-inner">
-            <h2>Comparador de <em>elÃ©ctricos</em></h2>
-            <p>Dinos quÃ© necesitas. Nosotros te decimos quÃ© coches lo cumplen. <strong>{data.total_modelos} modelos</strong> con datos verificados.</p>
+            <h2>Comparador de <em>eléctricos</em></h2>
+            <p>Dinos qué necesitas. Nosotros te decimos qué coches lo cumplen. <strong>{data.total_modelos} modelos</strong> con datos verificados.</p>
           </div>
         </div>
 
@@ -50,15 +50,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           <div class="sort-control" id="sort-control">
             <label for="sort-select" class="sort-label">Ordenar</label>
             <select id="sort-select" class="sort-select">
-              <option value="">AutonomÃ­a â†“</option>
-              <option value="pvp-asc">Precio â†‘</option>
-              <option value="pvp-desc">Precio â†“</option>
-              <option value="potencia_cv-desc">Potencia â†“</option>
-              <option value="carga_dc-desc">Carga DC â†“</option>
-              <option value="aceleracion-asc">0-100 â†‘</option>
-              <option value="consumo-asc">Consumo â†‘</option>
-              <option value="peso-asc">Peso â†‘</option>
-              <option value="maletero-desc">Maletero â†“</option>
+              <option value="">Autonomía ↓</option>
+              <option value="pvp-asc">Precio ↑</option>
+              <option value="pvp-desc">Precio ↓</option>
+              <option value="potencia_cv-desc">Potencia ↓</option>
+              <option value="carga_dc-desc">Carga DC ↓</option>
+              <option value="aceleracion-asc">0-100 ↑</option>
+              <option value="consumo-asc">Consumo ↑</option>
+              <option value="peso-asc">Peso ↑</option>
+              <option value="maletero-desc">Maletero ↓</option>
             </select>
           </div>
           <button class="reset-btn" id="btn-reset" style="display:none;">Limpiar</button>
@@ -86,9 +86,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           <div class="listado-view" id="listado-view" style="display:none;">
             <div class="results-table-outer" id="results-table-outer">
               <div class="scroll-nav" id="scroll-nav">
-                <span class="scroll-nav-hint">Desliza para ver mÃ¡s columnas</span>
-                <button class="scroll-btn" id="scroll-left" aria-label="Scroll izquierda">â†</button>
-                <button class="scroll-btn" id="scroll-right" aria-label="Scroll derecha">â†’</button>
+                <span class="scroll-nav-hint">Desliza para ver más columnas</span>
+                <button class="scroll-btn" id="scroll-left" aria-label="Scroll izquierda">←</button>
+                <button class="scroll-btn" id="scroll-right" aria-label="Scroll derecha">→</button>
               </div>
               <div class="results-table-wrap" id="results-table-wrap">
                 <table class="listado-table" id="results-table">
@@ -100,7 +100,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           </div>
 
           <p class="results-empty" id="no-results" style="display:none;">
-            NingÃºn modelo cumple todos tus requisitos. Prueba a relajar algÃºn filtro.
+            Ningún modelo cumple todos tus requisitos. Prueba a relajar algún filtro.
           </p>
         </div>
 
@@ -109,7 +109,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           <div class="compare-bar-inner">
             <span class="compare-count" id="compare-count">0 seleccionados</span>
             <button class="compare-btn" id="compare-btn">Comparar seleccionados</button>
-            <button class="compare-clear" id="compare-clear">Limpiar selecciÃ³n</button>
+            <button class="compare-clear" id="compare-clear">Limpiar selección</button>
           </div>
         </div>
 
@@ -117,13 +117,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         <div class="comp-methodology">
           <p class="meth-label">Sobre estos datos</p>
           <p>
-            Todos los datos provienen de las fichas tÃ©cnicas oficiales de cada fabricante
-            para el mercado espaÃ±ol. Cuando no hay dato oficial disponible, se usa
-            ev-database.org como fuente de referencia. Las cifras de autonomÃ­a corresponden al ciclo WLTP combinado.
+            Todos los datos provienen de las fichas técnicas oficiales de cada fabricante
+            para el mercado español. Cuando no hay dato oficial disponible, se usa
+            ev-database.org como fuente de referencia. Las cifras de autonomía corresponden al ciclo WLTP combinado.
             Los precios (PVP) son orientativos, corresponden al mes indicado y pueden variar
-            segÃºn configuraciÃ³n, promociones o actualizaciones del fabricante. Consulta siempre
+            según configuración, promociones o actualizaciones del fabricante. Consulta siempre
             la web oficial del fabricante para el precio vigente.
-            Ãšltima actualizaciÃ³n: abril 2026.
+            Última actualización: abril 2026.
           </p>
         </div>
 
@@ -142,41 +142,41 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     voltajesData: voltajes,
     bombaOptsData: bombaOpts
   }}>
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     // FIELD DEFINITIONS
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     const FIELDS = [
-      { id:'autonomia',     label:'AutonomÃ­a',      shortLabel:'Auton.',  unit:'km',        key:'autonomia_wltp_km',       dflt:false, sortAsc:false, filterType:'min' },
+      { id:'autonomia',     label:'Autonomía',      shortLabel:'Auton.',  unit:'km',        key:'autonomia_wltp_km',       dflt:false, sortAsc:false, filterType:'min' },
       { id:'potencia_cv',   label:'Potencia',        shortLabel:'Pot.',    unit:'CV',        key:'potencia_cv',             dflt:true,  sortAsc:false, filterType:'min' },
       { id:'potencia_kw',   label:'Potencia (kW)',   shortLabel:'Pot.kW',  unit:'kW',        key:'potencia_kw',             dflt:false, sortAsc:false, filterType:'min' },
       { id:'par',           label:'Par motor',       shortLabel:'Par',     unit:'Nm',        key:'par_nm',                  dflt:false, sortAsc:false, filterType:'min' },
       { id:'carga_dc',      label:'Carga DC',        shortLabel:'DC',      unit:'kW',        key:'carga_dc_max_kw',         dflt:true,  sortAsc:false, filterType:'min' },
       { id:'carga_ac',      label:'Carga AC',        shortLabel:'AC',      unit:'kW',        key:'carga_ac_max_kw',         dflt:false, sortAsc:false, filterType:'min' },
-      { id:'t_10_80',       label:'T 10â†’80%',        shortLabel:'10â†’80',   unit:'min',       key:'t_10_80_min',             dflt:false, sortAsc:true,  filterType:'max' },
-      { id:'bateria_neta',  label:'BaterÃ­a neta',    shortLabel:'Bat.',    unit:'kWh',       key:'bateria_neta_kwh',        dflt:true,  sortAsc:false, filterType:'min', dec:1 },
-      { id:'bateria_bruta', label:'BaterÃ­a bruta',   shortLabel:'Bat.br',  unit:'kWh',       key:'bateria_bruta_kwh',       dflt:false, sortAsc:false, filterType:'min' },
+      { id:'t_10_80',       label:'T 10→80%',        shortLabel:'10→80',   unit:'min',       key:'t_10_80_min',             dflt:false, sortAsc:true,  filterType:'max' },
+      { id:'bateria_neta',  label:'Batería neta',    shortLabel:'Bat.',    unit:'kWh',       key:'bateria_neta_kwh',        dflt:true,  sortAsc:false, filterType:'min', dec:1 },
+      { id:'bateria_bruta', label:'Batería bruta',   shortLabel:'Bat.br',  unit:'kWh',       key:'bateria_bruta_kwh',       dflt:false, sortAsc:false, filterType:'min' },
       { id:'maletero',      label:'Maletero',        shortLabel:'Malet.',  unit:'L',         key:'maletero_l',              dflt:true,  sortAsc:false, filterType:'min' },
       { id:'aceleracion',   label:'0-100',           shortLabel:'0-100',   unit:'s',         key:'aceleracion_0_100_s',     dflt:true,  sortAsc:true,  filterType:'max', dec:1 },
-      { id:'vel_max',       label:'Vel. mÃ¡x',        shortLabel:'VmÃ¡x',    unit:'km/h',      key:'velocidad_max_kmh',       dflt:false, sortAsc:false, filterType:'min' },
+      { id:'vel_max',       label:'Vel. máx',        shortLabel:'Vmáx',    unit:'km/h',      key:'velocidad_max_kmh',       dflt:false, sortAsc:false, filterType:'min' },
       { id:'consumo',       label:'Consumo',         shortLabel:'Cons.',   unit:'kWh/100',   key:'consumo_wltp_kwh100km',   dflt:true,  sortAsc:true,  filterType:'max', dec:1 },
       { id:'peso',          label:'Peso',            shortLabel:'Peso',    unit:'kg',        key:'peso_kg',                 dflt:true,  sortAsc:true,  filterType:'max' },
-      { id:'pvp',           label:'PVP',             shortLabel:'PVP',     unit:'â‚¬',         key:'pvp',                     dflt:true,  sortAsc:true,  filterType:'max', fmt:'eur' },
+      { id:'pvp',           label:'PVP',             shortLabel:'PVP',     unit:'€',         key:'pvp',                     dflt:true,  sortAsc:true,  filterType:'max', fmt:'eur' },
       { id:'cx',            label:'Cx',              shortLabel:'Cx',      unit:'',          key:'cx',                      dflt:false, sortAsc:true,  filterType:'max', dec:3 },
       { id:'largo',         label:'Largo',           shortLabel:'Largo',   unit:'mm',        key:'largo_mm',                dflt:false, sortAsc:false, filterType:'min' },
       { id:'ancho',         label:'Ancho',           shortLabel:'Ancho',   unit:'mm',        key:'ancho_mm',                dflt:false, sortAsc:false, filterType:'min' },
       { id:'alto',          label:'Alto',            shortLabel:'Alto',    unit:'mm',        key:'alto_mm',                 dflt:false, sortAsc:false, filterType:'min' },
       { id:'batalla',       label:'Batalla',         shortLabel:'Bat.mm',  unit:'mm',        key:'batalla_mm',              dflt:false, sortAsc:false, filterType:'min' },
-      { id:'diametro_giro', label:'DiÃ¡m. giro',      shortLabel:'D.giro',  unit:'m',         key:'diametro_giro_m',         dflt:false, sortAsc:true,  filterType:'max', dec:1 },
+      { id:'diametro_giro', label:'Diám. giro',      shortLabel:'D.giro',  unit:'m',         key:'diametro_giro_m',         dflt:false, sortAsc:true,  filterType:'max', dec:1 },
       { id:'frunk',         label:'Frunk',           shortLabel:'Frunk',   unit:'L',         key:'frunk_l',                 dflt:false, sortAsc:false, filterType:'min' },
       { id:'remolque',      label:'Remolque',        shortLabel:'Remolq.', unit:'kg',        key:'capacidad_remolque_kg',   dflt:false, sortAsc:false, filterType:'min' },
-      { id:'garantia',      label:'GarantÃ­a bat.',   shortLabel:'Garant.', unit:'',          key:'garantia_bateria',        dflt:false, sortAsc:false, filterType:null, isText:true },
+      { id:'garantia',      label:'Garantía bat.',   shortLabel:'Garant.', unit:'',          key:'garantia_bateria',        dflt:false, sortAsc:false, filterType:null, isText:true },
     ];
 
     const CATS = [
       { id:'tipo',     label:'Tipo',       key:'tipo',         options: tiposData },
-      { id:'traccion', label:'TracciÃ³n',    key:'traccion',     options: traccionesData },
+      { id:'traccion', label:'Tracción',    key:'traccion',     options: traccionesData },
       { id:'marca',    label:'Marca',       key:'marca',        options: marcasData },
-      { id:'quimica',  label:'QuÃ­mica',     key:'quimica',      options: quimicasData },
+      { id:'quimica',  label:'Química',     key:'quimica',      options: quimicasData },
       { id:'voltaje',  label:'Voltaje',     key:'voltaje',      options: voltajesData, suffix:' V' },
       { id:'bomba',    label:'B. calor',    key:'bomba_calor',  options: bombaOptsData },
     ];
@@ -186,14 +186,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     let filterVals = {};   // { fieldId: 'value' }
     let catVals = {};      // { catId: ['val1','val2',...] }
     let openPopover = null; // id of currently open popover
-    let filterModes = {};  // { fieldId: 'min'|'max' } â€” runtime override of filterType
+    let filterModes = {};  // { fieldId: 'min'|'max' } — runtime override of filterType
     let allFieldsOn = false; // track select-all state
     let pickedIds = new Set();  // IDs of models picked for comparison
     let compareMode = false;    // true = show only picked models
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     // DOM REFS
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     const allModelos = modelos;
     let currentView = 'fichas';
     let tableSortId = null;
@@ -218,9 +218,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     const compareBtn = document.getElementById('compare-btn');
     const compareClear = document.getElementById('compare-clear');
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     // HELPERS
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     function fmtField(val, field) {
       if (val === null || val === undefined) return '\u2014';
       if (field.fmt === 'eur') return val.toLocaleString('es-ES') + '\u00a0\u20ac';
@@ -264,9 +264,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       return Object.values(filterVals).some(v => v) || Object.values(catVals).some(v => v && v.length > 0);
     }
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     // CLOSE POPOVERS ON OUTSIDE CLICK
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     document.addEventListener('mousedown', (e) => {
       if (openPopover && !e.target.closest('.field-item.locked')) {
         openPopover = null;
@@ -274,14 +274,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       }
     });
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     // RENDER PANEL (unified grid: locked cats + toggleable fields)
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     function renderPanel() {
       const container = panelGrid;
       container.innerHTML = '';
 
-      // â”€â”€ Category fields (locked, always active) â”€â”€
+      // ── Category fields (locked, always active) ──
       CATS.forEach(c => {
         const vals = catVals[c.id] || [];
         const hasF = vals.length > 0;
@@ -361,7 +361,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         container.appendChild(item);
       });
 
-      // â”€â”€ Select All + Divider â”€â”€
+      // ── Select All + Divider ──
       const selAllRow = document.createElement('div');
       selAllRow.className = 'panel-select-all-row';
       const selAllBtn = document.createElement('button');
@@ -388,7 +388,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       divider.className = 'panel-divider';
       container.appendChild(divider);
 
-      // â”€â”€ Numeric fields (toggleable, with sort + filter direction) â”€â”€
+      // ── Numeric fields (toggleable, with sort + filter direction) ──
       FIELDS.forEach(f => {
         const isActive = selectedFields.includes(f.id);
         const fv = filterVals[f.id] || '';
@@ -412,7 +412,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           update();
         });
 
-        // â”€â”€ Sort button (per-field) â”€â”€
+        // ── Sort button (per-field) ──
         const isSorted = tableSortId === f.id;
         const sortBtn = document.createElement('button');
         sortBtn.className = 'field-sort-btn' + (isSorted ? ' sort-active' : '');
@@ -489,9 +489,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       });
     }
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     // VIEW TOGGLE
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     document.querySelectorAll('.view-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
@@ -517,9 +517,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       });
     });
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     // FILTERING
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     function passesFilter(m) {
       // Numeric filters
       for (const [id, val] of Object.entries(filterVals)) {
@@ -543,9 +543,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       return true;
     }
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     // SORTING
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     function sortModelos(arr) {
       if (tableSortId) {
         const f = FIELDS.find(x => x.id === tableSortId);
@@ -573,9 +573,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       update();
     }
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     // RENDER CARD (FICHAS)
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     function renderCard(m) {
       const card = document.createElement('article');
       const isPicked = pickedIds.has(modelId(m));
@@ -596,7 +596,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
       card.innerHTML =
         '<div class="ev-card-photo">' +
-          (isPicked ? '<div class="pick-badge">âœ“</div>' : '') +
+          (isPicked ? '<div class="pick-badge">✓</div>' : '') +
           '<img src="' + photoSrc(m) + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy" />' +
         '</div>' +
         '<div class="ev-card-body">' +
@@ -617,9 +617,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       return card;
     }
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-    // RENDER TABLE (LISTADO) â€” adaptive layout
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
+    // RENDER TABLE (LISTADO) — adaptive layout
+    // ═══════════════════════════════════════════════════════
     const MOBILE_BP = 768;
     const MIN_COL_W = 100;  // minimum data-column width (px)
     let computedColW = MIN_COL_W;
@@ -652,10 +652,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       // Column width = exact division of available space by visible columns
       // This guarantees fitCols columns fill the viewport perfectly
       if (nCols <= fitCols) {
-        // All columns fit â€” each gets equal share, no scroll needed
+        // All columns fit — each gets equal share, no scroll needed
         computedColW = availW / nCols;
       } else {
-        // More columns than fit â€” size so visible ones fill exactly
+        // More columns than fit — size so visible ones fill exactly
         computedColW = availW / fitCols;
       }
 
@@ -688,7 +688,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       updateScrollNav();
     }
 
-    // â”€â”€ Scroll navigation helpers â”€â”€
+    // ── Scroll navigation helpers ──
     function updateScrollNav() {
       // Show scroll nav when table overflows its container
       requestAnimationFrame(() => {
@@ -763,9 +763,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       return tr;
     }
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     // MAIN UPDATE
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     function update() {
       let filtered = allModelos.filter(m => passesFilter(m));
       if (compareMode) filtered = filtered.filter(m => pickedIds.has(modelId(m)));
@@ -786,9 +786,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       }
     }
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     // RESET
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     btnReset.addEventListener('click', () => {
       filterVals = {};
       catVals = {};
@@ -807,9 +807,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       update();
     });
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     // SORT SELECT (Fichas + Listado)
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     const sortSelect = document.getElementById('sort-select');
     sortSelect.addEventListener('change', () => {
       const v = sortSelect.value;
@@ -824,9 +824,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       update();
     });
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     // MODEL SELECTION & COMPARE
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     function modelId(m) { return m.marca + '|' + m.modelo + '|' + m.variante; }
 
     function togglePick(m) {
@@ -863,9 +863,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       update();
     });
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     // SEARCH
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     let searchDebounce = null;
     searchInput.addEventListener('input', () => {
       clearTimeout(searchDebounce);
@@ -883,7 +883,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           return '<button class="search-item' + (picked ? ' picked' : '') + '" data-mid="' + id + '">' +
             '<span class="si-marca">' + m.marca + '</span> ' +
             '<span class="si-modelo">' + m.modelo + ' ' + m.variante + '</span>' +
-            (picked ? '<span class="si-check">âœ“</span>' : '') +
+            (picked ? '<span class="si-check">✓</span>' : '') +
             '</button>';
         }).join('');
         searchResultsEl.style.display = 'block';
@@ -906,13 +906,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       if (searchInput.value.trim().length >= 2) searchInput.dispatchEvent(new Event('input'));
     });
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     // INIT
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════════
     renderPanel();
     update();
 
-    // Recalculate table on resize (mobile â†” desktop)
+    // Recalculate table on resize (mobile ↔ desktop)
     let resizeTimer;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
@@ -937,9 +937,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
 <!-- Use is:global so styles apply to JS-rendered elements -->
 <style is:global>
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      TOKENS
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+     ══════════════════════════════════════════ */
   :root {
     --photo-bg: linear-gradient(180deg, #131313, #1a1a1a);
     --panel-bg: #ECEDF0;
@@ -953,9 +953,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     --panel-separator: #3A3D4A;
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      HERO BAND
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+     ══════════════════════════════════════════ */
   .hero-band {
     position: relative;
     width: 100%;
@@ -982,9 +982,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     background: linear-gradient(to bottom, transparent 40%, rgba(13,15,20,.2) 70%, rgba(13,15,20,.7) 100%);
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     COMP SECTION â€” continuous panel, same as homepage
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  /* ══════════════════════════════════════════
+     COMP SECTION — continuous panel, same as homepage
+     ══════════════════════════════════════════ */
   .comp-section {
     position: relative;
     z-index: 10;
@@ -998,7 +998,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     padding-bottom: clamp(2rem, 4vw, 3rem);
   }
 
-  /* Block 1: Intro â€” rounded top, overlaps hero */
+  /* Block 1: Intro — rounded top, overlaps hero */
   .comp-intro {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -1028,7 +1028,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-weight: 600;
   }
 
-  /* Block 2: Top bar â€” single row, sticky */
+  /* Block 2: Top bar — single row, sticky */
   .comp-topbar {
     background: var(--panel-bg);
     border: 1px solid var(--panel-border);
@@ -1118,9 +1118,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     color: var(--text);
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     FIELDS PANEL â€” fixed grid of all fields
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  /* ══════════════════════════════════════════
+     FIELDS PANEL — fixed grid of all fields
+     ══════════════════════════════════════════ */
   .comp-fields-panel {
     background: var(--panel-bg);
     border: 1px solid var(--panel-border);
@@ -1145,7 +1145,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
 
   /* Individual cell in the fields grid */
-  /* â”€â”€ Field items (unified grid) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Field items (unified grid) ────────── */
   .field-item {
     display: flex;
     align-items: center;
@@ -1372,9 +1372,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     min-width: 140px;
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      POPOVER SHARED STYLES (sidebar)
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+     ══════════════════════════════════════════ */
   .pop-input-wrap {
     display: flex;
     align-items: center;
@@ -1453,9 +1453,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     border-right: 1px solid var(--panel-border);
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      SEARCH BAR
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+     ══════════════════════════════════════════ */
   .search-wrap { position: relative; flex-shrink: 1; min-width: 0; }
   .model-search {
     font-family: var(--font-sans);
@@ -1508,9 +1508,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .si-modelo { font-weight: 500; flex: 1; }
   .si-check { color: var(--yellow); font-weight: 700; font-size: .8rem; }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      CARD / ROW SELECTION
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+     ══════════════════════════════════════════ */
   .ev-card { cursor: pointer; }
   .ev-card-picked {
     outline: 2px solid var(--yellow);
@@ -1542,9 +1542,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .scroll-mode .ev-row-picked:nth-child(even) .col-sticky { background: #EDEAD8 !important; }
   [data-theme="dark"] .scroll-mode .ev-row-picked:nth-child(even) .col-sticky { background: #151310 !important; }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      COMPARE BAR (floating bottom)
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+     ══════════════════════════════════════════ */
   .compare-bar {
     position: fixed;
     bottom: 0;
@@ -1597,7 +1597,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     .compare-bar-inner { flex-wrap: wrap; gap: .5rem; }
   }
 
-  /* â”€â”€ Results â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Results ─────────────────────────── */
   .comp-results {
     padding: 1.5rem clamp(1.5rem, 3vw, 2.5rem);
     background: var(--surface);
@@ -1660,9 +1660,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     padding: 4rem 0;
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      FICHAS GRID
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+     ══════════════════════════════════════════ */
   .fichas-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -1670,11 +1670,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     padding: 0;
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     EV CARD â€” profile photo + data below
+  /* ══════════════════════════════════════════
+     EV CARD — profile photo + data below
      Photo area is a controlled 16:7 ratio
      dark bg, car centered, never cropped.
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+     ══════════════════════════════════════════ */
   .ev-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -1695,7 +1695,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     box-shadow: 0 4px 16px rgba(255,255,255,0.03);
   }
 
-  /* Photo area â€” neutral gray gradient bg, yellow accent line */
+  /* Photo area — neutral gray gradient bg, yellow accent line */
   .ev-card-photo {
     aspect-ratio: 16 / 9;
     overflow: hidden;
@@ -1733,9 +1733,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     transform: scale(1.05);
   }
 
-  /* Autonomy badge â€” now in card body, not on photo */
+  /* Autonomy badge — now in card body, not on photo */
   .ev-photo-badge {
-    display: none; /* Hidden â€” autonomy now shown in card header */
+    display: none; /* Hidden — autonomy now shown in card header */
   }
   .ev-autonomia-inline {
     display: flex;
@@ -1844,7 +1844,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     white-space: nowrap;
     line-height: 1.3;
   }
-  /* Badge colors â€” each type has its own tint */
+  /* Badge colors — each type has its own tint */
   /* Neutros — descriptivos */
   .badge-tipo {
     background: transparent;
@@ -1901,7 +1901,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     color: #E0A85E;
   }
 
-  /* Detail rows â€” clean, readable */
+  /* Detail rows — clean, readable */
   .ev-card-details {
     display: flex;
     flex-direction: column;
@@ -1935,9 +1935,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .listado-view { display: none; }
   .listado-view.active { display: block; }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      LISTADO VIEW (Table)
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+     ══════════════════════════════════════════ */
   .listado-wrap {
     border: 1px solid var(--border);
     border-radius: 8px;
@@ -2262,11 +2262,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     overflow: hidden;
   }
 
-  /* â”€â”€ Methodology â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ── Methodology ────────────────────── */
+  /* ══════════════════════════════════════════
      METHODOLOGY
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
-  /* Block 4: Methodology â€” closes the panel, rounded bottom */
+     ══════════════════════════════════════════ */
+  /* Block 4: Methodology — closes the panel, rounded bottom */
   .comp-methodology {
     padding: clamp(1.5rem, 3vw, 2rem) clamp(1.5rem, 3vw, 2.5rem);
     border: 1px solid var(--border);
@@ -2290,9 +2290,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-weight: 300;
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      RESPONSIVE
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+     ══════════════════════════════════════════ */
   @media (max-width: 1100px) {
     .fichas-grid { grid-template-columns: repeat(3, 1fr); }
   }
