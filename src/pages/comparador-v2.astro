@@ -71,7 +71,18 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
         <!-- Block 3: Fields grid (fixed layout, all fields visible) -->
         <div class="comp-fields-panel">
+          <div class="panel-section-label">Categorías</div>
+          <div class="panel-cats-row" id="panel-cats"></div>
+          <div class="panel-section-label panel-section-label-num">
+            <span>Campos numéricos</span>
+            <span class="panel-section-hint">Toggle activa columna · input filtra</span>
+            <button class="panel-select-all-btn" id="panel-select-all-btn" type="button">Seleccionar todos</button>
+          </div>
           <div class="panel-grid" id="panel-grid"></div>
+          <div class="panel-applied" id="panel-applied" style="display:none;">
+            <span class="panel-applied-label">Filtrando</span>
+            <div class="panel-applied-chips" id="panel-applied-chips"></div>
+          </div>
         </div>
 
         <!-- Separator bar between filters and results -->
@@ -226,6 +237,26 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     const noResults = document.getElementById('no-results');
     const btnReset = document.getElementById('btn-reset');
     const panelGrid = document.getElementById('panel-grid');
+    const panelCats = document.getElementById('panel-cats');
+    const panelApplied = document.getElementById('panel-applied');
+    const panelAppliedChips = document.getElementById('panel-applied-chips');
+    const panelSelectAllBtn = document.getElementById('panel-select-all-btn');
+    if (panelSelectAllBtn) {
+      panelSelectAllBtn.addEventListener('click', () => {
+        const allOn = selectedFields.length === FIELDS.length;
+        if (allOn) {
+          selectedFields = [...DEFAULT_IDS];
+          FIELDS.forEach(f => { if (!DEFAULT_IDS.includes(f.id)) filterVals[f.id] = ''; });
+        } else {
+          selectedFields = FIELDS.map(f => f.id);
+        }
+        allFieldsOn = !allOn;
+        panelSelectAllBtn.textContent = allOn ? 'Seleccionar todos' : 'Volver a predefinidos';
+        btnReset.style.display = hasAnyFilter() ? '' : 'none';
+        renderPanel();
+        update();
+      });
+    }
     const scrollNav = document.getElementById('scroll-nav');
     const scrollLeftBtn = document.getElementById('scroll-left');
     const scrollRightBtn = document.getElementById('scroll-right');
@@ -285,53 +316,55 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // CLOSE POPOVERS ON OUTSIDE CLICK
     // ═══════════════════════════════════════════════════════
     document.addEventListener('mousedown', (e) => {
-      if (openPopover && !e.target.closest('.field-item.locked')) {
+      if (openPopover && !e.target.closest('.cat-chip')) {
         openPopover = null;
         renderPanel();
       }
     });
 
+    // Format a filter value for display in the applied-chips strip
+    function formatFilterDisplayVal(f, val) {
+      const n = parseFloat(val);
+      if (isNaN(n)) return val;
+      if (f.fmt === 'eur') return n.toLocaleString('es-ES') + ' €';
+      return n.toLocaleString('es-ES') + (f.unit ? ' ' + f.unit : '');
+    }
+
     // ═══════════════════════════════════════════════════════
     // RENDER PANEL (unified grid: locked cats + toggleable fields)
     // ═══════════════════════════════════════════════════════
     function renderPanel() {
-      const container = panelGrid;
-      container.innerHTML = '';
-
-      // ── Category fields (locked, always active) ──
+      // ── Category chips (render into panelCats row) ──
+      panelCats.innerHTML = '';
       CATS.forEach(c => {
         const vals = catVals[c.id] || [];
         const hasF = vals.length > 0;
         const isOpen = openPopover === c.id;
 
-        const item = document.createElement('div');
-        item.className = 'field-item active locked';
+        const chip = document.createElement('div');
+        chip.className = 'cat-chip' + (hasF ? ' is-filtering' : '');
 
-        const label = document.createElement('span');
-        label.className = 'field-label';
-        label.textContent = c.label;
+        const btn = document.createElement('button');
+        btn.className = 'cat-chip-btn';
+        btn.type = 'button';
 
-        const filterWrap = document.createElement('div');
-        filterWrap.className = 'field-filter';
-
-        const filterBtn = document.createElement('button');
-        filterBtn.className = 'cat-filter-btn' + (hasF ? ' has-val' : '');
-        let btnText = 'Todo';
+        let valueText;
         if (hasF) {
-          btnText = vals.length === 1 ? vals[0] + (c.suffix || '') : vals.length + ' sel.';
+          valueText = vals.length === 1 ? vals[0] + (c.suffix || '') : vals.join(', ') + (c.suffix || '');
+        } else {
+          valueText = 'Todos';
         }
-        filterBtn.innerHTML = '<span>' + btnText + '</span> <svg width="7" height="4" viewBox="0 0 7 4" style="vertical-align:middle"><path d="M.5.5l3 3 3-3" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg>';
+        const rightEl = hasF
+          ? '<span class="cat-chip-badge">' + vals.length + '</span>'
+          : '<span class="cat-chip-caret"><svg width="7" height="4" viewBox="0 0 7 4"><path d="M.5.5l3 3 3-3" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg></span>';
+        btn.innerHTML = '<div class="cat-chip-top"><span class="cat-chip-label">' + c.label + '</span>' + rightEl + '</div><span class="cat-chip-value">' + valueText + '</span>';
 
-        filterBtn.addEventListener('click', (e) => {
+        btn.addEventListener('click', (e) => {
           e.stopPropagation();
           openPopover = isOpen ? null : c.id;
           renderPanel();
         });
-
-        filterWrap.appendChild(filterBtn);
-
-        item.appendChild(label);
-        item.appendChild(filterWrap);
+        chip.appendChild(btn);
 
         if (isOpen) {
           const pop = document.createElement('div');
@@ -345,7 +378,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           if (hasF) html += '<button class="pop-clear">Limpiar</button>';
           pop.innerHTML = html;
           pop.addEventListener('mousedown', e => e.stopPropagation());
-          item.appendChild(pop);
+          chip.appendChild(pop);
 
           requestAnimationFrame(() => {
             pop.querySelectorAll('.pop-option').forEach(optBtn => {
@@ -375,49 +408,32 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           });
         }
 
-        container.appendChild(item);
+        panelCats.appendChild(chip);
       });
 
-      // ── Select All + Divider ──
-      const selAllRow = document.createElement('div');
-      selAllRow.className = 'panel-select-all-row';
-      const selAllBtn = document.createElement('button');
-      selAllBtn.className = 'panel-select-all-btn';
-      const allOn = selectedFields.length === FIELDS.length;
-      selAllBtn.textContent = allOn ? 'Volver a predefinidos' : 'Seleccionar todos';
-      selAllBtn.addEventListener('click', () => {
-        if (allOn) {
-          selectedFields = [...DEFAULT_IDS];
-          // Clear filters of deselected fields
-          FIELDS.forEach(f => { if (!DEFAULT_IDS.includes(f.id)) filterVals[f.id] = ''; });
-        } else {
-          selectedFields = FIELDS.map(f => f.id);
-        }
-        allFieldsOn = !allOn;
-        btnReset.style.display = hasAnyFilter() ? '' : 'none';
-        renderPanel();
-        update();
-      });
-      selAllRow.appendChild(selAllBtn);
-      container.appendChild(selAllRow);
+      // ── Numeric chips (render into panel-grid) ──
+      const container = panelGrid;
+      container.innerHTML = '';
 
-      const divider = document.createElement('div');
-      divider.className = 'panel-divider';
-      container.appendChild(divider);
-
-      // ── Numeric fields (toggleable, with sort + filter direction) ──
       FIELDS.forEach(f => {
         const isActive = selectedFields.includes(f.id);
         const fv = filterVals[f.id] || '';
+        const isFiltering = !!fv;
 
         const item = document.createElement('div');
-        item.className = 'field-item' + (isActive ? ' active' : '');
+        item.className = 'field-item' + (isActive ? ' active' : '') + (isFiltering ? ' is-filtering' : '');
+
+        // Head row: toggle + label + contextual action (× when filtering, sort otherwise)
+        const head = document.createElement('div');
+        head.className = 'field-chip-head';
 
         const toggle = document.createElement('button');
         toggle.className = 'field-toggle' + (isActive ? ' on' : '');
+        toggle.type = 'button';
         toggle.setAttribute('aria-label', (isActive ? 'Desactivar ' : 'Activar ') + f.label);
         toggle.innerHTML = '<span class="field-toggle-track"><span class="field-toggle-knob"></span></span>';
-        toggle.addEventListener('click', () => {
+        toggle.addEventListener('click', (e) => {
+          e.stopPropagation();
           if (isActive) {
             selectedFields = selectedFields.filter(x => x !== f.id);
             filterVals[f.id] = '';
@@ -429,41 +445,64 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           update();
         });
 
-        // ── Sort button (per-field) ──
-        const isSorted = tableSortId === f.id;
-        const sortBtn = document.createElement('button');
-        sortBtn.className = 'field-sort-btn' + (isSorted ? ' sort-active' : '');
-        if (isSorted) {
-          sortBtn.innerHTML = tableSortAsc
-            ? '<svg width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 0L7 5H0z" fill="currentColor"/></svg>'
-            : '<svg width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 5L0 0h7z" fill="currentColor"/></svg>';
-        } else {
-          sortBtn.innerHTML = '<svg width="7" height="8" viewBox="0 0 7 8"><path d="M3.5 0L6 3H1z" fill="currentColor"/><path d="M3.5 8L1 5h5z" fill="currentColor"/></svg>';
-        }
-        sortBtn.title = 'Ordenar por ' + f.label;
-        sortBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          handleSort(f.id);
-          // Sync topbar select
-          const selVal = f.id + '-' + (tableSortAsc ? 'asc' : 'desc');
-          const sortSel = document.getElementById('sort-select');
-          const optMatch = Array.from(sortSel.options).find(o => o.value === selVal);
-          if (optMatch) sortSel.value = selVal; else sortSel.value = '';
-          renderPanel();
-        });
-
         const label = document.createElement('span');
         label.className = 'field-label';
         label.textContent = f.label;
 
-        const filterWrap = document.createElement('div');
-        filterWrap.className = 'field-filter';
+        // Contextual action
+        let actionBtn;
+        if (isFiltering) {
+          actionBtn = document.createElement('button');
+          actionBtn.className = 'field-action field-action-clear';
+          actionBtn.type = 'button';
+          actionBtn.title = 'Quitar filtro';
+          actionBtn.setAttribute('aria-label', 'Quitar filtro de ' + f.label);
+          actionBtn.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 2l6 6M8 2l-6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>';
+          actionBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterVals[f.id] = '';
+            btnReset.style.display = hasAnyFilter() ? '' : 'none';
+            renderPanel();
+            update();
+          });
+        } else {
+          const isSorted = tableSortId === f.id;
+          actionBtn = document.createElement('button');
+          actionBtn.className = 'field-action field-action-sort' + (isSorted ? ' sort-active' : '');
+          actionBtn.type = 'button';
+          actionBtn.title = 'Ordenar por ' + f.label;
+          if (isSorted) {
+            actionBtn.innerHTML = tableSortAsc
+              ? '<svg width="8" height="6" viewBox="0 0 8 6"><path d="M4 0L8 6H0z" fill="currentColor"/></svg>'
+              : '<svg width="8" height="6" viewBox="0 0 8 6"><path d="M4 6L0 0h8z" fill="currentColor"/></svg>';
+          } else {
+            actionBtn.innerHTML = '<svg width="8" height="10" viewBox="0 0 8 10"><path d="M4 0L7 3H1z" fill="currentColor"/><path d="M4 10L1 7h6z" fill="currentColor"/></svg>';
+          }
+          actionBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            handleSort(f.id);
+            const selVal = f.id + '-' + (tableSortAsc ? 'asc' : 'desc');
+            const sortSel = document.getElementById('sort-select');
+            const optMatch = Array.from(sortSel.options).find(o => o.value === selVal);
+            if (optMatch) sortSel.value = selVal; else sortSel.value = '';
+            renderPanel();
+          });
+        }
 
+        head.appendChild(toggle);
+        head.appendChild(label);
+        head.appendChild(actionBtn);
+        item.appendChild(head);
+
+        // Filter row
         if (f.filterType) {
-          const curMode = filterModes[f.id] || f.filterType;
+          const filterRow = document.createElement('div');
+          filterRow.className = 'field-chip-filter';
 
+          const curMode = filterModes[f.id] || f.filterType;
           const sym = document.createElement('button');
           sym.className = 'field-filter-sym field-filter-sym-btn';
+          sym.type = 'button';
           sym.textContent = curMode === 'min' ? '\u2265' : '\u2264';
           sym.title = curMode === 'min' ? 'Filtrar: mayor o igual (click para cambiar)' : 'Filtrar: menor o igual (click para cambiar)';
           sym.addEventListener('click', (e) => {
@@ -476,33 +515,88 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           const input = document.createElement('input');
           input.type = 'number';
           input.className = 'field-filter-input';
-          input.placeholder = '\u2014';
+          input.placeholder = 'sin límite';
           input.value = fv;
           input.addEventListener('input', () => {
             filterVals[f.id] = input.value;
             btnReset.style.display = hasAnyFilter() ? '' : 'none';
-            if (input.value && !selectedFields.includes(f.id)) {
-              selectedFields.push(f.id);
-              item.classList.add('active');
-              toggle.classList.add('on');
+            if (input.value) {
+              item.classList.add('is-filtering');
+              if (!selectedFields.includes(f.id)) {
+                selectedFields.push(f.id);
+                item.classList.add('active');
+                toggle.classList.add('on');
+              }
+            } else {
+              item.classList.remove('is-filtering');
             }
             update();
+          });
+          input.addEventListener('blur', () => {
+            // Re-render on blur to swap sort/clear action button
+            renderPanel();
           });
 
           const unit = document.createElement('span');
           unit.className = 'field-filter-unit';
           unit.textContent = f.unit;
 
-          filterWrap.appendChild(sym);
-          filterWrap.appendChild(input);
-          filterWrap.appendChild(unit);
+          filterRow.appendChild(sym);
+          filterRow.appendChild(input);
+          filterRow.appendChild(unit);
+          item.appendChild(filterRow);
         }
 
-        item.appendChild(toggle);
-        item.appendChild(sortBtn);
-        item.appendChild(label);
-        item.appendChild(filterWrap);
         container.appendChild(item);
+      });
+
+      // ── Applied filters strip ──
+      renderAppliedStrip();
+    }
+
+    function renderAppliedStrip() {
+      const parts = [];
+      // Category filters
+      CATS.forEach(c => {
+        const vals = catVals[c.id] || [];
+        if (!vals.length) return;
+        const valText = vals.length <= 2
+          ? vals.join(', ') + (c.suffix || '')
+          : vals.length + ' opciones';
+        parts.push({ kind: 'cat', id: c.id, text: c.label + ': ' + valText });
+      });
+      // Numeric filters
+      FIELDS.forEach(f => {
+        const v = filterVals[f.id];
+        if (!v) return;
+        const mode = filterModes[f.id] || f.filterType;
+        const sym = mode === 'min' ? '≥' : '≤';
+        parts.push({ kind: 'num', id: f.id, text: f.label + ' ' + sym + ' ' + formatFilterDisplayVal(f, v) });
+      });
+
+      if (!parts.length) {
+        panelApplied.style.display = 'none';
+        return;
+      }
+      panelApplied.style.display = '';
+      panelAppliedChips.innerHTML = '';
+      parts.forEach(p => {
+        const btn = document.createElement('button');
+        btn.className = 'applied-chip';
+        btn.type = 'button';
+        btn.title = 'Quitar este filtro';
+        btn.innerHTML = '<span>' + p.text + '</span><span class="applied-chip-x" aria-hidden="true">×</span>';
+        btn.addEventListener('click', () => {
+          if (p.kind === 'cat') {
+            catVals[p.id] = [];
+          } else {
+            filterVals[p.id] = '';
+          }
+          btnReset.style.display = hasAnyFilter() ? '' : 'none';
+          renderPanel();
+          update();
+        });
+        panelAppliedChips.appendChild(btn);
       });
     }
 
@@ -1386,10 +1480,68 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   [data-theme="dark"] .comp-fields-panel {
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
   }
+  /* Section labels inside panel */
+  .panel-section-label {
+    font-size: 0.6rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    padding-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .panel-section-label-num {
+    padding-top: 0.75rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--panel-border);
+  }
+  .panel-section-hint {
+    font-size: 0.62rem;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--text-muted);
+    opacity: 0.75;
+  }
+  .panel-select-all-btn {
+    margin-left: auto;
+    font-family: var(--font-sans);
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: none;
+    border: 1px dashed var(--text-muted);
+    border-radius: 4px;
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
+  [data-theme="dark"] .panel-select-all-btn { color: #C5C5C5; border-color: #606060; }
+  .panel-select-all-btn:hover {
+    color: var(--text);
+    border-color: var(--yellow);
+    border-style: solid;
+    background: var(--yellow-glow);
+  }
+  [data-theme="dark"] .panel-select-all-btn:hover { color: var(--yellow); }
+
+  /* Categories row */
+  .panel-cats-row {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+  @media (max-width: 1100px) { .panel-cats-row { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 500px)  { .panel-cats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
   .panel-grid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 0.15rem 0.5rem;
+    gap: 0.4rem;
   }
   @media (max-width: 1100px) { .panel-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
   @media (max-width: 800px)  { .panel-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
@@ -1402,24 +1554,43 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     margin: 0.25rem 0;
   }
 
-  /* Individual cell in the fields grid */
-  /* ── Field items (unified grid) ────────── */
+  /* ── Numeric chip (two-line) ────────── */
   .field-item {
+    position: relative;
+    padding: 0.45rem 0.55rem 0.5rem;
+    border-radius: 7px;
+    border: 1px solid transparent;
+    background: var(--surface-alt);
+    transition: opacity 0.15s, background 0.15s, border-color 0.15s, box-shadow 0.15s;
+    min-height: 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  [data-theme="dark"] .field-item { background: rgba(255,255,255,0.03); }
+  .field-item:not(.active) { opacity: 0.55; }
+  .field-item:hover { opacity: 1; border-color: var(--border); }
+  .field-item.active {
+    background: var(--surface);
+    border-color: var(--border);
+  }
+  [data-theme="dark"] .field-item.active { background: rgba(255,255,255,0.035); border-color: var(--border); }
+  .field-item.is-filtering {
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 1px var(--yellow);
+    background: #FFFDF3;
+  }
+  [data-theme="dark"] .field-item.is-filtering {
+    background: rgba(245, 197, 24, 0.08);
+    box-shadow: 0 0 0 1px var(--yellow);
+  }
+
+  /* Head row: toggle + label + contextual action */
+  .field-chip-head {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem 0.3rem;
-    border-radius: 5px;
-    transition: opacity 0.15s;
-    position: relative;
+    gap: 0.4rem;
   }
-  .field-item:not(.active) { opacity: 0.55; }
-  .field-item:hover { background: rgba(0,0,0,0.03); opacity: 1; }
-  [data-theme="dark"] .field-item:hover { background: rgba(255,255,255,0.04); }
-
-  /* Locked category items */
-  .field-item.locked { background: rgba(245, 197, 24, 0.04); }
-  [data-theme="dark"] .field-item.locked { background: rgba(245, 197, 24, 0.06); }
 
   /* Mini toggle */
   .field-toggle {
@@ -1433,6 +1604,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     padding: 0;
     transition: background 0.2s, border-color 0.2s;
   }
+  [data-theme="dark"] .field-toggle { background: rgba(255,255,255,0.05); }
   .field-toggle.on {
     background: var(--yellow);
     border-color: var(--yellow);
@@ -1456,12 +1628,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .field-toggle.on .field-toggle-knob { left: 11px; }
 
-  /* Locked toggle (categories) */
-  .locked-toggle {
-    pointer-events: none;
-    cursor: default;
-  }
-
   /* Field label */
   .field-label {
     font-family: var(--font-sans);
@@ -1473,38 +1639,73 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
   }
-  .field-item:not(.active) .field-label {
-    color: var(--text);
-    opacity: 0.7;
-  }
-  .field-item.active .field-label {
-    color: var(--text);
-    font-weight: 500;
-  }
+  .field-item.active .field-label { color: var(--text); font-weight: 500; }
+  .field-item.is-filtering .field-label { color: var(--text); font-weight: 600; }
 
-  /* Inline filter (numeric) */
-  .field-filter {
+  /* Contextual action button (× when filtering, sort arrows otherwise) */
+  .field-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    border-radius: 3px;
+    transition: color 0.15s, background 0.15s, opacity 0.15s;
+  }
+  .field-action svg { display: block; }
+  .field-action-sort { opacity: 0; }
+  .field-item:hover .field-action-sort { opacity: 0.55; }
+  .field-action-sort:hover { opacity: 1 !important; color: var(--text); }
+  .field-action-sort.sort-active { opacity: 1 !important; color: var(--yellow); }
+  .field-action-clear { opacity: 0.7; }
+  .field-action-clear:hover {
+    opacity: 1;
+    color: var(--text);
+    background: rgba(0,0,0,0.05);
+  }
+  [data-theme="dark"] .field-action-clear:hover { background: rgba(255,255,255,0.08); }
+
+  /* Filter row */
+  .field-chip-filter {
     display: flex;
     align-items: center;
-    gap: 0.15rem;
-    flex-shrink: 0;
+    gap: 0.3rem;
   }
-  .field-filter-sym {
+  .field-filter-sym-btn {
     font-family: var(--font-sans);
-    font-size: 0.5625rem;
+    font-size: 0.72rem;
+    font-weight: 500;
     color: var(--text-muted);
-    width: 0.65rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 1rem;
     text-align: center;
+    border-radius: 3px;
+    padding: 0.05rem 0;
+    user-select: none;
+    flex-shrink: 0;
+    transition: color 0.15s, background 0.15s;
   }
+  .field-filter-sym-btn:hover {
+    color: var(--yellow);
+    background: var(--yellow-glow);
+  }
+  .field-item.is-filtering .field-filter-sym-btn { color: var(--text); font-weight: 600; }
   .field-filter-input {
-    width: 42px;
+    flex: 1;
+    min-width: 0;
     font-family: var(--font-sans);
-    font-size: 0.6875rem;
-    padding: 0.2rem 0.3rem;
+    font-size: 0.72rem;
+    padding: 0.25rem 0.4rem;
     border: 1px solid var(--border);
     border-radius: 4px;
     background: var(--surface);
@@ -1514,131 +1715,165 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     transition: border-color 0.15s, background 0.15s;
   }
   .field-filter-input:focus { border-color: var(--yellow); }
-  .field-filter-input:not(:placeholder-shown) { border-color: var(--yellow); background: var(--yellow-glow); }
-  .field-filter-input::placeholder { color: var(--text-muted); opacity: 0.4; }
+  .field-filter-input::placeholder { color: var(--text-muted); opacity: 0.5; font-size: 0.65rem; font-style: italic; }
   .field-filter-input::-webkit-inner-spin-button,
   .field-filter-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
   .field-filter-input[type=number] { -moz-appearance: textfield; }
+  .field-item.is-filtering .field-filter-input {
+    border-color: var(--yellow);
+    background: var(--surface);
+    font-weight: 600;
+    color: var(--text);
+  }
+  [data-theme="dark"] .field-item.is-filtering .field-filter-input { background: rgba(255,255,255,0.05); }
   .field-filter-unit {
     font-family: var(--font-sans);
-    font-size: 0.5rem;
+    font-size: 0.62rem;
     color: var(--text-muted);
-    min-width: 1.5rem;
-  }
-
-
-  /* Select All button row */
-  .panel-select-all-row {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: flex-start;
-    padding: 0.3rem 0 0.1rem;
-  }
-  .panel-select-all-btn {
-    font-family: var(--font-sans);
-    font-size: 0.625rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    background: none;
-    border: 1px dashed var(--text-muted);
-    border-radius: 4px;
-    padding: 0.2rem 0.55rem;
-    cursor: pointer;
-    transition: all 0.15s;
-    letter-spacing: 0.01em;
-  }
-  [data-theme="dark"] .panel-select-all-btn {
-    color: #C5C5C5;
-    border-color: #606060;
-  }
-  .panel-select-all-btn:hover {
-    color: var(--text);
-    border-color: var(--yellow);
-    border-style: solid;
-    background: var(--yellow-glow);
-  }
-  [data-theme="dark"] .panel-select-all-btn:hover {
-    color: var(--yellow);
-  }
-
-  /* Per-field sort button */
-  .field-sort-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 12px;
-    height: 12px;
-    color: var(--text-muted);
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    opacity: 0;
+    min-width: 1.8rem;
     flex-shrink: 0;
-    transition: opacity 0.15s, color 0.15s;
   }
-  .field-sort-btn svg { display: block; }
-  .field-item:hover .field-sort-btn { opacity: 0.45; }
-  .field-sort-btn:hover { opacity: 1 !important; color: var(--text); }
-  .field-sort-btn.sort-active {
-    opacity: 1 !important;
-    color: var(--yellow);
-  }
+  .field-item.is-filtering .field-filter-unit { color: var(--text-secondary); }
 
-  /* Toggleable filter direction button */
-  .field-filter-sym-btn {
-    cursor: pointer;
-    border: none;
-    background: none;
-    padding: 0 1px;
-    border-radius: 2px;
-    transition: color 0.15s, background 0.15s;
-  }
-  .field-filter-sym-btn:hover {
-    color: var(--yellow);
-    background: var(--yellow-glow);
-  }
 
-  /* Category filter button */
-  .cat-filter-btn {
-    font-family: var(--font-sans);
-    font-size: 0.625rem;
-    font-weight: 400;
-    color: var(--text-muted);
-    background: var(--surface-alt);
+  /* ── Category chips (separate row above numeric grid) ────────── */
+  .cat-chip {
+    position: relative;
+    min-height: 56px;
+    display: flex;
+  }
+  .cat-chip-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.2rem;
+    padding: 0.45rem 0.6rem;
+    border-radius: 7px;
     border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 0.15rem 0.4rem;
+    background: var(--surface);
     cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.15s;
-    display: inline-flex;
-    align-items: center;
-    gap: 2px;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    font-family: var(--font-sans);
+    text-align: left;
+    width: 100%;
   }
-  .cat-filter-btn:hover { border-color: var(--text-muted); }
-  .cat-filter-btn.has-val {
-    background: var(--yellow-glow);
+  [data-theme="dark"] .cat-chip-btn { background: rgba(255,255,255,0.035); }
+  .cat-chip-btn:hover { border-color: var(--text-muted); }
+  .cat-chip.is-filtering .cat-chip-btn {
     border-color: var(--yellow);
+    box-shadow: 0 0 0 1px var(--yellow);
+    background: #FFFDF3;
+  }
+  [data-theme="dark"] .cat-chip.is-filtering .cat-chip-btn {
+    background: rgba(245, 197, 24, 0.08);
+  }
+  .cat-chip-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4rem;
+  }
+  .cat-chip-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  .cat-chip-badge {
+    background: var(--yellow);
+    color: var(--black);
+    font-size: 0.58rem;
+    font-weight: 600;
+    padding: 0.05rem 0.38rem;
+    border-radius: 8px;
+    min-width: 16px;
+    text-align: center;
+    line-height: 1.25;
+  }
+  .cat-chip-caret {
+    display: inline-flex;
+    color: var(--text-muted);
+    opacity: 0.5;
+  }
+  .cat-chip-value {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .cat-chip.is-filtering .cat-chip-value {
     color: var(--text);
     font-weight: 500;
   }
-  .cat-filter-btn svg { opacity: 0.5; flex-shrink: 0; }
-  .cat-filter-btn.has-val svg { opacity: 0.8; }
 
   /* Category popover */
   .cat-popover {
     position: absolute;
     top: calc(100% + 4px);
-    right: 0;
+    left: 0;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 0.5rem 0.6rem;
     box-shadow: 0 8px 24px rgba(0,0,0,0.12);
     z-index: 200;
-    min-width: 140px;
+    min-width: 160px;
   }
+
+  /* ── Applied filters strip ────────── */
+  .panel-applied {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.75rem 0 0;
+    margin-top: 0.85rem;
+    border-top: 1px dashed var(--border);
+  }
+  .panel-applied-label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    margin-right: 0.3rem;
+  }
+  .panel-applied-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    flex: 1;
+  }
+  .applied-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--yellow);
+    color: var(--black);
+    font-family: var(--font-sans);
+    font-size: 0.68rem;
+    font-weight: 500;
+    padding: 0.22rem 0.4rem 0.22rem 0.6rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    line-height: 1.25;
+  }
+  .applied-chip:hover { background: #E5B410; }
+  .applied-chip:active { transform: scale(0.98); }
+  .applied-chip-x {
+    font-size: 0.9rem;
+    font-weight: 600;
+    opacity: 0.65;
+    line-height: 1;
+    padding-bottom: 1px;
+  }
+  .applied-chip:hover .applied-chip-x { opacity: 1; }
 
   /* ══════════════════════════════════════════
      POPOVER SHARED STYLES (sidebar)
