@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Mockup · Destacado de mejor valor</title>
+<style>
+  :root {
+    --black: #111111;
+    --yellow: #F5C518;
+    --bg: #F8F6F1;
+    --surface: #FFFFFF;
+    --border: #E3E1D8;
+    --gray-100: #F5F5F3;
+    --gray-200: #E3E1D8;
+    --gray-300: #C0BFB9;
+    --gray-400: #9C9A90;
+    --text: #111111;
+    --text-secondary: #444444;
+    --text-muted: #76756F;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    font-family: Inter, system-ui, sans-serif;
+    padding: 40px 0;
+  }
+  h2 {
+    max-width: 1200px;
+    margin: 0 auto 14px;
+    padding: 0 24px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+  }
+  h2 em {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-left: 8px;
+  }
+  .comp-results {
+    max-width: 1200px;
+    margin: 0 auto 60px;
+    padding: 24px 32px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+  .compare-view { padding: 8px 0; }
+
+  /* Base Propuesta B: gris cabecera, blanco cuerpo, sombra, redondeado */
+  .cmp-table {
+    display: grid;
+    grid-template-columns: 170px repeat(4, minmax(0, 1fr));
+    gap: 0;
+    font-family: Inter, sans-serif;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+  }
+  .cmp-label-head, .cmp-head { background: var(--gray-100); }
+  /* Top rounded corners on header row */
+  .cmp-label-head { border-top-left-radius: 12px; }
+  .cmp-head:last-of-type { border-top-right-radius: 12px; }
+
+  .cmp-label {
+    padding: 14px 18px;
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    background: var(--surface);
+  }
+  .cmp-cell {
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
+    position: relative;
+    gap: 6px;
+  }
+  .cmp-cell.row-even, .cmp-label.row-even { background: #FAFAF8; }
+
+  .cmp-head {
+    padding: 16px 12px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+  }
+  .cmp-head-photo {
+    width: 100%;
+    max-width: 120px;
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, #eee, #ddd);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    color: #999; font-size: 10px;
+  }
+  .cmp-head-marca { font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-weight: 500; }
+  .cmp-head-modelo { font-size: 14px; color: var(--text); font-weight: 600; }
+  .cmp-head-variante { font-size: 11px; color: var(--text-secondary); font-weight: 300; }
+
+  .cmp-group { grid-column: 1/-1; background: var(--black); color:#fff; padding: 10px 20px; }
+  .cmp-group-inner { display: flex; align-items: center; gap: 8px; }
+  .cmp-group-num { font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--yellow); }
+  .cmp-group-sep { color: rgba(255,255,255,0.28); font-size: 9.5px; }
+  .cmp-group-name { font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; }
+
+  .best-mark {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    color: var(--yellow);
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  /* ══════════════════════════════
+     V1 — Fondo amarillo uniforme
+     ══════════════════════════════ */
+  .v1 .cmp-cell.is-best { background: #FEF5C7 !important; font-weight: 600; }
+  .v1 .cmp-cell.is-best::before { content:''; position:absolute; left:0; top:0; bottom:0; width: 3px; background: var(--yellow); }
+
+  /* ══════════════════════════════
+     V2 — Solo estrella, sin color de fondo (valor bold)
+     ══════════════════════════════ */
+  .v2 .cmp-cell.is-best { font-weight: 700; }
+  .v2 .cmp-cell.is-best .best-mark { font-size: 16px; }
+
+  /* ══════════════════════════════
+     V3 — Medallas top 3 (★ para 1º, ◐ para 2º, ◑ para 3º) - valor bold solo 1º
+     ══════════════════════════════ */
+  .v3 .cmp-cell.is-1 { font-weight: 700; }
+  .v3 .cmp-cell.is-1 .rank { color: var(--yellow); font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; }
+  .v3 .cmp-cell.is-2 .rank { color: #9C9A90; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 13px; }
+  .v3 .cmp-cell.is-3 .rank { color: #B38844; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 13px; }
+
+  /* ══════════════════════════════
+     V4 — Valor bold con underline amarillo
+     ══════════════════════════════ */
+  .v4 .cmp-cell.is-best { font-weight: 700; }
+  .v4 .cmp-cell.is-best .val {
+    background-image: linear-gradient(to top, var(--yellow) 0, var(--yellow) 3px, transparent 3px);
+    padding: 0 2px 2px;
+  }
+
+  /* ══════════════════════════════
+     V5 — Punto amarillo indicador + valor bold
+     ══════════════════════════════ */
+  .v5 .cmp-cell.is-best::before {
+    content:'';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--yellow);
+    display: inline-block;
+    margin-right: 2px;
+  }
+  .v5 .cmp-cell.is-best { font-weight: 700; }
+
+  /* ══════════════════════════════
+     V6 — Borde superior amarillo + valor bold
+     ══════════════════════════════ */
+  .v6 .cmp-cell.is-best { font-weight: 700; box-shadow: inset 0 3px 0 var(--yellow); }
+</style>
+</head>
+<body>
+
+<!-- Each mockup: a table with rows that demonstrate winner, single-winner, tie-between-two, tie-between-all -->
+<!-- Rows: Batería neta (unique winner), Autonomía WLTP (tie Mercedes+Tesla), Consumo (unique winner), Potencia (unique), Peso (tie 3-way impossible, make tie 2-way), 0-100 (all equal - worst case) -->
+
+<!-- V1 -->
+<h2>V1 <em>— Fondo amarillo uniforme + estrella (continuidad en empates)</em></h2>
+<div class="comp-results"><div class="compare-view"><div class="cmp-table v1">
+  <div class="cmp-label cmp-label-head"></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">MERCEDES</span><span class="cmp-head-modelo">EQE 350+</span><span class="cmp-head-variante">AMG Line</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3 LR</span><span class="cmp-head-variante">AWD</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">SMART</span><span class="cmp-head-modelo">#1 Pro+</span><span class="cmp-head-variante">66 kWh</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">KIA</span><span class="cmp-head-modelo">EV6 GT</span><span class="cmp-head-variante">77.4</span></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y autonomía</span></div></div>
+  <div class="cmp-label row-odd">Batería neta <em>(único ganador)</em></div>
+  <div class="cmp-cell row-odd is-best">90 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">82 kWh</div>
+  <div class="cmp-cell row-odd">62 kWh</div>
+  <div class="cmp-cell row-odd">74 kWh</div>
+  <div class="cmp-label row-even">Autonomía <em>(empate 2)</em></div>
+  <div class="cmp-cell row-even is-best">629 km <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-even is-best">629 km <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-even">440 km</div>
+  <div class="cmp-cell row-even">528 km</div>
+  <div class="cmp-label row-odd">Peso <em>(empate 3)</em></div>
+  <div class="cmp-cell row-odd is-best">1800 kg <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd is-best">1800 kg <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd is-best">1800 kg <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">2100 kg</div>
+  <div class="cmp-label row-even">Consumo</div>
+  <div class="cmp-cell row-even">16.2</div>
+  <div class="cmp-cell row-even is-best">14.9 <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-even">16.8</div>
+  <div class="cmp-cell row-even">16.5</div>
+</div></div></div>
+
+<!-- V2 -->
+<h2>V2 <em>— Sin color, solo estrella grande + valor bold</em></h2>
+<div class="comp-results"><div class="compare-view"><div class="cmp-table v2">
+  <div class="cmp-label cmp-label-head"></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">MERCEDES</span><span class="cmp-head-modelo">EQE 350+</span><span class="cmp-head-variante">AMG Line</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3 LR</span><span class="cmp-head-variante">AWD</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">SMART</span><span class="cmp-head-modelo">#1 Pro+</span><span class="cmp-head-variante">66 kWh</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">KIA</span><span class="cmp-head-modelo">EV6 GT</span><span class="cmp-head-variante">77.4</span></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y autonomía</span></div></div>
+  <div class="cmp-label row-odd">Batería neta <em>(único ganador)</em></div>
+  <div class="cmp-cell row-odd is-best">90 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">82 kWh</div>
+  <div class="cmp-cell row-odd">62 kWh</div>
+  <div class="cmp-cell row-odd">74 kWh</div>
+  <div class="cmp-label row-even">Autonomía <em>(empate 2)</em></div>
+  <div class="cmp-cell row-even is-best">629 km <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-even is-best">629 km <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-even">440 km</div>
+  <div class="cmp-cell row-even">528 km</div>
+  <div class="cmp-label row-odd">Peso <em>(empate 3)</em></div>
+  <div class="cmp-cell row-odd is-best">1800 kg <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd is-best">1800 kg <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd is-best">1800 kg <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">2100 kg</div>
+  <div class="cmp-label row-even">Consumo</div>
+  <div class="cmp-cell row-even">16.2</div>
+  <div class="cmp-cell row-even is-best">14.9 <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-even">16.8</div>
+  <div class="cmp-cell row-even">16.5</div>
+</div></div></div>
+
+<!-- V3 -->
+<h2>V3 <em>— Podio top 3: oro (1º), plata (2º), bronce (3º)</em></h2>
+<div class="comp-results"><div class="compare-view"><div class="cmp-table v3">
+  <div class="cmp-label cmp-label-head"></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">MERCEDES</span><span class="cmp-head-modelo">EQE 350+</span><span class="cmp-head-variante">AMG Line</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3 LR</span><span class="cmp-head-variante">AWD</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">SMART</span><span class="cmp-head-modelo">#1 Pro+</span><span class="cmp-head-variante">66 kWh</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">KIA</span><span class="cmp-head-modelo">EV6 GT</span><span class="cmp-head-variante">77.4</span></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y autonomía</span></div></div>
+  <div class="cmp-label row-odd">Batería neta <em>(único ganador)</em></div>
+  <div class="cmp-cell row-odd is-1">90 kWh <span class="rank">1º</span></div>
+  <div class="cmp-cell row-odd is-2">82 kWh <span class="rank">2º</span></div>
+  <div class="cmp-cell row-odd">62 kWh</div>
+  <div class="cmp-cell row-odd is-3">74 kWh <span class="rank">3º</span></div>
+  <div class="cmp-label row-even">Autonomía <em>(empate 2)</em></div>
+  <div class="cmp-cell row-even is-1">629 km <span class="rank">1º</span></div>
+  <div class="cmp-cell row-even is-1">629 km <span class="rank">1º</span></div>
+  <div class="cmp-cell row-even">440 km</div>
+  <div class="cmp-cell row-even is-3">528 km <span class="rank">3º</span></div>
+  <div class="cmp-label row-odd">Peso <em>(empate 3)</em></div>
+  <div class="cmp-cell row-odd is-1">1800 kg <span class="rank">1º</span></div>
+  <div class="cmp-cell row-odd is-1">1800 kg <span class="rank">1º</span></div>
+  <div class="cmp-cell row-odd is-1">1800 kg <span class="rank">1º</span></div>
+  <div class="cmp-cell row-odd">2100 kg</div>
+  <div class="cmp-label row-even">Consumo</div>
+  <div class="cmp-cell row-even is-2">16.2 <span class="rank">2º</span></div>
+  <div class="cmp-cell row-even is-1">14.9 <span class="rank">1º</span></div>
+  <div class="cmp-cell row-even">16.8</div>
+  <div class="cmp-cell row-even is-3">16.5 <span class="rank">3º</span></div>
+</div></div></div>
+
+<!-- V4 -->
+<h2>V4 <em>— Underline amarillo bajo el valor</em></h2>
+<div class="comp-results"><div class="compare-view"><div class="cmp-table v4">
+  <div class="cmp-label cmp-label-head"></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">MERCEDES</span><span class="cmp-head-modelo">EQE 350+</span><span class="cmp-head-variante">AMG Line</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3 LR</span><span class="cmp-head-variante">AWD</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">SMART</span><span class="cmp-head-modelo">#1 Pro+</span><span class="cmp-head-variante">66 kWh</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">KIA</span><span class="cmp-head-modelo">EV6 GT</span><span class="cmp-head-variante">77.4</span></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y autonomía</span></div></div>
+  <div class="cmp-label row-odd">Batería neta <em>(único ganador)</em></div>
+  <div class="cmp-cell row-odd is-best"><span class="val">90 kWh</span></div>
+  <div class="cmp-cell row-odd">82 kWh</div>
+  <div class="cmp-cell row-odd">62 kWh</div>
+  <div class="cmp-cell row-odd">74 kWh</div>
+  <div class="cmp-label row-even">Autonomía <em>(empate 2)</em></div>
+  <div class="cmp-cell row-even is-best"><span class="val">629 km</span></div>
+  <div class="cmp-cell row-even is-best"><span class="val">629 km</span></div>
+  <div class="cmp-cell row-even">440 km</div>
+  <div class="cmp-cell row-even">528 km</div>
+  <div class="cmp-label row-odd">Peso <em>(empate 3)</em></div>
+  <div class="cmp-cell row-odd is-best"><span class="val">1800 kg</span></div>
+  <div class="cmp-cell row-odd is-best"><span class="val">1800 kg</span></div>
+  <div class="cmp-cell row-odd is-best"><span class="val">1800 kg</span></div>
+  <div class="cmp-cell row-odd">2100 kg</div>
+  <div class="cmp-label row-even">Consumo</div>
+  <div class="cmp-cell row-even">16.2</div>
+  <div class="cmp-cell row-even is-best"><span class="val">14.9</span></div>
+  <div class="cmp-cell row-even">16.8</div>
+  <div class="cmp-cell row-even">16.5</div>
+</div></div></div>
+
+<!-- V5 -->
+<h2>V5 <em>— Punto amarillo antes del valor</em></h2>
+<div class="comp-results"><div class="compare-view"><div class="cmp-table v5">
+  <div class="cmp-label cmp-label-head"></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">MERCEDES</span><span class="cmp-head-modelo">EQE 350+</span><span class="cmp-head-variante">AMG Line</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3 LR</span><span class="cmp-head-variante">AWD</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">SMART</span><span class="cmp-head-modelo">#1 Pro+</span><span class="cmp-head-variante">66 kWh</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">KIA</span><span class="cmp-head-modelo">EV6 GT</span><span class="cmp-head-variante">77.4</span></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y autonomía</span></div></div>
+  <div class="cmp-label row-odd">Batería neta <em>(único ganador)</em></div>
+  <div class="cmp-cell row-odd is-best">90 kWh</div>
+  <div class="cmp-cell row-odd">82 kWh</div>
+  <div class="cmp-cell row-odd">62 kWh</div>
+  <div class="cmp-cell row-odd">74 kWh</div>
+  <div class="cmp-label row-even">Autonomía <em>(empate 2)</em></div>
+  <div class="cmp-cell row-even is-best">629 km</div>
+  <div class="cmp-cell row-even is-best">629 km</div>
+  <div class="cmp-cell row-even">440 km</div>
+  <div class="cmp-cell row-even">528 km</div>
+  <div class="cmp-label row-odd">Peso <em>(empate 3)</em></div>
+  <div class="cmp-cell row-odd is-best">1800 kg</div>
+  <div class="cmp-cell row-odd is-best">1800 kg</div>
+  <div class="cmp-cell row-odd is-best">1800 kg</div>
+  <div class="cmp-cell row-odd">2100 kg</div>
+  <div class="cmp-label row-even">Consumo</div>
+  <div class="cmp-cell row-even">16.2</div>
+  <div class="cmp-cell row-even is-best">14.9</div>
+  <div class="cmp-cell row-even">16.8</div>
+  <div class="cmp-cell row-even">16.5</div>
+</div></div></div>
+
+<!-- V6 -->
+<h2>V6 <em>— Borde superior amarillo (inset)</em></h2>
+<div class="comp-results"><div class="compare-view"><div class="cmp-table v6">
+  <div class="cmp-label cmp-label-head"></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">MERCEDES</span><span class="cmp-head-modelo">EQE 350+</span><span class="cmp-head-variante">AMG Line</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3 LR</span><span class="cmp-head-variante">AWD</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">SMART</span><span class="cmp-head-modelo">#1 Pro+</span><span class="cmp-head-variante">66 kWh</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo">foto</div><span class="cmp-head-marca">KIA</span><span class="cmp-head-modelo">EV6 GT</span><span class="cmp-head-variante">77.4</span></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y autonomía</span></div></div>
+  <div class="cmp-label row-odd">Batería neta <em>(único ganador)</em></div>
+  <div class="cmp-cell row-odd is-best">90 kWh</div>
+  <div class="cmp-cell row-odd">82 kWh</div>
+  <div class="cmp-cell row-odd">62 kWh</div>
+  <div class="cmp-cell row-odd">74 kWh</div>
+  <div class="cmp-label row-even">Autonomía <em>(empate 2)</em></div>
+  <div class="cmp-cell row-even is-best">629 km</div>
+  <div class="cmp-cell row-even is-best">629 km</div>
+  <div class="cmp-cell row-even">440 km</div>
+  <div class="cmp-cell row-even">528 km</div>
+  <div class="cmp-label row-odd">Peso <em>(empate 3)</em></div>
+  <div class="cmp-cell row-odd is-best">1800 kg</div>
+  <div class="cmp-cell row-odd is-best">1800 kg</div>
+  <div class="cmp-cell row-odd is-best">1800 kg</div>
+  <div class="cmp-cell row-odd">2100 kg</div>
+  <div class="cmp-label row-even">Consumo</div>
+  <div class="cmp-cell row-even">16.2</div>
+  <div class="cmp-cell row-even is-best">14.9</div>
+  <div class="cmp-cell row-even">16.8</div>
+  <div class="cmp-cell row-even">16.5</div>
+</div></div></div>
+
+</body>
+</html>
