@@ -2120,31 +2120,40 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .scroll-mode .col-sticky {
     position: sticky;
     left: 0;
-    z-index: 1;
-    background: var(--surface);
+    z-index: 10;
+    background: #F0F0ED;
+  }
+  [data-theme="dark"] .scroll-mode .col-sticky {
+    background: #13151C;
   }
   .scroll-mode thead .col-sticky {
-    z-index: 3;
+    z-index: 21;
     background: var(--table-header-bg);
   }
   .scroll-mode .ev-row:nth-child(even) .col-sticky {
-    background: var(--table-row-even);
+    background: #ECECEA;
+  }
+  [data-theme="dark"] .scroll-mode .ev-row:nth-child(even) .col-sticky {
+    background: #101219;
   }
   .scroll-mode .ev-row:hover .col-sticky {
-    background: #E8E9ED;
+    background: #E2E2DD;
   }
   [data-theme="dark"] .scroll-mode .ev-row:hover .col-sticky {
-    background: #1E2028;
+    background: #181B25;
   }
   .scroll-mode .col-sticky::after {
     content: '';
     position: absolute;
     top: 0;
-    right: -6px;
+    right: -8px;
     bottom: 0;
-    width: 6px;
-    background: linear-gradient(to right, rgba(0,0,0,0.06), transparent);
+    width: 8px;
+    background: linear-gradient(to right, rgba(0,0,0,0.08), transparent);
     pointer-events: none;
+  }
+  [data-theme="dark"] .scroll-mode .col-sticky::after {
+    background: linear-gradient(to right, rgba(0,0,0,0.35), transparent);
   }
   .results-table {
     width: 100%;
