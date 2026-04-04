@@ -1054,12 +1054,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     margin-inline: auto;
     padding-inline: var(--hub-gutter);
     padding-bottom: clamp(2rem, 4vw, 3rem);
-    background: var(--surface);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 40px rgba(0,0,0,0.06);
-    border-radius: 0 0 12px 12px;
-  }
-  [data-theme="dark"] .comp-outer {
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 8px 40px rgba(0,0,0,0.3);
   }
 
   /* Block 1: Intro — rounded top, overlaps hero */
