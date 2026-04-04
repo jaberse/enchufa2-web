@@ -938,19 +938,77 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 <!-- Use is:global so styles apply to JS-rendered elements -->
 <style is:global>
   /* ══════════════════════════════════════════
-     TOKENS
+     COMPARADOR TOKENS (scoped — do NOT put in global.css)
      ══════════════════════════════════════════ */
   :root {
     --photo-bg: linear-gradient(180deg, #0E0E0E, #1A1A1A);
-    --panel-bg: #FAFAF8;
-    --panel-border: #E0E0DE;
-    --panel-separator: #E0E0DE;
+
+    /* Panel zone — warm off-white, distinct from page cream */
+    --panel-bg: #F2F1ED;
+    --panel-border: #D5D4CF;
+    --panel-separator: #D5D4CF;
+
+    /* Comparador-specific shadows */
+    --card-shadow: none;
+    --card-hover-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    --sticky-shadow: 0 0 0 1px rgba(0,0,0,0.08);
+    --pop-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    --panel-locked-bg: rgba(245,197,24,0.05);
+    --toggle-off-bg: #D0D0D0;
+    --toggle-off-border: #BBBBBB;
+
+    /* Badge tokens — Editorial High Contrast */
+    --badge-nmc-bg: transparent;
+    --badge-nmc-border: #4A7FBD;
+    --badge-nmc-text: #2E5E8E;
+    --badge-nca-bg: transparent;
+    --badge-nca-border: #7B5FC8;
+    --badge-nca-text: #5A3FA8;
+    --badge-800v-bg: transparent;
+    --badge-800v-border: #C87834;
+    --badge-800v-text: #A06028;
+    --badge-bcalor-bg: transparent;
+    --badge-bcalor-border: #3A8C5A;
+    --badge-bcalor-text: #2A6C44;
+    --badge-lfp-bg: var(--yellow);
+    --badge-lfp-border: var(--yellow);
+    --badge-lfp-text: #111111;
+    --badge-tipo-bg: transparent;
+    --badge-tipo-border: #C0BFB9;
+    --badge-tipo-text: #76756F;
+    --badge-traccion-bg: #111111;
+    --badge-traccion-border: #111111;
+    --badge-traccion-text: #FAFAF8;
   }
   [data-theme="dark"] {
     --photo-bg: linear-gradient(180deg, #0A0A0A, #141414);
     --panel-bg: #111111;
     --panel-border: #1E1E1E;
     --panel-separator: #1E1E1E;
+
+    --card-shadow: none;
+    --card-hover-shadow: 0 4px 16px rgba(255,255,255,0.04);
+    --sticky-shadow: 0 0 0 1px rgba(255,255,255,0.06);
+    --pop-shadow: 0 4px 20px rgba(0,0,0,0.50);
+    --panel-locked-bg: rgba(245,197,24,0.06);
+    --toggle-off-bg: #333333;
+    --toggle-off-border: #444444;
+
+    /* Badge tokens dark */
+    --badge-nmc-border: #6B9BD4;
+    --badge-nmc-text: #8BB4E0;
+    --badge-nca-border: #9B8AE0;
+    --badge-nca-text: #B3A4F0;
+    --badge-800v-border: #D4944A;
+    --badge-800v-text: #E0A85E;
+    --badge-bcalor-border: #5BBD7A;
+    --badge-bcalor-text: #80D098;
+    --badge-lfp-text: #111111;
+    --badge-tipo-border: #444444;
+    --badge-tipo-text: #808080;
+    --badge-traccion-bg: #F0F0F0;
+    --badge-traccion-border: #F0F0F0;
+    --badge-traccion-text: #111111;
   }
 
   /* ══════════════════════════════════════════
@@ -997,11 +1055,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     padding-inline: var(--hub-gutter);
     padding-bottom: clamp(2rem, 4vw, 3rem);
     background: var(--surface);
-    box-shadow: 0 0 0 1px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 40px rgba(0,0,0,0.06);
     border-radius: 0 0 12px 12px;
   }
   [data-theme="dark"] .comp-outer {
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.04);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 8px 40px rgba(0,0,0,0.3);
   }
 
   /* Block 1: Intro — rounded top, overlaps hero */
@@ -1133,6 +1191,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     border-top: none;
     padding: 0.85rem clamp(1.5rem, 3vw, 2.5rem);
     overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+  }
+  [data-theme="dark"] .comp-fields-panel {
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
   }
   .panel-grid {
     display: grid;
@@ -1453,10 +1515,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   /* Separator bar between filters and results */
   .comp-panel-separator {
-    height: 1px;
-    background: var(--panel-separator);
+    height: 3px;
+    background: linear-gradient(to right, var(--panel-border), var(--yellow) 20%, var(--yellow) 80%, var(--panel-border));
     border-left: 1px solid var(--panel-border);
     border-right: 1px solid var(--panel-border);
+  }
+  [data-theme="dark"] .comp-panel-separator {
+    background: linear-gradient(to right, var(--panel-border), var(--yellow) 20%, var(--yellow) 80%, var(--panel-border));
   }
 
   /* ══════════════════════════════════════════
@@ -1967,6 +2032,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   [data-theme="dark"] .listado-table th {
     background: #000000;
+    border-bottom-color: var(--yellow);
   }
   .listado-table th.col-num { text-align: right; }
 
@@ -1979,6 +2045,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   [data-theme="dark"] .listado-table th:first-child {
     background: #000000;
+    border-bottom-color: var(--yellow);
   }
 
   .listado-table th:last-child {
@@ -2005,13 +2072,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .listado-table td:first-child {
     position: sticky;
     left: 0;
-    background: #FFFFFF;
+    background: var(--surface);
     z-index: 10;
     min-width: 320px;
     white-space: normal;
-  }
-  [data-theme="dark"] .listado-table td:first-child {
-    background: #141414;
   }
   .listado-table td:first-child::after {
     content: '';
@@ -2032,13 +2096,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
 
   .listado-table tbody tr:nth-child(even) td { background: var(--table-row-even); }
-  .listado-table tbody tr:nth-child(even) td:first-child { background: #F7F7F7; }
-  [data-theme="dark"] .listado-table tbody tr:nth-child(even) td { background: #111111; }
-  [data-theme="dark"] .listado-table tbody tr:nth-child(even) td:first-child { background: #111111; }
-  .listado-table tbody tr:hover td { background: #F0F0F0; }
-  [data-theme="dark"] .listado-table tbody tr:hover td { background: #1A1A1A; }
-  .listado-table tbody tr:hover td:first-child { background: #F0F0F0; }
-  [data-theme="dark"] .listado-table tbody tr:hover td:first-child { background: #1A1A1A; }
+  .listado-table tbody tr:nth-child(even) td:first-child { background: var(--table-row-even); }
+  .listado-table tbody tr:hover td { background: var(--panel-bg); }
+  .listado-table tbody tr:hover td:first-child { background: var(--panel-bg); }
 
   .table-modelo-wrap {
     display: flex;
