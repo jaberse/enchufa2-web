@@ -1758,9 +1758,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .listado-table td:first-child {
     position: sticky;
     left: 0;
-    background: var(--surface);
+    background: #F0F0ED;
     z-index: 10;
     min-width: 220px;
+  }
+  [data-theme="dark"] .listado-table td:first-child {
+    background: #13151C;
   }
   .listado-table td:first-child::after {
     content: '';
@@ -1772,13 +1775,17 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     background: linear-gradient(to right, rgba(0,0,0,.06), transparent);
     pointer-events: none;
   }
+  [data-theme="dark"] .listado-table td:first-child::after {
+    background: linear-gradient(to right, rgba(0,0,0,.2), transparent);
+  }
 
   .listado-table tbody tr:nth-child(even) td { background: var(--bg); }
-  .listado-table tbody tr:nth-child(even) td:first-child { background: var(--bg); }
+  .listado-table tbody tr:nth-child(even) td:first-child { background: #ECECEA; }
+  [data-theme="dark"] .listado-table tbody tr:nth-child(even) td:first-child { background: #101219; }
   .listado-table tbody tr:hover td { background: #E8E9ED; }
   [data-theme="dark"] .listado-table tbody tr:hover td { background: #1E2028; }
-  .listado-table tbody tr:hover td:first-child { background: #E8E9ED; }
-  [data-theme="dark"] .listado-table tbody tr:hover td:first-child { background: #1E2028; }
+  .listado-table tbody tr:hover td:first-child { background: #E2E2DD; }
+  [data-theme="dark"] .listado-table tbody tr:hover td:first-child { background: #181B25; }
 
   .table-modelo-wrap {
     display: flex;
