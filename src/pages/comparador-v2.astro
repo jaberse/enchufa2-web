@@ -994,8 +994,47 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       const wrapClass = n >= 5 ? 'cmp-table cmp-table-scroll' : 'cmp-table';
       let html = '<div class="' + wrapClass + '" style="grid-template-columns:' + cols + '">';
 
-      // Card headers row
-      html += '<div class="cmp-label cmp-label-head"></div>';
+      // Card headers row — top-left cell: export widget
+      html += '<div class="cmp-label cmp-label-head">' +
+        '<div class="cmp-export-widget">' +
+          '<div class="cmp-export-brand">' +
+            '<svg class="cmp-export-symbol" viewBox="0 0 65 107" xmlns="http://www.w3.org/2000/svg">' +
+              '<path fill="currentColor" d="M0 55.7L34.3 0v32.8h23.8L23.8 88.5V55.7H0z"/>' +
+              '<path fill="currentColor" d="M37.24 107v-4.02l12.45-12.9c1.33-1.4 2.42-2.63 3.28-3.68.87-1.07 1.52-2.08 1.95-3.04.43-.96.64-1.98.64-3.05 0-1.22-.29-2.27-.86-3.16-.57-.9-1.36-1.59-2.35-2.06-.99-.49-2.11-.74-3.35-.74-1.32 0-2.47.27-3.45.81-.98.54-1.73 1.3-2.26 2.28-.53.98-.79 2.13-.79 3.45h-5.3c0-2.24.52-4.19 1.55-5.87 1.03-1.67 2.44-2.97 4.24-3.9 1.79-.93 3.83-1.39 6.11-1.39 2.31 0 4.34.46 6.1 1.38 1.77.91 3.15 2.16 4.14 3.74.99 1.57 1.49 3.34 1.49 5.31 0 1.36-.26 2.7-.77 4-.5 1.3-1.38 2.76-2.64 4.36-1.26 1.59-2.99 3.53-5.23 5.81l-7.3 7.65v.27h16.54V107H37.24z"/>' +
+            '</svg>' +
+            '<div class="cmp-export-wordmark">' +
+              '<svg viewBox="83.5 19.9 386.1 74.3" xmlns="http://www.w3.org/2000/svg">' +
+                '<path fill="currentColor" d="M108.42 94.0568C103.261 94.0568 98.8182 92.9545 95.0909 90.75C91.3864 88.5227 88.5227 85.3977 86.5 81.375C84.5 77.3295 83.5 72.5909 83.5 67.1591C83.5 61.7955 84.5 57.0682 86.5 52.9773C88.5227 48.8864 91.3409 45.6932 94.9545 43.3977C98.5909 41.1023 102.841 39.9545 107.705 39.9545C110.659 39.9545 113.523 40.4432 116.295 41.4205C119.068 42.3977 121.557 43.9318 123.761 46.0227C125.966 48.1136 127.705 50.8295 128.977 54.1705C130.25 57.4886 130.886 61.5227 130.886 66.2727V69.8864H89.2614V62.25H120.898C120.898 59.5682 120.352 57.1932 119.261 55.125C118.17 53.0341 116.636 51.3864 114.659 50.1818C112.705 48.9773 110.409 48.375 107.773 48.375C104.909 48.375 102.409 49.0795 100.273 50.4886C98.1591 51.875 96.5227 53.6932 95.3636 55.9432C94.2273 58.1705 93.6591 60.5909 93.6591 63.2045V69.1705C93.6591 72.6705 94.2727 75.6477 95.5 78.1023C96.75 80.5568 98.4886 82.4318 100.716 83.7273C102.943 85 105.545 85.6364 108.523 85.6364C110.455 85.6364 112.216 85.3636 113.807 84.8182C115.398 84.25 116.773 83.4091 117.932 82.2955C119.091 81.1818 119.977 79.8068 120.591 78.1705L130.239 79.9091C129.466 82.75 128.08 85.2386 126.08 87.375C124.102 89.4886 121.614 91.1364 118.614 92.3182C115.636 93.4773 112.239 94.0568 108.42 94.0568ZM147.589 61.9091V93H137.396V40.6364H147.18V49.1591H147.828C149.032 46.3864 150.919 44.1591 153.487 42.4773C156.078 40.7955 159.339 39.9545 163.271 39.9545C166.839 39.9545 169.964 40.7045 172.646 42.2045C175.328 43.6818 177.407 45.8864 178.885 48.8182C180.362 51.75 181.101 55.375 181.101 59.6932V93H170.907V60.9205C170.907 57.125 169.919 54.1591 167.941 52.0227C165.964 49.8636 163.248 48.7841 159.794 48.7841C157.43 48.7841 155.328 49.2955 153.487 50.3182C151.669 51.3409 150.226 52.8409 149.157 54.8182C148.112 56.7727 147.589 59.1364 147.589 61.9091ZM212.028 94.0568C206.96 94.0568 202.596 92.9091 198.937 90.6136C195.301 88.2955 192.505 85.1023 190.551 81.0341C188.596 76.9659 187.619 72.3068 187.619 67.0568C187.619 61.7386 188.619 57.0455 190.619 52.9773C192.619 48.8864 195.437 45.6932 199.073 43.3977C202.71 41.1023 206.994 39.9545 211.926 39.9545C215.903 39.9545 219.448 40.6932 222.562 42.1705C225.676 43.625 228.187 45.6705 230.096 48.3068C232.028 50.9432 233.176 54.0227 233.539 57.5455H223.619C223.073 55.0909 221.823 52.9773 219.869 51.2045C217.937 49.4318 215.346 48.5455 212.096 48.5455C209.255 48.5455 206.766 49.2955 204.63 50.7955C202.516 52.2727 200.869 54.3864 199.687 57.1364C198.505 59.8636 197.914 63.0909 197.914 66.8182C197.914 70.6364 198.494 73.9318 199.653 76.7045C200.812 79.4773 202.448 81.625 204.562 83.1477C206.698 84.6705 209.21 85.4318 212.096 85.4318C214.028 85.4318 215.778 85.0795 217.346 84.375C218.937 83.6477 220.266 82.6136 221.335 81.2727C222.426 79.9318 223.187 78.3182 223.619 76.4318H233.539C233.176 79.8182 232.073 82.8409 230.232 85.5C228.391 88.1591 225.926 90.25 222.835 91.7727C219.744 93.2955 216.142 94.0568 212.028 94.0568ZM253.085 61.9091V93H242.891V23.1818H252.982V49.1591H253.631C254.858 46.3409 256.756 44.1023 259.324 42.4432C261.892 40.7841 265.199 39.9545 269.244 39.9545C272.812 39.9545 275.926 40.7045 278.585 42.2045C281.267 43.6818 283.335 45.875 284.79 48.7841C286.267 51.6932 287.006 55.3295 287.006 59.6932V93H276.812V60.9205C276.812 57.0795 275.824 54.1023 273.847 51.9886C271.869 49.8523 269.119 48.7841 265.597 48.7841C263.187 48.7841 261.028 49.2955 259.119 50.3182C257.233 51.3409 255.756 52.8409 254.687 54.8182C253.619 56.7727 253.085 59.1364 253.085 61.9091ZM325.227 72.4091V40.6364H335.454V93H325.432V83.8977H324.886C323.682 86.7159 321.738 89.0682 319.057 90.9545C316.397 92.8182 313.079 93.75 309.102 93.75C305.693 93.75 302.67 93 300.034 91.5C297.42 89.9773 295.363 87.7386 293.863 84.7841C292.386 81.8295 291.647 78.1818 291.647 73.8409V40.6364H301.807V72.6136C301.807 76.2273 302.806 79.1023 304.807 81.2386C306.806 83.375 309.397 84.4432 312.579 84.4432C314.488 84.4432 316.397 83.9659 318.306 83.0114C320.238 82.0568 321.84 80.6136 323.113 78.6818C324.409 76.75 325.25 74.625 325.227 72.4091ZM371.642 40.6364V48.8182H342.733V40.6364H371.642ZM350.915 93V34.5682C350.915 31.2955 351.631 28.5795 353.063 26.4205C354.494 24.2614 356.381 22.6477 358.722 21.5795C361.063 20.5114 363.574 19.9773 366.256 19.9773C368.256 19.9773 369.903 20.1364 371.199 20.4545C372.494 20.7727 373.461 21.0682 374.097 21.3409L371.608 29.625C371.176 29.4886 370.608 29.3295 369.903 29.1477C369.199 28.9659 368.346 28.875 367.347 28.875C365.029 28.875 363.347 29.4545 362.301 30.6136C361.278 31.7727 360.767 33.4545 360.767 35.6591V93H350.915ZM391.011 94.1932C387.693 94.1932 384.693 93.5795 382.011 92.3523C379.33 91.1023 377.204 89.3068 375.636 86.9659C374.091 84.625 373.318 81.7614 373.318 78.375C373.318 75.4659 373.886 73.0795 375.023 71.2159C376.159 69.3523 377.693 67.875 379.625 66.7841C381.557 65.6932 383.716 64.875 386.102 64.3295C388.489 63.7841 390.92 63.3636 393.397 63.0682C396.534 62.7045 399.079 62.4205 401.034 62.2159C402.988 61.9886 404.409 61.6136 405.295 61.0909C406.182 60.5682 406.625 59.6932 406.625 58.4659V58.2273C406.625 55.2045 405.773 52.8636 404.068 51.2045C402.386 49.5455 399.886 48.7159 396.568 48.7159C393.114 48.7159 390.386 49.4886 388.386 51.0341C386.409 52.5568 385.034 54.25 384.261 56.1136L374.682 53.9318C375.852 50.75 377.568 48.1818 379.83 46.2273C382.114 44.25 384.761 42.8182 387.773 41.9318C390.784 41.0227 393.943 40.5682 397.25 40.5682C399.432 40.5682 401.716 40.8295 404.102 41.3523C406.511 41.8523 408.761 42.7614 410.852 44.0795C412.966 45.3977 414.693 47.2727 416.034 49.7045C417.375 52.1136 418.045 55.2273 418.045 59.0455V93H406.898V86.0227H406.489C405.807 87.3636 404.761 88.6818 403.352 89.9773C401.943 91.2727 400.136 92.3523 397.932 93.2159C395.727 94.0795 393.023 94.1932 391.011 94.1932Z"/>' +
+                '<path fill="var(--yellow)" d="M423.647 93V85.3636L447.272 60.8864C449.795 58.2273 451.874 55.8977 453.511 53.8977C455.17 51.875 456.409 49.9545 457.227 48.1364C458.045 46.3182 458.454 44.3864 458.454 42.3409C458.454 40.0227 457.909 38.0227 456.818 36.3409C455.727 34.6364 454.238 33.3295 452.352 32.4205C450.465 31.4886 448.34 31.0227 445.977 31.0227C443.477 31.0227 441.295 31.5341 439.431 32.5568C437.568 33.5795 436.136 35.0227 435.136 36.8864C434.136 38.75 433.636 40.9318 433.636 43.4318H423.579C423.579 39.1818 424.556 35.4659 426.511 32.2841C428.465 29.1023 431.147 26.6364 434.556 24.8864C437.965 23.1136 441.84 22.2273 446.181 22.2273C450.568 22.2273 454.431 23.1023 457.772 24.8523C461.136 26.5795 463.761 28.9432 465.647 31.9432C467.534 34.9205 468.477 38.2841 468.477 42.0341C468.477 44.625 467.988 47.1591 467.011 49.6364C466.056 52.1136 464.386 54.875 461.999 57.9205C459.613 60.9432 456.295 64.6136 452.045 68.9318L438.17 83.4545V83.9659H469.602V93H423.647Z"/>' +
+              '</svg>' +
+              '<span class="cmp-export-dotcom">.com</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="cmp-export-actions">' +
+            '<div class="cmp-export-dropdown">' +
+              '<button type="button" class="cmp-export-btn" data-export-toggle="download" aria-haspopup="true" aria-expanded="false">' +
+                '<span>Descargar</span>' +
+                '<svg class="cmp-caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+              '</button>' +
+              '<div class="cmp-export-menu" data-export-menu="download" role="menu">' +
+                '<button type="button" data-export-action="csv" role="menuitem">Excel (CSV)</button>' +
+                '<button type="button" data-export-action="pdf" role="menuitem">PDF</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="cmp-export-dropdown">' +
+              '<button type="button" class="cmp-export-btn" data-export-toggle="share" aria-haspopup="true" aria-expanded="false">' +
+                '<span>Enviar</span>' +
+                '<svg class="cmp-caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+              '</button>' +
+              '<div class="cmp-export-menu" data-export-menu="share" role="menu">' +
+                '<button type="button" data-export-action="whatsapp" role="menuitem">WhatsApp</button>' +
+                '<button type="button" data-export-action="email" role="menuitem">Email</button>' +
+                '<button type="button" data-export-action="link" role="menuitem">Copiar enlace</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
       picked.forEach(m => {
         html += '<div class="cmp-head">' +
           '<div class="cmp-head-photo">' +
@@ -1036,6 +1075,145 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
       html += '</div>';
       compareWrap.innerHTML = html;
+      attachExportWidget(picked);
+      attachDragScroll();
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // EXPORT / SHARE WIDGET
+    // ═══════════════════════════════════════════════════════
+    function buildCsv(picked) {
+      const esc = (v) => {
+        if (v == null) return '';
+        const s = String(v);
+        return /[",;\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+      };
+      const header = ['Especificación', ...picked.map(m => (m.marca + ' ' + m.modelo + (m.variante ? ' ' + m.variante : '')).trim())];
+      const lines = [header.join(';')];
+      COMPARE_GROUPS.forEach(g => {
+        lines.push('');
+        lines.push(esc(g.num + ' — ' + g.name));
+        g.rows.forEach(row => {
+          const vals = picked.map(m => {
+            const v = row.derive ? row.derive(m) : m[row.key];
+            if (v == null || v === '') return '';
+            return row.unit ? v + ' ' + row.unit : v;
+          });
+          lines.push([esc(row.label), ...vals.map(esc)].join(';'));
+        });
+      });
+      return '\uFEFF' + lines.join('\r\n');
+    }
+
+    function buildShareUrl(picked) {
+      const ids = picked.map(m => [m.marca, m.modelo, m.variante || ''].join('~')).join(',');
+      const url = new URL(window.location.origin + window.location.pathname);
+      url.searchParams.set('compare', ids);
+      return url.toString();
+    }
+
+    function downloadBlob(content, filename, mime) {
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+    }
+
+    function attachExportWidget(picked) {
+      const widget = compareWrap.querySelector('.cmp-export-widget');
+      if (!widget) return;
+
+      // Toggle dropdowns
+      const toggles = widget.querySelectorAll('[data-export-toggle]');
+      toggles.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const key = btn.getAttribute('data-export-toggle');
+          const menu = widget.querySelector('[data-export-menu="' + key + '"]');
+          const isOpen = menu.classList.contains('open');
+          // close all menus first
+          widget.querySelectorAll('.cmp-export-menu').forEach(m => m.classList.remove('open'));
+          widget.querySelectorAll('[data-export-toggle]').forEach(b => b.setAttribute('aria-expanded','false'));
+          if (!isOpen) { menu.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
+        });
+      });
+      if (!window.__cmpExportOutsideAttached) {
+        window.__cmpExportOutsideAttached = true;
+        document.addEventListener('click', () => {
+          document.querySelectorAll('.cmp-export-menu.open').forEach(m => m.classList.remove('open'));
+          document.querySelectorAll('[data-export-toggle][aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded','false'));
+        });
+      }
+
+      // Actions
+      widget.querySelectorAll('[data-export-action]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const action = btn.getAttribute('data-export-action');
+          widget.querySelectorAll('.cmp-export-menu').forEach(m => m.classList.remove('open'));
+          widget.querySelectorAll('[data-export-toggle]').forEach(b => b.setAttribute('aria-expanded','false'));
+
+          const names = picked.map(m => m.marca + ' ' + m.modelo).join(' vs ');
+          const shareUrl = buildShareUrl(picked);
+
+          if (action === 'csv') {
+            const csv = buildCsv(picked);
+            const fname = 'comparativa-' + new Date().toISOString().slice(0,10) + '.csv';
+            downloadBlob(csv, fname, 'text/csv;charset=utf-8');
+          } else if (action === 'pdf') {
+            window.print();
+          } else if (action === 'whatsapp') {
+            const text = 'Comparativa EV en enchufa2.com: ' + names + ' — ' + shareUrl;
+            window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+          } else if (action === 'email') {
+            const subject = 'Comparativa EV: ' + names;
+            const body = 'He preparado esta comparativa en enchufa2.com:\n\n' + names + '\n\n' + shareUrl + '\n';
+            window.location.href = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+          } else if (action === 'link') {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(shareUrl).then(() => {
+                btn.textContent = '¡Copiado!';
+                setTimeout(() => { btn.textContent = 'Copiar enlace'; }, 1500);
+              });
+            } else {
+              prompt('Copia este enlace:', shareUrl);
+            }
+          }
+        });
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // CLICK-AND-DRAG HORIZONTAL SCROLL
+    // ═══════════════════════════════════════════════════════
+    function attachDragScroll() {
+      const el = compareWrap.querySelector('.cmp-table-scroll');
+      if (!el || el.dataset.dragAttached === '1') return;
+      el.dataset.dragAttached = '1';
+      let isDown = false, startX = 0, scrollLeft = 0, moved = false;
+      el.style.cursor = 'grab';
+      el.addEventListener('mousedown', (e) => {
+        // ignore if clicking on widget buttons
+        if (e.target.closest('.cmp-export-widget')) return;
+        isDown = true; moved = false;
+        startX = e.pageX - el.offsetLeft;
+        scrollLeft = el.scrollLeft;
+        el.classList.add('is-dragging');
+      });
+      const endDrag = () => { isDown = false; el.classList.remove('is-dragging'); };
+      el.addEventListener('mouseleave', endDrag);
+      el.addEventListener('mouseup', endDrag);
+      window.addEventListener('mouseup', endDrag);
+      el.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - el.offsetLeft;
+        const walk = (x - startX) * 1.2;
+        if (Math.abs(walk) > 3) moved = true;
+        el.scrollLeft = scrollLeft - walk;
+      });
     }
 
     // ═══════════════════════════════════════════════════════
@@ -1380,6 +1558,24 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // INIT
     // ═══════════════════════════════════════════════════════
     renderPanel();
+
+    // Restore comparison from ?compare=marca~modelo~variante,...
+    (function restoreFromUrl() {
+      const p = new URLSearchParams(window.location.search);
+      const raw = p.get('compare');
+      if (!raw) return;
+      const wanted = raw.split(',').map(s => s.split('~').map(x => decodeURIComponent(x)));
+      let matched = 0;
+      wanted.forEach(([marca, modelo, variante]) => {
+        const m = allModelos.find(x =>
+          x.marca === marca && x.modelo === modelo && (x.variante || '') === (variante || '')
+        );
+        if (m) { pickedIds.add(modelId(m)); matched++; }
+      });
+      if (matched >= 2) compareMode = true;
+      updateCompareBar();
+    })();
+
     update();
 
     // Recalculate table on resize (mobile ↔ desktop)
@@ -3010,6 +3206,105 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .cmp-label-head { background: var(--gray-100); }
   [data-theme="dark"] .cmp-label { color: #bbb; }
+
+  /* Export widget inside cmp-label-head */
+  .cmp-label-head { padding: 1rem .8rem .9rem; align-items: stretch; flex-direction: column; color: var(--black); overflow: visible; }
+  [data-theme="dark"] .cmp-label-head { color: #fff; }
+  .cmp-export-widget {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .55rem;
+    width: 100%;
+    height: 100%;
+  }
+  .cmp-export-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .35rem;
+  }
+  .cmp-export-symbol { display: block; width: 18px; height: auto; }
+  .cmp-export-wordmark {
+    display: flex;
+    align-items: baseline;
+    gap: .2rem;
+  }
+  .cmp-export-wordmark > svg { display: block; width: 88px; height: auto; }
+  .cmp-export-dotcom {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: .82rem;
+    letter-spacing: .01em;
+    color: inherit;
+    line-height: 1;
+  }
+  .cmp-export-actions {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+    width: 100%;
+    margin-top: auto;
+  }
+  .cmp-export-dropdown { position: relative; }
+  .cmp-export-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: .5rem .7rem;
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    color: inherit;
+    font-family: var(--font-sans);
+    font-size: .72rem;
+    font-weight: 400;
+    letter-spacing: .01em;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+  }
+  .cmp-export-btn:hover { background: currentColor; }
+  .cmp-export-btn:hover > * { color: var(--gray-100); }
+  [data-theme="dark"] .cmp-export-btn:hover > * { color: #1a1a1a; }
+  .cmp-export-btn > span { color: inherit; }
+  .cmp-caret { width: 9px; height: 5px; margin-left: .35rem; color: inherit; transition: transform .2s ease; }
+  .cmp-export-btn[aria-expanded="true"] .cmp-caret { transform: rotate(180deg); }
+  .cmp-export-menu {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #E3E1D8);
+    border-radius: 6px;
+    padding: .3rem 0;
+    display: none;
+    flex-direction: column;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  }
+  [data-theme="dark"] .cmp-export-menu { background: #1f1f1f; border-color: #333; }
+  .cmp-export-menu.open { display: flex; }
+  .cmp-export-menu button {
+    text-align: left;
+    padding: .45rem .7rem;
+    background: transparent;
+    border: 0;
+    font-family: var(--font-sans);
+    font-size: .72rem;
+    font-weight: 400;
+    color: var(--black);
+    cursor: pointer;
+    transition: background .15s ease;
+  }
+  [data-theme="dark"] .cmp-export-menu button { color: #f5f5f5; }
+  .cmp-export-menu button:hover { background: var(--gray-100); }
+  [data-theme="dark"] .cmp-export-menu button:hover { background: #2a2a2a; }
+
+  /* Drag-scroll state */
+  .cmp-table-scroll.is-dragging { cursor: grabbing; user-select: none; scroll-snap-type: none; }
+  .cmp-table-scroll.is-dragging * { pointer-events: none; }
 
   /* Data cells — zebra striping, centered text */
   .cmp-cell {
