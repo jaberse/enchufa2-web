@@ -2682,9 +2682,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   /* Best value highlight — yellow stripe on left + subtle bg + italic star */
   .cmp-cell-best {
-    background: linear-gradient(to right, rgba(245,197,24,.18) 0%, rgba(245,197,24,.06) 100%);
+    background: linear-gradient(to right, rgba(245,197,24,.15) 0%, rgba(245,197,24,.04) 100%);
     font-weight: 600;
     position: relative;
+    padding-left: calc(1rem + 3px);
   }
   .cmp-cell-best::before {
     content: '';
@@ -2702,7 +2703,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     line-height: 1;
     margin-left: auto;
   }
-  [data-theme="dark"] .cmp-cell-best { background: rgba(245,197,24,.12); color: var(--yellow); }
+  [data-theme="dark"] .cmp-cell-best {
+    background: linear-gradient(to right, rgba(245,197,24,.10) 0%, rgba(245,197,24,.02) 100%);
+    color: var(--yellow);
+  }
 
   /* Card header (photo + name + badges) — rounded top, black bottom border */
   .cmp-head {
@@ -2791,6 +2795,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     color: var(--white);
   }
   [data-theme="dark"] .cmp-group { background: #000; }
+  /* When scroll mode active, keep band content visible at left edge on scroll */
+  .cmp-table-scroll .cmp-group {
+    position: sticky;
+    left: 0;
+    z-index: 3;
+  }
 
   /* Mobile: tighter padding, force scroll */
   @media (max-width: 700px) {
