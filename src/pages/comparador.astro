@@ -1296,18 +1296,21 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   .ev-card {
     background: var(--surface);
-    border: none;
-    border-left: 3px solid var(--yellow);
-    border-radius: 10px;
+    border: 1px solid var(--border);
+    border-bottom: 2px solid var(--yellow);
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    box-shadow: none;
     transition: all 0.25s;
     display: flex;
     flex-direction: column;
   }
   .ev-card:hover {
-    box-shadow: 0 12px 40px rgba(0,0,0,0.1);
-    transform: translateY(-3px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+  [data-theme="dark"] .ev-card:hover {
+    box-shadow: 0 4px 16px rgba(255,255,255,0.03);
   }
 
   .ev-card-photo {
@@ -1400,13 +1403,67 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     white-space: nowrap;
   }
   .badge-sm { font-size: 0.5rem; padding: 0.075rem 0.25rem; }
-  .badge-tipo { background: var(--surface-alt); color: var(--text-secondary); }
-  .badge-traccion { background: var(--black); color: var(--white); }
-  .badge-lfp { background: var(--yellow); color: var(--black); }
-  .badge-nmc { background: #4A90D9; color: #fff; font-weight: 600; }
-  .badge-nca { background: #7B68EE; color: #fff; font-weight: 600; }
-  .badge-800v { background: #7B68EE; color: #fff; font-weight: 600; }
-  .badge-bcalor { background: #2E8B57; color: #fff; font-weight: 600; }
+
+  /* ── Badges: estrategia semántica técnica ────────
+     Neutros (etiquetas descriptivas): tipo, tracción, b.calor
+     Con color (diferenciadores técnicos): química, voltaje
+  ─────────────────────────────────────────────── */
+
+  /* Neutros — descriptivos */
+  .badge-tipo {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .badge-traccion {
+    background: var(--text);
+    color: var(--bg);
+    font-weight: 600;
+  }
+  .badge-bcalor {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  /* Técnicos — diferenciadores con color individual */
+  .badge-lfp {
+    background: var(--yellow);
+    color: #0A0A0A;
+    font-weight: 600;
+  }
+  .badge-nmc {
+    background: transparent;
+    border: 1px solid #4A7FBD;
+    color: #2E5E8E;
+    font-weight: 600;
+  }
+  .badge-nca {
+    background: transparent;
+    border: 1px solid #7B5FC8;
+    color: #5A3FA8;
+    font-weight: 600;
+  }
+  .badge-800v {
+    background: transparent;
+    border: 1px solid #C87834;
+    color: #A06028;
+    font-weight: 600;
+  }
+
+  /* Dark mode: badges técnicos se aclaran */
+  [data-theme="dark"] .badge-nmc {
+    border-color: #6B9BD4;
+    color: #8BB4E0;
+  }
+  [data-theme="dark"] .badge-nca {
+    border-color: #9B8AE0;
+    color: #B3A4F0;
+  }
+  [data-theme="dark"] .badge-800v {
+    border-color: #D4944A;
+    color: #E0A85E;
+  }
 
   /* Stats grid (dynamic columns) */
   .ev-card-stats {
@@ -1518,11 +1575,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     content: '';
     position: absolute;
     top: 0;
-    right: -6px;
+    right: -8px;
     bottom: 0;
-    width: 6px;
-    background: linear-gradient(to right, rgba(0,0,0,0.06), transparent);
+    width: 8px;
+    background: linear-gradient(to right, rgba(0,0,0,0.08), transparent);
     pointer-events: none;
+  }
+  [data-theme="dark"] .scroll-mode .col-sticky::after {
+    background: linear-gradient(to right, rgba(0,0,0,0.30), transparent);
   }
   .results-table {
     width: 100%;

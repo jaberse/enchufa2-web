@@ -26,7 +26,7 @@
   --header-bg: var(--black);
   --header-text: var(--white);
   --table-header-bg: var(--black);
-  --table-row-even: #fafaf8;
+  --table-row-even: #F5F5F3;
   --card-bg:  #FFFFFF;
   --yellow-text: #8a6d00;
 
@@ -45,21 +45,21 @@
 }
 
 /* ─────────────────────────────────────────────
-   DARK THEME — Midnight
+   DARK THEME — Neutral (sin tinte azulado)
 ───────────────────────────────────────────── */
 [data-theme="dark"] {
-  --bg:       #0D0F14;
-  --surface:  #161921;
-  --surface-alt: #1C1F2A;
-  --text:     #E8E7E3;
-  --text-secondary: #A0A0A0;
-  --text-muted: #8888A0;
-  --border:   #2A2D3A;
-  --header-bg: #0A0C10;
-  --header-text: #E8E7E3;
-  --table-header-bg: #111111;
-  --table-row-even: #1C1F2A;
-  --card-bg:  #161921;
+  --bg:       #0A0A0A;
+  --surface:  #141414;
+  --surface-alt: #1C1C1C;
+  --text:     #F0F0F0;
+  --text-secondary: #B0B0B0;
+  --text-muted: #707070;
+  --border:   #2E2E2E;
+  --header-bg: #000000;
+  --header-text: #F0F0F0;
+  --table-header-bg: #141414;
+  --table-row-even: #1A1A1A;
+  --card-bg:  #141414;
   --yellow-text: #F5C518;
   --yellow-glow: rgba(245,197,24,0.10);
 }
