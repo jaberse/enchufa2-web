@@ -3055,10 +3055,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     color: var(--yellow);
   }
 
-  /* Card header (photo + name + badges) — gray bg, no separator line */
+  /* Card header (photo + name + badges) — white bg, yellow accent + dividers */
   .cmp-head {
     padding: 1.1rem .85rem 1rem;
-    background: var(--gray-100);
+    background: var(--surface);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3066,8 +3066,20 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     text-align: center;
     scroll-snap-align: start;
     min-height: 230px;
+    position: relative;
   }
-  [data-theme="dark"] .cmp-head { background: #1a1a1a; }
+  .cmp-head:first-of-type {
+    border-left: 3px solid var(--yellow);
+  }
+  .cmp-head + .cmp-head::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 14px; bottom: 14px;
+    width: 1px;
+    background: var(--border);
+  }
+  [data-theme="dark"] .cmp-head { background: #141414; }
+  [data-theme="dark"] .cmp-head + .cmp-head::before { background: #2a2a2a; }
   .cmp-head-photo {
     width: 100%;
     max-width: 140px;
