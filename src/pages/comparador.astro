@@ -252,7 +252,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       if (m.quimica === 'NMC') html += '<span class="' + s + ' badge-nmc">NMC</span>';
       if (m.quimica === 'NCA') html += '<span class="' + s + ' badge-nca">NCA</span>';
       if (m.voltaje === 800)   html += '<span class="' + s + ' badge-800v">800V</span>';
-      if (m.bomba_calor === 'S\u00ed') html += '<span class="' + s + ' badge-bcalor">B.Calor</span>';
       return html;
     }
 
