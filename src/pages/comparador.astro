@@ -907,7 +907,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   /* Block 2: Top bar — single row, sticky */
   .comp-topbar {
-    background: var(--surface);
+    background: var(--surface-alt);
     border: 1px solid var(--border);
     border-top: none;
     padding: .55rem clamp(1.5rem, 3vw, 2.5rem);
@@ -999,16 +999,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
      FIELDS PANEL — fixed grid of all fields
      ══════════════════════════════════════════ */
   .comp-fields-panel {
-    background: var(--surface);
+    background: var(--surface-alt);
     border: 1px solid var(--border);
     border-top: none;
     padding: 0.85rem clamp(1.5rem, 3vw, 2.5rem);
     position: sticky;
     top: 0;
     z-index: 10;
+    overflow: hidden;
   }
-
-  .comp-fields-panel { overflow: hidden; }
   .panel-grid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
