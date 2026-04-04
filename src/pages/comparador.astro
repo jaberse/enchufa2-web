@@ -342,7 +342,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       const selAllBtn = document.createElement('button');
       selAllBtn.className = 'panel-select-all-btn';
       const allOn = selectedFields.length === FIELDS.length;
-      selAllBtn.textContent = allOn ? 'Deseleccionar opcionales' : 'Seleccionar todos';
+      selAllBtn.textContent = allOn ? 'Volver a predefinidos' : 'Seleccionar todos';
       selAllBtn.addEventListener('click', () => {
         if (allOn) {
           selectedFields = [...DEFAULT_IDS];
@@ -392,9 +392,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         const sortBtn = document.createElement('button');
         sortBtn.className = 'field-sort-btn' + (isSorted ? ' sort-active' : '');
         if (isSorted) {
-          sortBtn.textContent = tableSortAsc ? '\u25B2' : '\u25BC';
+          sortBtn.innerHTML = tableSortAsc
+            ? '<svg width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 0L7 5H0z" fill="currentColor"/></svg>'
+            : '<svg width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 5L0 0h7z" fill="currentColor"/></svg>';
         } else {
-          sortBtn.textContent = '\u25B2\u25BC';
+          sortBtn.innerHTML = '<svg width="7" height="8" viewBox="0 0 7 8"><path d="M3.5 0L6 3H1z" fill="currentColor"/><path d="M3.5 8L1 5h5z" fill="currentColor"/></svg>';
         }
         sortBtn.title = 'Ordenar por ' + f.label;
         sortBtn.addEventListener('click', (e) => {
@@ -1144,47 +1146,51 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .panel-select-all-row {
     grid-column: 1 / -1;
     display: flex;
-    justify-content: flex-end;
-    padding: 0.15rem 0;
+    justify-content: flex-start;
+    padding: 0.3rem 0 0.1rem;
   }
   .panel-select-all-btn {
     font-family: var(--font-sans);
-    font-size: 0.6rem;
-    font-weight: 500;
+    font-size: 0.625rem;
+    font-weight: 400;
     color: var(--text-muted);
     background: none;
-    border: 1px solid var(--border);
+    border: 1px dashed var(--border);
     border-radius: 4px;
-    padding: 0.2rem 0.6rem;
+    padding: 0.2rem 0.55rem;
     cursor: pointer;
     transition: all 0.15s;
+    letter-spacing: 0.01em;
   }
   .panel-select-all-btn:hover {
     color: var(--text);
     border-color: var(--yellow);
+    border-style: solid;
     background: var(--yellow-glow);
   }
 
   /* Per-field sort button */
   .field-sort-btn {
-    font-family: var(--font-sans);
-    font-size: 0.5rem;
-    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 12px;
+    height: 12px;
     color: var(--text-muted);
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0 1px;
-    opacity: 0.35;
+    padding: 0;
+    opacity: 0;
     flex-shrink: 0;
     transition: opacity 0.15s, color 0.15s;
-    letter-spacing: -1px;
   }
-  .field-sort-btn:hover { opacity: 1; color: var(--text); }
+  .field-sort-btn svg { display: block; }
+  .field-item:hover .field-sort-btn { opacity: 0.45; }
+  .field-sort-btn:hover { opacity: 1 !important; color: var(--text); }
   .field-sort-btn.sort-active {
-    opacity: 1;
+    opacity: 1 !important;
     color: var(--yellow);
-    font-weight: 700;
   }
 
   /* Toggleable filter direction button */
@@ -1192,11 +1198,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     cursor: pointer;
     border: none;
     background: none;
-    padding: 0;
-    transition: color 0.15s;
+    padding: 0 1px;
+    border-radius: 2px;
+    transition: color 0.15s, background 0.15s;
   }
   .field-filter-sym-btn:hover {
     color: var(--yellow);
+    background: var(--yellow-glow);
   }
 
   /* Category filter button */
