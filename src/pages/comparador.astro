@@ -1536,6 +1536,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .ev-row-picked td { background: rgba(245,197,24,.06) !important; }
   .ev-row-picked td:first-child { border-left: 3px solid var(--yellow); }
+  /* Sticky column in picked rows needs solid bg so scrolling columns hide behind it */
+  .scroll-mode .ev-row-picked .col-sticky { background: #F2EFDE !important; }
+  [data-theme="dark"] .scroll-mode .ev-row-picked .col-sticky { background: #1A1914 !important; }
+  .scroll-mode .ev-row-picked:nth-child(even) .col-sticky { background: #EDEAD8 !important; }
+  [data-theme="dark"] .scroll-mode .ev-row-picked:nth-child(even) .col-sticky { background: #151310 !important; }
 
   /* ══════════════════════════════════════════
      COMPARE BAR (floating bottom)
