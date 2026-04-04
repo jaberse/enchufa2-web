@@ -825,9 +825,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
      ══════════════════════════════════════════ */
   :root {
     --photo-bg: linear-gradient(180deg, #131313, #1a1a1a);
+    --panel-bg: #FBF6E6;
+    --panel-border: #EDE5C8;
   }
   [data-theme="dark"] {
     --photo-bg: linear-gradient(180deg, #111318, #161921);
+    --panel-bg: #1C1F2A;
+    --panel-border: #2A2D3A;
   }
 
   /* ══════════════════════════════════════════
@@ -907,8 +911,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   /* Block 2: Top bar — single row, sticky */
   .comp-topbar {
-    background: var(--surface-alt);
-    border: 1px solid var(--border);
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
     border-top: none;
     padding: .55rem clamp(1.5rem, 3vw, 2.5rem);
     display: flex;
@@ -999,8 +1003,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
      FIELDS PANEL — fixed grid of all fields
      ══════════════════════════════════════════ */
   .comp-fields-panel {
-    background: var(--surface-alt);
-    border: 1px solid var(--border);
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
     border-top: none;
     padding: 0.85rem clamp(1.5rem, 3vw, 2.5rem);
     position: sticky;
@@ -1020,7 +1024,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .panel-divider {
     grid-column: 1 / -1;
     height: 1px;
-    background: var(--border);
+    background: var(--panel-border);
     margin: 0.25rem 0;
   }
 
