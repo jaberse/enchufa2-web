@@ -845,8 +845,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       // Render 4 groups
       COMPARE_GROUPS.forEach(g => {
         html += '<div class="cmp-group">' +
-          '<span class="cmp-group-num">' + g.num + '</span>' +
-          '<span class="cmp-group-name">' + g.name + '</span>' +
+          '<div class="cmp-group-inner">' +
+            '<span class="cmp-group-num">' + g.num + '</span>' +
+            '<span class="cmp-group-name">' + g.name + '</span>' +
+          '</div>' +
         '</div>';
         g.rows.forEach(row => {
           const best = computeRowBest(picked, row);
@@ -2764,13 +2766,16 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     grid-column: 1 / -1;
     background: var(--black);
     color: var(--white);
-    padding: 1.05rem 1.4rem 1rem;
+    padding: 1.05rem 0 1rem;
     margin-top: 18px;
+  }
+  .cmp-group-inner {
     display: flex;
     align-items: baseline;
     gap: 1rem;
+    padding: 0 1.4rem;
   }
-  .cmp-group::before {
+  .cmp-group-inner::before {
     content: '';
     width: 12px; height: 12px;
     background: var(--yellow);
@@ -2796,10 +2801,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   [data-theme="dark"] .cmp-group { background: #000; }
   /* When scroll mode active, keep band content visible at left edge on scroll */
-  .cmp-table-scroll .cmp-group {
+  .cmp-table-scroll .cmp-group-inner {
     position: sticky;
     left: 0;
-    z-index: 3;
+    width: max-content;
   }
 
   /* Mobile: tighter padding, force scroll */
@@ -2810,7 +2815,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     .cmp-cell, .cmp-label { padding: .65rem .75rem; font-size: .74rem; }
     .cmp-head { padding: .95rem .55rem .75rem; }
     .cmp-head-photo { max-width: 100px; }
-    .cmp-group { padding: .7rem .85rem .65rem; }
+    .cmp-group { padding: .7rem 0 .65rem; }
+    .cmp-group-inner { padding: 0 .85rem; }
     .cmp-group-name { font-size: .62rem; }
   }
 
