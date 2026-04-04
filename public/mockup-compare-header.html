@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Mockup · Cabecera de tarjetas</title>
+<style>
+  :root {
+    --black: #111111;
+    --yellow: #F5C518;
+    --bg: #F8F6F1;
+    --surface: #FFFFFF;
+    --border: #E3E1D8;
+    --gray-100: #F5F5F3;
+    --gray-200: #E3E1D8;
+    --gray-300: #C0BFB9;
+    --gray-400: #9C9A90;
+    --text: #111111;
+    --text-secondary: #444444;
+    --text-muted: #76756F;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    font-family: Inter, system-ui, sans-serif;
+    padding: 40px 0;
+  }
+  h2 {
+    max-width: 1200px;
+    margin: 0 auto 14px;
+    padding: 0 24px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+  }
+  h2 em {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-left: 8px;
+  }
+  .comp-results {
+    max-width: 1200px;
+    margin: 0 auto 60px;
+    padding: 24px 32px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+  .compare-view { padding: 8px 0; }
+
+  .cmp-table {
+    display: grid;
+    grid-template-columns: 170px repeat(4, minmax(0, 1fr));
+    gap: 0;
+    font-family: Inter, sans-serif;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+  }
+  .cmp-label-head { background: var(--gray-100); }
+  .cmp-label {
+    padding: 14px 18px;
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    background: var(--surface);
+  }
+  .cmp-cell {
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
+    position: relative;
+    gap: 6px;
+  }
+  .cmp-cell.row-even, .cmp-label.row-even { background: #FAFAF8; }
+  .cmp-cell.is-best { font-weight: 700; }
+  .best-mark { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: var(--yellow); font-size: 16px; margin-left: 2px; }
+
+  .cmp-head {
+    padding: 18px 12px 14px;
+    background: var(--gray-100);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+  }
+  .cmp-head-photo {
+    width: 100%;
+    max-width: 130px;
+    aspect-ratio: 4/3;
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cmp-head-photo svg { width: 100%; height: 100%; }
+  .cmp-head-marca { font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-weight: 500; }
+  .cmp-head-modelo { font-size: 15px; color: var(--text); font-weight: 600; letter-spacing: -0.01em; }
+  .cmp-head-variante { font-size: 11px; color: var(--text-secondary); font-weight: 300; }
+  .cmp-head-badges { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 4px; }
+  .badge { font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid; }
+  .badge-tipo { background: transparent; border-color: #C0BFB9; color: #76756F; }
+  .badge-traccion { background: #111; border-color: #111; color: #fff; }
+  .badge-nmc { background: transparent; border-color: #4A7FBD; color: #2E5E8E; }
+
+  .cmp-group { grid-column:1/-1; background: var(--black); color:#fff; padding: 10px 20px; }
+  .cmp-group-inner { display: flex; align-items: center; gap: 8px; }
+  .cmp-group-num { font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--yellow); }
+  .cmp-group-sep { color: rgba(255,255,255,0.28); font-size: 9.5px; }
+  .cmp-group-name { font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; }
+
+  /* ═══════════════════════════════════════════════
+     VARIANT A — Tarjetas blancas flotantes sobre gris
+     Cada coche es una tarjeta blanca con sombra, gap entre ellas
+     ═══════════════════════════════════════════════ */
+  .vA .cmp-label-head { background: var(--gray-100); padding: 12px; }
+  .vA .cmp-head {
+    background: var(--gray-100);
+    padding: 14px 8px 12px;
+  }
+  .vA .cmp-head-inner {
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 14px 10px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    border: 1px solid var(--border);
+  }
+
+  /* ═══════════════════════════════════════════════
+     VARIANT B — Separadores verticales sutiles
+     Mantiene cabecera gris unificada pero con líneas entre coches
+     ═══════════════════════════════════════════════ */
+  .vB .cmp-head { border-left: 1px solid rgba(0,0,0,0.08); }
+  .vB .cmp-head:first-of-type { border-left: 1px solid rgba(0,0,0,0.08); }
+
+  /* ═══════════════════════════════════════════════
+     VARIANT C — Zócalo blanco bajo la foto
+     Cabecera gris, pero cada coche tiene una "pastilla" blanca con la foto dentro
+     ═══════════════════════════════════════════════ */
+  .vC .cmp-head { padding-top: 10px; }
+  .vC .cmp-head-photo {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    max-width: 140px;
+    aspect-ratio: 4/3;
+    margin-bottom: 4px;
+  }
+
+  /* ═══════════════════════════════════════════════
+     VARIANT D — Fondos alternos por coche (ajedrez)
+     Alterna blanco y gris por columna para dar rítmo
+     ═══════════════════════════════════════════════ */
+  .vD .cmp-head:nth-of-type(2n+1) { background: var(--surface); }
+  .vD .cmp-head:nth-of-type(2n) { background: var(--gray-100); }
+  .vD .cmp-label-head { background: var(--gray-100); }
+
+  /* ═══════════════════════════════════════════════
+     VARIANT E — Cards tipo ficha (similar vista fichas)
+     Cada coche como mini-tarjeta con borde izquierdo amarillo
+     ═══════════════════════════════════════════════ */
+  .vE .cmp-head {
+    background: var(--surface);
+    border-left: 3px solid var(--yellow);
+    padding: 14px 12px 12px;
+  }
+  .vE .cmp-head:first-of-type { border-left: 3px solid var(--yellow); }
+  .vE .cmp-label-head { background: var(--gray-100); }
+  /* Thin dividers between cards */
+  .vE .cmp-head + .cmp-head { position: relative; }
+  .vE .cmp-head + .cmp-head::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 14px; bottom: 14px;
+    width: 1px;
+    background: var(--border);
+  }
+  /* Hide the yellow accent on non-first heads, use divider instead */
+  .vE .cmp-head:not(:first-of-type) { border-left: none; padding-left: 15px; }
+
+  /* Shared sample SVG: simple car silhouette */
+</style>
+</head>
+<body>
+
+<!-- Sample car SVG -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="car" viewBox="0 0 100 50">
+      <path d="M10 35 L15 25 L30 20 L70 20 L85 25 L90 35 L88 40 L82 40 L78 35 L22 35 L18 40 L12 40 Z" fill="#999" stroke="#666" stroke-width="0.5"/>
+      <circle cx="25" cy="40" r="5" fill="#333"/>
+      <circle cx="75" cy="40" r="5" fill="#333"/>
+      <path d="M30 25 L35 20 L65 20 L70 25" fill="none" stroke="#fff" stroke-width="0.5"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- A -->
+<h2>Variant A <em>— Tarjetas blancas flotantes sobre gris</em></h2>
+<div class="comp-results"><div class="compare-view"><div class="cmp-table vA">
+  <div class="cmp-label cmp-label-head"></div>
+  <div class="cmp-head"><div class="cmp-head-inner"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3</span><span class="cmp-head-variante">Long Range AWD</span><div class="cmp-head-badges"><span class="badge badge-tipo">BERLINA</span><span class="badge badge-traccion">AWD</span><span class="badge badge-nmc">NMC</span></div></div></div>
+  <div class="cmp-head"><div class="cmp-head-inner"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">POLESTAR</span><span class="cmp-head-modelo">2</span><span class="cmp-head-variante">Long Range Single Motor</span><div class="cmp-head-badges"><span class="badge badge-tipo">BERLINA</span><span class="badge badge-traccion">RWD</span><span class="badge badge-nmc">NMC</span></div></div></div>
+  <div class="cmp-head"><div class="cmp-head-inner"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model Y</span><span class="cmp-head-variante">RWD Long Range</span><div class="cmp-head-badges"><span class="badge badge-tipo">SUV</span><span class="badge badge-traccion">RWD</span><span class="badge badge-nmc">NMC</span></div></div></div>
+  <div class="cmp-head"><div class="cmp-head-inner"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">HYUNDAI</span><span class="cmp-head-modelo">Ioniq 6</span><span class="cmp-head-variante">Long Range RWD</span><div class="cmp-head-badges"><span class="badge badge-tipo">BERLINA</span><span class="badge badge-traccion">RWD</span><span class="badge badge-nmc">NMC</span></div></div></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y carga</span></div></div>
+  <div class="cmp-label row-odd">Batería neta</div>
+  <div class="cmp-cell row-odd is-best">79 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd is-best">79 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd is-best">79 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">74 kWh</div>
+  <div class="cmp-label row-even">Batería bruta</div>
+  <div class="cmp-cell row-even">82 kWh</div>
+  <div class="cmp-cell row-even">82 kWh</div>
+  <div class="cmp-cell row-even">82 kWh</div>
+  <div class="cmp-cell row-even is-best">84 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-label row-odd">Química</div>
+  <div class="cmp-cell row-odd">NMC</div>
+  <div class="cmp-cell row-odd">NMC</div>
+  <div class="cmp-cell row-odd">NMC</div>
+  <div class="cmp-cell row-odd">NMC</div>
+</div></div></div>
+
+<!-- B -->
+<h2>Variant B <em>— Separadores verticales sutiles entre coches</em></h2>
+<div class="comp-results"><div class="compare-view"><div class="cmp-table vB">
+  <div class="cmp-label cmp-label-head"></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3</span><span class="cmp-head-variante">Long Range AWD</span><div class="cmp-head-badges"><span class="badge badge-tipo">BERLINA</span><span class="badge badge-traccion">AWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">POLESTAR</span><span class="cmp-head-modelo">2</span><span class="cmp-head-variante">Long Range Single Motor</span><div class="cmp-head-badges"><span class="badge badge-tipo">BERLINA</span><span class="badge badge-traccion">RWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model Y</span><span class="cmp-head-variante">RWD Long Range</span><div class="cmp-head-badges"><span class="badge badge-tipo">SUV</span><span class="badge badge-traccion">RWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">HYUNDAI</span><span class="cmp-head-modelo">Ioniq 6</span><span class="cmp-head-variante">Long Range RWD</span><div class="cmp-head-badges"><span class="badge badge-tipo">BERLINA</span><span class="badge badge-traccion">RWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y carga</span></div></div>
+  <div class="cmp-label row-odd">Batería neta</div>
+  <div class="cmp-cell row-odd is-best">79 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd is-best">79 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd is-best">79 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">74 kWh</div>
+  <div class="cmp-label row-even">Batería bruta</div>
+  <div class="cmp-cell row-even">82 kWh</div>
+  <div class="cmp-cell row-even">82 kWh</div>
+  <div class="cmp-cell row-even">82 kWh</div>
+  <div class="cmp-cell row-even is-best">84 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-label row-odd">Química</div>
+  <div class="cmp-cell row-odd">NMC</div>
+  <div class="cmp-cell row-odd">NMC</div>
+  <div class="cmp-cell row-odd">NMC</div>
+  <div class="cmp-cell row-odd">NMC</div>
+</div></div></div>
+
+<!-- C -->
+<h2>Variant C <em>— Zócalo blanco solo para la foto</em></h2>
+<div class="comp-results"><div class="compare-view"><div class="cmp-table vC">
+  <div class="cmp-label cmp-label-head"></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3</span><span class="cmp-head-variante">Long Range AWD</span><div class="cmp-head-badges"><span class="badge badge-tipo">BERLINA</span><span class="badge badge-traccion">AWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">POLESTAR</span><span class="cmp-head-modelo">2</span><span class="cmp-head-variante">Long Range Single Motor</span><div class="cmp-head-badges"><span class="badge badge-tipo">BERLINA</span><span class="badge badge-traccion">RWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model Y</span><span class="cmp-head-variante">RWD Long Range</span><div class="cmp-head-badges"><span class="badge badge-tipo">SUV</span><span class="badge badge-traccion">RWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">HYUNDAI</span><span class="cmp-head-modelo">Ioniq 6</span><span class="cmp-head-variante">Long Range RWD</span><div class="cmp-head-badges"><span class="badge badge-tipo">BERLINA</span><span class="badge badge-traccion">RWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y carga</span></div></div>
+  <div class="cmp-label row-odd">Batería neta</div>
+  <div class="cmp-cell row-odd is-best">79 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd is-best">79 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd is-best">79 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">74 kWh</div>
+  <div class="cmp-label row-even">Batería bruta</div>
+  <div class="cmp-cell row-even">82 kWh</div>
+  <div class="cmp-cell row-even">82 kWh</div>
+  <div class="cmp-cell row-even">82 kWh</div>
+  <div class="cmp-cell row-even is-best">84 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-label row-odd">Química</div>
+  <div class="cmp-cell row-odd">NMC</div>
+  <div class="cmp-cell row-odd">NMC</div>
+  <div class="cmp-cell row-odd">NMC</div>
+  <div class="cmp-cell row-odd">NMC</div>
+</div></div></div>
+
+<!-- D -->
+<h2>Variant D <em>— Fondos alternos por columna (ajedrez blanco/gris)</em></h2>
+<div class="comp-results"><div class="compare-view"><div class="cmp-table vD">
+  <div class="cmp-label cmp-label-head"></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3</span><span class="cmp-head-variante">Long Range AWD</span><div class="cmp-head-badges"><span class="badge badge-tipo">BERLINA</span><span class="badge badge-traccion">AWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">POLESTAR</span><span class="cmp-head-modelo">2</span><span class="cmp-head-variante">Long Range Single Motor</span><div class="cmp-head-badges"><span class="badge badge-tipo">BERLINA</span><span class="badge badge-traccion">RWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model Y</span><span class="cmp-head-variante">RWD Long Range</span><div class="cmp-head-badges"><span class="badge badge-tipo">SUV</span><span class="badge badge-traccion">RWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">HYUNDAI</span><span class="cmp-head-modelo">Ioniq 6</span><span class="cmp-head-variante">Long Range RWD</span><div class="cmp-head-badges"><span class="badge badge-tipo">BERLINA</span><span class="badge badge-traccion">RWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y carga</span></div></div>
+  <div class="cmp-label row-odd">Batería neta</div>
+  <div class="cmp-cell row-odd is-best">79 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd is-best">79 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd is-best">79 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">74 kWh</div>
+  <div class="cmp-label row-even">Batería bruta</div>
+  <div class="cmp-cell row-even">82 kWh</div>
+  <div class="cmp-cell row-even">82 kWh</div>
+  <div class="cmp-cell row-even">82 kWh</div>
+  <div class="cmp-cell row-even is-best">84 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-label row-odd">Química</div>
+  <div class="cmp-cell row-odd">NMC</div>
+  <div class="cmp-cell row-odd">NMC</div>
+  <div class="cmp-cell row-odd">NMC</div>
+  <div class="cmp-cell row-odd">NMC</div>
+</div></div></div>
+
+<!-- E -->
+<h2>Variant E <em>— Cabecera blanca con acento amarillo (coherencia con vista fichas)</em></h2>
+<div class="comp-results"><div class="compare-view"><div class="cmp-table vE">
+  <div class="cmp-label cmp-label-head"></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3</span><span class="cmp-head-variante">Long Range AWD</span><div class="cmp-head-badges"><span class="badge badge-tipo">BERLINA</span><span class="badge badge-traccion">AWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">POLESTAR</span><span class="cmp-head-modelo">2</span><span class="cmp-head-variante">Long Range Single Motor</span><div class="cmp-head-badges"><span class="badge badge-tipo">BERLINA</span><span class="badge badge-traccion">RWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model Y</span><span class="cmp-head-variante">RWD Long Range</span><div class="cmp-head-badges"><span class="badge badge-tipo">SUV</span><span class="badge badge-traccion">RWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">HYUNDAI</span><span class="cmp-head-modelo">Ioniq 6</span><span class="cmp-head-variante">Long Range RWD</span><div class="cmp-head-badges"><span class="badge badge-tipo">BERLINA</span><span class="badge badge-traccion">RWD</span><span class="badge badge-nmc">NMC</span></div></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y carga</span></div></div>
+  <div class="cmp-label row-odd">Batería neta</div>
+  <div class="cmp-cell row-odd is-best">79 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd is-best">79 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd is-best">79 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">74 kWh</div>
+  <div class="cmp-label row-even">Batería bruta</div>
+  <div class="cmp-cell row-even">82 kWh</div>
+  <div class="cmp-cell row-even">82 kWh</div>
+  <div class="cmp-cell row-even">82 kWh</div>
+  <div class="cmp-cell row-even is-best">84 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-label row-odd">Química</div>
+  <div class="cmp-cell row-odd">NMC</div>
+  <div class="cmp-cell row-odd">NMC</div>
+  <div class="cmp-cell row-odd">NMC</div>
+  <div class="cmp-cell row-odd">NMC</div>
+</div></div></div>
+
+</body>
+</html>
