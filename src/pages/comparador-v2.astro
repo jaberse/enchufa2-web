@@ -1659,10 +1659,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   /* Section labels inside panel */
   .panel-section-label {
     font-size: 0.6rem;
-    font-weight: 500;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     padding-bottom: 0.4rem;
     display: flex;
     align-items: center;
@@ -1671,7 +1671,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .panel-section-label-num {
     padding-top: 0.75rem;
     margin-top: 0.5rem;
-    border-top: 1px solid var(--panel-border);
+    border-top: 1px solid var(--border);
   }
   .panel-section-hint {
     font-size: 0.62rem;
@@ -2179,14 +2179,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     gap: 0.4rem;
     padding: 0.75rem 0 0;
     margin-top: 0.85rem;
-    border-top: 1px dashed var(--border);
+    border-top: 1px solid var(--border);
   }
   .panel-applied-label {
     font-size: 0.6rem;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    font-weight: 500;
+    font-weight: 600;
     margin-right: 0.3rem;
   }
   .panel-applied-chips {
