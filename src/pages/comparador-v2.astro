@@ -3224,20 +3224,21 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     align-items: center;
     gap: .35rem;
   }
-  .cmp-export-symbol { display: block; width: 18px; height: auto; }
+  .cmp-export-symbol { display: block; width: 32px; height: auto; }
   .cmp-export-wordmark {
     display: flex;
     align-items: baseline;
     gap: .2rem;
   }
-  .cmp-export-wordmark > svg { display: block; width: 88px; height: auto; }
+  .cmp-export-wordmark > svg { display: block; width: 100px; height: auto; }
   .cmp-export-dotcom {
     font-family: var(--font-sans);
     font-weight: 500;
-    font-size: .82rem;
+    font-size: .88rem;
     letter-spacing: .01em;
     color: inherit;
     line-height: 1;
+    margin-top: -2px;
   }
   .cmp-export-actions {
     display: flex;
