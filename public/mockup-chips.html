@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview chips filtros — enchufa2</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #111111;
+    --yellow: #F5C518;
+    --cream: #F8F6F1;
+    --bg: #F8F6F1;
+    --surface: #FFFFFF;
+    --surface-alt: #F2F1ED;
+    --border: #E8E7E3;
+    --border-strong: #C0BFB9;
+    --text: #111111;
+    --text-secondary: #555550;
+    --text-muted: #999894;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 3rem 2rem;
+    font-weight: 300;
+  }
+  .container { max-width: 1300px; margin: 0 auto; }
+  h1 {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 2.2rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
+  .subtitle {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+  }
+
+  .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+  .column h2 {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--yellow);
+    margin-bottom: 0.4rem;
+  }
+  .column .prop-title {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin-bottom: 1.4rem;
+  }
+
+  .state-label {
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin: 1.2rem 0 0.45rem;
+  }
+
+  /* ═══════════════════════════════════════
+     PROPUESTA A — Chip clicable + pills Min/Máx
+     ═══════════════════════════════════════ */
+  .chip-a {
+    padding: 0.55rem 0.65rem;
+    border-radius: 7px;
+    border: 1px solid transparent;
+    background: var(--surface-alt);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    opacity: 0.55;
+    min-width: 210px;
+    max-width: 240px;
+  }
+  .chip-a:hover { opacity: 0.85; }
+  .chip-a.active {
+    opacity: 1;
+    background: var(--surface-alt);
+    border-color: var(--border-strong);
+  }
+  .chip-a.filtering {
+    opacity: 1;
+    background: #FFFDF3;
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 1px var(--yellow);
+  }
+  .chip-a-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4rem;
+  }
+  .chip-a-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.25;
+  }
+  .chip-a.filtering .chip-a-label { color: var(--text); }
+  .chip-a-state {
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .chip-a.active .chip-a-state { color: var(--text-secondary); }
+  .chip-a.filtering .chip-a-state { color: var(--yellow-text, #8a6d00); background: var(--yellow); padding: 0.12rem 0.4rem; border-radius: 3px; color: var(--black); }
+  .chip-a-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .pill-group {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .pill {
+    padding: 0.28rem 0.5rem;
+    font-size: 0.62rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .pill:first-child { border-right: 1px solid var(--border); }
+  .pill.selected { background: var(--black); color: white; }
+  .chip-a-input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.3rem 0.45rem;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: var(--surface);
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text);
+    text-align: right;
+  }
+  .chip-a-input::placeholder { color: var(--text-muted); font-weight: 400; }
+  .chip-a-unit {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* ═══════════════════════════════════════
+     PROPUESTA B — Checkbox visible + botón grande
+     ═══════════════════════════════════════ */
+  .chip-b {
+    padding: 0.6rem 0.65rem;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--surface-alt);
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    min-width: 210px;
+    max-width: 240px;
+    transition: all 0.15s;
+  }
+  .chip-b.active { background: var(--surface); }
+  .chip-b.filtering { border-color: var(--yellow); box-shadow: 0 0 0 1px var(--yellow); background: #FFFDF3; }
+  .chip-b-head { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+  .checkbox-sq {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1.5px solid var(--text-secondary);
+    background: var(--surface);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .chip-b.active .checkbox-sq,
+  .chip-b.filtering .checkbox-sq {
+    background: var(--yellow);
+    border-color: var(--yellow);
+  }
+  .checkbox-sq svg {
+    width: 11px; height: 11px;
+    display: none;
+    color: var(--black);
+  }
+  .chip-b.active .checkbox-sq svg,
+  .chip-b.filtering .checkbox-sq svg { display: block; }
+  .chip-b-label {
+    font-size: 0.73rem;
+    font-weight: 500;
+    color: var(--text);
+    flex: 1;
+    line-height: 1.25;
+  }
+  .chip-b-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .mode-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .mode-btn:hover { border-color: var(--text-secondary); }
+  .chip-b.filtering .mode-btn { color: var(--text); border-color: var(--border-strong); }
+  .chip-b-input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: var(--surface);
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text);
+    text-align: right;
+    height: 30px;
+  }
+  .chip-b-input::placeholder { color: var(--text-muted); font-weight: 400; }
+  .chip-b-unit {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    min-width: 24px;
+  }
+
+  /* shared */
+  .row { display: flex; flex-wrap: wrap; gap: 0.65rem; }
+  .notes {
+    margin-top: 1.4rem;
+    padding: 0.85rem 1rem;
+    background: var(--surface-alt);
+    border-left: 2px solid var(--yellow);
+    border-radius: 3px;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .notes strong { color: var(--text); font-weight: 600; }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 2.5rem 0;
+  }
+
+  /* Interactive demo */
+  .demo-section {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .demo-section h2 {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
+  .demo-section p {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>preview · chips de filtros</h1>
+  <p class="subtitle">Comparativa de dos propuestas para resolver toggle invisible + botones pequeños</p>
+
+  <div class="layout">
+    <!-- ═══════ PROPUESTA A ═══════ -->
+    <div class="column">
+      <h2>Propuesta A</h2>
+      <div class="prop-title">Chip clicable + pills <em>Mín/Máx</em></div>
+
+      <div class="state-label">Estado · inactivo</div>
+      <div class="row">
+        <div class="chip-a">
+          <div class="chip-a-head">
+            <span class="chip-a-label">Batería neta</span>
+            <span class="chip-a-state">off</span>
+          </div>
+          <div class="chip-a-filter">
+            <div class="pill-group">
+              <button class="pill selected">Mín</button>
+              <button class="pill">Máx</button>
+            </div>
+            <input type="text" class="chip-a-input" placeholder="—">
+            <span class="chip-a-unit">kWh</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="state-label">Estado · activo (visible en tabla)</div>
+      <div class="row">
+        <div class="chip-a active">
+          <div class="chip-a-head">
+            <span class="chip-a-label">Batería neta</span>
+            <span class="chip-a-state">visible</span>
+          </div>
+          <div class="chip-a-filter">
+            <div class="pill-group">
+              <button class="pill selected">Mín</button>
+              <button class="pill">Máx</button>
+            </div>
+            <input type="text" class="chip-a-input" placeholder="—">
+            <span class="chip-a-unit">kWh</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="state-label">Estado · filtrando</div>
+      <div class="row">
+        <div class="chip-a filtering">
+          <div class="chip-a-head">
+            <span class="chip-a-label">Batería neta</span>
+            <span class="chip-a-state">filtro</span>
+          </div>
+          <div class="chip-a-filter">
+            <div class="pill-group">
+              <button class="pill selected">Mín</button>
+              <button class="pill">Máx</button>
+            </div>
+            <input type="text" class="chip-a-input" value="75">
+            <span class="chip-a-unit">kWh</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes">
+        <strong>Interacción:</strong> Clic en cualquier parte del chip (excepto input/pills) activa/desactiva la columna. Escribir un valor en el input aplica filtro automáticamente. Click en Mín/Máx cambia la dirección del filtro.
+        <br><br>
+        <strong>Ventaja:</strong> Sin controles ambiguos. El chip entero es la superficie clicable. Menos elementos visuales (fuera el toggle mini).
+      </div>
+    </div>
+
+    <!-- ═══════ PROPUESTA B ═══════ -->
+    <div class="column">
+      <h2>Propuesta B</h2>
+      <div class="prop-title">Checkbox visible + botón <em>grande</em></div>
+
+      <div class="state-label">Estado · inactivo</div>
+      <div class="row">
+        <div class="chip-b">
+          <div class="chip-b-head">
+            <span class="checkbox-sq">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="chip-b-label">Batería neta</span>
+          </div>
+          <div class="chip-b-filter">
+            <button class="mode-btn">≥</button>
+            <input type="text" class="chip-b-input" placeholder="—">
+            <span class="chip-b-unit">kWh</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="state-label">Estado · activo (visible en tabla)</div>
+      <div class="row">
+        <div class="chip-b active">
+          <div class="chip-b-head">
+            <span class="checkbox-sq">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="chip-b-label">Batería neta</span>
+          </div>
+          <div class="chip-b-filter">
+            <button class="mode-btn">≥</button>
+            <input type="text" class="chip-b-input" placeholder="—">
+            <span class="chip-b-unit">kWh</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="state-label">Estado · filtrando</div>
+      <div class="row">
+        <div class="chip-b filtering">
+          <div class="chip-b-head">
+            <span class="checkbox-sq">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="chip-b-label">Batería neta</span>
+          </div>
+          <div class="chip-b-filter">
+            <button class="mode-btn">≥</button>
+            <input type="text" class="chip-b-input" value="75">
+            <span class="chip-b-unit">kWh</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes">
+        <strong>Interacción:</strong> El checkbox cuadrado (o clic en el label) activa/desactiva la columna. El botón ≥/≤ (30×30) alterna entre "mayor que" y "menor que". Escribir un valor aplica filtro.
+        <br><br>
+        <strong>Ventaja:</strong> Control explícito, modelo mental clásico (checkbox = columna visible). Cambio mínimo desde el diseño actual, solo sube contraste y tamaño.
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparativa en fila de múltiples chips -->
+  <div class="demo-section">
+    <h2>En contexto: <em>panel completo</em></h2>
+    <p>Así se verían 4 campos juntos en el panel de filtros</p>
+
+    <div class="state-label">Propuesta A</div>
+    <div class="row">
+      <div class="chip-a active">
+        <div class="chip-a-head"><span class="chip-a-label">Batería neta</span><span class="chip-a-state">visible</span></div>
+        <div class="chip-a-filter">
+          <div class="pill-group"><button class="pill selected">Mín</button><button class="pill">Máx</button></div>
+          <input type="text" class="chip-a-input" placeholder="—"><span class="chip-a-unit">kWh</span>
+        </div>
+      </div>
+      <div class="chip-a filtering">
+        <div class="chip-a-head"><span class="chip-a-label">Autonomía WLTP</span><span class="chip-a-state">filtro</span></div>
+        <div class="chip-a-filter">
+          <div class="pill-group"><button class="pill selected">Mín</button><button class="pill">Máx</button></div>
+          <input type="text" class="chip-a-input" value="450"><span class="chip-a-unit">km</span>
+        </div>
+      </div>
+      <div class="chip-a">
+        <div class="chip-a-head"><span class="chip-a-label">PVP</span><span class="chip-a-state">off</span></div>
+        <div class="chip-a-filter">
+          <div class="pill-group"><button class="pill">Mín</button><button class="pill selected">Máx</button></div>
+          <input type="text" class="chip-a-input" placeholder="—"><span class="chip-a-unit">€</span>
+        </div>
+      </div>
+      <div class="chip-a active">
+        <div class="chip-a-head"><span class="chip-a-label">Carga DC máx</span><span class="chip-a-state">visible</span></div>
+        <div class="chip-a-filter">
+          <div class="pill-group"><button class="pill selected">Mín</button><button class="pill">Máx</button></div>
+          <input type="text" class="chip-a-input" placeholder="—"><span class="chip-a-unit">kW</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="state-label" style="margin-top: 2rem;">Propuesta B</div>
+    <div class="row">
+      <div class="chip-b active">
+        <div class="chip-b-head">
+          <span class="checkbox-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <span class="chip-b-label">Batería neta</span>
+        </div>
+        <div class="chip-b-filter">
+          <button class="mode-btn">≥</button>
+          <input type="text" class="chip-b-input" placeholder="—">
+          <span class="chip-b-unit">kWh</span>
+        </div>
+      </div>
+      <div class="chip-b filtering">
+        <div class="chip-b-head">
+          <span class="checkbox-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <span class="chip-b-label">Autonomía WLTP</span>
+        </div>
+        <div class="chip-b-filter">
+          <button class="mode-btn">≥</button>
+          <input type="text" class="chip-b-input" value="450">
+          <span class="chip-b-unit">km</span>
+        </div>
+      </div>
+      <div class="chip-b">
+        <div class="chip-b-head">
+          <span class="checkbox-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <span class="chip-b-label">PVP</span>
+        </div>
+        <div class="chip-b-filter">
+          <button class="mode-btn">≤</button>
+          <input type="text" class="chip-b-input" placeholder="—">
+          <span class="chip-b-unit">€</span>
+        </div>
+      </div>
+      <div class="chip-b active">
+        <div class="chip-b-head">
+          <span class="checkbox-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <span class="chip-b-label">Carga DC máx</span>
+        </div>
+        <div class="chip-b-filter">
+          <button class="mode-btn">≥</button>
+          <input type="text" class="chip-b-input" placeholder="—">
+          <span class="chip-b-unit">kW</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
