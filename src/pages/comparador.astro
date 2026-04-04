@@ -942,15 +942,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
      ══════════════════════════════════════════ */
   :root {
     --photo-bg: linear-gradient(180deg, #0E0E0E, #1A1A1A);
-    --panel-bg: #F5F5F5;
-    --panel-border: #DDDDDD;
-    --panel-separator: #CCCCCC;
+    --panel-bg: #FFFFFF;
+    --panel-border: #EEEEEE;
+    --panel-separator: #EEEEEE;
   }
   [data-theme="dark"] {
     --photo-bg: linear-gradient(180deg, #0A0A0A, #141414);
-    --panel-bg: #1C1C1C;
-    --panel-border: #333333;
-    --panel-separator: #444444;
+    --panel-bg: #141414;
+    --panel-border: #222222;
+    --panel-separator: #222222;
   }
 
   /* ══════════════════════════════════════════
@@ -1447,7 +1447,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   /* Separator bar between filters and results */
   .comp-panel-separator {
-    height: 3px;
+    height: 1px;
     background: var(--panel-separator);
     border-left: 1px solid var(--panel-border);
     border-right: 1px solid var(--panel-border);
@@ -1951,13 +1951,17 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .listado-table th {
     padding: .65rem .75rem;
     text-align: left;
-    font-weight: 500;
+    font-weight: 600;
     font-size: .6rem;
     text-transform: uppercase;
     letter-spacing: .06em;
     white-space: nowrap;
     background: var(--table-header-bg);
-}
+    border-bottom: 2px solid var(--yellow);
+  }
+  [data-theme="dark"] .listado-table th {
+    background: #000000;
+  }
   .listado-table th.col-num { text-align: right; }
 
   .listado-table th:first-child {
@@ -1965,7 +1969,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     left: 0;
     background: var(--table-header-bg);
     z-index: 21;
-    min-width: 220px;
+    min-width: 280px;
+  }
+  [data-theme="dark"] .listado-table th:first-child {
+    background: #000000;
+  }
+
+  .listado-table th:last-child {
+    padding-right: 1.25rem;
   }
 
   .listado-table td {
@@ -1988,12 +1999,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .listado-table td:first-child {
     position: sticky;
     left: 0;
-    background: #F5F5F5;
+    background: #FFFFFF;
     z-index: 10;
-    min-width: 220px;
+    min-width: 280px;
   }
   [data-theme="dark"] .listado-table td:first-child {
-    background: #1C1C1C;
+    background: #141414;
   }
   .listado-table td:first-child::after {
     content: '';
@@ -2006,16 +2017,21 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     pointer-events: none;
   }
   [data-theme="dark"] .listado-table td:first-child::after {
-    background: linear-gradient(to right, rgba(0,0,0,.2), transparent);
+    background: linear-gradient(to right, rgba(0,0,0,.3), transparent);
+  }
+
+  .listado-table td:last-child {
+    padding-right: 1.25rem;
   }
 
   .listado-table tbody tr:nth-child(even) td { background: var(--table-row-even); }
-  .listado-table tbody tr:nth-child(even) td:first-child { background: #EEEEEE; }
-  [data-theme="dark"] .listado-table tbody tr:nth-child(even) td:first-child { background: #1A1A1A; }
-  .listado-table tbody tr:hover td { background: #EEEEEE; }
-  [data-theme="dark"] .listado-table tbody tr:hover td { background: #222222; }
-  .listado-table tbody tr:hover td:first-child { background: #E5E5E5; }
-  [data-theme="dark"] .listado-table tbody tr:hover td:first-child { background: #1C1C1C; }
+  .listado-table tbody tr:nth-child(even) td:first-child { background: #F7F7F7; }
+  [data-theme="dark"] .listado-table tbody tr:nth-child(even) td { background: #111111; }
+  [data-theme="dark"] .listado-table tbody tr:nth-child(even) td:first-child { background: #111111; }
+  .listado-table tbody tr:hover td { background: #F0F0F0; }
+  [data-theme="dark"] .listado-table tbody tr:hover td { background: #1A1A1A; }
+  .listado-table tbody tr:hover td:first-child { background: #F0F0F0; }
+  [data-theme="dark"] .listado-table tbody tr:hover td:first-child { background: #1A1A1A; }
 
   .table-modelo-wrap {
     display: flex;
@@ -2095,26 +2111,30 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     position: sticky;
     left: 0;
     z-index: 10;
-    background: #F5F5F5;
+    background: #FFFFFF;
   }
   [data-theme="dark"] .scroll-mode .col-sticky {
-    background: #1C1C1C;
+    background: #141414;
   }
   .scroll-mode thead .col-sticky {
     z-index: 21;
     background: var(--table-header-bg);
+    border-bottom: 2px solid var(--yellow);
+  }
+  [data-theme="dark"] .scroll-mode thead .col-sticky {
+    background: #000000;
   }
   .scroll-mode .ev-row:nth-child(even) .col-sticky {
-    background: #EEEEEE;
+    background: #F7F7F7;
   }
   [data-theme="dark"] .scroll-mode .ev-row:nth-child(even) .col-sticky {
-    background: #1A1A1A;
+    background: #111111;
   }
   .scroll-mode .ev-row:hover .col-sticky {
-    background: #E5E5E5;
+    background: #F0F0F0;
   }
   [data-theme="dark"] .scroll-mode .ev-row:hover .col-sticky {
-    background: #1C1C1C;
+    background: #1A1A1A;
   }
   .scroll-mode .col-sticky::after {
     content: '';
@@ -2123,11 +2143,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     right: -8px;
     bottom: 0;
     width: 8px;
-    background: linear-gradient(to right, rgba(0,0,0,0.08), transparent);
+    background: linear-gradient(to right, rgba(0,0,0,0.06), transparent);
     pointer-events: none;
-  }
-  [data-theme="dark"] .scroll-mode .col-sticky::after {
-    background: linear-gradient(to right, rgba(0,0,0,0.30), transparent);
   }
   [data-theme="dark"] .scroll-mode .col-sticky::after {
     background: linear-gradient(to right, rgba(0,0,0,0.35), transparent);
@@ -2146,13 +2163,17 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .results-table th {
     background: var(--table-header-bg);
     color: var(--header-text);
-    font-weight: 500;
+    font-weight: 600;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     padding: 0.6rem 0.5rem;
     text-align: left;
     border: none;
+    border-bottom: 2px solid var(--yellow);
+  }
+  [data-theme="dark"] .results-table th {
+    background: #000000;
   }
   .results-table th.col-num { text-align: right; }
   .results-table th.col-sortable {
