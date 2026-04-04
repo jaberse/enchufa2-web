@@ -42,6 +42,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         <div class="comp-topbar" id="filter-bar">
           <div class="result-count-bar"><span id="count">{data.total_modelos}</span> de {data.total_modelos}</div>
           <span class="topbar-sep"></span>
+          <div class="search-wrap" id="search-wrap">
+            <input type="text" id="model-search" class="model-search" placeholder="Buscar modelo..." autocomplete="off" />
+            <div class="search-results" id="search-results"></div>
+          </div>
+          <span class="topbar-sep"></span>
           <div class="sort-control" id="sort-control">
             <label for="sort-select" class="sort-label">Ordenar</label>
             <select id="sort-select" class="sort-select">
@@ -97,6 +102,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           <p class="results-empty" id="no-results" style="display:none;">
             Ningún modelo cumple todos tus requisitos. Prueba a relajar algún filtro.
           </p>
+        </div>
+
+        <!-- Floating compare bar -->
+        <div class="compare-bar" id="compare-bar" style="display:none;">
+          <div class="compare-bar-inner">
+            <span class="compare-count" id="compare-count">0 seleccionados</span>
+            <button class="compare-btn" id="compare-btn">Comparar seleccionados</button>
+            <button class="compare-clear" id="compare-clear">Limpiar selección</button>
+          </div>
         </div>
 
         <!-- Block 4: Methodology (rounded bottom = closes panel) -->
@@ -174,6 +188,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     let openPopover = null; // id of currently open popover
     let filterModes = {};  // { fieldId: 'min'|'max' } — runtime override of filterType
     let allFieldsOn = false; // track select-all state
+    let pickedIds = new Set();  // IDs of models picked for comparison
+    let compareMode = false;    // true = show only picked models
 
     // ═══════════════════════════════════════════════════════
     // DOM REFS
@@ -195,6 +211,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     const scrollNav = document.getElementById('scroll-nav');
     const scrollLeftBtn = document.getElementById('scroll-left');
     const scrollRightBtn = document.getElementById('scroll-right');
+    const searchInput = document.getElementById('model-search');
+    const searchResultsEl = document.getElementById('search-results');
+    const compareBar = document.getElementById('compare-bar');
+    const compareCountEl = document.getElementById('compare-count');
+    const compareBtn = document.getElementById('compare-btn');
+    const compareClear = document.getElementById('compare-clear');
 
     // ═══════════════════════════════════════════════════════
     // HELPERS
@@ -556,7 +578,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // ═══════════════════════════════════════════════════════
     function renderCard(m) {
       const card = document.createElement('article');
-      card.className = 'ev-card';
+      const isPicked = pickedIds.has(modelId(m));
+      card.className = 'ev-card' + (isPicked ? ' ev-card-picked' : '');
+      card.addEventListener('click', () => togglePick(m));
 
       const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
 
@@ -572,6 +596,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
       card.innerHTML =
         '<div class="ev-card-photo">' +
+          (isPicked ? '<div class="pick-badge">✓</div>' : '') +
           '<img src="' + photoSrc(m) + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy" />' +
         '</div>' +
         '<div class="ev-card-body">' +
@@ -705,7 +730,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
     function renderRow(m) {
       const tr = document.createElement('tr');
-      tr.className = 'ev-row';
+      const isPicked = pickedIds.has(modelId(m));
+      tr.className = 'ev-row' + (isPicked ? ' ev-row-picked' : '');
+      tr.style.cursor = 'pointer';
+      tr.addEventListener('click', () => togglePick(m));
       const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
 
       let html = '<td class="col-modelo col-sticky">' +
@@ -740,6 +768,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // ═══════════════════════════════════════════════════════
     function update() {
       let filtered = allModelos.filter(m => passesFilter(m));
+      if (compareMode) filtered = filtered.filter(m => pickedIds.has(modelId(m)));
       sortModelos(filtered);
 
       const hasResults = filtered.length > 0;
@@ -768,6 +797,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       tableSortAsc = true;
       filterModes = {};
       allFieldsOn = false;
+      pickedIds.clear();
+      compareMode = false;
+      updateCompareBar();
       document.getElementById('sort-select').value = '';
       btnReset.style.display = 'none';
       openPopover = null;
@@ -790,6 +822,88 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         tableSortAsc = dir === 'asc';
       }
       update();
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // MODEL SELECTION & COMPARE
+    // ═══════════════════════════════════════════════════════
+    function modelId(m) { return m.marca + '|' + m.modelo + '|' + m.variante; }
+
+    function togglePick(m) {
+      const id = modelId(m);
+      if (pickedIds.has(id)) pickedIds.delete(id);
+      else pickedIds.add(id);
+      updateCompareBar();
+      update();
+    }
+
+    function updateCompareBar() {
+      const n = pickedIds.size;
+      compareBar.style.display = n > 0 ? '' : 'none';
+      compareCountEl.textContent = n + ' seleccionado' + (n !== 1 ? 's' : '');
+      compareBtn.disabled = n < 2;
+      compareBtn.textContent = compareMode ? 'Ver todos' : 'Comparar seleccionados';
+    }
+
+    compareBtn.addEventListener('click', () => {
+      if (compareMode) {
+        compareMode = false;
+        pickedIds.clear();
+      } else {
+        compareMode = true;
+      }
+      updateCompareBar();
+      update();
+    });
+
+    compareClear.addEventListener('click', () => {
+      pickedIds.clear();
+      compareMode = false;
+      updateCompareBar();
+      update();
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // SEARCH
+    // ═══════════════════════════════════════════════════════
+    let searchDebounce = null;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => {
+        const q = searchInput.value.trim().toLowerCase();
+        if (q.length < 2) { searchResultsEl.style.display = 'none'; searchResultsEl.innerHTML = ''; return; }
+        const matches = allModelos.filter(m => {
+          const full = (m.marca + ' ' + m.modelo + ' ' + m.variante).toLowerCase();
+          return q.split(/\s+/).every(w => full.includes(w));
+        }).slice(0, 8);
+        if (matches.length === 0) { searchResultsEl.style.display = 'none'; searchResultsEl.innerHTML = ''; return; }
+        searchResultsEl.innerHTML = matches.map(m => {
+          const id = modelId(m);
+          const picked = pickedIds.has(id);
+          return '<button class="search-item' + (picked ? ' picked' : '') + '" data-mid="' + id + '">' +
+            '<span class="si-marca">' + m.marca + '</span> ' +
+            '<span class="si-modelo">' + m.modelo + ' ' + m.variante + '</span>' +
+            (picked ? '<span class="si-check">✓</span>' : '') +
+            '</button>';
+        }).join('');
+        searchResultsEl.style.display = 'block';
+        searchResultsEl.querySelectorAll('.search-item').forEach(btn => {
+          btn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            const mid = btn.dataset.mid;
+            const m = allModelos.find(x => modelId(x) === mid);
+            if (m) togglePick(m);
+            searchInput.dispatchEvent(new Event('input'));
+          });
+        });
+      }, 150);
+    });
+
+    searchInput.addEventListener('blur', () => {
+      setTimeout(() => { searchResultsEl.style.display = 'none'; }, 200);
+    });
+    searchInput.addEventListener('focus', () => {
+      if (searchInput.value.trim().length >= 2) searchInput.dispatchEvent(new Event('input'));
     });
 
     // ═══════════════════════════════════════════════════════
@@ -1337,6 +1451,145 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     background: var(--panel-separator);
     border-left: 1px solid var(--panel-border);
     border-right: 1px solid var(--panel-border);
+  }
+
+  /* ══════════════════════════════════════════
+     SEARCH BAR
+     ══════════════════════════════════════════ */
+  .search-wrap { position: relative; flex-shrink: 1; min-width: 0; }
+  .model-search {
+    font-family: var(--font-sans);
+    font-size: .75rem;
+    padding: .35rem .65rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    width: 180px;
+    outline: none;
+    transition: border-color .2s, width .3s;
+  }
+  .model-search::placeholder { color: var(--text-muted); }
+  .model-search:focus { border-color: var(--yellow); width: 240px; }
+  .search-results {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .35rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,.15);
+    z-index: 300;
+    min-width: 280px;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .search-item {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    width: 100%;
+    padding: .4rem .55rem;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: .72rem;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+    transition: background .15s;
+  }
+  .search-item:hover { background: rgba(245,197,24,.08); }
+  .search-item.picked { background: rgba(245,197,24,.1); }
+  .si-marca { color: var(--text-muted); font-size: .62rem; text-transform: uppercase; letter-spacing: .03em; min-width: 70px; }
+  .si-modelo { font-weight: 500; flex: 1; }
+  .si-check { color: var(--yellow); font-weight: 700; font-size: .8rem; }
+
+  /* ══════════════════════════════════════════
+     CARD / ROW SELECTION
+     ══════════════════════════════════════════ */
+  .ev-card { cursor: pointer; }
+  .ev-card-picked {
+    outline: 2px solid var(--yellow);
+    outline-offset: -2px;
+    box-shadow: 0 0 0 4px rgba(245,197,24,.15), 0 2px 8px rgba(0,0,0,.07);
+  }
+  .pick-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--yellow);
+    color: #111;
+    font-size: .7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    box-shadow: 0 2px 6px rgba(0,0,0,.2);
+  }
+  .ev-row-picked td { background: rgba(245,197,24,.06) !important; }
+  .ev-row-picked td:first-child { border-left: 3px solid var(--yellow); }
+
+  /* ══════════════════════════════════════════
+     COMPARE BAR (floating bottom)
+     ══════════════════════════════════════════ */
+  .compare-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 500;
+    padding: .6rem 1rem;
+    background: var(--black);
+    border-top: 2px solid var(--yellow);
+    box-shadow: 0 -4px 20px rgba(0,0,0,.25);
+  }
+  .compare-bar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+  }
+  .compare-count { color: var(--yellow); font-size: .8rem; font-weight: 600; }
+  .compare-btn {
+    font-family: var(--font-sans);
+    font-size: .75rem;
+    font-weight: 600;
+    padding: .45rem 1.2rem;
+    border-radius: 6px;
+    border: none;
+    background: var(--yellow);
+    color: #111;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .compare-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .compare-btn:not(:disabled):hover { opacity: .85; }
+  .compare-clear {
+    font-family: var(--font-sans);
+    font-size: .7rem;
+    padding: .35rem .8rem;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: transparent;
+    color: #999;
+    cursor: pointer;
+    transition: border-color .2s, color .2s;
+  }
+  .compare-clear:hover { border-color: #888; color: #ccc; }
+  @media (max-width: 600px) {
+    .model-search { width: 120px; }
+    .model-search:focus { width: 160px; }
+    .compare-bar-inner { flex-wrap: wrap; gap: .5rem; }
   }
 
   /* ── Results ─────────────────────────── */
