@@ -15,84 +15,118 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 ---
 
 <Layout
-  title="Comparador de coches eléctricos — enchufa2"
-  description="Compara los 37 coches eléctricos más vendidos en Europa. Filtra por autonomía, potencia, maletero, tracción y más."
+  title="Comparador de coches elÃ©ctricos â€” enchufa2"
+  description="Compara los 37 coches elÃ©ctricos mÃ¡s vendidos en Europa. Filtra por autonomÃ­a, potencia, maletero, tracciÃ³n y mÃ¡s."
 >
   <Header />
 
-  <main class="comparador">
-    <!-- HERO -->
-    <section class="comp-hero">
-      <div class="page-width">
-        <span class="comp-label">Herramienta</span>
-        <h1 class="t-heading">Comparador de eléctricos</h1>
-        <p class="comp-deck">
-          Dinos qué necesitas. Nosotros te decimos qué coches lo cumplen.<br/>
-          <span class="accent">{data.total_modelos} modelos</span> · Datos verificados de fabricantes
-        </p>
-        <p class="comp-beta-tag">🚧 En construcción — estamos añadiendo modelos, datos y funcionalidades. <a href="/contacto">Reportar error</a></p>
-      </div>
-    </section>
+  <!-- HERO BAND -->
+  <div class="hero-band">
+    <img src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1600&q=80&auto=format" alt="EstaciÃ³n de carga elÃ©ctrica" loading="eager">
+  </div>
 
-    <!-- PANEL: Campos y filtros -->
-    <section class="comp-unified" id="campos-filtros">
-      <div class="page-width">
-        <div class="unified-header">
-          <h2>Campos y filtros</h2>
-          <button class="btn-reset" id="btn-reset" style="display:none;">Limpiar filtros</button>
+  <main>
+    <!-- Continuous panel: same pattern as homepage guias-section â†’ cat-blocks -->
+    <section class="comp-section">
+      <div class="comp-outer">
+
+        <!-- Block 1: Intro (overlaps hero, rounded top) -->
+        <div class="comp-intro">
+          <div class="comp-intro-inner">
+            <h2>Comparador de <em>elÃ©ctricos</em></h2>
+            <p>Dinos quÃ© necesitas. Nosotros te decimos quÃ© coches lo cumplen. <strong>{data.total_modelos} modelos</strong> con datos verificados.</p>
+          </div>
         </div>
-        <div class="panel-grid" id="panel-grid"></div>
-      </div>
-    </section>
 
-    <!-- RESULTS -->
-    <section class="comp-results" id="resultados">
-      <div class="page-width">
-        <div class="results-header">
-          <p class="results-count"><span id="count">{data.total_modelos}</span> coches cumplen tus requisitos</p>
+        <!-- Block 2: Top bar (count + sort + view) -->
+        <div class="comp-topbar" id="filter-bar">
+          <div class="result-count-bar"><span id="count">{data.total_modelos}</span> de {data.total_modelos}</div>
+          <span class="topbar-sep"></span>
+          <div class="search-wrap" id="search-wrap">
+            <input type="text" id="model-search" class="model-search" placeholder="Buscar modelo..." autocomplete="off" />
+            <div class="search-results" id="search-results"></div>
+          </div>
+          <span class="topbar-sep"></span>
+          <div class="sort-control" id="sort-control">
+            <label for="sort-select" class="sort-label">Ordenar</label>
+            <select id="sort-select" class="sort-select">
+              <option value="">AutonomÃ­a â†“</option>
+              <option value="pvp-asc">Precio â†‘</option>
+              <option value="pvp-desc">Precio â†“</option>
+              <option value="potencia_cv-desc">Potencia â†“</option>
+              <option value="carga_dc-desc">Carga DC â†“</option>
+              <option value="aceleracion-asc">0-100 â†‘</option>
+              <option value="consumo-asc">Consumo â†‘</option>
+              <option value="peso-asc">Peso â†‘</option>
+              <option value="maletero-desc">Maletero â†“</option>
+            </select>
+          </div>
+          <button class="reset-btn" id="btn-reset" style="display:none;">Limpiar</button>
+          <div class="topbar-spacer"></div>
           <div class="view-toggle" id="view-toggle">
             <button class="view-btn active" data-view="fichas">Fichas</button>
             <button class="view-btn" data-view="listado">Listado</button>
           </div>
         </div>
 
-        <!-- Fichas grid -->
-        <div class="results-grid" id="results-grid"></div>
+        <!-- Block 3: Fields grid (fixed layout, all fields visible) -->
+        <div class="comp-fields-panel">
+          <div class="panel-grid" id="panel-grid"></div>
+        </div>
 
-        <!-- Listado table -->
-        <div class="results-table-outer" id="results-table-outer" style="display:none;">
-          <div class="scroll-nav" id="scroll-nav">
-            <span class="scroll-nav-hint">Desliza para ver más columnas</span>
-            <button class="scroll-btn" id="scroll-left" aria-label="Scroll izquierda">←</button>
-            <button class="scroll-btn" id="scroll-right" aria-label="Scroll derecha">→</button>
+        <!-- Separator bar between filters and results -->
+        <div class="comp-panel-separator"></div>
+
+        <!-- Block 4: Results -->
+        <div class="comp-results">
+          <div class="fichas-view active" id="fichas-view">
+            <div class="fichas-grid" id="results-grid"></div>
           </div>
-          <div class="results-table-wrap" id="results-table-wrap">
-            <table class="results-table" id="results-table">
-              <thead id="results-thead"></thead>
-              <tbody id="results-tbody"></tbody>
-            </table>
+
+          <div class="listado-view" id="listado-view" style="display:none;">
+            <div class="results-table-outer" id="results-table-outer">
+              <div class="scroll-nav" id="scroll-nav">
+                <span class="scroll-nav-hint">Desliza para ver mÃ¡s columnas</span>
+                <button class="scroll-btn" id="scroll-left" aria-label="Scroll izquierda">â†</button>
+                <button class="scroll-btn" id="scroll-right" aria-label="Scroll derecha">â†’</button>
+              </div>
+              <div class="results-table-wrap" id="results-table-wrap">
+                <table class="listado-table" id="results-table">
+                  <thead id="results-thead"></thead>
+                  <tbody id="results-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <p class="results-empty" id="no-results" style="display:none;">
+            NingÃºn modelo cumple todos tus requisitos. Prueba a relajar algÃºn filtro.
+          </p>
+        </div>
+
+        <!-- Floating compare bar -->
+        <div class="compare-bar" id="compare-bar" style="display:none;">
+          <div class="compare-bar-inner">
+            <span class="compare-count" id="compare-count">0 seleccionados</span>
+            <button class="compare-btn" id="compare-btn">Comparar seleccionados</button>
+            <button class="compare-clear" id="compare-clear">Limpiar selecciÃ³n</button>
           </div>
         </div>
 
-        <p class="results-empty" id="no-results" style="display:none;">
-          Ningún modelo cumple todos tus requisitos. Prueba a relajar algún filtro.
-        </p>
-      </div>
-    </section>
+        <!-- Block 4: Methodology (rounded bottom = closes panel) -->
+        <div class="comp-methodology">
+          <p class="meth-label">Sobre estos datos</p>
+          <p>
+            Todos los datos provienen de las fichas tÃ©cnicas oficiales de cada fabricante
+            para el mercado espaÃ±ol. Cuando no hay dato oficial disponible, se usa
+            ev-database.org como fuente de referencia. Las cifras de autonomÃ­a corresponden al ciclo WLTP combinado.
+            Los precios (PVP) son orientativos, corresponden al mes indicado y pueden variar
+            segÃºn configuraciÃ³n, promociones o actualizaciones del fabricante. Consulta siempre
+            la web oficial del fabricante para el precio vigente.
+            Ãšltima actualizaciÃ³n: abril 2026.
+          </p>
+        </div>
 
-    <!-- METHODOLOGY -->
-    <section class="comp-methodology">
-      <div class="page-width">
-        <p class="t-small">Sobre estos datos</p>
-        <p>
-          Todos los datos provienen de las fichas técnicas oficiales de cada fabricante
-          para el mercado español. Cuando no hay dato oficial disponible, se usa
-          ev-database.org como fuente de referencia. Las cifras de autonomía corresponden al ciclo WLTP combinado.
-          Los precios (PVP) son orientativos, corresponden al mes indicado y pueden variar
-          según configuración, promociones o actualizaciones del fabricante. Consulta siempre
-          la web oficial del fabricante para el precio vigente.
-          Última actualización: abril 2026.
-        </p>
       </div>
     </section>
   </main>
@@ -108,41 +142,41 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     voltajesData: voltajes,
     bombaOptsData: bombaOpts
   }}>
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // FIELD DEFINITIONS
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const FIELDS = [
-      { id:'autonomia',     label:'Autonomía',      shortLabel:'Auton.',  unit:'km',        key:'autonomia_wltp_km',       dflt:true,  sortAsc:false, filterType:'min' },
+      { id:'autonomia',     label:'AutonomÃ­a',      shortLabel:'Auton.',  unit:'km',        key:'autonomia_wltp_km',       dflt:false, sortAsc:false, filterType:'min' },
       { id:'potencia_cv',   label:'Potencia',        shortLabel:'Pot.',    unit:'CV',        key:'potencia_cv',             dflt:true,  sortAsc:false, filterType:'min' },
       { id:'potencia_kw',   label:'Potencia (kW)',   shortLabel:'Pot.kW',  unit:'kW',        key:'potencia_kw',             dflt:false, sortAsc:false, filterType:'min' },
       { id:'par',           label:'Par motor',       shortLabel:'Par',     unit:'Nm',        key:'par_nm',                  dflt:false, sortAsc:false, filterType:'min' },
       { id:'carga_dc',      label:'Carga DC',        shortLabel:'DC',      unit:'kW',        key:'carga_dc_max_kw',         dflt:true,  sortAsc:false, filterType:'min' },
       { id:'carga_ac',      label:'Carga AC',        shortLabel:'AC',      unit:'kW',        key:'carga_ac_max_kw',         dflt:false, sortAsc:false, filterType:'min' },
-      { id:'t_10_80',       label:'T 10→80%',        shortLabel:'10→80',   unit:'min',       key:'t_10_80_min',             dflt:false, sortAsc:true,  filterType:'max' },
-      { id:'bateria_neta',  label:'Batería neta',    shortLabel:'Bat.',    unit:'kWh',       key:'bateria_neta_kwh',        dflt:true,  sortAsc:false, filterType:'min', dec:1 },
-      { id:'bateria_bruta', label:'Batería bruta',   shortLabel:'Bat.br',  unit:'kWh',       key:'bateria_bruta_kwh',       dflt:false, sortAsc:false, filterType:'min' },
+      { id:'t_10_80',       label:'T 10â†’80%',        shortLabel:'10â†’80',   unit:'min',       key:'t_10_80_min',             dflt:false, sortAsc:true,  filterType:'max' },
+      { id:'bateria_neta',  label:'BaterÃ­a neta',    shortLabel:'Bat.',    unit:'kWh',       key:'bateria_neta_kwh',        dflt:true,  sortAsc:false, filterType:'min', dec:1 },
+      { id:'bateria_bruta', label:'BaterÃ­a bruta',   shortLabel:'Bat.br',  unit:'kWh',       key:'bateria_bruta_kwh',       dflt:false, sortAsc:false, filterType:'min' },
       { id:'maletero',      label:'Maletero',        shortLabel:'Malet.',  unit:'L',         key:'maletero_l',              dflt:true,  sortAsc:false, filterType:'min' },
       { id:'aceleracion',   label:'0-100',           shortLabel:'0-100',   unit:'s',         key:'aceleracion_0_100_s',     dflt:true,  sortAsc:true,  filterType:'max', dec:1 },
-      { id:'vel_max',       label:'Vel. máx',        shortLabel:'Vmáx',    unit:'km/h',      key:'velocidad_max_kmh',       dflt:false, sortAsc:false, filterType:'min' },
+      { id:'vel_max',       label:'Vel. mÃ¡x',        shortLabel:'VmÃ¡x',    unit:'km/h',      key:'velocidad_max_kmh',       dflt:false, sortAsc:false, filterType:'min' },
       { id:'consumo',       label:'Consumo',         shortLabel:'Cons.',   unit:'kWh/100',   key:'consumo_wltp_kwh100km',   dflt:true,  sortAsc:true,  filterType:'max', dec:1 },
       { id:'peso',          label:'Peso',            shortLabel:'Peso',    unit:'kg',        key:'peso_kg',                 dflt:true,  sortAsc:true,  filterType:'max' },
-      { id:'pvp',           label:'PVP',             shortLabel:'PVP',     unit:'€',         key:'pvp',                     dflt:true,  sortAsc:true,  filterType:'max', fmt:'eur' },
+      { id:'pvp',           label:'PVP',             shortLabel:'PVP',     unit:'â‚¬',         key:'pvp',                     dflt:true,  sortAsc:true,  filterType:'max', fmt:'eur' },
       { id:'cx',            label:'Cx',              shortLabel:'Cx',      unit:'',          key:'cx',                      dflt:false, sortAsc:true,  filterType:'max', dec:3 },
       { id:'largo',         label:'Largo',           shortLabel:'Largo',   unit:'mm',        key:'largo_mm',                dflt:false, sortAsc:false, filterType:'min' },
       { id:'ancho',         label:'Ancho',           shortLabel:'Ancho',   unit:'mm',        key:'ancho_mm',                dflt:false, sortAsc:false, filterType:'min' },
       { id:'alto',          label:'Alto',            shortLabel:'Alto',    unit:'mm',        key:'alto_mm',                 dflt:false, sortAsc:false, filterType:'min' },
       { id:'batalla',       label:'Batalla',         shortLabel:'Bat.mm',  unit:'mm',        key:'batalla_mm',              dflt:false, sortAsc:false, filterType:'min' },
-      { id:'diametro_giro', label:'Diám. giro',      shortLabel:'D.giro',  unit:'m',         key:'diametro_giro_m',         dflt:false, sortAsc:true,  filterType:'max', dec:1 },
+      { id:'diametro_giro', label:'DiÃ¡m. giro',      shortLabel:'D.giro',  unit:'m',         key:'diametro_giro_m',         dflt:false, sortAsc:true,  filterType:'max', dec:1 },
       { id:'frunk',         label:'Frunk',           shortLabel:'Frunk',   unit:'L',         key:'frunk_l',                 dflt:false, sortAsc:false, filterType:'min' },
       { id:'remolque',      label:'Remolque',        shortLabel:'Remolq.', unit:'kg',        key:'capacidad_remolque_kg',   dflt:false, sortAsc:false, filterType:'min' },
-      { id:'garantia',      label:'Garantía bat.',   shortLabel:'Garant.', unit:'',          key:'garantia_bateria',        dflt:false, sortAsc:false, filterType:null, isText:true },
+      { id:'garantia',      label:'GarantÃ­a bat.',   shortLabel:'Garant.', unit:'',          key:'garantia_bateria',        dflt:false, sortAsc:false, filterType:null, isText:true },
     ];
 
     const CATS = [
       { id:'tipo',     label:'Tipo',       key:'tipo',         options: tiposData },
-      { id:'traccion', label:'Tracción',    key:'traccion',     options: traccionesData },
+      { id:'traccion', label:'TracciÃ³n',    key:'traccion',     options: traccionesData },
       { id:'marca',    label:'Marca',       key:'marca',        options: marcasData },
-      { id:'quimica',  label:'Química',     key:'quimica',      options: quimicasData },
+      { id:'quimica',  label:'QuÃ­mica',     key:'quimica',      options: quimicasData },
       { id:'voltaje',  label:'Voltaje',     key:'voltaje',      options: voltajesData, suffix:' V' },
       { id:'bomba',    label:'B. calor',    key:'bomba_calor',  options: bombaOptsData },
     ];
@@ -152,10 +186,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     let filterVals = {};   // { fieldId: 'value' }
     let catVals = {};      // { catId: ['val1','val2',...] }
     let openPopover = null; // id of currently open popover
+    let filterModes = {};  // { fieldId: 'min'|'max' } â€” runtime override of filterType
+    let allFieldsOn = false; // track select-all state
+    let pickedIds = new Set();  // IDs of models picked for comparison
+    let compareMode = false;    // true = show only picked models
 
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // DOM REFS
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const allModelos = modelos;
     let currentView = 'fichas';
     let tableSortId = null;
@@ -173,10 +211,16 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     const scrollNav = document.getElementById('scroll-nav');
     const scrollLeftBtn = document.getElementById('scroll-left');
     const scrollRightBtn = document.getElementById('scroll-right');
+    const searchInput = document.getElementById('model-search');
+    const searchResultsEl = document.getElementById('search-results');
+    const compareBar = document.getElementById('compare-bar');
+    const compareCountEl = document.getElementById('compare-count');
+    const compareBtn = document.getElementById('compare-btn');
+    const compareClear = document.getElementById('compare-clear');
 
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // HELPERS
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     function fmtField(val, field) {
       if (val === null || val === undefined) return '\u2014';
       if (field.fmt === 'eur') return val.toLocaleString('es-ES') + '\u00a0\u20ac';
@@ -213,16 +257,16 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     }
 
     function photoSrc(m) {
-      return m.foto ? '/comparador/' + m.slug + '.webp?v=10' : '/comparador/placeholder.svg';
+      return m.foto ? '/comparador/' + m.slug + '.png?v=11' : '/comparador/placeholder.svg';
     }
 
     function hasAnyFilter() {
       return Object.values(filterVals).some(v => v) || Object.values(catVals).some(v => v && v.length > 0);
     }
 
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // CLOSE POPOVERS ON OUTSIDE CLICK
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     document.addEventListener('mousedown', (e) => {
       if (openPopover && !e.target.closest('.field-item.locked')) {
         openPopover = null;
@@ -230,14 +274,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       }
     });
 
-    // ═══════════════════════════════════════════════════════
-    // RENDER PANEL (unified grid)
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // RENDER PANEL (unified grid: locked cats + toggleable fields)
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     function renderPanel() {
       const container = panelGrid;
       container.innerHTML = '';
 
-      // ── Category fields (locked, always active) ──
+      // â”€â”€ Category fields (locked, always active) â”€â”€
       CATS.forEach(c => {
         const vals = catVals[c.id] || [];
         const hasF = vals.length > 0;
@@ -245,11 +289,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
         const item = document.createElement('div');
         item.className = 'field-item active locked';
-
-        const toggle = document.createElement('span');
-        toggle.className = 'field-toggle on locked-toggle';
-        toggle.title = 'Campo b\u00e1sico (siempre visible)';
-        toggle.innerHTML = '<span class="field-toggle-track"><span class="field-toggle-knob"></span></span>';
 
         const label = document.createElement('span');
         label.className = 'field-label';
@@ -274,7 +313,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
         filterWrap.appendChild(filterBtn);
 
-        item.appendChild(toggle);
         item.appendChild(label);
         item.appendChild(filterWrap);
 
@@ -323,12 +361,34 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         container.appendChild(item);
       });
 
-      // ── Divider ──
+      // â”€â”€ Select All + Divider â”€â”€
+      const selAllRow = document.createElement('div');
+      selAllRow.className = 'panel-select-all-row';
+      const selAllBtn = document.createElement('button');
+      selAllBtn.className = 'panel-select-all-btn';
+      const allOn = selectedFields.length === FIELDS.length;
+      selAllBtn.textContent = allOn ? 'Volver a predefinidos' : 'Seleccionar todos';
+      selAllBtn.addEventListener('click', () => {
+        if (allOn) {
+          selectedFields = [...DEFAULT_IDS];
+          // Clear filters of deselected fields
+          FIELDS.forEach(f => { if (!DEFAULT_IDS.includes(f.id)) filterVals[f.id] = ''; });
+        } else {
+          selectedFields = FIELDS.map(f => f.id);
+        }
+        allFieldsOn = !allOn;
+        btnReset.style.display = hasAnyFilter() ? '' : 'none';
+        renderPanel();
+        update();
+      });
+      selAllRow.appendChild(selAllBtn);
+      container.appendChild(selAllRow);
+
       const divider = document.createElement('div');
       divider.className = 'panel-divider';
       container.appendChild(divider);
 
-      // ── Numeric fields (toggleable) ──
+      // â”€â”€ Numeric fields (toggleable, with sort + filter direction) â”€â”€
       FIELDS.forEach(f => {
         const isActive = selectedFields.includes(f.id);
         const fv = filterVals[f.id] || '';
@@ -352,6 +412,29 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           update();
         });
 
+        // â”€â”€ Sort button (per-field) â”€â”€
+        const isSorted = tableSortId === f.id;
+        const sortBtn = document.createElement('button');
+        sortBtn.className = 'field-sort-btn' + (isSorted ? ' sort-active' : '');
+        if (isSorted) {
+          sortBtn.innerHTML = tableSortAsc
+            ? '<svg width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 0L7 5H0z" fill="currentColor"/></svg>'
+            : '<svg width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 5L0 0h7z" fill="currentColor"/></svg>';
+        } else {
+          sortBtn.innerHTML = '<svg width="7" height="8" viewBox="0 0 7 8"><path d="M3.5 0L6 3H1z" fill="currentColor"/><path d="M3.5 8L1 5h5z" fill="currentColor"/></svg>';
+        }
+        sortBtn.title = 'Ordenar por ' + f.label;
+        sortBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          handleSort(f.id);
+          // Sync topbar select
+          const selVal = f.id + '-' + (tableSortAsc ? 'asc' : 'desc');
+          const sortSel = document.getElementById('sort-select');
+          const optMatch = Array.from(sortSel.options).find(o => o.value === selVal);
+          if (optMatch) sortSel.value = selVal; else sortSel.value = '';
+          renderPanel();
+        });
+
         const label = document.createElement('span');
         label.className = 'field-label';
         label.textContent = f.label;
@@ -360,9 +443,18 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         filterWrap.className = 'field-filter';
 
         if (f.filterType) {
-          const sym = document.createElement('span');
-          sym.className = 'field-filter-sym';
-          sym.textContent = f.filterType === 'min' ? '\u2265' : '\u2264';
+          const curMode = filterModes[f.id] || f.filterType;
+
+          const sym = document.createElement('button');
+          sym.className = 'field-filter-sym field-filter-sym-btn';
+          sym.textContent = curMode === 'min' ? '\u2265' : '\u2264';
+          sym.title = curMode === 'min' ? 'Filtrar: mayor o igual (click para cambiar)' : 'Filtrar: menor o igual (click para cambiar)';
+          sym.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterModes[f.id] = curMode === 'min' ? 'max' : 'min';
+            renderPanel();
+            if (filterVals[f.id]) update();
+          });
 
           const input = document.createElement('input');
           input.type = 'number';
@@ -390,27 +482,44 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         }
 
         item.appendChild(toggle);
+        item.appendChild(sortBtn);
         item.appendChild(label);
         item.appendChild(filterWrap);
         container.appendChild(item);
       });
     }
 
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // VIEW TOGGLE
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     document.querySelectorAll('.view-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentView = btn.dataset.view;
+
+        // Show/hide views
+        const fichasView = document.getElementById('fichas-view');
+        const listadoView = document.getElementById('listado-view');
+        if (currentView === 'fichas') {
+          fichasView.style.display = 'block';
+          fichasView.classList.add('active');
+          listadoView.style.display = 'none';
+          listadoView.classList.remove('active');
+        } else {
+          fichasView.style.display = 'none';
+          fichasView.classList.remove('active');
+          listadoView.style.display = 'block';
+          listadoView.classList.add('active');
+        }
+
         update();
       });
     });
 
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // FILTERING
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     function passesFilter(m) {
       // Numeric filters
       for (const [id, val] of Object.entries(filterVals)) {
@@ -420,8 +529,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         const n = parseFloat(val);
         if (isNaN(n)) continue;
         const mval = m[f.key];
-        if (f.filterType === 'min' && (mval || 0) < n) return false;
-        if (f.filterType === 'max' && (mval || Infinity) > n) return false;
+        const mode = filterModes[id] || f.filterType;
+        if (mode === 'min' && (mval || 0) < n) return false;
+        if (mode === 'max' && (mval || Infinity) > n) return false;
       }
       // Category filters (multi-select: model must match ANY of the selected values)
       for (const [id, vals] of Object.entries(catVals)) {
@@ -433,9 +543,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       return true;
     }
 
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // SORTING
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     function sortModelos(arr) {
       if (tableSortId) {
         const f = FIELDS.find(x => x.id === tableSortId);
@@ -463,26 +573,20 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       update();
     }
 
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // RENDER CARD (FICHAS)
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     function renderCard(m) {
       const card = document.createElement('article');
-      card.className = 'ev-card';
+      const isPicked = pickedIds.has(modelId(m));
+      card.className = 'ev-card' + (isPicked ? ' ev-card-picked' : '');
+      card.addEventListener('click', () => togglePick(m));
 
       const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
-      const statFields = activeFields.slice(0, 4);
-      const detailFields = activeFields.slice(4);
 
-      let statsHtml = '';
-      statFields.forEach(f => {
-        const val = fmtField(m[f.key], f);
-        const unitLabel = f.unit || f.label;
-        statsHtml += '<div class="ev-stat"><span class="ev-stat-value">' + val + '</span><span class="ev-stat-label">' + unitLabel + '</span></div>';
-      });
-
+      // All fields as clean detail rows (no stats grid)
       let detailsHtml = '';
-      detailFields.forEach(f => {
+      activeFields.forEach(f => {
         const val = m[f.key];
         let display = fmtField(val, f);
         if (f.unit && !f.fmt && !f.isText && val != null) display += '\u00a0' + f.unit;
@@ -492,6 +596,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
       card.innerHTML =
         '<div class="ev-card-photo">' +
+          (isPicked ? '<div class="pick-badge">âœ“</div>' : '') +
           '<img src="' + photoSrc(m) + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy" />' +
         '</div>' +
         '<div class="ev-card-body">' +
@@ -501,21 +606,20 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
               '<span class="ev-modelo">' + m.modelo + '</span>' +
               '<span class="ev-variante">' + m.variante + '</span>' +
             '</div>' +
-            '<div class="ev-card-autonomia">' +
-              '<span class="ev-autonomia-value">' + fmt(m.autonomia_wltp_km) + '</span>' +
-              '<span class="ev-autonomia-unit">km</span>' +
+            '<div class="ev-autonomia-inline">' +
+              '<span class="val">' + fmt(m.autonomia_wltp_km) + '</span>' +
+              '<span class="unit">km</span>' +
             '</div>' +
           '</div>' +
           '<div class="ev-badges">' + makeBadgesHtml(m) + '</div>' +
-          '<div class="ev-card-stats" style="grid-template-columns:repeat(' + statFields.length + ',1fr)">' + statsHtml + '</div>' +
           (detailsHtml ? '<div class="ev-card-details">' + detailsHtml + '</div>' : '') +
         '</div>';
       return card;
     }
 
-    // ═══════════════════════════════════════════════════════
-    // RENDER TABLE (LISTADO) — adaptive layout
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // RENDER TABLE (LISTADO) â€” adaptive layout
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const MOBILE_BP = 768;
     const MIN_COL_W = 100;  // minimum data-column width (px)
     let computedColW = MIN_COL_W;
@@ -548,10 +652,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       // Column width = exact division of available space by visible columns
       // This guarantees fitCols columns fill the viewport perfectly
       if (nCols <= fitCols) {
-        // All columns fit — each gets equal share, no scroll needed
+        // All columns fit â€” each gets equal share, no scroll needed
         computedColW = availW / nCols;
       } else {
-        // More columns than fit — size so visible ones fill exactly
+        // More columns than fit â€” size so visible ones fill exactly
         computedColW = availW / fitCols;
       }
 
@@ -584,7 +688,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       updateScrollNav();
     }
 
-    // ── Scroll navigation helpers ──
+    // â”€â”€ Scroll navigation helpers â”€â”€
     function updateScrollNav() {
       // Show scroll nav when table overflows its container
       requestAnimationFrame(() => {
@@ -626,7 +730,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
     function renderRow(m) {
       const tr = document.createElement('tr');
-      tr.className = 'ev-row';
+      const isPicked = pickedIds.has(modelId(m));
+      tr.className = 'ev-row' + (isPicked ? ' ev-row-picked' : '');
+      tr.style.cursor = 'pointer';
+      tr.addEventListener('click', () => togglePick(m));
       const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
 
       let html = '<td class="col-modelo col-sticky">' +
@@ -656,11 +763,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       return tr;
     }
 
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // MAIN UPDATE
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     function update() {
       let filtered = allModelos.filter(m => passesFilter(m));
+      if (compareMode) filtered = filtered.filter(m => pickedIds.has(modelId(m)));
       sortModelos(filtered);
 
       const hasResults = filtered.length > 0;
@@ -668,13 +776,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       noResults.style.display = hasResults ? 'none' : 'block';
 
       if (currentView === 'fichas') {
-        grid.style.display = hasResults ? '' : 'none';
-        tableOuter.style.display = 'none';
         grid.innerHTML = '';
         filtered.forEach(m => grid.appendChild(renderCard(m)));
       } else {
-        grid.style.display = 'none';
-        tableOuter.style.display = hasResults ? '' : 'none';
         renderTableHeaders();
         tbody.innerHTML = '';
         filtered.forEach(m => tbody.appendChild(renderRow(m)));
@@ -682,26 +786,133 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       }
     }
 
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // RESET
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     btnReset.addEventListener('click', () => {
       filterVals = {};
       catVals = {};
+      selectedFields = [...DEFAULT_IDS];
       tableSortId = null;
+      tableSortAsc = true;
+      filterModes = {};
+      allFieldsOn = false;
+      pickedIds.clear();
+      compareMode = false;
+      updateCompareBar();
+      document.getElementById('sort-select').value = '';
       btnReset.style.display = 'none';
       openPopover = null;
       renderPanel();
       update();
     });
 
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // SORT SELECT (Fichas + Listado)
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    const sortSelect = document.getElementById('sort-select');
+    sortSelect.addEventListener('change', () => {
+      const v = sortSelect.value;
+      if (!v) { tableSortId = null; tableSortAsc = true; }
+      else {
+        const parts = v.split('-');
+        const dir = parts.pop();
+        const fid = parts.join('-');
+        tableSortId = fid;
+        tableSortAsc = dir === 'asc';
+      }
+      update();
+    });
+
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // MODEL SELECTION & COMPARE
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    function modelId(m) { return m.marca + '|' + m.modelo + '|' + m.variante; }
+
+    function togglePick(m) {
+      const id = modelId(m);
+      if (pickedIds.has(id)) pickedIds.delete(id);
+      else pickedIds.add(id);
+      updateCompareBar();
+      update();
+    }
+
+    function updateCompareBar() {
+      const n = pickedIds.size;
+      compareBar.style.display = n > 0 ? '' : 'none';
+      compareCountEl.textContent = n + ' seleccionado' + (n !== 1 ? 's' : '');
+      compareBtn.disabled = n < 2;
+      compareBtn.textContent = compareMode ? 'Ver todos' : 'Comparar seleccionados';
+    }
+
+    compareBtn.addEventListener('click', () => {
+      if (compareMode) {
+        compareMode = false;
+        pickedIds.clear();
+      } else {
+        compareMode = true;
+      }
+      updateCompareBar();
+      update();
+    });
+
+    compareClear.addEventListener('click', () => {
+      pickedIds.clear();
+      compareMode = false;
+      updateCompareBar();
+      update();
+    });
+
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // SEARCH
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    let searchDebounce = null;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => {
+        const q = searchInput.value.trim().toLowerCase();
+        if (q.length < 2) { searchResultsEl.style.display = 'none'; searchResultsEl.innerHTML = ''; return; }
+        const matches = allModelos.filter(m => {
+          const full = (m.marca + ' ' + m.modelo + ' ' + m.variante).toLowerCase();
+          return q.split(/\s+/).every(w => full.includes(w));
+        }).slice(0, 8);
+        if (matches.length === 0) { searchResultsEl.style.display = 'none'; searchResultsEl.innerHTML = ''; return; }
+        searchResultsEl.innerHTML = matches.map(m => {
+          const id = modelId(m);
+          const picked = pickedIds.has(id);
+          return '<button class="search-item' + (picked ? ' picked' : '') + '" data-mid="' + id + '">' +
+            '<span class="si-marca">' + m.marca + '</span> ' +
+            '<span class="si-modelo">' + m.modelo + ' ' + m.variante + '</span>' +
+            (picked ? '<span class="si-check">âœ“</span>' : '') +
+            '</button>';
+        }).join('');
+        searchResultsEl.style.display = 'block';
+        searchResultsEl.querySelectorAll('.search-item').forEach(btn => {
+          btn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            const mid = btn.dataset.mid;
+            const m = allModelos.find(x => modelId(x) === mid);
+            if (m) togglePick(m);
+            searchInput.dispatchEvent(new Event('input'));
+          });
+        });
+      }, 150);
+    });
+
+    searchInput.addEventListener('blur', () => {
+      setTimeout(() => { searchResultsEl.style.display = 'none'; }, 200);
+    });
+    searchInput.addEventListener('focus', () => {
+      if (searchInput.value.trim().length >= 2) searchInput.dispatchEvent(new Event('input'));
+    });
+
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // INIT
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     renderPanel();
     update();
 
-    // Recalculate table on resize (mobile ↔ desktop)
+    // Recalculate table on resize (mobile â†” desktop)
     let resizeTimer;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
@@ -709,157 +920,248 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         if (currentView === 'listado') update();
       }, 200);
     });
+
+    // Top bar shadow when stuck
+    const compTopbar = document.getElementById('filter-bar');
+    if (compTopbar) {
+      const sentinel = document.createElement('div');
+      sentinel.style.height = '1px';
+      compTopbar.parentNode.insertBefore(sentinel, compTopbar);
+      const obs = new IntersectionObserver(([e]) => {
+        compTopbar.classList.toggle('scrolled', !e.isIntersecting);
+      }, { threshold: [0] });
+      obs.observe(sentinel);
+    }
   </script>
 </Layout>
 
 <!-- Use is:global so styles apply to JS-rendered elements -->
 <style is:global>
-  /* Override max-width for comparador */
-  .comparador .page-width {
-    max-width: 1400px;
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     TOKENS
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  :root {
+    --photo-bg: linear-gradient(180deg, #131313, #1a1a1a);
+    --panel-bg: #ECEDF0;
+    --panel-border: #D8DAE0;
+    --panel-separator: #B0B3BC;
+  }
+  [data-theme="dark"] {
+    --photo-bg: linear-gradient(180deg, #111318, #161921);
+    --panel-bg: #1C1F2A;
+    --panel-border: #2A2D3A;
+    --panel-separator: #3A3D4A;
   }
 
-  /* ── Beta tag (inline in hero) ────────── */
-  .comp-beta-tag {
-    display: inline-block;
-    margin-top: 1rem;
-    font-family: var(--font-sans);
-    font-size: 0.75rem;
-    font-weight: 400;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 0.01em;
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     HERO BAND
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .hero-band {
+    position: relative;
+    width: 100%;
+    height: clamp(200px, 30vh, 360px);
+    overflow: hidden;
+    background: var(--black);
   }
-  .comp-beta-tag a {
-    color: var(--yellow);
-    text-decoration: none;
-    font-weight: 500;
+  .hero-band img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+    display: block;
   }
-  .comp-beta-tag a:hover { text-decoration: underline; }
-
-  /* ── Hero ─────────────────────────────── */
-  .comp-hero {
-    background: var(--header-bg);
-    color: var(--header-text);
-    padding: 2.5rem 0 2rem;
+  .hero-band::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    background: linear-gradient(to bottom, transparent 40%, rgba(17,17,17,.15) 70%, rgba(17,17,17,.5) 100%);
+    pointer-events: none;
   }
-  .comp-label {
-    display: inline-block;
-    font-family: var(--font-sans);
-    font-size: 0.6875rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--yellow);
-    margin-bottom: 0.65rem;
-  }
-  .comp-hero h1 {
-    margin: 0 0 0.5rem;
-    letter-spacing: -0.02em;
-    font-size: 1.875rem;
-    font-weight: 300;
-  }
-  .comp-deck {
-    font-family: var(--font-sans);
-    font-weight: 300;
-    font-size: 0.8125rem;
-    color: rgba(255,255,255,0.6);
-    line-height: 1.6;
-    margin: 0;
+  [data-theme="dark"] .hero-band::after {
+    background: linear-gradient(to bottom, transparent 40%, rgba(13,15,20,.2) 70%, rgba(13,15,20,.7) 100%);
   }
 
-  /* ═══════════════════════════════════════
-     UNIFIED BAR
-     ═══════════════════════════════════════ */
-  .comp-unified {
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     COMP SECTION â€” continuous panel, same as homepage
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .comp-section {
+    position: relative;
+    z-index: 10;
+    margin-top: -4rem;
+  }
+
+  .comp-outer {
+    max-width: var(--max-w);
+    margin-inline: auto;
+    padding-inline: var(--hub-gutter);
+    padding-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  /* Block 1: Intro â€” rounded top, overlaps hero */
+  .comp-intro {
     background: var(--surface);
-    padding: 1rem 0 0.85rem;
-    border-bottom: 1px solid var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px 12px 0 0;
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 2vw, 1.75rem);
+    box-shadow: 0 -8px 40px rgba(0,0,0,.12);
+  }
+  .comp-intro h2 {
+    font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+    font-weight: 200;
+    letter-spacing: -.03em;
+    line-height: 1.1;
+    margin-bottom: .4rem;
+  }
+  .comp-intro h2 em {
+    font-family: var(--font-serif);
+    font-style: italic;
+  }
+  .comp-intro p {
+    font-size: .85rem;
+    color: var(--text-secondary);
+    max-width: 60ch;
+    line-height: 1.6;
+  }
+  .comp-intro p strong {
+    color: var(--yellow);
+    font-weight: 600;
+  }
+
+  /* Block 2: Top bar â€” single row, sticky */
+  .comp-topbar {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-top: none;
+    padding: .55rem clamp(1.5rem, 3vw, 2.5rem);
+    display: flex;
+    align-items: center;
+    gap: .75rem;
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 50;
+    transition: box-shadow .3s;
   }
-  .unified-header {
+  .comp-topbar.scrolled {
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
+  }
+  .topbar-sep {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+  .topbar-spacer {
+    flex: 1;
+  }
+  .sort-control {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.75rem;
+    gap: .4rem;
   }
-  .unified-header-left {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-  .unified-header h2 {
-    font-family: var(--font-sans);
-    font-weight: 400;
-    font-size: 0.9375rem;
-    color: var(--text);
-    margin: 0;
-  }
-  .btn-reset {
-    font-family: var(--font-sans);
-    font-size: 0.6875rem;
+  .sort-label {
+    font-size: .72rem;
     font-weight: 400;
     color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .sort-select {
+    font-family: var(--font-sans);
+    font-size: .72rem;
+    padding: .35rem .6rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color .2s;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .5rem center;
+    padding-right: 1.5rem;
+  }
+  .sort-select:hover, .sort-select:focus {
+    border-color: var(--yellow);
+    outline: none;
+  }
+  [data-theme="dark"] .sort-select {
+    background-color: var(--surface-alt);
+  }
+
+  .reset-btn {
     background: none;
     border: 1px solid var(--border);
-    padding: 0.15rem 0.6rem;
-    border-radius: 4px;
+    color: var(--text-muted);
+    padding: .4rem .7rem;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s;
+    font-size: .62rem;
+    font-weight: 500;
+    transition: all .2s;
+    font-family: var(--font-sans);
   }
-  .btn-reset:hover { color: var(--text); border-color: var(--text-muted); }
+  .reset-btn:hover {
+    border-color: var(--text);
+    color: var(--text);
+  }
 
-  /* ── Unified fields grid ────────────── */
+  .result-count-bar {
+    font-size: .78rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+    white-space: nowrap;
+  }
+  .result-count-bar span {
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     FIELDS PANEL â€” fixed grid of all fields
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .comp-fields-panel {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-top: none;
+    padding: 0.85rem clamp(1.5rem, 3vw, 2.5rem);
+    overflow: hidden;
+  }
   .panel-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0.15rem 0.5rem;
   }
-  @media (max-width: 1200px) { .panel-grid { grid-template-columns: repeat(4, 1fr); } }
-  @media (max-width: 800px)  { .panel-grid { grid-template-columns: repeat(3, 1fr); } }
-  @media (max-width: 500px)  { .panel-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 1100px) { .panel-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 800px)  { .panel-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 500px)  { .panel-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
   .panel-divider {
     grid-column: 1 / -1;
     height: 1px;
-    background: var(--border);
+    background: var(--panel-border);
     margin: 0.25rem 0;
   }
 
-  .cat-chip {
-    background: var(--surface-alt);
-    color: var(--text);
-    font-weight: 400;
-    border-color: var(--border);
-  }
-  .cat-chip:hover {
-    border-color: var(--text-muted);
-  }
-  .cat-chip.has-filter {
-    background: var(--yellow-glow);
-    border-color: var(--yellow);
-    color: var(--black);
-    font-weight: 500;
-  }
-  [data-theme="dark"] .cat-chip.has-filter {
-    color: var(--yellow);
-  }
-
-
-
+  /* Individual cell in the fields grid */
+  /* â”€â”€ Field items (unified grid) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .field-item {
     display: flex;
     align-items: center;
-    gap: 0.35rem;
-    padding: 0.25rem 0.35rem;
+    gap: 0.25rem;
+    padding: 0.25rem 0.3rem;
     border-radius: 5px;
     transition: opacity 0.15s;
     position: relative;
   }
-  .field-item:not(.active) { opacity: 0.4; }
+  .field-item:not(.active) { opacity: 0.55; }
   .field-item:hover { background: rgba(0,0,0,0.03); opacity: 1; }
   [data-theme="dark"] .field-item:hover { background: rgba(255,255,255,0.04); }
+
+  /* Locked category items */
+  .field-item.locked { background: rgba(245, 197, 24, 0.04); }
+  [data-theme="dark"] .field-item.locked { background: rgba(245, 197, 24, 0.06); }
 
   /* Mini toggle */
   .field-toggle {
@@ -896,19 +1198,140 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .field-toggle.on .field-toggle-knob { left: 11px; }
 
-  /* Locked toggle (category fields — always active) */
+  /* Locked toggle (categories) */
   .locked-toggle {
     pointer-events: none;
     cursor: default;
   }
-  .field-item.locked {
-    background: rgba(245, 197, 24, 0.04);
+
+  /* Field label */
+  .field-label {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  [data-theme="dark"] .field-item.locked {
-    background: rgba(245, 197, 24, 0.06);
+  .field-item:not(.active) .field-label {
+    color: var(--text);
+    opacity: 0.7;
+  }
+  .field-item.active .field-label {
+    color: var(--text);
+    font-weight: 500;
   }
 
-  /* Category filter button (inside grid item) */
+  /* Inline filter (numeric) */
+  .field-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    flex-shrink: 0;
+  }
+  .field-filter-sym {
+    font-family: var(--font-sans);
+    font-size: 0.5625rem;
+    color: var(--text-muted);
+    width: 0.65rem;
+    text-align: center;
+  }
+  .field-filter-input {
+    width: 42px;
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    padding: 0.2rem 0.3rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--surface);
+    color: var(--text);
+    text-align: right;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .field-filter-input:focus { border-color: var(--yellow); }
+  .field-filter-input:not(:placeholder-shown) { border-color: var(--yellow); background: var(--yellow-glow); }
+  .field-filter-input::placeholder { color: var(--text-muted); opacity: 0.4; }
+  .field-filter-input::-webkit-inner-spin-button,
+  .field-filter-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .field-filter-input[type=number] { -moz-appearance: textfield; }
+  .field-filter-unit {
+    font-family: var(--font-sans);
+    font-size: 0.5rem;
+    color: var(--text-muted);
+    min-width: 1.5rem;
+  }
+
+
+  /* Select All button row */
+  .panel-select-all-row {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-start;
+    padding: 0.3rem 0 0.1rem;
+  }
+  .panel-select-all-btn {
+    font-family: var(--font-sans);
+    font-size: 0.625rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    background: none;
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+    padding: 0.2rem 0.55rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .panel-select-all-btn:hover {
+    color: var(--text);
+    border-color: var(--yellow);
+    border-style: solid;
+    background: var(--yellow-glow);
+  }
+
+  /* Per-field sort button */
+  .field-sort-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 12px;
+    height: 12px;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    opacity: 0;
+    flex-shrink: 0;
+    transition: opacity 0.15s, color 0.15s;
+  }
+  .field-sort-btn svg { display: block; }
+  .field-item:hover .field-sort-btn { opacity: 0.45; }
+  .field-sort-btn:hover { opacity: 1 !important; color: var(--text); }
+  .field-sort-btn.sort-active {
+    opacity: 1 !important;
+    color: var(--yellow);
+  }
+
+  /* Toggleable filter direction button */
+  .field-filter-sym-btn {
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0 1px;
+    border-radius: 2px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .field-filter-sym-btn:hover {
+    color: var(--yellow);
+    background: var(--yellow-glow);
+  }
+
+  /* Category filter button */
   .cat-filter-btn {
     font-family: var(--font-sans);
     font-size: 0.625rem;
@@ -935,7 +1358,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .cat-filter-btn svg { opacity: 0.5; flex-shrink: 0; }
   .cat-filter-btn.has-val svg { opacity: 0.8; }
 
-  /* Category popover (positioned below grid item) */
+  /* Category popover */
   .cat-popover {
     position: absolute;
     top: calc(100% + 4px);
@@ -949,286 +1372,241 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     min-width: 140px;
   }
 
-  .field-label {
-    font-family: var(--font-sans);
-    font-size: 0.6875rem;
-    font-weight: 400;
-    color: var(--text-secondary);
-    white-space: nowrap;
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .field-item.active .field-label {
-    color: var(--text);
-    font-weight: 500;
-  }
-
-  /* Inline filter */
-  .field-filter {
-    display: flex;
-    align-items: center;
-    gap: 0.15rem;
-    flex-shrink: 0;
-  }
-  .field-filter-sym {
-    font-family: var(--font-sans);
-    font-size: 0.5625rem;
-    color: var(--text-muted);
-    width: 0.65rem;
-    text-align: center;
-  }
-  .field-filter-input {
-    width: 50px;
-    font-family: var(--font-sans);
-    font-size: 0.6875rem;
-    padding: 0.2rem 0.3rem;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background: var(--surface);
-    color: var(--text);
-    text-align: right;
-    outline: none;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  .field-filter-input:focus { border-color: var(--yellow); }
-  .field-filter-input:not(:placeholder-shown) { border-color: var(--yellow); background: var(--yellow-glow); }
-  .field-filter-input::placeholder { color: var(--text-muted); opacity: 0.4; }
-  .field-filter-input::-webkit-inner-spin-button,
-  .field-filter-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-  .field-filter-input[type=number] { -moz-appearance: textfield; }
-  .field-filter-unit {
-    font-family: var(--font-sans);
-    font-size: 0.5rem;
-    color: var(--text-muted);
-    min-width: 1.5rem;
-  }
-
-
-  /* Toggle switch */
-  .toggle-wrap {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    user-select: none;
-  }
-  .toggle-label {
-    font-family: var(--font-sans);
-    font-size: 0.75rem;
-    font-weight: 400;
-    color: var(--text-secondary);
-  }
-  .toggle-switch {
-    width: 36px;
-    height: 20px;
-    border-radius: 10px;
-    background: var(--surface-alt);
-    position: relative;
-    transition: background 0.2s;
-  }
-  .toggle-switch.on { background: var(--yellow); }
-  .toggle-knob {
-    width: 16px;
-    height: 16px;
-    border-radius: 8px;
-    background: var(--surface);
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    transition: left 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-  }
-  .toggle-switch.on .toggle-knob { left: 18px; }
-
-  /* Chips container — wrap freely, all chips together */
-  .unified-chips {
-    display: flex;
-    gap: 0.35rem;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .chips-separator {
-    width: 1px;
-    height: 1.25rem;
-    background: var(--surface-alt);
-    flex-shrink: 0;
-  }
-
-  /* Individual chip */
-  .chip-wrap {
-    position: relative;
-    display: inline-flex;
-  }
-  .u-chip {
-    font-family: var(--font-sans);
-    font-size: 0.7rem;
-    font-weight: 400;
-    padding: 0.3rem 0.65rem;
-    border-radius: 20px;
-    border: 1.5px solid transparent;
-    cursor: pointer;
-    background: var(--surface-alt);
-    color: var(--text-muted);
-    transition: all 0.15s;
-    white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    line-height: 1.3;
-  }
-  .u-chip.active {
-    background: var(--yellow);
-    color: var(--black);
-    font-weight: 500;
-  }
-  .u-chip.has-filter {
-    background: var(--yellow-glow);
-    border-color: var(--yellow);
-    color: var(--black);
-    font-weight: 500;
-  }
-  [data-theme="dark"] .u-chip.has-filter {
-    color: var(--yellow);
-  }
-  .chip-filter-icon {
-    opacity: 0.35;
-    flex-shrink: 0;
-  }
-  .chip-remove {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    font-weight: 400;
-    color: var(--text-muted);
-    margin-left: 2px;
-    cursor: pointer;
-    line-height: 1;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    transition: all 0.15s;
-  }
-  .chip-remove:hover {
-    background: rgba(0,0,0,0.1);
-    color: #c33;
-  }
-
-  /* ── Popover ──────────────────────────── */
-  .chip-popover {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.75rem 0.85rem;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    z-index: 200;
-    min-width: 180px;
-  }
-  .pop-label {
-    font-family: var(--font-sans);
-    font-size: 0.625rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-    margin-bottom: 0.5rem;
-  }
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     POPOVER SHARED STYLES (sidebar)
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .pop-input-wrap {
     display: flex;
     align-items: center;
-    background: var(--surface-alt);
+    background: var(--surface);
     border-radius: 6px;
     border: 1px solid var(--border);
-    padding: 0 0.65rem;
+    padding: 0 .5rem;
+  }
+  .pop-prefix {
+    font-family: var(--font-sans);
+    font-size: .6rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    margin-right: .3rem;
   }
   .pop-input {
     flex: 1;
     border: none;
     background: transparent;
     font-family: var(--font-sans);
-    font-size: 0.9375rem;
-    padding: 0.5rem 0;
+    font-size: .8rem;
+    padding: .4rem 0;
     outline: none;
-    width: 70px;
+    width: 50px;
     color: var(--text);
   }
   .pop-unit {
     font-family: var(--font-sans);
-    font-size: 0.6875rem;
+    font-size: .6rem;
     color: var(--text-muted);
     flex-shrink: 0;
   }
   .pop-clear {
     font-family: var(--font-sans);
-    font-size: 0.6875rem;
+    font-size: .6rem;
     color: #c33;
     background: none;
     border: none;
     cursor: pointer;
-    margin-top: 0.4rem;
+    margin-top: .35rem;
     padding: 0;
     display: block;
   }
-
-  /* Category popover */
-  .chip-popover-cat {
-    min-width: 140px;
-  }
   .pop-options {
     display: flex;
+    max-height: 45vh;
+    overflow-y: auto;
     flex-direction: column;
     gap: 2px;
   }
   .pop-option {
     font-family: var(--font-sans);
-    font-size: 0.75rem;
-    padding: 0.4rem 0.65rem;
-    border-radius: 6px;
+    font-size: .7rem;
+    padding: .3rem .5rem;
+    border-radius: 5px;
     border: none;
     cursor: pointer;
     text-align: left;
-    background: var(--surface-alt);
+    background: var(--surface);
     color: var(--text-secondary);
     font-weight: 400;
     transition: all 0.1s;
   }
-  .pop-option:hover { background: var(--surface-alt); }
+  .pop-option:hover { background: var(--bg); }
   .pop-option-sel {
     background: var(--yellow) !important;
     color: var(--black) !important;
     font-weight: 600 !important;
   }
 
-  /* ── Hint ─────────────────────────────── */
-  .comp-hint {
-    background: rgba(245,197,24,0.12);
-    border-bottom: 1px solid var(--border);
-    padding: 0.6rem 0;
+  /* Separator bar between filters and results */
+  .comp-panel-separator {
+    height: 3px;
+    background: var(--panel-separator);
+    border-left: 1px solid var(--panel-border);
+    border-right: 1px solid var(--panel-border);
   }
-  .comp-hint .page-width {
-    display: flex;
-    gap: 0.4rem;
-    align-items: center;
-  }
-  .hint-icon { font-size: 0.8rem; }
-  .hint-text {
-    font-family: var(--font-sans);
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-  }
-  .hint-text strong { color: var(--text); font-weight: 600; }
 
-  /* ── Results ─────────────────────────── */
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     SEARCH BAR
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .search-wrap { position: relative; flex-shrink: 1; min-width: 0; }
+  .model-search {
+    font-family: var(--font-sans);
+    font-size: .75rem;
+    padding: .35rem .65rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    width: 180px;
+    outline: none;
+    transition: border-color .2s, width .3s;
+  }
+  .model-search::placeholder { color: var(--text-muted); }
+  .model-search:focus { border-color: var(--yellow); width: 240px; }
+  .search-results {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .35rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,.15);
+    z-index: 300;
+    min-width: 280px;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .search-item {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    width: 100%;
+    padding: .4rem .55rem;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: .72rem;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+    transition: background .15s;
+  }
+  .search-item:hover { background: rgba(245,197,24,.08); }
+  .search-item.picked { background: rgba(245,197,24,.1); }
+  .si-marca { color: var(--text-muted); font-size: .62rem; text-transform: uppercase; letter-spacing: .03em; min-width: 70px; }
+  .si-modelo { font-weight: 500; flex: 1; }
+  .si-check { color: var(--yellow); font-weight: 700; font-size: .8rem; }
+
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     CARD / ROW SELECTION
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .ev-card { cursor: pointer; }
+  .ev-card-picked {
+    outline: 2px solid var(--yellow);
+    outline-offset: -2px;
+    box-shadow: 0 0 0 4px rgba(245,197,24,.15), 0 2px 8px rgba(0,0,0,.07);
+  }
+  .pick-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--yellow);
+    color: #111;
+    font-size: .7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    box-shadow: 0 2px 6px rgba(0,0,0,.2);
+  }
+  .ev-row-picked td { background: rgba(245,197,24,.06) !important; }
+  .ev-row-picked td:first-child { border-left: 3px solid var(--yellow); }
+  /* Sticky column in picked rows needs solid bg so scrolling columns hide behind it */
+  .scroll-mode .ev-row-picked .col-sticky { background: #F2EFDE !important; }
+  [data-theme="dark"] .scroll-mode .ev-row-picked .col-sticky { background: #1A1914 !important; }
+  .scroll-mode .ev-row-picked:nth-child(even) .col-sticky { background: #EDEAD8 !important; }
+  [data-theme="dark"] .scroll-mode .ev-row-picked:nth-child(even) .col-sticky { background: #151310 !important; }
+
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     COMPARE BAR (floating bottom)
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .compare-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 500;
+    padding: .6rem 1rem;
+    background: var(--black);
+    border-top: 2px solid var(--yellow);
+    box-shadow: 0 -4px 20px rgba(0,0,0,.25);
+  }
+  .compare-bar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+  }
+  .compare-count { color: var(--yellow); font-size: .8rem; font-weight: 600; }
+  .compare-btn {
+    font-family: var(--font-sans);
+    font-size: .75rem;
+    font-weight: 600;
+    padding: .45rem 1.2rem;
+    border-radius: 6px;
+    border: none;
+    background: var(--yellow);
+    color: #111;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .compare-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .compare-btn:not(:disabled):hover { opacity: .85; }
+  .compare-clear {
+    font-family: var(--font-sans);
+    font-size: .7rem;
+    padding: .35rem .8rem;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: transparent;
+    color: #999;
+    cursor: pointer;
+    transition: border-color .2s, color .2s;
+  }
+  .compare-clear:hover { border-color: #888; color: #ccc; }
+  @media (max-width: 600px) {
+    .model-search { width: 120px; }
+    .model-search:focus { width: 160px; }
+    .compare-bar-inner { flex-wrap: wrap; gap: .5rem; }
+  }
+
+  /* â”€â”€ Results â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .comp-results {
-    padding: 1.25rem 0 3.5rem;
-    background: var(--surface-alt);
+    padding: 1.5rem clamp(1.5rem, 3vw, 2.5rem);
+    background: var(--surface);
     min-height: 60vh;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+  [data-theme="dark"] .comp-results {
+    background: var(--surface);
   }
   .results-header {
     display: flex;
@@ -1282,18 +1660,21 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     padding: 4rem 0;
   }
 
-  /* ═══════════════════════════════════════
-     FICHAS VIEW — 4 column grid
-     ═══════════════════════════════════════ */
-  .results-grid {
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     FICHAS GRID
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .fichas-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    gap: 1.25rem;
+    padding: 0;
   }
-  @media (max-width: 1100px) { .results-grid { grid-template-columns: repeat(3, 1fr); } }
-  @media (max-width: 800px)  { .results-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 500px)  { .results-grid { grid-template-columns: 1fr; } }
 
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     EV CARD â€” profile photo + data below
+     Photo area is a controlled 16:7 ratio
+     dark bg, car centered, never cropped.
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .ev-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -1304,6 +1685,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     transition: all 0.25s;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
   }
   .ev-card:hover {
     box-shadow: 0 4px 16px rgba(0,0,0,0.08);
@@ -1313,102 +1695,156 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     box-shadow: 0 4px 16px rgba(255,255,255,0.03);
   }
 
+  /* Photo area â€” neutral gray gradient bg, yellow accent line */
   .ev-card-photo {
-    background: linear-gradient(180deg, #0e0e0e, #1a1a1a);
     aspect-ratio: 16 / 9;
     overflow: hidden;
+    position: relative;
+    background: linear-gradient(180deg, #e2e0db 0%, #d0cec8 100%);
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .ev-card-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
+  [data-theme="dark"] .ev-card-photo {
+    background: linear-gradient(180deg, #2a2a2e 0%, #1e1e22 100%);
   }
-  .ev-card:hover .ev-card-photo img { transform: scale(1.03); }
+  /* Yellow accent line separating photo from body */
+  .ev-card-photo::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--yellow), rgba(245,197,24,.25));
+    z-index: 2;
+  }
+  .ev-card-photo img {
+    width: 90%;
+    height: 82%;
+    object-fit: contain;
+    display: block;
+    position: relative;
+    z-index: 1;
+    transition: transform .5s cubic-bezier(.25,.46,.45,.94);
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,.18));
+  }
+  .ev-card:hover .ev-card-photo img {
+    transform: scale(1.05);
+  }
 
-  .ev-card-body { padding: 0.75rem 1rem 1rem; }
+  /* Autonomy badge â€” now in card body, not on photo */
+  .ev-photo-badge {
+    display: none; /* Hidden â€” autonomy now shown in card header */
+  }
+  .ev-autonomia-inline {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .ev-autonomia-inline .val {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--yellow);
+    line-height: 1;
+    letter-spacing: -.02em;
+  }
+  .ev-autonomia-inline .unit {
+    font-size: .55rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+
+  /* Card body */
+  .ev-card-body {
+    padding: 1.1rem 1.25rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
 
   .ev-card-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 0.5rem;
-    margin-bottom: 0.4rem;
+    gap: .5rem;
   }
-  .ev-card-title { display: flex; flex-direction: column; }
+  .ev-card-title {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
   .ev-marca {
-    font-family: var(--font-sans);
-    font-size: 0.5625rem;
-    font-weight: 500;
+    font-size: .6rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: .08em;
+    font-weight: 500;
     color: var(--text-muted);
+    margin-bottom: .1rem;
   }
   .ev-modelo {
-    font-family: var(--font-sans);
-    font-size: 0.9375rem;
-    font-weight: 500;
-    color: var(--text);
-    letter-spacing: -0.01em;
+    font-size: .95rem;
+    font-weight: 600;
+    letter-spacing: -.01em;
     line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .ev-variante {
-    font-family: var(--font-sans);
-    font-size: 0.75rem;
+    font-size: .68rem;
+    color: var(--text-secondary);
     font-weight: 300;
-    color: var(--text-muted);
+    line-height: 1.3;
+    margin-top: .1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .ev-card-autonomia {
-    display: flex;
-    align-items: baseline;
-    gap: 0.15rem;
+    font-size: .78rem;
+    font-weight: 500;
+    color: var(--text);
     flex-shrink: 0;
+    white-space: nowrap;
   }
   .ev-autonomia-value {
-    font-family: var(--font-sans);
-    font-size: 1.35rem;
+    font-size: .95rem;
     font-weight: 600;
-    color: var(--yellow);
-    line-height: 1;
-    letter-spacing: -0.02em;
+    color: var(--text);
   }
   .ev-autonomia-unit {
-    font-family: var(--font-sans);
-    font-size: 0.55rem;
+    font-size: .65rem;
     font-weight: 400;
     color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
   }
 
   /* Badges */
   .ev-badges {
     display: flex;
-    gap: 0.2rem;
+    gap: .4rem;
     flex-wrap: wrap;
-    margin-bottom: 0.6rem;
+    margin-top: .35rem;
   }
   .badge {
-    font-family: var(--font-sans);
-    font-size: 0.5625rem;
-    font-weight: 500;
+    font-size: .5rem;
+    padding: .18rem .45rem;
+    border-radius: 4px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 0.1rem 0.35rem;
-    border-radius: 3px;
+    letter-spacing: .04em;
     white-space: nowrap;
+    line-height: 1.3;
   }
-  .badge-sm { font-size: 0.5rem; padding: 0.075rem 0.25rem; }
-
-  /* ── Badges: estrategia semántica técnica ────────
-     Neutros (etiquetas descriptivas): tipo, tracción, b.calor
-     Con color (diferenciadores técnicos): química, voltaje
-  ─────────────────────────────────────────────── */
-
+  /* Badge colors â€” each type has its own tint */
   /* Neutros — descriptivos */
   .badge-tipo {
     background: transparent;
@@ -1465,54 +1901,163 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     color: #E0A85E;
   }
 
-  /* Stats grid (dynamic columns) */
-  .ev-card-stats {
-    display: grid;
-    gap: 0.35rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 0.5rem;
-  }
-  .ev-stat {
+  /* Detail rows â€” clean, readable */
+  .ev-card-details {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    gap: 0;
+    margin-top: .75rem;
+    padding-top: .7rem;
+    border-top: 1px solid var(--border);
   }
-  .ev-stat-value {
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--text);
-    line-height: 1.2;
-  }
-  .ev-stat-label {
-    font-family: var(--font-sans);
-    font-size: 0.5rem;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--text-muted);
-    margin-top: 0.05rem;
-  }
-
-  /* Detail rows */
-  .ev-card-details { display: flex; flex-direction: column; gap: 0.15rem; }
   .ev-detail {
     display: flex;
     justify-content: space-between;
     font-family: var(--font-sans);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: var(--text-muted);
-    padding: 0.1rem 0;
+    padding: .35rem 0;
+    line-height: 1.4;
   }
-  .ev-detail span:last-child { font-weight: 400; color: var(--text); }
-  .ev-detail-price span:last-child { font-weight: 600; color: var(--text); }
+  .ev-detail span:last-child {
+    font-weight: 500;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .ev-detail-price span:last-child {
+    font-weight: 600;
+    color: var(--text);
+  }
 
-  /* ═══════════════════════════════════════
-     LISTADO VIEW (table) — table-layout: fixed
-     ═══════════════════════════════════════ */
-  /* ── Scroll nav (arrows above table) ── */
+  /* View control */
+  .fichas-view { display: block; }
+  .fichas-view:not(.active) { display: none; }
+  .listado-view { display: none; }
+  .listado-view.active { display: block; }
+
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     LISTADO VIEW (Table)
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  .listado-wrap {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow-x: auto;
+    background: var(--surface);
+  }
+
+  .listado-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .82rem;
+    min-width: 1100px;
+  }
+
+  .listado-table thead {
+    position: sticky;
+    top: 0;
+    background: var(--table-header-bg);
+    color: var(--white);
+    z-index: 20;
+  }
+
+  .listado-table th {
+    padding: .65rem .75rem;
+    text-align: left;
+    font-weight: 500;
+    font-size: .6rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    white-space: nowrap;
+    background: var(--table-header-bg);
+}
+  .listado-table th.col-num { text-align: right; }
+
+  .listado-table th:first-child {
+    position: sticky;
+    left: 0;
+    background: var(--table-header-bg);
+    z-index: 21;
+    min-width: 220px;
+  }
+
+  .listado-table td {
+    padding: .6rem .75rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+  .listado-table td.col-num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .listado-table td small {
+    font-size: .55rem;
+    color: var(--text-muted);
+    margin-left: .1rem;
+  }
+
+  .listado-table td:first-child {
+    position: sticky;
+    left: 0;
+    background: #F0F0ED;
+    z-index: 10;
+    min-width: 220px;
+  }
+  [data-theme="dark"] .listado-table td:first-child {
+    background: #13151C;
+  }
+  .listado-table td:first-child::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -6px;
+    bottom: 0;
+    width: 6px;
+    background: linear-gradient(to right, rgba(0,0,0,.06), transparent);
+    pointer-events: none;
+  }
+  [data-theme="dark"] .listado-table td:first-child::after {
+    background: linear-gradient(to right, rgba(0,0,0,.2), transparent);
+  }
+
+  .listado-table tbody tr:nth-child(even) td { background: var(--bg); }
+  .listado-table tbody tr:nth-child(even) td:first-child { background: #ECECEA; }
+  [data-theme="dark"] .listado-table tbody tr:nth-child(even) td:first-child { background: #101219; }
+  .listado-table tbody tr:hover td { background: #E8E9ED; }
+  [data-theme="dark"] .listado-table tbody tr:hover td { background: #1E2028; }
+  .listado-table tbody tr:hover td:first-child { background: #E2E2DD; }
+  [data-theme="dark"] .listado-table tbody tr:hover td:first-child { background: #181B25; }
+
+  .table-modelo-wrap {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+  .table-photo {
+    width: 56px;
+    height: 32px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--photo-bg);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 4px;
+  }
+  .table-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .table-modelo { font-weight: 600; color: var(--text); font-size: .78rem; }
+  .table-variante { font-size: .62rem; color: var(--text-secondary); }
+  .table-badges { display: flex; gap: .15rem; flex-wrap: wrap; margin-top: .15rem; }
+  .table-badges .badge { font-size: .45rem; padding: .08rem .25rem; }
+  .table-autonomia { color: var(--yellow) !important; font-weight: 600 !important; }
+
+  /* Scroll nav */
   .results-table-outer { position: relative; }
   .scroll-nav {
     display: none;
@@ -1561,15 +2106,27 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .scroll-mode .col-sticky {
     position: sticky;
     left: 0;
-    z-index: 1;
-    background: var(--surface);
+    z-index: 10;
+    background: #F0F0ED;
+  }
+  [data-theme="dark"] .scroll-mode .col-sticky {
+    background: #13151C;
   }
   .scroll-mode thead .col-sticky {
-    z-index: 3;
+    z-index: 21;
     background: var(--table-header-bg);
   }
   .scroll-mode .ev-row:nth-child(even) .col-sticky {
-    background: var(--table-row-even);
+    background: #ECECEA;
+  }
+  [data-theme="dark"] .scroll-mode .ev-row:nth-child(even) .col-sticky {
+    background: #101219;
+  }
+  .scroll-mode .ev-row:hover .col-sticky {
+    background: #E2E2DD;
+  }
+  [data-theme="dark"] .scroll-mode .ev-row:hover .col-sticky {
+    background: #181B25;
   }
   .scroll-mode .col-sticky::after {
     content: '';
@@ -1583,6 +2140,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   [data-theme="dark"] .scroll-mode .col-sticky::after {
     background: linear-gradient(to right, rgba(0,0,0,0.30), transparent);
+  }
+  [data-theme="dark"] .scroll-mode .col-sticky::after {
+    background: linear-gradient(to right, rgba(0,0,0,0.35), transparent);
   }
   .results-table {
     width: 100%;
@@ -1656,13 +2216,21 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     height: 32px;
     border-radius: 4px;
     overflow: hidden;
-    background: linear-gradient(180deg, #0e0e0e, #1a1a1a);
+    background: linear-gradient(180deg, #e2e0db 0%, #d0cec8 100%);
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 4px;
+  }
+  [data-theme="dark"] .row-photo {
+    background: linear-gradient(180deg, #2a2a2e 0%, #1e1e22 100%);
   }
   .row-photo img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,.12));
   }
   .row-modelo-info {
     display: flex;
@@ -1689,60 +2257,62 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .row-badges {
     display: flex;
     gap: 0.15rem;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     margin-top: 0.15rem;
+    overflow: hidden;
   }
 
-  /* ── Methodology ────────────────────── */
+  /* â”€â”€ Methodology â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     METHODOLOGY
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  /* Block 4: Methodology â€” closes the panel, rounded bottom */
   .comp-methodology {
+    padding: clamp(1.5rem, 3vw, 2rem) clamp(1.5rem, 3vw, 2.5rem);
+    border: 1px solid var(--border);
+    border-top: none;
     background: var(--surface);
-    padding: clamp(2rem, 4vw, 3rem) 0;
-    border-top: 1px solid var(--border);
+    border-radius: 0 0 12px 12px;
   }
-  .comp-methodology .t-small {
-    font-family: var(--font-sans);
-    font-size: 0.6875rem;
+  .comp-methodology .meth-label {
+    font-size: .6rem;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: .1em;
     color: var(--text-muted);
-    margin-bottom: 0.5rem;
+    margin-bottom: .5rem;
   }
   .comp-methodology p {
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
-    font-weight: 300;
+    font-size: .82rem;
     color: var(--text-secondary);
     line-height: 1.7;
-    max-width: 680px;
+    max-width: 70ch;
+    font-weight: 300;
   }
 
-  /* ═══════════════════════════════════════
-     MOBILE — table always scrollable
-     ═══════════════════════════════════════ */
-  @media (max-width: 768px) {
-    .comp-hero { padding: 1.5rem 0 1.25rem; }
-    .comp-hero h1 { font-size: 1.75rem; }
-    .comp-deck { font-size: 0.875rem; }
-
-    .unified-chips { gap: 0.35rem; }
-    .u-chip { font-size: 0.6875rem; padding: 0.3rem 0.6rem; }
-
-    .view-toggle { gap: 0.25rem; }
-    .view-btn { font-size: 0.75rem; padding: 0.3rem 0.75rem; }
-
-    /* Hide photo in table rows on mobile to save space */
-    .row-photo { display: none; }
-    .row-modelo-wrap { gap: 0; }
-    .row-marca { font-size: 0.5rem; }
-    .row-nombre { font-size: 0.6875rem; white-space: normal; line-height: 1.25; }
-    .row-badges { display: none; }
-
-    .col-num { padding: 0.4rem 0.25rem; }
-
-    /* Scroll nav on mobile */
-    .scroll-nav { gap: 0.35rem; }
-    .scroll-btn { width: 32px; height: 32px; font-size: 0.875rem; }
-    .scroll-nav-hint { font-size: 0.6875rem; }
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     RESPONSIVE
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  @media (max-width: 1100px) {
+    .fichas-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 850px) {
+    .fichas-grid { grid-template-columns: repeat(2, 1fr); }
+    .panel-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .comp-topbar {
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .panel-grid { grid-template-columns: repeat(2, 1fr); }
+    .fichas-grid { grid-template-columns: 1fr 1fr; gap: .8rem; }
+    .ev-card-body { padding: .75rem .85rem .85rem; }
+    .ev-modelo { font-size: .82rem; }
+    .hero-band { height: clamp(120px, 22vw, 200px); }
+    .comp-section { margin-top: -2rem; }
+  }
+  @media (max-width: 400px) {
+    .fichas-grid { grid-template-columns: 1fr; }
   }
 </style>
