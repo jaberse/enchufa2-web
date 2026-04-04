@@ -169,6 +169,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     let filterVals = {};   // { fieldId: 'value' }
     let catVals = {};      // { catId: ['val1','val2',...] }
     let openPopover = null; // id of currently open popover
+    let filterModes = {};  // { fieldId: 'min'|'max' } — runtime override of filterType
+    let allFieldsOn = false; // track select-all state
 
     // ═══════════════════════════════════════════════════════
     // DOM REFS
@@ -334,12 +336,34 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         container.appendChild(item);
       });
 
-      // ── Divider ──
+      // ── Select All + Divider ──
+      const selAllRow = document.createElement('div');
+      selAllRow.className = 'panel-select-all-row';
+      const selAllBtn = document.createElement('button');
+      selAllBtn.className = 'panel-select-all-btn';
+      const allOn = selectedFields.length === FIELDS.length;
+      selAllBtn.textContent = allOn ? 'Deseleccionar opcionales' : 'Seleccionar todos';
+      selAllBtn.addEventListener('click', () => {
+        if (allOn) {
+          selectedFields = [...DEFAULT_IDS];
+          // Clear filters of deselected fields
+          FIELDS.forEach(f => { if (!DEFAULT_IDS.includes(f.id)) filterVals[f.id] = ''; });
+        } else {
+          selectedFields = FIELDS.map(f => f.id);
+        }
+        allFieldsOn = !allOn;
+        btnReset.style.display = hasAnyFilter() ? '' : 'none';
+        renderPanel();
+        update();
+      });
+      selAllRow.appendChild(selAllBtn);
+      container.appendChild(selAllRow);
+
       const divider = document.createElement('div');
       divider.className = 'panel-divider';
       container.appendChild(divider);
 
-      // ── Numeric fields (toggleable) ──
+      // ── Numeric fields (toggleable, with sort + filter direction) ──
       FIELDS.forEach(f => {
         const isActive = selectedFields.includes(f.id);
         const fv = filterVals[f.id] || '';
@@ -363,6 +387,27 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           update();
         });
 
+        // ── Sort button (per-field) ──
+        const isSorted = tableSortId === f.id;
+        const sortBtn = document.createElement('button');
+        sortBtn.className = 'field-sort-btn' + (isSorted ? ' sort-active' : '');
+        if (isSorted) {
+          sortBtn.textContent = tableSortAsc ? '\u25B2' : '\u25BC';
+        } else {
+          sortBtn.textContent = '\u25B2\u25BC';
+        }
+        sortBtn.title = 'Ordenar por ' + f.label;
+        sortBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          handleSort(f.id);
+          // Sync topbar select
+          const selVal = f.id + '-' + (tableSortAsc ? 'asc' : 'desc');
+          const sortSel = document.getElementById('sort-select');
+          const optMatch = Array.from(sortSel.options).find(o => o.value === selVal);
+          if (optMatch) sortSel.value = selVal; else sortSel.value = '';
+          renderPanel();
+        });
+
         const label = document.createElement('span');
         label.className = 'field-label';
         label.textContent = f.label;
@@ -371,9 +416,18 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         filterWrap.className = 'field-filter';
 
         if (f.filterType) {
-          const sym = document.createElement('span');
-          sym.className = 'field-filter-sym';
-          sym.textContent = f.filterType === 'min' ? '\u2265' : '\u2264';
+          const curMode = filterModes[f.id] || f.filterType;
+
+          const sym = document.createElement('button');
+          sym.className = 'field-filter-sym field-filter-sym-btn';
+          sym.textContent = curMode === 'min' ? '\u2265' : '\u2264';
+          sym.title = curMode === 'min' ? 'Filtrar: mayor o igual (click para cambiar)' : 'Filtrar: menor o igual (click para cambiar)';
+          sym.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterModes[f.id] = curMode === 'min' ? 'max' : 'min';
+            renderPanel();
+            if (filterVals[f.id]) update();
+          });
 
           const input = document.createElement('input');
           input.type = 'number';
@@ -401,6 +455,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         }
 
         item.appendChild(toggle);
+        item.appendChild(sortBtn);
         item.appendChild(label);
         item.appendChild(filterWrap);
         container.appendChild(item);
@@ -447,8 +502,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         const n = parseFloat(val);
         if (isNaN(n)) continue;
         const mval = m[f.key];
-        if (f.filterType === 'min' && (mval || 0) < n) return false;
-        if (f.filterType === 'max' && (mval || Infinity) > n) return false;
+        const mode = filterModes[id] || f.filterType;
+        if (mode === 'min' && (mval || 0) < n) return false;
+        if (mode === 'max' && (mval || Infinity) > n) return false;
       }
       // Category filters (multi-select: model must match ANY of the selected values)
       for (const [id, vals] of Object.entries(catVals)) {
@@ -705,6 +761,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       selectedFields = [...DEFAULT_IDS];
       tableSortId = null;
       tableSortAsc = true;
+      filterModes = {};
+      allFieldsOn = false;
       document.getElementById('sort-select').value = '';
       btnReset.style.display = 'none';
       openPopover = null;
@@ -1079,6 +1137,66 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-size: 0.5rem;
     color: var(--text-muted);
     min-width: 1.5rem;
+  }
+
+
+  /* Select All button row */
+  .panel-select-all-row {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.15rem 0;
+  }
+  .panel-select-all-btn {
+    font-family: var(--font-sans);
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.2rem 0.6rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .panel-select-all-btn:hover {
+    color: var(--text);
+    border-color: var(--yellow);
+    background: var(--yellow-glow);
+  }
+
+  /* Per-field sort button */
+  .field-sort-btn {
+    font-family: var(--font-sans);
+    font-size: 0.5rem;
+    line-height: 1;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 1px;
+    opacity: 0.35;
+    flex-shrink: 0;
+    transition: opacity 0.15s, color 0.15s;
+    letter-spacing: -1px;
+  }
+  .field-sort-btn:hover { opacity: 1; color: var(--text); }
+  .field-sort-btn.sort-active {
+    opacity: 1;
+    color: var(--yellow);
+    font-weight: 700;
+  }
+
+  /* Toggleable filter direction button */
+  .field-filter-sym-btn {
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    transition: color 0.15s;
+  }
+  .field-filter-sym-btn:hover {
+    color: var(--yellow);
   }
 
   /* Category filter button */
