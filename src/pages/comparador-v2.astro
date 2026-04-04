@@ -1,0 +1,2580 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+import data from '../data/comparador.json';
+
+const modelos = data.modelos;
+const marcas = [...new Set(modelos.map(m => m.marca))].sort();
+const tipos = [...new Set(modelos.map(m => m.tipo).filter(Boolean))].sort();
+const tracciones = [...new Set(modelos.map(m => m.traccion).filter(Boolean))].sort();
+const quimicas = [...new Set(modelos.map(m => m.quimica).filter(Boolean))].sort();
+const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort((a,b) => a - b);
+const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].sort();
+---
+
+<Layout
+  title="Comparador de coches eléctricos — enchufa2"
+  description="Compara los 37 coches eléctricos más vendidos en Europa. Filtra por autonomía, potencia, maletero, tracción y más."
+>
+  <Header />
+
+  <!-- HERO BAND -->
+  <div class="hero-band">
+    <img src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1600&q=80&auto=format" alt="Estación de carga eléctrica" loading="eager">
+  </div>
+
+  <main>
+    <!-- Continuous panel: same pattern as homepage guias-section → cat-blocks -->
+    <section class="comp-section">
+      <div class="comp-outer">
+
+        <!-- Block 1: Intro (overlaps hero, rounded top) -->
+        <div class="comp-intro">
+          <div class="comp-intro-inner">
+            <h2>Comparador de <em>eléctricos</em></h2>
+            <p>Dinos qué necesitas. Nosotros te decimos qué coches lo cumplen. <strong>{data.total_modelos} modelos</strong> con datos verificados.</p>
+          </div>
+        </div>
+
+        <!-- Block 2: Top bar (count + sort + view) -->
+        <div class="comp-topbar" id="filter-bar">
+          <div class="result-count-bar"><span id="count">{data.total_modelos}</span> de {data.total_modelos}</div>
+          <span class="topbar-sep"></span>
+          <div class="search-wrap" id="search-wrap">
+            <input type="text" id="model-search" class="model-search" placeholder="Buscar modelo..." autocomplete="off" />
+            <div class="search-results" id="search-results"></div>
+          </div>
+          <span class="topbar-sep"></span>
+          <div class="sort-control" id="sort-control">
+            <label for="sort-select" class="sort-label">Ordenar</label>
+            <select id="sort-select" class="sort-select">
+              <option value="">Autonomía ↓</option>
+              <option value="pvp-asc">Precio ↑</option>
+              <option value="pvp-desc">Precio ↓</option>
+              <option value="potencia_cv-desc">Potencia ↓</option>
+              <option value="carga_dc-desc">Carga DC ↓</option>
+              <option value="aceleracion-asc">0-100 ↑</option>
+              <option value="consumo-asc">Consumo ↑</option>
+              <option value="peso-asc">Peso ↑</option>
+              <option value="maletero-desc">Maletero ↓</option>
+            </select>
+          </div>
+          <button class="reset-btn" id="btn-reset" style="display:none;">Limpiar</button>
+          <div class="topbar-spacer"></div>
+          <div class="view-toggle" id="view-toggle">
+            <button class="view-btn active" data-view="fichas">Fichas</button>
+            <button class="view-btn" data-view="listado">Listado</button>
+          </div>
+        </div>
+
+        <!-- Block 3: Fields grid (fixed layout, all fields visible) -->
+        <div class="comp-fields-panel">
+          <div class="panel-grid" id="panel-grid"></div>
+        </div>
+
+        <!-- Separator bar between filters and results -->
+        <div class="comp-panel-separator"></div>
+
+        <!-- Block 4: Results -->
+        <div class="comp-results">
+          <div class="fichas-view active" id="fichas-view">
+            <div class="fichas-grid" id="results-grid"></div>
+          </div>
+
+          <div class="listado-view" id="listado-view" style="display:none;">
+            <div class="results-table-outer" id="results-table-outer">
+              <div class="scroll-nav" id="scroll-nav">
+                <span class="scroll-nav-hint">Desliza para ver más columnas</span>
+                <button class="scroll-btn" id="scroll-left" aria-label="Scroll izquierda">←</button>
+                <button class="scroll-btn" id="scroll-right" aria-label="Scroll derecha">→</button>
+              </div>
+              <div class="results-table-wrap" id="results-table-wrap">
+                <table class="listado-table" id="results-table">
+                  <thead id="results-thead"></thead>
+                  <tbody id="results-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <p class="results-empty" id="no-results" style="display:none;">
+            Ningún modelo cumple todos tus requisitos. Prueba a relajar algún filtro.
+          </p>
+        </div>
+
+        <!-- Sticky selection footer (3·A) -->
+        <div class="sel-footer" id="compare-bar" style="display:none;">
+          <div class="sel-footer-inner">
+            <div class="sel-footer-label">
+              <span class="sel-footer-count"><span id="compare-count-num">0</span></span>
+              <span class="sel-footer-text">seleccionados</span>
+            </div>
+            <div class="sel-footer-thumbs" id="sel-thumbs" aria-label="Modelos seleccionados"></div>
+            <div class="sel-footer-actions">
+              <button class="sel-footer-clear" id="compare-clear" type="button">Limpiar</button>
+              <button class="sel-footer-cta" id="compare-btn" type="button">
+                <span class="sel-footer-cta-text">Comparar</span>
+                <span class="sel-footer-cta-arrow" aria-hidden="true">→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Block 4: Methodology (rounded bottom = closes panel) -->
+        <div class="comp-methodology">
+          <p class="meth-label">Sobre estos datos</p>
+          <p>
+            Todos los datos provienen de las fichas técnicas oficiales de cada fabricante
+            para el mercado español. Cuando no hay dato oficial disponible, se usa
+            ev-database.org como fuente de referencia. Las cifras de autonomía corresponden al ciclo WLTP combinado.
+            Los precios (PVP) son orientativos, corresponden al mes indicado y pueden variar
+            según configuración, promociones o actualizaciones del fabricante. Consulta siempre
+            la web oficial del fabricante para el precio vigente.
+            Última actualización: abril 2026.
+          </p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script define:vars={{
+    modelos: data.modelos,
+    marcasData: marcas,
+    tiposData: tipos,
+    traccionesData: tracciones,
+    quimicasData: quimicas,
+    voltajesData: voltajes,
+    bombaOptsData: bombaOpts
+  }}>
+    // ═══════════════════════════════════════════════════════
+    // FIELD DEFINITIONS
+    // ═══════════════════════════════════════════════════════
+    const FIELDS = [
+      { id:'autonomia',     label:'Autonomía',      shortLabel:'Auton.',  unit:'km',        key:'autonomia_wltp_km',       dflt:false, sortAsc:false, filterType:'min' },
+      { id:'potencia_cv',   label:'Potencia',        shortLabel:'Pot.',    unit:'CV',        key:'potencia_cv',             dflt:true,  sortAsc:false, filterType:'min' },
+      { id:'potencia_kw',   label:'Potencia (kW)',   shortLabel:'Pot.kW',  unit:'kW',        key:'potencia_kw',             dflt:false, sortAsc:false, filterType:'min' },
+      { id:'par',           label:'Par motor',       shortLabel:'Par',     unit:'Nm',        key:'par_nm',                  dflt:false, sortAsc:false, filterType:'min' },
+      { id:'carga_dc',      label:'Carga DC',        shortLabel:'DC',      unit:'kW',        key:'carga_dc_max_kw',         dflt:true,  sortAsc:false, filterType:'min' },
+      { id:'carga_ac',      label:'Carga AC',        shortLabel:'AC',      unit:'kW',        key:'carga_ac_max_kw',         dflt:false, sortAsc:false, filterType:'min' },
+      { id:'t_10_80',       label:'T 10→80%',        shortLabel:'10→80',   unit:'min',       key:'t_10_80_min',             dflt:false, sortAsc:true,  filterType:'max' },
+      { id:'bateria_neta',  label:'Batería neta',    shortLabel:'Bat.',    unit:'kWh',       key:'bateria_neta_kwh',        dflt:true,  sortAsc:false, filterType:'min', dec:1 },
+      { id:'bateria_bruta', label:'Batería bruta',   shortLabel:'Bat.br',  unit:'kWh',       key:'bateria_bruta_kwh',       dflt:false, sortAsc:false, filterType:'min' },
+      { id:'maletero',      label:'Maletero',        shortLabel:'Malet.',  unit:'L',         key:'maletero_l',              dflt:true,  sortAsc:false, filterType:'min' },
+      { id:'aceleracion',   label:'0-100',           shortLabel:'0-100',   unit:'s',         key:'aceleracion_0_100_s',     dflt:true,  sortAsc:true,  filterType:'max', dec:1 },
+      { id:'vel_max',       label:'Vel. máx',        shortLabel:'Vmáx',    unit:'km/h',      key:'velocidad_max_kmh',       dflt:false, sortAsc:false, filterType:'min' },
+      { id:'consumo',       label:'Consumo',         shortLabel:'Cons.',   unit:'kWh/100',   key:'consumo_wltp_kwh100km',   dflt:true,  sortAsc:true,  filterType:'max', dec:1 },
+      { id:'peso',          label:'Peso',            shortLabel:'Peso',    unit:'kg',        key:'peso_kg',                 dflt:true,  sortAsc:true,  filterType:'max' },
+      { id:'pvp',           label:'PVP',             shortLabel:'PVP',     unit:'€',         key:'pvp',                     dflt:true,  sortAsc:true,  filterType:'max', fmt:'eur' },
+      { id:'cx',            label:'Cx',              shortLabel:'Cx',      unit:'',          key:'cx',                      dflt:false, sortAsc:true,  filterType:'max', dec:3 },
+      { id:'largo',         label:'Largo',           shortLabel:'Largo',   unit:'mm',        key:'largo_mm',                dflt:false, sortAsc:false, filterType:'min' },
+      { id:'ancho',         label:'Ancho',           shortLabel:'Ancho',   unit:'mm',        key:'ancho_mm',                dflt:false, sortAsc:false, filterType:'min' },
+      { id:'alto',          label:'Alto',            shortLabel:'Alto',    unit:'mm',        key:'alto_mm',                 dflt:false, sortAsc:false, filterType:'min' },
+      { id:'batalla',       label:'Batalla',         shortLabel:'Bat.mm',  unit:'mm',        key:'batalla_mm',              dflt:false, sortAsc:false, filterType:'min' },
+      { id:'diametro_giro', label:'Diám. giro',      shortLabel:'D.giro',  unit:'m',         key:'diametro_giro_m',         dflt:false, sortAsc:true,  filterType:'max', dec:1 },
+      { id:'frunk',         label:'Frunk',           shortLabel:'Frunk',   unit:'L',         key:'frunk_l',                 dflt:false, sortAsc:false, filterType:'min' },
+      { id:'remolque',      label:'Remolque',        shortLabel:'Remolq.', unit:'kg',        key:'capacidad_remolque_kg',   dflt:false, sortAsc:false, filterType:'min' },
+      { id:'garantia',      label:'Garantía bat.',   shortLabel:'Garant.', unit:'',          key:'garantia_bateria',        dflt:false, sortAsc:false, filterType:null, isText:true },
+    ];
+
+    const CATS = [
+      { id:'tipo',     label:'Tipo',       key:'tipo',         options: tiposData },
+      { id:'traccion', label:'Tracción',    key:'traccion',     options: traccionesData },
+      { id:'marca',    label:'Marca',       key:'marca',        options: marcasData },
+      { id:'quimica',  label:'Química',     key:'quimica',      options: quimicasData },
+      { id:'voltaje',  label:'Voltaje',     key:'voltaje',      options: voltajesData, suffix:' V' },
+      { id:'bomba',    label:'B. calor',    key:'bomba_calor',  options: bombaOptsData },
+    ];
+
+    const DEFAULT_IDS = FIELDS.filter(f => f.dflt).map(f => f.id);
+    let selectedFields = [...DEFAULT_IDS];
+    let filterVals = {};   // { fieldId: 'value' }
+    let catVals = {};      // { catId: ['val1','val2',...] }
+    let openPopover = null; // id of currently open popover
+    let filterModes = {};  // { fieldId: 'min'|'max' } — runtime override of filterType
+    let allFieldsOn = false; // track select-all state
+    let pickedIds = new Set();  // IDs of models picked for comparison
+    let compareMode = false;    // true = show only picked models
+
+    // ═══════════════════════════════════════════════════════
+    // DOM REFS
+    // ═══════════════════════════════════════════════════════
+    const allModelos = modelos;
+    let currentView = 'fichas';
+    let tableSortId = null;
+    let tableSortAsc = true;
+
+    const grid = document.getElementById('results-grid');
+    const tableOuter = document.getElementById('results-table-outer');
+    const tableWrap = document.getElementById('results-table-wrap');
+    const thead = document.getElementById('results-thead');
+    const tbody = document.getElementById('results-tbody');
+    const countEl = document.getElementById('count');
+    const noResults = document.getElementById('no-results');
+    const btnReset = document.getElementById('btn-reset');
+    const panelGrid = document.getElementById('panel-grid');
+    const scrollNav = document.getElementById('scroll-nav');
+    const scrollLeftBtn = document.getElementById('scroll-left');
+    const scrollRightBtn = document.getElementById('scroll-right');
+    const searchInput = document.getElementById('model-search');
+    const searchResultsEl = document.getElementById('search-results');
+    const compareBar = document.getElementById('compare-bar');
+    // compareCountEl no longer used (replaced by sticky footer thumbs)
+    const compareBtn = document.getElementById('compare-btn');
+    const compareClear = document.getElementById('compare-clear');
+
+    // ═══════════════════════════════════════════════════════
+    // HELPERS
+    // ═══════════════════════════════════════════════════════
+    function fmtField(val, field) {
+      if (val === null || val === undefined) return '\u2014';
+      if (field.fmt === 'eur') return val.toLocaleString('es-ES') + '\u00a0\u20ac';
+      if (field.isText) return val;
+      if (field.dec !== undefined) return val.toFixed(field.dec);
+      if (typeof val === 'number') return val.toLocaleString('es-ES');
+      return val;
+    }
+
+    function fmtCompact(val, field) {
+      if (val === null || val === undefined) return '\u2014';
+      if (field.fmt === 'eur') return (val / 1000).toFixed(1) + 'k';
+      if (field.dec !== undefined) return val.toFixed(field.dec);
+      if (typeof val === 'number') return val.toLocaleString('es-ES');
+      return val;
+    }
+
+    function fmt(val) {
+      if (val === null || val === undefined) return '\u2014';
+      return val.toLocaleString('es-ES');
+    }
+
+    function makeBadgesHtml(m, small) {
+      const s = small ? 'badge badge-sm' : 'badge';
+      let html = '';
+      if (m.tipo)              html += '<span class="' + s + ' badge-tipo">' + m.tipo + '</span>';
+      if (m.traccion)          html += '<span class="' + s + ' badge-traccion">' + m.traccion + '</span>';
+      if (m.quimica === 'LFP') html += '<span class="' + s + ' badge-lfp">LFP</span>';
+      if (m.quimica === 'NMC') html += '<span class="' + s + ' badge-nmc">NMC</span>';
+      if (m.quimica === 'NCA') html += '<span class="' + s + ' badge-nca">NCA</span>';
+      if (m.voltaje === 800)   html += '<span class="' + s + ' badge-800v">800V</span>';
+      if (m.bomba_calor === 'S\u00ed') html += '<span class="' + s + ' badge-bcalor">B.Calor</span>';
+      return html;
+    }
+
+    function photoSrc(m) {
+      return m.foto ? '/comparador/' + m.slug + '.png?v=11' : '/comparador/placeholder.svg';
+    }
+
+    function hasAnyFilter() {
+      return Object.values(filterVals).some(v => v) || Object.values(catVals).some(v => v && v.length > 0);
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // CLOSE POPOVERS ON OUTSIDE CLICK
+    // ═══════════════════════════════════════════════════════
+    document.addEventListener('mousedown', (e) => {
+      if (openPopover && !e.target.closest('.field-item.locked')) {
+        openPopover = null;
+        renderPanel();
+      }
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // RENDER PANEL (unified grid: locked cats + toggleable fields)
+    // ═══════════════════════════════════════════════════════
+    function renderPanel() {
+      const container = panelGrid;
+      container.innerHTML = '';
+
+      // ── Category fields (locked, always active) ──
+      CATS.forEach(c => {
+        const vals = catVals[c.id] || [];
+        const hasF = vals.length > 0;
+        const isOpen = openPopover === c.id;
+
+        const item = document.createElement('div');
+        item.className = 'field-item active locked';
+
+        const label = document.createElement('span');
+        label.className = 'field-label';
+        label.textContent = c.label;
+
+        const filterWrap = document.createElement('div');
+        filterWrap.className = 'field-filter';
+
+        const filterBtn = document.createElement('button');
+        filterBtn.className = 'cat-filter-btn' + (hasF ? ' has-val' : '');
+        let btnText = 'Todo';
+        if (hasF) {
+          btnText = vals.length === 1 ? vals[0] + (c.suffix || '') : vals.length + ' sel.';
+        }
+        filterBtn.innerHTML = '<span>' + btnText + '</span> <svg width="7" height="4" viewBox="0 0 7 4" style="vertical-align:middle"><path d="M.5.5l3 3 3-3" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg>';
+
+        filterBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openPopover = isOpen ? null : c.id;
+          renderPanel();
+        });
+
+        filterWrap.appendChild(filterBtn);
+
+        item.appendChild(label);
+        item.appendChild(filterWrap);
+
+        if (isOpen) {
+          const pop = document.createElement('div');
+          pop.className = 'cat-popover';
+          let html = '<div class="pop-options">';
+          c.options.forEach(o => {
+            const sel = vals.includes(String(o));
+            html += '<button class="pop-option' + (sel ? ' pop-option-sel' : '') + '" data-val="' + o + '">' + (sel ? '\u2713 ' : '') + o + (c.suffix || '') + '</button>';
+          });
+          html += '</div>';
+          if (hasF) html += '<button class="pop-clear">Limpiar</button>';
+          pop.innerHTML = html;
+          pop.addEventListener('mousedown', e => e.stopPropagation());
+          item.appendChild(pop);
+
+          requestAnimationFrame(() => {
+            pop.querySelectorAll('.pop-option').forEach(optBtn => {
+              optBtn.addEventListener('click', () => {
+                const clicked = String(optBtn.dataset.val);
+                const cur = catVals[c.id] || [];
+                if (cur.includes(clicked)) {
+                  catVals[c.id] = cur.filter(v => v !== clicked);
+                } else {
+                  catVals[c.id] = [...cur, clicked];
+                }
+                btnReset.style.display = hasAnyFilter() ? '' : 'none';
+                renderPanel();
+                update();
+              });
+            });
+            const clrBtn = pop.querySelector('.pop-clear');
+            if (clrBtn) {
+              clrBtn.addEventListener('click', () => {
+                catVals[c.id] = [];
+                openPopover = null;
+                btnReset.style.display = hasAnyFilter() ? '' : 'none';
+                renderPanel();
+                update();
+              });
+            }
+          });
+        }
+
+        container.appendChild(item);
+      });
+
+      // ── Select All + Divider ──
+      const selAllRow = document.createElement('div');
+      selAllRow.className = 'panel-select-all-row';
+      const selAllBtn = document.createElement('button');
+      selAllBtn.className = 'panel-select-all-btn';
+      const allOn = selectedFields.length === FIELDS.length;
+      selAllBtn.textContent = allOn ? 'Volver a predefinidos' : 'Seleccionar todos';
+      selAllBtn.addEventListener('click', () => {
+        if (allOn) {
+          selectedFields = [...DEFAULT_IDS];
+          // Clear filters of deselected fields
+          FIELDS.forEach(f => { if (!DEFAULT_IDS.includes(f.id)) filterVals[f.id] = ''; });
+        } else {
+          selectedFields = FIELDS.map(f => f.id);
+        }
+        allFieldsOn = !allOn;
+        btnReset.style.display = hasAnyFilter() ? '' : 'none';
+        renderPanel();
+        update();
+      });
+      selAllRow.appendChild(selAllBtn);
+      container.appendChild(selAllRow);
+
+      const divider = document.createElement('div');
+      divider.className = 'panel-divider';
+      container.appendChild(divider);
+
+      // ── Numeric fields (toggleable, with sort + filter direction) ──
+      FIELDS.forEach(f => {
+        const isActive = selectedFields.includes(f.id);
+        const fv = filterVals[f.id] || '';
+
+        const item = document.createElement('div');
+        item.className = 'field-item' + (isActive ? ' active' : '');
+
+        const toggle = document.createElement('button');
+        toggle.className = 'field-toggle' + (isActive ? ' on' : '');
+        toggle.setAttribute('aria-label', (isActive ? 'Desactivar ' : 'Activar ') + f.label);
+        toggle.innerHTML = '<span class="field-toggle-track"><span class="field-toggle-knob"></span></span>';
+        toggle.addEventListener('click', () => {
+          if (isActive) {
+            selectedFields = selectedFields.filter(x => x !== f.id);
+            filterVals[f.id] = '';
+          } else {
+            selectedFields.push(f.id);
+          }
+          btnReset.style.display = hasAnyFilter() ? '' : 'none';
+          renderPanel();
+          update();
+        });
+
+        // ── Sort button (per-field) ──
+        const isSorted = tableSortId === f.id;
+        const sortBtn = document.createElement('button');
+        sortBtn.className = 'field-sort-btn' + (isSorted ? ' sort-active' : '');
+        if (isSorted) {
+          sortBtn.innerHTML = tableSortAsc
+            ? '<svg width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 0L7 5H0z" fill="currentColor"/></svg>'
+            : '<svg width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 5L0 0h7z" fill="currentColor"/></svg>';
+        } else {
+          sortBtn.innerHTML = '<svg width="7" height="8" viewBox="0 0 7 8"><path d="M3.5 0L6 3H1z" fill="currentColor"/><path d="M3.5 8L1 5h5z" fill="currentColor"/></svg>';
+        }
+        sortBtn.title = 'Ordenar por ' + f.label;
+        sortBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          handleSort(f.id);
+          // Sync topbar select
+          const selVal = f.id + '-' + (tableSortAsc ? 'asc' : 'desc');
+          const sortSel = document.getElementById('sort-select');
+          const optMatch = Array.from(sortSel.options).find(o => o.value === selVal);
+          if (optMatch) sortSel.value = selVal; else sortSel.value = '';
+          renderPanel();
+        });
+
+        const label = document.createElement('span');
+        label.className = 'field-label';
+        label.textContent = f.label;
+
+        const filterWrap = document.createElement('div');
+        filterWrap.className = 'field-filter';
+
+        if (f.filterType) {
+          const curMode = filterModes[f.id] || f.filterType;
+
+          const sym = document.createElement('button');
+          sym.className = 'field-filter-sym field-filter-sym-btn';
+          sym.textContent = curMode === 'min' ? '\u2265' : '\u2264';
+          sym.title = curMode === 'min' ? 'Filtrar: mayor o igual (click para cambiar)' : 'Filtrar: menor o igual (click para cambiar)';
+          sym.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterModes[f.id] = curMode === 'min' ? 'max' : 'min';
+            renderPanel();
+            if (filterVals[f.id]) update();
+          });
+
+          const input = document.createElement('input');
+          input.type = 'number';
+          input.className = 'field-filter-input';
+          input.placeholder = '\u2014';
+          input.value = fv;
+          input.addEventListener('input', () => {
+            filterVals[f.id] = input.value;
+            btnReset.style.display = hasAnyFilter() ? '' : 'none';
+            if (input.value && !selectedFields.includes(f.id)) {
+              selectedFields.push(f.id);
+              item.classList.add('active');
+              toggle.classList.add('on');
+            }
+            update();
+          });
+
+          const unit = document.createElement('span');
+          unit.className = 'field-filter-unit';
+          unit.textContent = f.unit;
+
+          filterWrap.appendChild(sym);
+          filterWrap.appendChild(input);
+          filterWrap.appendChild(unit);
+        }
+
+        item.appendChild(toggle);
+        item.appendChild(sortBtn);
+        item.appendChild(label);
+        item.appendChild(filterWrap);
+        container.appendChild(item);
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // VIEW TOGGLE
+    // ═══════════════════════════════════════════════════════
+    document.querySelectorAll('.view-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentView = btn.dataset.view;
+
+        // Show/hide views
+        const fichasView = document.getElementById('fichas-view');
+        const listadoView = document.getElementById('listado-view');
+        if (currentView === 'fichas') {
+          fichasView.style.display = 'block';
+          fichasView.classList.add('active');
+          listadoView.style.display = 'none';
+          listadoView.classList.remove('active');
+        } else {
+          fichasView.style.display = 'none';
+          fichasView.classList.remove('active');
+          listadoView.style.display = 'block';
+          listadoView.classList.add('active');
+        }
+
+        update();
+      });
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // FILTERING
+    // ═══════════════════════════════════════════════════════
+    function passesFilter(m) {
+      // Numeric filters
+      for (const [id, val] of Object.entries(filterVals)) {
+        if (!val) continue;
+        const f = FIELDS.find(x => x.id === id);
+        if (!f) continue;
+        const n = parseFloat(val);
+        if (isNaN(n)) continue;
+        const mval = m[f.key];
+        const mode = filterModes[id] || f.filterType;
+        if (mode === 'min' && (mval || 0) < n) return false;
+        if (mode === 'max' && (mval || Infinity) > n) return false;
+      }
+      // Category filters (multi-select: model must match ANY of the selected values)
+      for (const [id, vals] of Object.entries(catVals)) {
+        if (!vals || vals.length === 0) continue;
+        const c = CATS.find(x => x.id === id);
+        if (!c) continue;
+        if (!vals.includes(String(m[c.key]))) return false;
+      }
+      return true;
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // SORTING
+    // ═══════════════════════════════════════════════════════
+    function sortModelos(arr) {
+      if (tableSortId) {
+        const f = FIELDS.find(x => x.id === tableSortId);
+        if (f) {
+          arr.sort((a, b) => {
+            const va = a[f.key], vb = b[f.key];
+            if (va == null) return 1;
+            if (vb == null) return -1;
+            return tableSortAsc ? va - vb : vb - va;
+          });
+          return;
+        }
+      }
+      arr.sort((a, b) => (b.autonomia_wltp_km || 0) - (a.autonomia_wltp_km || 0));
+    }
+
+    function handleSort(fieldId) {
+      const f = FIELDS.find(x => x.id === fieldId);
+      if (tableSortId === fieldId) {
+        tableSortAsc = !tableSortAsc;
+      } else {
+        tableSortId = fieldId;
+        tableSortAsc = f ? f.sortAsc : true;
+      }
+      update();
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // RENDER CARD (FICHAS)
+    // ═══════════════════════════════════════════════════════
+    function renderCard(m) {
+      const card = document.createElement('article');
+      const isPicked = pickedIds.has(modelId(m));
+      card.className = 'ev-card' + (isPicked ? ' ev-card-picked' : '');
+      card.addEventListener('click', () => togglePick(m));
+
+      const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
+
+      // All fields as clean detail rows (no stats grid)
+      let detailsHtml = '';
+      activeFields.forEach(f => {
+        const val = m[f.key];
+        let display = fmtField(val, f);
+        if (f.unit && !f.fmt && !f.isText && val != null) display += '\u00a0' + f.unit;
+        const isPrice = f.id === 'pvp';
+        detailsHtml += '<div class="ev-detail' + (isPrice ? ' ev-detail-price' : '') + '"><span>' + f.label + '</span><span>' + display + '</span></div>';
+      });
+
+      card.innerHTML =
+        '<div class="ev-card-photo">' +
+          (isPicked ? '<div class="pick-badge">✓</div>' : '') +
+          '<img src="' + photoSrc(m) + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy" />' +
+        '</div>' +
+        '<div class="ev-card-body">' +
+          '<div class="ev-card-header">' +
+            '<div class="ev-card-title">' +
+              '<span class="ev-marca">' + m.marca + '</span>' +
+              '<span class="ev-modelo">' + m.modelo + '</span>' +
+              '<span class="ev-variante">' + m.variante + '</span>' +
+            '</div>' +
+            '<div class="ev-autonomia-inline">' +
+              '<span class="val">' + fmt(m.autonomia_wltp_km) + '</span>' +
+              '<span class="unit">km</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="ev-badges">' + makeBadgesHtml(m) + '</div>' +
+          (detailsHtml ? '<div class="ev-card-details">' + detailsHtml + '</div>' : '') +
+        '</div>';
+      return card;
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // RENDER TABLE (LISTADO) — adaptive layout
+    // ═══════════════════════════════════════════════════════
+    const MOBILE_BP = 768;
+    const MIN_COL_W = 100;  // minimum data-column width (px)
+    let computedColW = MIN_COL_W;
+
+    function isMobile() { return window.innerWidth <= MOBILE_BP; }
+
+    function renderTableHeaders() {
+      const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
+      const table = document.getElementById('results-table');
+      const wrap = document.getElementById('results-table-wrap');
+      const mobile = isMobile();
+
+      // Remove old colgroup
+      let existingColgroup = table.querySelector('colgroup');
+      if (existingColgroup) existingColgroup.remove();
+
+      table.style.tableLayout = 'fixed';
+      wrap.classList.add('scroll-mode');
+
+      const modeloW = mobile ? 160 : 260;
+      const nCols = activeFields.length;
+
+      // 2px for border (1px each side)
+      const containerW = wrap.clientWidth;
+      const availW = containerW - modeloW;
+
+      // How many full columns fit at minimum width?
+      const fitCols = Math.max(1, Math.floor(availW / MIN_COL_W));
+
+      // Column width = exact division of available space by visible columns
+      // This guarantees fitCols columns fill the viewport perfectly
+      if (nCols <= fitCols) {
+        // All columns fit — each gets equal share, no scroll needed
+        computedColW = availW / nCols;
+      } else {
+        // More columns than fit — size so visible ones fill exactly
+        computedColW = availW / fitCols;
+      }
+
+      // Total table width = modelo + all data columns at computed width
+      const totalW = modeloW + (nCols * computedColW);
+      table.style.width = totalW + 'px';
+
+      const colgroup = document.createElement('colgroup');
+      colgroup.innerHTML = '<col style="width:' + modeloW + 'px" />';
+      activeFields.forEach(() => {
+        colgroup.innerHTML += '<col style="width:' + computedColW + 'px" />';
+      });
+      table.prepend(colgroup);
+
+      let html = '<tr>';
+      html += '<th class="col-modelo col-sticky">Modelo</th>';
+      activeFields.forEach(f => {
+        const isSorted = tableSortId === f.id;
+        const arrow = isSorted ? (tableSortAsc ? ' \u25B2' : ' \u25BC') : '';
+        const thText = mobile ? f.shortLabel : f.label;
+        html += '<th class="col-num col-sortable' + (isSorted ? ' th-sorted' : '') + '" data-sort-id="' + f.id + '">' + thText + arrow + '</th>';
+      });
+      html += '</tr>';
+      thead.innerHTML = html;
+
+      thead.querySelectorAll('.col-sortable').forEach(th => {
+        th.addEventListener('click', () => handleSort(th.dataset.sortId));
+      });
+
+      updateScrollNav();
+    }
+
+    // ── Scroll navigation helpers ──
+    function updateScrollNav() {
+      // Show scroll nav when table overflows its container
+      requestAnimationFrame(() => {
+        const overflows = tableWrap.scrollWidth > tableWrap.clientWidth;
+        if (overflows) {
+          scrollNav.classList.add('visible');
+          updateScrollBtnState();
+        } else {
+          scrollNav.classList.remove('visible');
+        }
+      });
+    }
+
+    function updateScrollBtnState() {
+      const sl = tableWrap.scrollLeft;
+      const maxScroll = tableWrap.scrollWidth - tableWrap.clientWidth;
+      scrollLeftBtn.disabled = sl <= 2;
+      scrollRightBtn.disabled = sl >= maxScroll - 2;
+    }
+
+    scrollLeftBtn.addEventListener('click', () => {
+      // Snap scroll: move by exactly N columns so edges always align
+      const step = computedColW * 2;
+      const sl = tableWrap.scrollLeft;
+      // Round down to nearest column boundary
+      const target = Math.max(0, Math.round((sl - step) / computedColW) * computedColW);
+      tableWrap.scrollTo({ left: target, behavior: 'smooth' });
+    });
+    scrollRightBtn.addEventListener('click', () => {
+      const step = computedColW * 2;
+      const sl = tableWrap.scrollLeft;
+      const maxScroll = tableWrap.scrollWidth - tableWrap.clientWidth;
+      const target = Math.min(maxScroll, Math.round((sl + step) / computedColW) * computedColW);
+      tableWrap.scrollTo({ left: target, behavior: 'smooth' });
+    });
+    tableWrap.addEventListener('scroll', () => {
+      if (scrollNav.classList.contains('visible')) updateScrollBtnState();
+    });
+
+    function renderRow(m) {
+      const tr = document.createElement('tr');
+      const isPicked = pickedIds.has(modelId(m));
+      tr.className = 'ev-row' + (isPicked ? ' ev-row-picked' : '');
+      tr.style.cursor = 'pointer';
+      tr.addEventListener('click', () => togglePick(m));
+      const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
+
+      let html = '<td class="col-modelo col-sticky">' +
+        '<div class="row-modelo-wrap">' +
+          '<div class="row-photo"><img src="' + photoSrc(m) + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy" /></div>' +
+          '<div class="row-modelo-info">' +
+            '<span class="row-marca">' + m.marca + '</span>' +
+            '<span class="row-nombre">' + m.modelo + ' ' + m.variante + '</span>' +
+            '<div class="row-badges">' + makeBadgesHtml(m, true) + '</div>' +
+          '</div>' +
+        '</div></td>';
+
+      activeFields.forEach(f => {
+        const val = m[f.key];
+        let display = fmtField(val, f);
+        let unitHtml = '';
+        if (f.unit && !f.fmt && !f.isText && val != null) {
+          unitHtml = ' <small>' + f.unit + '</small>';
+        }
+        const isAuto = f.id === 'autonomia';
+        const isPrice = f.id === 'pvp';
+        html += '<td class="col-num' + (isPrice ? ' col-precio' : '') + (isAuto ? ' col-autonomia' : '') + '">' +
+          (isAuto ? '<strong>' : '') + display + (isAuto ? '</strong>' : '') + unitHtml + '</td>';
+      });
+
+      tr.innerHTML = html;
+      return tr;
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // MAIN UPDATE
+    // ═══════════════════════════════════════════════════════
+    function update() {
+      let filtered = allModelos.filter(m => passesFilter(m));
+      if (compareMode) filtered = filtered.filter(m => pickedIds.has(modelId(m)));
+      sortModelos(filtered);
+
+      const hasResults = filtered.length > 0;
+      countEl.textContent = filtered.length;
+      noResults.style.display = hasResults ? 'none' : 'block';
+
+      if (currentView === 'fichas') {
+        grid.innerHTML = '';
+        filtered.forEach(m => grid.appendChild(renderCard(m)));
+      } else {
+        renderTableHeaders();
+        tbody.innerHTML = '';
+        filtered.forEach(m => tbody.appendChild(renderRow(m)));
+        updateScrollNav();
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // RESET
+    // ═══════════════════════════════════════════════════════
+    btnReset.addEventListener('click', () => {
+      filterVals = {};
+      catVals = {};
+      selectedFields = [...DEFAULT_IDS];
+      tableSortId = null;
+      tableSortAsc = true;
+      filterModes = {};
+      allFieldsOn = false;
+      pickedIds.clear();
+      compareMode = false;
+      updateCompareBar();
+      document.getElementById('sort-select').value = '';
+      btnReset.style.display = 'none';
+      openPopover = null;
+      renderPanel();
+      update();
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // SORT SELECT (Fichas + Listado)
+    // ═══════════════════════════════════════════════════════
+    const sortSelect = document.getElementById('sort-select');
+    sortSelect.addEventListener('change', () => {
+      const v = sortSelect.value;
+      if (!v) { tableSortId = null; tableSortAsc = true; }
+      else {
+        const parts = v.split('-');
+        const dir = parts.pop();
+        const fid = parts.join('-');
+        tableSortId = fid;
+        tableSortAsc = dir === 'asc';
+      }
+      update();
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // MODEL SELECTION & COMPARE
+    // ═══════════════════════════════════════════════════════
+    function modelId(m) { return m.marca + '|' + m.modelo + '|' + m.variante; }
+
+    function togglePick(m) {
+      const id = modelId(m);
+      if (pickedIds.has(id)) pickedIds.delete(id);
+      else pickedIds.add(id);
+      updateCompareBar();
+      update();
+    }
+
+    function updateCompareBar() {
+      const n = pickedIds.size;
+      compareBar.style.display = n > 0 ? '' : 'none';
+      compareBar.classList.toggle('is-compare-mode', compareMode);
+      // Update count number
+      const countNum = document.getElementById('compare-count-num');
+      if (countNum) countNum.textContent = n;
+      // Update CTA label
+      compareBtn.disabled = n < 2;
+      const ctaText = compareBtn.querySelector('.sel-footer-cta-text');
+      if (ctaText) ctaText.textContent = compareMode ? 'Ver todos' : 'Comparar';
+      // Populate thumbnails
+      const thumbsEl = document.getElementById('sel-thumbs');
+      if (thumbsEl) {
+        thumbsEl.innerHTML = '';
+        modelos.forEach(m => {
+          if (!pickedIds.has(modelId(m))) return;
+          const thumb = document.createElement('div');
+          thumb.className = 'sel-thumb';
+          thumb.title = m.marca + ' ' + m.modelo + ' ' + (m.variante || '');
+          const shortName = m.modelo + (m.variante ? ' · ' + m.variante : '');
+          thumb.innerHTML =
+            '<img src="' + photoSrc(m) + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy">' +
+            '<span class="sel-thumb-name">' + shortName + '</span>' +
+            '<button class="sel-thumb-remove" type="button" aria-label="Quitar ' + m.marca + ' ' + m.modelo + '">×</button>';
+          thumb.querySelector('.sel-thumb-remove').addEventListener('click', (e) => {
+            e.stopPropagation();
+            pickedIds.delete(modelId(m));
+            if (pickedIds.size < 2 && compareMode) compareMode = false;
+            updateCompareBar();
+            update();
+          });
+          thumbsEl.appendChild(thumb);
+        });
+      }
+    }
+
+    compareBtn.addEventListener('click', () => {
+      if (compareMode) {
+        compareMode = false;
+        pickedIds.clear();
+      } else {
+        compareMode = true;
+      }
+      updateCompareBar();
+      update();
+    });
+
+    compareClear.addEventListener('click', () => {
+      pickedIds.clear();
+      compareMode = false;
+      updateCompareBar();
+      update();
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // SEARCH
+    // ═══════════════════════════════════════════════════════
+    let searchDebounce = null;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => {
+        const q = searchInput.value.trim().toLowerCase();
+        if (q.length < 2) { searchResultsEl.style.display = 'none'; searchResultsEl.innerHTML = ''; return; }
+        const matches = allModelos.filter(m => {
+          const full = (m.marca + ' ' + m.modelo + ' ' + m.variante).toLowerCase();
+          return q.split(/\s+/).every(w => full.includes(w));
+        }).slice(0, 8);
+        if (matches.length === 0) { searchResultsEl.style.display = 'none'; searchResultsEl.innerHTML = ''; return; }
+        searchResultsEl.innerHTML = matches.map(m => {
+          const id = modelId(m);
+          const picked = pickedIds.has(id);
+          return '<button class="search-item' + (picked ? ' picked' : '') + '" data-mid="' + id + '">' +
+            '<span class="si-marca">' + m.marca + '</span> ' +
+            '<span class="si-modelo">' + m.modelo + ' ' + m.variante + '</span>' +
+            (picked ? '<span class="si-check">✓</span>' : '') +
+            '</button>';
+        }).join('');
+        searchResultsEl.style.display = 'block';
+        searchResultsEl.querySelectorAll('.search-item').forEach(btn => {
+          btn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            const mid = btn.dataset.mid;
+            const m = allModelos.find(x => modelId(x) === mid);
+            if (m) togglePick(m);
+            searchInput.dispatchEvent(new Event('input'));
+          });
+        });
+      }, 150);
+    });
+
+    searchInput.addEventListener('blur', () => {
+      setTimeout(() => { searchResultsEl.style.display = 'none'; }, 200);
+    });
+    searchInput.addEventListener('focus', () => {
+      if (searchInput.value.trim().length >= 2) searchInput.dispatchEvent(new Event('input'));
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════════════
+    renderPanel();
+    update();
+
+    // Recalculate table on resize (mobile ↔ desktop)
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (currentView === 'listado') update();
+      }, 200);
+    });
+
+    // Top bar shadow when stuck
+    const compTopbar = document.getElementById('filter-bar');
+    if (compTopbar) {
+      const sentinel = document.createElement('div');
+      sentinel.style.height = '1px';
+      compTopbar.parentNode.insertBefore(sentinel, compTopbar);
+      const obs = new IntersectionObserver(([e]) => {
+        compTopbar.classList.toggle('scrolled', !e.isIntersecting);
+      }, { threshold: [0] });
+      obs.observe(sentinel);
+    }
+  </script>
+</Layout>
+
+<!-- Use is:global so styles apply to JS-rendered elements -->
+<style is:global>
+  /* ══════════════════════════════════════════
+     COMPARADOR TOKENS (scoped — do NOT put in global.css)
+     ══════════════════════════════════════════ */
+  :root {
+    --photo-bg: linear-gradient(180deg, #0E0E0E, #1A1A1A);
+
+    /* Panel zone — warm off-white, distinct from page cream */
+    --panel-bg: #F2F1ED;
+    --panel-border: #D5D4CF;
+    --panel-separator: #D5D4CF;
+
+    /* Comparador-specific shadows */
+    --card-shadow: none;
+    --card-hover-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    --sticky-shadow: 0 0 0 1px rgba(0,0,0,0.08);
+    --pop-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    --panel-locked-bg: rgba(245,197,24,0.05);
+    --toggle-off-bg: #D0D0D0;
+    --toggle-off-border: #BBBBBB;
+
+    /* Badge tokens — Editorial High Contrast */
+    --badge-nmc-bg: transparent;
+    --badge-nmc-border: #4A7FBD;
+    --badge-nmc-text: #2E5E8E;
+    --badge-nca-bg: transparent;
+    --badge-nca-border: #7B5FC8;
+    --badge-nca-text: #5A3FA8;
+    --badge-800v-bg: transparent;
+    --badge-800v-border: #C87834;
+    --badge-800v-text: #A06028;
+    --badge-bcalor-bg: transparent;
+    --badge-bcalor-border: #3A8C5A;
+    --badge-bcalor-text: #2A6C44;
+    --badge-lfp-bg: var(--yellow);
+    --badge-lfp-border: var(--yellow);
+    --badge-lfp-text: #111111;
+    --badge-tipo-bg: transparent;
+    --badge-tipo-border: #C0BFB9;
+    --badge-tipo-text: #76756F;
+    --badge-traccion-bg: #111111;
+    --badge-traccion-border: #111111;
+    --badge-traccion-text: #FAFAF8;
+  }
+  [data-theme="dark"] {
+    --photo-bg: linear-gradient(180deg, #0A0A0A, #141414);
+    --panel-bg: #111111;
+    --panel-border: #1E1E1E;
+    --panel-separator: #1E1E1E;
+
+    --card-shadow: none;
+    --card-hover-shadow: 0 4px 16px rgba(255,255,255,0.04);
+    --sticky-shadow: 0 0 0 1px rgba(255,255,255,0.06);
+    --pop-shadow: 0 4px 20px rgba(0,0,0,0.50);
+    --panel-locked-bg: rgba(245,197,24,0.06);
+    --toggle-off-bg: #333333;
+    --toggle-off-border: #444444;
+
+    /* Badge tokens dark */
+    --badge-nmc-border: #6B9BD4;
+    --badge-nmc-text: #8BB4E0;
+    --badge-nca-border: #9B8AE0;
+    --badge-nca-text: #B3A4F0;
+    --badge-800v-border: #D4944A;
+    --badge-800v-text: #E0A85E;
+    --badge-bcalor-border: #5BBD7A;
+    --badge-bcalor-text: #80D098;
+    --badge-lfp-text: #111111;
+    --badge-tipo-border: #444444;
+    --badge-tipo-text: #808080;
+    --badge-traccion-bg: #F0F0F0;
+    --badge-traccion-border: #F0F0F0;
+    --badge-traccion-text: #111111;
+  }
+
+  /* ══════════════════════════════════════════
+     HERO BAND
+     ══════════════════════════════════════════ */
+  .hero-band {
+    position: relative;
+    width: 100%;
+    height: clamp(200px, 30vh, 360px);
+    overflow: hidden;
+    background: var(--black);
+  }
+  .hero-band img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+    display: block;
+  }
+  .hero-band::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    background: linear-gradient(to bottom, transparent 40%, rgba(17,17,17,.15) 70%, rgba(17,17,17,.5) 100%);
+    pointer-events: none;
+  }
+  [data-theme="dark"] .hero-band::after {
+    background: linear-gradient(to bottom, transparent 40%, rgba(13,15,20,.2) 70%, rgba(13,15,20,.7) 100%);
+  }
+
+  /* ══════════════════════════════════════════
+     COMP SECTION — continuous panel, same as homepage
+     ══════════════════════════════════════════ */
+  .comp-section {
+    position: relative;
+    z-index: 10;
+    margin-top: -4rem;
+  }
+
+  .comp-outer {
+    max-width: var(--max-w);
+    margin-inline: auto;
+    padding-inline: var(--hub-gutter);
+    padding-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  /* Block 1: Intro — rounded top, overlaps hero */
+  .comp-intro {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px 12px 0 0;
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 2vw, 1.75rem);
+    box-shadow: 0 -8px 40px rgba(0,0,0,.12);
+  }
+  .comp-intro h2 {
+    font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+    font-weight: 200;
+    letter-spacing: -.03em;
+    line-height: 1.1;
+    margin-bottom: .4rem;
+  }
+  .comp-intro h2 em {
+    font-family: var(--font-serif);
+    font-style: italic;
+  }
+  .comp-intro p {
+    font-size: .85rem;
+    color: var(--text-secondary);
+    max-width: 60ch;
+    line-height: 1.6;
+  }
+  .comp-intro p strong {
+    color: var(--yellow);
+    font-weight: 600;
+  }
+
+  /* Block 2: Top bar — single row, sticky */
+  .comp-topbar {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-top: none;
+    padding: .55rem clamp(1.5rem, 3vw, 2.5rem);
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    transition: box-shadow .3s;
+  }
+  .comp-topbar.scrolled {
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
+  }
+  .topbar-sep {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+  .topbar-spacer {
+    flex: 1;
+  }
+  .sort-control {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .sort-label {
+    font-size: .72rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .sort-select {
+    font-family: var(--font-sans);
+    font-size: .72rem;
+    padding: .35rem .6rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color .2s;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .5rem center;
+    padding-right: 1.5rem;
+  }
+  .sort-select:hover, .sort-select:focus {
+    border-color: var(--yellow);
+    outline: none;
+  }
+  [data-theme="dark"] .sort-select {
+    background-color: var(--surface-alt);
+  }
+
+  .reset-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: .4rem .7rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: .62rem;
+    font-weight: 500;
+    transition: all .2s;
+    font-family: var(--font-sans);
+  }
+  .reset-btn:hover {
+    border-color: var(--text);
+    color: var(--text);
+  }
+
+  .result-count-bar {
+    font-size: .78rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+    white-space: nowrap;
+  }
+  .result-count-bar span {
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  /* ══════════════════════════════════════════
+     FIELDS PANEL — fixed grid of all fields
+     ══════════════════════════════════════════ */
+  .comp-fields-panel {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-top: none;
+    padding: 0.85rem clamp(1.5rem, 3vw, 2.5rem);
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+  }
+  [data-theme="dark"] .comp-fields-panel {
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .panel-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.15rem 0.5rem;
+  }
+  @media (max-width: 1100px) { .panel-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 800px)  { .panel-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 500px)  { .panel-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  .panel-divider {
+    grid-column: 1 / -1;
+    height: 1px;
+    background: var(--panel-border);
+    margin: 0.25rem 0;
+  }
+
+  /* Individual cell in the fields grid */
+  /* ── Field items (unified grid) ────────── */
+  .field-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.3rem;
+    border-radius: 5px;
+    transition: opacity 0.15s;
+    position: relative;
+  }
+  .field-item:not(.active) { opacity: 0.55; }
+  .field-item:hover { background: rgba(0,0,0,0.03); opacity: 1; }
+  [data-theme="dark"] .field-item:hover { background: rgba(255,255,255,0.04); }
+
+  /* Locked category items */
+  .field-item.locked { background: rgba(245, 197, 24, 0.04); }
+  [data-theme="dark"] .field-item.locked { background: rgba(245, 197, 24, 0.06); }
+
+  /* Mini toggle */
+  .field-toggle {
+    width: 22px;
+    height: 12px;
+    border-radius: 6px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .field-toggle.on {
+    background: var(--yellow);
+    border-color: var(--yellow);
+  }
+  .field-toggle-track {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  .field-toggle-knob {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    transition: left 0.2s;
+    box-shadow: 0 0.5px 1.5px rgba(0,0,0,0.2);
+  }
+  .field-toggle.on .field-toggle-knob { left: 11px; }
+
+  /* Locked toggle (categories) */
+  .locked-toggle {
+    pointer-events: none;
+    cursor: default;
+  }
+
+  /* Field label */
+  .field-label {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    line-height: 1.25;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .field-item:not(.active) .field-label {
+    color: var(--text);
+    opacity: 0.7;
+  }
+  .field-item.active .field-label {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* Inline filter (numeric) */
+  .field-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    flex-shrink: 0;
+  }
+  .field-filter-sym {
+    font-family: var(--font-sans);
+    font-size: 0.5625rem;
+    color: var(--text-muted);
+    width: 0.65rem;
+    text-align: center;
+  }
+  .field-filter-input {
+    width: 42px;
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    padding: 0.2rem 0.3rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--surface);
+    color: var(--text);
+    text-align: right;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .field-filter-input:focus { border-color: var(--yellow); }
+  .field-filter-input:not(:placeholder-shown) { border-color: var(--yellow); background: var(--yellow-glow); }
+  .field-filter-input::placeholder { color: var(--text-muted); opacity: 0.4; }
+  .field-filter-input::-webkit-inner-spin-button,
+  .field-filter-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .field-filter-input[type=number] { -moz-appearance: textfield; }
+  .field-filter-unit {
+    font-family: var(--font-sans);
+    font-size: 0.5rem;
+    color: var(--text-muted);
+    min-width: 1.5rem;
+  }
+
+
+  /* Select All button row */
+  .panel-select-all-row {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-start;
+    padding: 0.3rem 0 0.1rem;
+  }
+  .panel-select-all-btn {
+    font-family: var(--font-sans);
+    font-size: 0.625rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: none;
+    border: 1px dashed var(--text-muted);
+    border-radius: 4px;
+    padding: 0.2rem 0.55rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.01em;
+  }
+  [data-theme="dark"] .panel-select-all-btn {
+    color: #C5C5C5;
+    border-color: #606060;
+  }
+  .panel-select-all-btn:hover {
+    color: var(--text);
+    border-color: var(--yellow);
+    border-style: solid;
+    background: var(--yellow-glow);
+  }
+  [data-theme="dark"] .panel-select-all-btn:hover {
+    color: var(--yellow);
+  }
+
+  /* Per-field sort button */
+  .field-sort-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 12px;
+    height: 12px;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    opacity: 0;
+    flex-shrink: 0;
+    transition: opacity 0.15s, color 0.15s;
+  }
+  .field-sort-btn svg { display: block; }
+  .field-item:hover .field-sort-btn { opacity: 0.45; }
+  .field-sort-btn:hover { opacity: 1 !important; color: var(--text); }
+  .field-sort-btn.sort-active {
+    opacity: 1 !important;
+    color: var(--yellow);
+  }
+
+  /* Toggleable filter direction button */
+  .field-filter-sym-btn {
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0 1px;
+    border-radius: 2px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .field-filter-sym-btn:hover {
+    color: var(--yellow);
+    background: var(--yellow-glow);
+  }
+
+  /* Category filter button */
+  .cat-filter-btn {
+    font-family: var(--font-sans);
+    font-size: 0.625rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.15rem 0.4rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .cat-filter-btn:hover { border-color: var(--text-muted); }
+  .cat-filter-btn.has-val {
+    background: var(--yellow-glow);
+    border-color: var(--yellow);
+    color: var(--text);
+    font-weight: 500;
+  }
+  .cat-filter-btn svg { opacity: 0.5; flex-shrink: 0; }
+  .cat-filter-btn.has-val svg { opacity: 0.8; }
+
+  /* Category popover */
+  .cat-popover {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 0.6rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 200;
+    min-width: 140px;
+  }
+
+  /* ══════════════════════════════════════════
+     POPOVER SHARED STYLES (sidebar)
+     ══════════════════════════════════════════ */
+  .pop-input-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--surface);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    padding: 0 .5rem;
+  }
+  .pop-prefix {
+    font-family: var(--font-sans);
+    font-size: .6rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    margin-right: .3rem;
+  }
+  .pop-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: .8rem;
+    padding: .4rem 0;
+    outline: none;
+    width: 50px;
+    color: var(--text);
+  }
+  .pop-unit {
+    font-family: var(--font-sans);
+    font-size: .6rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .pop-clear {
+    font-family: var(--font-sans);
+    font-size: .6rem;
+    color: #c33;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-top: .35rem;
+    padding: 0;
+    display: block;
+  }
+  .pop-options {
+    display: flex;
+    max-height: 45vh;
+    overflow-y: auto;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .pop-option {
+    font-family: var(--font-sans);
+    font-size: .7rem;
+    padding: .3rem .5rem;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-weight: 400;
+    transition: all 0.1s;
+  }
+  .pop-option:hover { background: var(--bg); }
+  .pop-option-sel {
+    background: var(--yellow) !important;
+    color: var(--black) !important;
+    font-weight: 600 !important;
+  }
+
+  /* Separator bar between filters and results */
+  .comp-panel-separator {
+    height: 1px;
+    background: var(--panel-separator);
+    border-left: 1px solid var(--panel-border);
+    border-right: 1px solid var(--panel-border);
+  }
+
+  /* ══════════════════════════════════════════
+     SEARCH BAR
+     ══════════════════════════════════════════ */
+  .search-wrap { position: relative; flex-shrink: 1; min-width: 0; }
+  .model-search {
+    font-family: var(--font-sans);
+    font-size: .75rem;
+    padding: .35rem .65rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    width: 180px;
+    outline: none;
+    transition: border-color .2s, width .3s;
+  }
+  .model-search::placeholder { color: var(--text-muted); }
+  .model-search:focus { border-color: var(--yellow); width: 240px; }
+  .search-results {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .35rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,.15);
+    z-index: 300;
+    min-width: 280px;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .search-item {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    width: 100%;
+    padding: .4rem .55rem;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: .72rem;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+    transition: background .15s;
+  }
+  .search-item:hover { background: rgba(245,197,24,.08); }
+  .search-item.picked { background: rgba(245,197,24,.1); }
+  .si-marca { color: var(--text-muted); font-size: .62rem; text-transform: uppercase; letter-spacing: .03em; min-width: 70px; }
+  .si-modelo { font-weight: 500; flex: 1; }
+  .si-check { color: var(--yellow); font-weight: 700; font-size: .8rem; }
+
+  /* ══════════════════════════════════════════
+     CARD / ROW SELECTION
+     ══════════════════════════════════════════ */
+  .ev-card { cursor: pointer; }
+  .ev-card-picked {
+    outline: 2px solid var(--yellow);
+    outline-offset: -2px;
+    box-shadow: 0 0 0 4px rgba(245,197,24,.15), 0 2px 8px rgba(0,0,0,.07);
+  }
+  .pick-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--yellow);
+    color: #0A0A0A;
+    font-size: .7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    box-shadow: 0 2px 6px rgba(0,0,0,.2);
+  }
+  .ev-row-picked td { background: rgba(245,197,24,.06) !important; }
+  .ev-row-picked td:first-child { border-left: 3px solid var(--yellow); }
+  /* Sticky column in picked rows needs solid bg so scrolling columns hide behind it */
+  .scroll-mode .ev-row-picked .col-sticky { background: #F2EFDE !important; }
+  [data-theme="dark"] .scroll-mode .ev-row-picked .col-sticky { background: #1A1914 !important; }
+  .scroll-mode .ev-row-picked:nth-child(even) .col-sticky { background: #EDEAD8 !important; }
+  [data-theme="dark"] .scroll-mode .ev-row-picked:nth-child(even) .col-sticky { background: #151310 !important; }
+
+  /* ══════════════════════════════════════════
+     STICKY SELECTION FOOTER (3·A)
+     ══════════════════════════════════════════ */
+  .sel-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 500;
+    background: #0A0A0A;
+    border-top: 2px solid var(--yellow);
+    box-shadow: 0 -8px 32px rgba(0,0,0,.35);
+    animation: sel-slide-up .28s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes sel-slide-up {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .sel-footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: .7rem clamp(1rem, 3vw, 1.5rem);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .sel-footer-label {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    font-family: var(--font-sans);
+  }
+  .sel-footer-count {
+    color: var(--yellow);
+    font-size: 1.3rem;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+  }
+  .sel-footer-text {
+    color: #999;
+    font-size: .62rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-top: .2rem;
+  }
+  .sel-footer-thumbs {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: .15rem 0;
+  }
+  .sel-footer-thumbs::-webkit-scrollbar { display: none; }
+  .sel-thumb {
+    flex-shrink: 0;
+    position: relative;
+    width: 56px;
+    height: 42px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: border-color .15s;
+  }
+  .sel-thumb:hover { border-color: var(--yellow); }
+  .sel-thumb img {
+    max-width: 85%;
+    max-height: 85%;
+    object-fit: contain;
+    filter: brightness(1.05);
+  }
+  .sel-thumb-remove {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 18px;
+    height: 18px;
+    background: var(--yellow);
+    color: #0A0A0A;
+    border: none;
+    border-radius: 50%;
+    font-size: .75rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+    opacity: 0;
+    transition: opacity .15s, transform .15s;
+    box-shadow: 0 2px 6px rgba(0,0,0,.4);
+  }
+  .sel-thumb:hover .sel-thumb-remove,
+  .sel-thumb-remove:focus-visible {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  .sel-thumb-remove:hover { background: #fff; }
+  .sel-thumb-name {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.85), transparent);
+    color: #fff;
+    font-size: .5rem;
+    padding: .3rem .25rem .15rem;
+    text-align: center;
+    letter-spacing: .02em;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+  }
+  .sel-footer-actions {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+  .sel-footer-clear {
+    font-family: var(--font-sans);
+    font-size: .72rem;
+    font-weight: 400;
+    padding: .5rem .85rem;
+    border-radius: 4px;
+    border: 1px solid #333;
+    background: transparent;
+    color: #999;
+    cursor: pointer;
+    transition: border-color .15s, color .15s;
+    letter-spacing: .01em;
+  }
+  .sel-footer-clear:hover { border-color: #666; color: #ddd; }
+  .sel-footer-cta {
+    font-family: var(--font-sans);
+    font-size: .8rem;
+    font-weight: 500;
+    padding: .6rem 1.3rem;
+    border-radius: 4px;
+    border: none;
+    background: var(--yellow);
+    color: #0A0A0A;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s, opacity .15s;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    letter-spacing: .01em;
+  }
+  .sel-footer-cta:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+    background: #333;
+    color: #666;
+  }
+  .sel-footer-cta:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245,197,24,.3);
+  }
+  .sel-footer-cta-arrow {
+    font-size: .95rem;
+    transition: transform .15s;
+  }
+  .sel-footer-cta:not(:disabled):hover .sel-footer-cta-arrow {
+    transform: translateX(2px);
+  }
+  .sel-footer.is-compare-mode .sel-footer-cta {
+    background: #fff;
+  }
+  .sel-footer.is-compare-mode .sel-footer-cta-arrow {
+    transform: rotate(180deg);
+  }
+  .sel-footer.is-compare-mode .sel-footer-cta:hover .sel-footer-cta-arrow {
+    transform: rotate(180deg) translateX(2px);
+  }
+  @media (max-width: 700px) {
+    .sel-footer-inner { gap: .65rem; padding: .55rem .85rem; }
+    .sel-footer-text { display: none; }
+    .sel-footer-count { font-size: 1.1rem; }
+    .sel-thumb { width: 44px; height: 34px; }
+    .sel-thumb-name { display: none; }
+    .sel-footer-cta { padding: .5rem 1rem; font-size: .75rem; }
+    .sel-footer-clear { padding: .45rem .7rem; font-size: .68rem; }
+    .sel-footer-cta-text { display: none; }
+    .sel-footer-cta-arrow { font-size: 1rem; }
+  }
+  @media (max-width: 600px) {
+    .model-search { width: 120px; }
+    .model-search:focus { width: 160px; }
+  }
+
+  /* ── Results ─────────────────────────── */
+  .comp-results {
+    padding: 1.5rem clamp(1.5rem, 3vw, 2.5rem);
+    background: var(--surface);
+    min-height: 60vh;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+  [data-theme="dark"] .comp-results {
+    background: var(--surface);
+  }
+  .results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .results-count {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+  .results-count span { font-weight: 500; color: var(--text); }
+
+  /* View toggle */
+  .view-toggle {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .view-btn {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    padding: 0.4rem 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .view-btn:not(:last-child) { border-right: 1px solid var(--border); }
+  .view-btn.active {
+    background: var(--yellow);
+    color: var(--black);
+    font-weight: 600;
+  }
+
+  .results-empty {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 4rem 0;
+  }
+
+  /* ══════════════════════════════════════════
+     FICHAS GRID
+     ══════════════════════════════════════════ */
+  .fichas-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    padding: 0;
+  }
+
+  /* ══════════════════════════════════════════
+     EV CARD — profile photo + data below
+     Photo area is a controlled 16:7 ratio
+     dark bg, car centered, never cropped.
+     ══════════════════════════════════════════ */
+  .ev-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--yellow);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: none;
+    transition: all 0.25s;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+  }
+  .ev-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+  [data-theme="dark"] .ev-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+  .ev-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+  [data-theme="dark"] .ev-card:hover {
+    box-shadow: 0 4px 16px rgba(255,255,255,0.03);
+  }
+
+  /* Photo area — neutral gray gradient bg, yellow accent line */
+  .ev-card-photo {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(180deg, #e2e0db 0%, #d0cec8 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  [data-theme="dark"] .ev-card-photo {
+    background: linear-gradient(180deg, #1C1C1C 0%, #141414 100%);
+  }
+  .ev-card-photo img {
+    width: 90%;
+    height: 82%;
+    object-fit: contain;
+    display: block;
+    position: relative;
+    z-index: 1;
+    transition: transform .5s cubic-bezier(.25,.46,.45,.94);
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,.18));
+  }
+  .ev-card:hover .ev-card-photo img {
+    transform: scale(1.05);
+  }
+
+  /* Autonomy badge — now in card body, not on photo */
+  .ev-photo-badge {
+    display: none; /* Hidden — autonomy now shown in card header */
+  }
+  .ev-autonomia-inline {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .ev-autonomia-inline .val {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--yellow);
+    line-height: 1;
+    letter-spacing: -.02em;
+  }
+  .ev-autonomia-inline .unit {
+    font-size: .55rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+
+  /* Card body */
+  .ev-card-body {
+    padding: 1.1rem 1.25rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ev-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: .5rem;
+  }
+  .ev-card-title {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .ev-marca {
+    font-size: .6rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: .1rem;
+  }
+  .ev-modelo {
+    font-size: .95rem;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ev-variante {
+    font-size: .68rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.3;
+    margin-top: .1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ev-card-autonomia {
+    font-size: .78rem;
+    font-weight: 500;
+    color: var(--text);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .ev-autonomia-value {
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .ev-autonomia-unit {
+    font-size: .65rem;
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+
+  /* Badges */
+  .ev-badges {
+    display: flex;
+    gap: .4rem;
+    flex-wrap: wrap;
+    margin-top: .35rem;
+  }
+  .badge {
+    font-size: .5rem;
+    padding: .18rem .45rem;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    white-space: nowrap;
+    line-height: 1.3;
+  }
+  /* Badge colors — High Contrast Editorial (use CSS variables from global.css) */
+  /* Neutros — descriptivos */
+  .badge-tipo {
+    background: var(--badge-tipo-bg);
+    border: 1px solid var(--badge-tipo-border);
+    color: var(--badge-tipo-text);
+  }
+  .badge-traccion {
+    background: var(--badge-traccion-bg);
+    border: 1px solid var(--badge-traccion-border);
+    color: var(--badge-traccion-text);
+    font-weight: 600;
+  }
+  .badge-bcalor {
+    background: var(--badge-bcalor-bg);
+    border: 1px solid var(--badge-bcalor-border);
+    color: var(--badge-bcalor-text);
+  }
+
+  /* Técnicos — diferenciadores con color individual */
+  .badge-lfp {
+    background: var(--badge-lfp-bg);
+    border: 1px solid var(--badge-lfp-border);
+    color: var(--badge-lfp-text);
+    font-weight: 600;
+  }
+  .badge-nmc {
+    background: var(--badge-nmc-bg);
+    border: 1px solid var(--badge-nmc-border);
+    color: var(--badge-nmc-text);
+    font-weight: 600;
+  }
+  .badge-nca {
+    background: var(--badge-nca-bg);
+    border: 1px solid var(--badge-nca-border);
+    color: var(--badge-nca-text);
+    font-weight: 600;
+  }
+  .badge-800v {
+    background: var(--badge-800v-bg);
+    border: 1px solid var(--badge-800v-border);
+    color: var(--badge-800v-text);
+    font-weight: 600;
+  }
+
+  /* Detail rows — clean, readable */
+  .ev-card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: .75rem;
+    padding-top: .7rem;
+    border-top: 1px solid var(--border);
+  }
+  .ev-detail {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    padding: .35rem 0;
+    line-height: 1.4;
+  }
+  .ev-detail span:last-child {
+    font-weight: 500;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .ev-detail-price span:last-child {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* View control */
+  .fichas-view { display: block; }
+  .fichas-view:not(.active) { display: none; }
+  .listado-view { display: none; }
+  .listado-view.active { display: block; }
+
+  /* ══════════════════════════════════════════
+     LISTADO VIEW (Table)
+     ══════════════════════════════════════════ */
+  .listado-wrap {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow-x: auto;
+    background: var(--surface);
+  }
+
+  .listado-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .82rem;
+    min-width: 1100px;
+  }
+
+  .listado-table thead {
+    position: sticky;
+    top: 0;
+    background: var(--table-header-bg);
+    color: var(--white);
+    z-index: 20;
+  }
+
+  .listado-table th {
+    padding: .65rem .75rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: .6rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    white-space: nowrap;
+    background: var(--table-header-bg);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: #FFFFFF;
+  }
+  [data-theme="dark"] .listado-table th {
+    background: #000000;
+    border-bottom-color: rgba(255,255,255,0.08);
+  }
+  .listado-table th.col-num { text-align: right; }
+
+  .listado-table th:first-child {
+    position: sticky;
+    left: 0;
+    background: var(--table-header-bg);
+    z-index: 21;
+    min-width: 360px;
+    width: 360px;
+  }
+  [data-theme="dark"] .listado-table th:first-child {
+    background: #000000;
+    border-bottom-color: rgba(255,255,255,0.08);
+  }
+
+  .listado-table th:last-child {
+    padding-right: 1.25rem;
+  }
+
+  .listado-table td {
+    padding: .6rem .75rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+  .listado-table td.col-num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .listado-table td small {
+    font-size: .55rem;
+    color: var(--text-muted);
+    margin-left: .1rem;
+  }
+
+  .listado-table td:first-child {
+    position: sticky;
+    left: 0;
+    background: var(--surface);
+    z-index: 10;
+    min-width: 360px;
+    width: 360px;
+    white-space: normal;
+    padding-right: 1rem;
+  }
+  .listado-table td:first-child::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -6px;
+    bottom: 0;
+    width: 6px;
+    background: linear-gradient(to right, rgba(0,0,0,.06), transparent);
+    pointer-events: none;
+  }
+  [data-theme="dark"] .listado-table td:first-child::after {
+    background: linear-gradient(to right, rgba(0,0,0,.3), transparent);
+  }
+
+  .listado-table td:last-child {
+    padding-right: 1.25rem;
+  }
+
+  .listado-table tbody tr:nth-child(even) td { background: var(--table-row-even); }
+  .listado-table tbody tr:nth-child(even) td:first-child { background: var(--table-row-even); }
+  .listado-table tbody tr:hover td { background: var(--panel-bg); }
+  .listado-table tbody tr:hover td:first-child { background: var(--panel-bg); }
+
+  .table-modelo-wrap {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+  .table-photo {
+    width: 56px;
+    height: 32px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--photo-bg);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 4px;
+  }
+  .table-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .table-modelo-wrap > div:last-child { min-width: 0; flex: 1; }
+  .table-modelo { font-weight: 600; color: var(--text); font-size: .78rem; white-space: normal; line-height: 1.2; }
+  .table-variante { font-size: .62rem; color: var(--text-secondary); white-space: normal; line-height: 1.3; }
+  .table-badges { display: flex; gap: .2rem; flex-wrap: wrap; margin-top: .25rem; }
+  .table-badges .badge { font-size: .45rem; padding: .08rem .3rem; }
+  .table-autonomia { color: var(--yellow) !important; font-weight: 600 !important; }
+
+  /* Scroll nav */
+  .results-table-outer { position: relative; }
+  .scroll-nav {
+    display: none;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .scroll-nav.visible { display: flex; }
+  .scroll-nav-hint {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-right: auto;
+  }
+  .scroll-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+    color: var(--text);
+    flex-shrink: 0;
+  }
+  .scroll-btn:hover { background: var(--surface-alt); border-color: var(--border); }
+  .scroll-btn:disabled { opacity: 0.3; cursor: default; }
+
+  .results-table-wrap {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .results-table-wrap.scroll-mode {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Sticky first column in scroll mode */
+  .scroll-mode .col-sticky {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    background: #FFFFFF;
+  }
+  [data-theme="dark"] .scroll-mode .col-sticky {
+    background: #141414;
+  }
+  .scroll-mode thead .col-sticky {
+    z-index: 21;
+    background: var(--table-header-bg);
+    border-bottom: 2px solid var(--yellow);
+  }
+  [data-theme="dark"] .scroll-mode thead .col-sticky {
+    background: #000000;
+  }
+  .scroll-mode .ev-row:nth-child(even) .col-sticky {
+    background: #F7F7F7;
+  }
+  [data-theme="dark"] .scroll-mode .ev-row:nth-child(even) .col-sticky {
+    background: #111111;
+  }
+  .scroll-mode .ev-row:hover .col-sticky {
+    background: #F0F0F0;
+  }
+  [data-theme="dark"] .scroll-mode .ev-row:hover .col-sticky {
+    background: #1A1A1A;
+  }
+  .scroll-mode .col-sticky::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -8px;
+    bottom: 0;
+    width: 8px;
+    background: linear-gradient(to right, rgba(0,0,0,0.06), transparent);
+    pointer-events: none;
+  }
+  [data-theme="dark"] .scroll-mode .col-sticky::after {
+    background: linear-gradient(to right, rgba(0,0,0,0.35), transparent);
+  }
+  .results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+  }
+  .results-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .results-table th {
+    background: var(--table-header-bg);
+    color: var(--header-text);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.6rem 0.5rem;
+    text-align: left;
+    border: none;
+    border-bottom: 2px solid var(--yellow);
+  }
+  [data-theme="dark"] .results-table th {
+    background: #000000;
+  }
+  .results-table th.col-num { text-align: right; }
+  .results-table th.col-sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .results-table th.col-sortable:hover { background: rgba(255,255,255,0.1); }
+  .results-table th.th-sorted {
+    background: var(--yellow) !important;
+    color: var(--black) !important;
+  }
+
+  .results-table td {
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-weight: 400;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .results-table td.col-num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .results-table td small {
+    font-size: 0.5625rem;
+    color: var(--text-muted);
+    margin-left: 0.1rem;
+  }
+
+  .col-autonomia strong {
+    color: var(--yellow);
+    font-weight: 600;
+  }
+  .col-precio { font-weight: 500 !important; }
+
+  .ev-row:nth-child(even) td { background: var(--table-row-even); }
+
+  /* Row with photo */
+  .row-modelo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .row-photo {
+    width: 56px;
+    height: 32px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #EEEEEE 0%, #DDDDDD 100%);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 4px;
+  }
+  [data-theme="dark"] .row-photo {
+    background: linear-gradient(180deg, #242424 0%, #1C1C1C 100%);
+  }
+  .row-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,.12));
+  }
+  .row-modelo-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .row-marca {
+    font-size: 0.5625rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    line-height: 1.2;
+  }
+  .row-nombre {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .row-badges {
+    display: flex;
+    gap: 0.15rem;
+    flex-wrap: nowrap;
+    margin-top: 0.15rem;
+    overflow: hidden;
+  }
+
+  /* ── Methodology ────────────────────── */
+  /* ══════════════════════════════════════════
+     METHODOLOGY
+     ══════════════════════════════════════════ */
+  /* Block 4: Methodology — closes the panel, rounded bottom */
+  .comp-methodology {
+    padding: clamp(1.5rem, 3vw, 2rem) clamp(1.5rem, 3vw, 2.5rem);
+    border: 1px solid var(--border);
+    border-top: none;
+    background: var(--surface);
+    border-radius: 0 0 12px 12px;
+  }
+  .comp-methodology .meth-label {
+    font-size: .6rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--text-muted);
+    margin-bottom: .5rem;
+  }
+  .comp-methodology p {
+    font-size: .82rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 70ch;
+    font-weight: 300;
+  }
+
+  /* ══════════════════════════════════════════
+     RESPONSIVE
+     ══════════════════════════════════════════ */
+  @media (max-width: 1100px) {
+    .fichas-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 850px) {
+    .fichas-grid { grid-template-columns: repeat(2, 1fr); }
+    .panel-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .comp-topbar {
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .panel-grid { grid-template-columns: repeat(2, 1fr); }
+    .fichas-grid { grid-template-columns: 1fr 1fr; gap: .8rem; }
+    .ev-card-body { padding: .75rem .85rem .85rem; }
+    .ev-modelo { font-size: .82rem; }
+    .hero-band { height: clamp(120px, 22vw, 200px); }
+    .comp-section { margin-top: -2rem; }
+  }
+  @media (max-width: 400px) {
+    .fichas-grid { grid-template-columns: 1fr; }
+  }
+</style>
