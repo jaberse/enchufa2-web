@@ -663,7 +663,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       const cols = 'minmax(140px, 1fr) repeat(' + n + ', minmax(120px, 1fr))';
       let html = '<div class="cmp-table" style="grid-template-columns:' + cols + '">';
 
-      // Header row: photos + brand/model/variant
+      // Header row: photos + brand/model/variant + badges integrated
       html += '<div class="cmp-label cmp-label-head"></div>';
       picked.forEach(m => {
         html += '<div class="cmp-head">' +
@@ -675,6 +675,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
             '<span class="cmp-head-modelo">' + m.modelo + '</span>' +
             '<span class="cmp-head-variante">' + (m.variante || '') + '</span>' +
           '</div>' +
+          '<div class="cmp-head-badges">' + makeBadgesHtml(m) + '</div>' +
         '</div>';
       });
 
@@ -690,12 +691,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           '<span class="cmp-hero-val">' + fmt(m.autonomia_wltp_km) + '</span>' +
           '<span class="cmp-hero-unit">km</span>' +
         '</div>';
-      });
-
-      // Badges row
-      html += '<div class="cmp-label">Etiquetas</div>';
-      picked.forEach(m => {
-        html += '<div class="cmp-cell cmp-cell-badges">' + makeBadgesHtml(m) + '</div>';
       });
 
       // Group separators + field rows
@@ -2384,14 +2379,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     align-items: center;
     font-weight: 400;
   }
-  .cmp-label-head { background: var(--card-bg, #fff); border-bottom: 2px solid var(--black); }
+  .cmp-label-head { background: var(--gray-100, #F5F5F3); border-bottom: 2px solid var(--black); }
   .cmp-label-hero {
     font-weight: 500;
     color: var(--text);
     background: var(--bg-muted, #F5F5F3);
   }
   [data-theme="dark"] .cmp-label { background: #1a1a1a; }
-  [data-theme="dark"] .cmp-label-head { background: #0f0f0f; border-bottom-color: var(--yellow); }
+  [data-theme="dark"] .cmp-label-head { background: #1a1a1a; border-bottom-color: var(--yellow); }
   [data-theme="dark"] .cmp-label-hero { background: #1a1a1a; color: #fff; }
 
   /* Data cells (car columns) */
@@ -2420,17 +2415,17 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   /* Header (photos + names) */
   .cmp-head {
     padding: 1.1rem .85rem .9rem;
-    background: var(--card-bg, #fff);
+    background: var(--gray-100, #F5F5F3);
     border-bottom: 2px solid var(--black);
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: .55rem;
+    gap: .5rem;
     text-align: center;
   }
   .cmp-head:last-child { border-right: none; }
-  [data-theme="dark"] .cmp-head { background: #0f0f0f; border-bottom-color: var(--yellow); }
+  [data-theme="dark"] .cmp-head { background: #1a1a1a; border-bottom-color: var(--yellow); }
   .cmp-head-photo {
     width: 100%;
     max-width: 140px;
@@ -2446,7 +2441,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .cmp-head-title { display: flex; flex-direction: column; line-height: 1.25; gap: .05rem; }
   .cmp-head-marca {
-    font-size: .58rem;
+    font-size: .6rem;
     letter-spacing: .08em;
     text-transform: uppercase;
     color: var(--text-muted);
@@ -2455,35 +2450,43 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .cmp-head-modelo {
     font-size: .95rem;
     color: var(--text);
-    font-weight: 500;
-    font-family: var(--font-serif);
-    font-style: italic;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    line-height: 1.25;
   }
   .cmp-head-variante {
     font-size: .68rem;
-    color: var(--text-muted);
-    font-weight: 400;
+    color: var(--text-secondary, var(--text-muted));
+    font-weight: 300;
   }
+  .cmp-head-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .3rem;
+    justify-content: center;
+    margin-top: .35rem;
+  }
+  .cmp-head-badges .badge { font-size: .55rem; padding: .2rem .45rem; }
 
   /* Hero row (autonomía) */
   .cmp-cell-hero {
     padding: .9rem .85rem;
-    font-family: var(--font-serif);
-    font-style: italic;
   }
   .cmp-hero-val {
-    font-size: 1.75rem;
-    color: var(--text);
-    font-weight: 400;
+    font-size: 1.6rem;
+    color: var(--yellow);
+    font-weight: 600;
+    letter-spacing: -.02em;
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
   .cmp-hero-unit {
-    font-size: .75rem;
+    font-size: .6rem;
     color: var(--text-muted);
     margin-left: .3rem;
-    font-style: normal;
-    font-family: var(--font-sans);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: .04em;
   }
   .cmp-cell-hero.cmp-cell-best .cmp-hero-val { color: var(--black); }
   [data-theme="dark"] .cmp-cell-hero.cmp-cell-best .cmp-hero-val { color: var(--yellow); }
