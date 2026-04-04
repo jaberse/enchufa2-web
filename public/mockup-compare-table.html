@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Mockup · Integración tabla comparación</title>
+<style>
+  :root {
+    --black: #111111;
+    --yellow: #F5C518;
+    --bg: #F8F6F1;
+    --surface: #FFFFFF;
+    --border: #E3E1D8;
+    --gray-100: #F5F5F3;
+    --gray-200: #E3E1D8;
+    --gray-300: #C0BFB9;
+    --gray-400: #9C9A90;
+    --text: #111111;
+    --text-secondary: #444444;
+    --text-muted: #76756F;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    font-family: Inter, system-ui, sans-serif;
+    padding: 40px 0;
+  }
+  h2 {
+    max-width: 1200px;
+    margin: 0 auto 14px;
+    padding: 0 24px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+  }
+  h2 em {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-left: 8px;
+  }
+  /* Outer white 1200px container (the kept "cuadro blanco") */
+  .comp-results {
+    max-width: 1200px;
+    margin: 0 auto 60px;
+    padding: 24px 32px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    min-height: 200px;
+  }
+  .compare-view {
+    padding: 8px 0;
+  }
+
+  /* ═══════════════════════════════════════════════
+     SHARED base table styles (grid 5 cols)
+     ═══════════════════════════════════════════════ */
+  .cmp-table {
+    display: grid;
+    grid-template-columns: 170px repeat(4, minmax(0, 1fr));
+    gap: 0;
+    font-family: Inter, sans-serif;
+    width: 100%;
+  }
+
+  .cmp-label {
+    padding: 14px 18px;
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+  }
+  .cmp-cell {
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
+    position: relative;
+  }
+  .cmp-cell-best {
+    background: linear-gradient(to right, rgba(245,197,24,.32) 0%, rgba(245,197,24,.14) 35%, rgba(245,197,24,.02) 100%) !important;
+    font-weight: 600;
+    padding-left: calc(16px + 3px);
+  }
+  .cmp-cell-best::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--yellow);
+  }
+  .cmp-cell-best .best-mark {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    color: var(--yellow);
+    font-size: 14px;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .cmp-head {
+    padding: 16px 12px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+  }
+  .cmp-head-photo {
+    width: 100%;
+    max-width: 120px;
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, #eee, #ddd);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 10px;
+  }
+  .cmp-head-marca {
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .cmp-head-modelo {
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .cmp-head-variante {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.35;
+  }
+
+  .cmp-group {
+    grid-column: 1 / -1;
+    background: var(--black);
+    color: #fff;
+    padding: 10px 20px;
+    margin-top: 16px;
+  }
+  .cmp-group-inner { display: flex; align-items: center; gap: 8px; }
+  .cmp-group-num { font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--yellow); }
+  .cmp-group-sep { color: rgba(255,255,255,0.28); font-size: 9.5px; }
+  .cmp-group-name { font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; }
+
+  /* ═══════════════════════════════════════════════
+     PROPUESTA A — Tarjeta unificada suave
+     Cabecera crema, cuerpo blanco, borde fino redondeado, zebra en cuerpo
+     ═══════════════════════════════════════════════ */
+  .variant-a .cmp-table {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .variant-a .cmp-label-head,
+  .variant-a .cmp-head {
+    background: var(--bg);
+  }
+  .variant-a .cmp-head {
+    border-bottom: 1px solid var(--border);
+  }
+  .variant-a .cmp-label-head {
+    border-bottom: 1px solid var(--border);
+  }
+  .variant-a .cmp-label,
+  .variant-a .cmp-cell { background: var(--surface); }
+  .variant-a .cmp-cell.row-even,
+  .variant-a .cmp-label.row-even { background: #FBFAF6; }
+  .variant-a .cmp-group { margin-top: 0; }
+
+  /* ═══════════════════════════════════════════════
+     PROPUESTA B — Elevación con sombra suave
+     Cabecera gris claro, cuerpo blanco, sin borde, sombra ligera
+     ═══════════════════════════════════════════════ */
+  .variant-b .cmp-table {
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+  }
+  .variant-b .cmp-label-head,
+  .variant-b .cmp-head {
+    background: var(--gray-100);
+  }
+  .variant-b .cmp-label,
+  .variant-b .cmp-cell { background: var(--surface); }
+  .variant-b .cmp-cell.row-even,
+  .variant-b .cmp-label.row-even { background: #FAFAF8; }
+  .variant-b .cmp-group { margin-top: 0; }
+
+  /* ═══════════════════════════════════════════════
+     PROPUESTA C — Editorial dos zonas
+     Cabecera crema con curva arriba, cuerpo blanco flush, sin borde general
+     El acento de marca (amarillo) solo en franja superior
+     ═══════════════════════════════════════════════ */
+  .variant-c .cmp-table {
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .variant-c .cmp-label-head,
+  .variant-c .cmp-head {
+    background: var(--bg);
+    border-top: 3px solid var(--yellow);
+  }
+  .variant-c .cmp-head-photo { max-width: 130px; }
+  .variant-c .cmp-label,
+  .variant-c .cmp-cell { background: var(--surface); }
+  .variant-c .cmp-cell.row-even,
+  .variant-c .cmp-label.row-even { background: #FBFAF6; }
+  .variant-c .cmp-label:not(.cmp-label-head) { border-bottom: 1px solid var(--border); }
+  .variant-c .cmp-cell { border-bottom: 1px solid var(--border); }
+  .variant-c .cmp-group { margin-top: 0; }
+</style>
+</head>
+<body>
+
+<h2>Propuesta A <em>— Tarjeta unificada con cabecera crema</em></h2>
+<div class="comp-results">
+  <div class="compare-view">
+    <div class="cmp-table variant-a">
+      <div class="cmp-label cmp-label-head"></div>
+      <div class="cmp-head">
+        <div class="cmp-head-photo">foto</div>
+        <span class="cmp-head-marca">MERCEDES</span>
+        <span class="cmp-head-modelo">EQE</span>
+        <span class="cmp-head-variante">350+ AMG Line</span>
+      </div>
+      <div class="cmp-head">
+        <div class="cmp-head-photo">foto</div>
+        <span class="cmp-head-marca">TESLA</span>
+        <span class="cmp-head-modelo">Model 3</span>
+        <span class="cmp-head-variante">Long Range AWD</span>
+      </div>
+      <div class="cmp-head">
+        <div class="cmp-head-photo">foto</div>
+        <span class="cmp-head-marca">SMART</span>
+        <span class="cmp-head-modelo">#1</span>
+        <span class="cmp-head-variante">Pro+ 66kWh</span>
+      </div>
+      <div class="cmp-head">
+        <div class="cmp-head-photo">foto</div>
+        <span class="cmp-head-marca">KIA</span>
+        <span class="cmp-head-modelo">EV6</span>
+        <span class="cmp-head-variante">GT-Line 77.4</span>
+      </div>
+      <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y autonomía</span></div></div>
+      <div class="cmp-label row-odd">Batería neta</div>
+      <div class="cmp-cell row-odd">90 kWh</div>
+      <div class="cmp-cell row-odd cmp-cell-best">82 kWh <em class="best-mark">★</em></div>
+      <div class="cmp-cell row-odd">62 kWh</div>
+      <div class="cmp-cell row-odd">74 kWh</div>
+      <div class="cmp-label row-even">Autonomía WLTP</div>
+      <div class="cmp-cell row-even">627 km</div>
+      <div class="cmp-cell row-even cmp-cell-best">629 km <em class="best-mark">★</em></div>
+      <div class="cmp-cell row-even">440 km</div>
+      <div class="cmp-cell row-even">528 km</div>
+      <div class="cmp-label row-odd">Consumo WLTP</div>
+      <div class="cmp-cell row-odd">16.2</div>
+      <div class="cmp-cell row-odd cmp-cell-best">14.9 <em class="best-mark">★</em></div>
+      <div class="cmp-cell row-odd">16.8</div>
+      <div class="cmp-cell row-odd">16.5</div>
+      <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">02</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Prestaciones</span></div></div>
+      <div class="cmp-label row-odd">Potencia</div>
+      <div class="cmp-cell row-odd">292 CV</div>
+      <div class="cmp-cell row-odd cmp-cell-best">498 CV <em class="best-mark">★</em></div>
+      <div class="cmp-cell row-odd">272 CV</div>
+      <div class="cmp-cell row-odd">325 CV</div>
+      <div class="cmp-label row-even">0-100</div>
+      <div class="cmp-cell row-even">6.4 s</div>
+      <div class="cmp-cell row-even cmp-cell-best">4.4 s <em class="best-mark">★</em></div>
+      <div class="cmp-cell row-even">6.7 s</div>
+      <div class="cmp-cell row-even">5.2 s</div>
+    </div>
+  </div>
+</div>
+
+<h2>Propuesta B <em>— Elevación con sombra, cabecera gris claro</em></h2>
+<div class="comp-results">
+  <div class="compare-view">
+    <div class="cmp-table variant-b">
+      <div class="cmp-label cmp-label-head"></div>
+      <div class="cmp-head">
+        <div class="cmp-head-photo">foto</div>
+        <span class="cmp-head-marca">MERCEDES</span>
+        <span class="cmp-head-modelo">EQE</span>
+        <span class="cmp-head-variante">350+ AMG Line</span>
+      </div>
+      <div class="cmp-head">
+        <div class="cmp-head-photo">foto</div>
+        <span class="cmp-head-marca">TESLA</span>
+        <span class="cmp-head-modelo">Model 3</span>
+        <span class="cmp-head-variante">Long Range AWD</span>
+      </div>
+      <div class="cmp-head">
+        <div class="cmp-head-photo">foto</div>
+        <span class="cmp-head-marca">SMART</span>
+        <span class="cmp-head-modelo">#1</span>
+        <span class="cmp-head-variante">Pro+ 66kWh</span>
+      </div>
+      <div class="cmp-head">
+        <div class="cmp-head-photo">foto</div>
+        <span class="cmp-head-marca">KIA</span>
+        <span class="cmp-head-modelo">EV6</span>
+        <span class="cmp-head-variante">GT-Line 77.4</span>
+      </div>
+      <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y autonomía</span></div></div>
+      <div class="cmp-label row-odd">Batería neta</div>
+      <div class="cmp-cell row-odd">90 kWh</div>
+      <div class="cmp-cell row-odd cmp-cell-best">82 kWh <em class="best-mark">★</em></div>
+      <div class="cmp-cell row-odd">62 kWh</div>
+      <div class="cmp-cell row-odd">74 kWh</div>
+      <div class="cmp-label row-even">Autonomía WLTP</div>
+      <div class="cmp-cell row-even">627 km</div>
+      <div class="cmp-cell row-even cmp-cell-best">629 km <em class="best-mark">★</em></div>
+      <div class="cmp-cell row-even">440 km</div>
+      <div class="cmp-cell row-even">528 km</div>
+      <div class="cmp-label row-odd">Consumo WLTP</div>
+      <div class="cmp-cell row-odd">16.2</div>
+      <div class="cmp-cell row-odd cmp-cell-best">14.9 <em class="best-mark">★</em></div>
+      <div class="cmp-cell row-odd">16.8</div>
+      <div class="cmp-cell row-odd">16.5</div>
+      <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">02</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Prestaciones</span></div></div>
+      <div class="cmp-label row-odd">Potencia</div>
+      <div class="cmp-cell row-odd">292 CV</div>
+      <div class="cmp-cell row-odd cmp-cell-best">498 CV <em class="best-mark">★</em></div>
+      <div class="cmp-cell row-odd">272 CV</div>
+      <div class="cmp-cell row-odd">325 CV</div>
+      <div class="cmp-label row-even">0-100</div>
+      <div class="cmp-cell row-even">6.4 s</div>
+      <div class="cmp-cell row-even cmp-cell-best">4.4 s <em class="best-mark">★</em></div>
+      <div class="cmp-cell row-even">6.7 s</div>
+      <div class="cmp-cell row-even">5.2 s</div>
+    </div>
+  </div>
+</div>
+
+<h2>Propuesta C <em>— Editorial con franja amarilla superior</em></h2>
+<div class="comp-results">
+  <div class="compare-view">
+    <div class="cmp-table variant-c">
+      <div class="cmp-label cmp-label-head"></div>
+      <div class="cmp-head">
+        <div class="cmp-head-photo">foto</div>
+        <span class="cmp-head-marca">MERCEDES</span>
+        <span class="cmp-head-modelo">EQE</span>
+        <span class="cmp-head-variante">350+ AMG Line</span>
+      </div>
+      <div class="cmp-head">
+        <div class="cmp-head-photo">foto</div>
+        <span class="cmp-head-marca">TESLA</span>
+        <span class="cmp-head-modelo">Model 3</span>
+        <span class="cmp-head-variante">Long Range AWD</span>
+      </div>
+      <div class="cmp-head">
+        <div class="cmp-head-photo">foto</div>
+        <span class="cmp-head-marca">SMART</span>
+        <span class="cmp-head-modelo">#1</span>
+        <span class="cmp-head-variante">Pro+ 66kWh</span>
+      </div>
+      <div class="cmp-head">
+        <div class="cmp-head-photo">foto</div>
+        <span class="cmp-head-marca">KIA</span>
+        <span class="cmp-head-modelo">EV6</span>
+        <span class="cmp-head-variante">GT-Line 77.4</span>
+      </div>
+      <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y autonomía</span></div></div>
+      <div class="cmp-label row-odd">Batería neta</div>
+      <div class="cmp-cell row-odd">90 kWh</div>
+      <div class="cmp-cell row-odd cmp-cell-best">82 kWh <em class="best-mark">★</em></div>
+      <div class="cmp-cell row-odd">62 kWh</div>
+      <div class="cmp-cell row-odd">74 kWh</div>
+      <div class="cmp-label row-even">Autonomía WLTP</div>
+      <div class="cmp-cell row-even">627 km</div>
+      <div class="cmp-cell row-even cmp-cell-best">629 km <em class="best-mark">★</em></div>
+      <div class="cmp-cell row-even">440 km</div>
+      <div class="cmp-cell row-even">528 km</div>
+      <div class="cmp-label row-odd">Consumo WLTP</div>
+      <div class="cmp-cell row-odd">16.2</div>
+      <div class="cmp-cell row-odd cmp-cell-best">14.9 <em class="best-mark">★</em></div>
+      <div class="cmp-cell row-odd">16.8</div>
+      <div class="cmp-cell row-odd">16.5</div>
+      <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">02</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Prestaciones</span></div></div>
+      <div class="cmp-label row-odd">Potencia</div>
+      <div class="cmp-cell row-odd">292 CV</div>
+      <div class="cmp-cell row-odd cmp-cell-best">498 CV <em class="best-mark">★</em></div>
+      <div class="cmp-cell row-odd">272 CV</div>
+      <div class="cmp-cell row-odd">325 CV</div>
+      <div class="cmp-label row-even">0-100</div>
+      <div class="cmp-cell row-even">6.4 s</div>
+      <div class="cmp-cell row-even cmp-cell-best">4.4 s <em class="best-mark">★</em></div>
+      <div class="cmp-cell row-even">6.7 s</div>
+      <div class="cmp-cell row-even">5.2 s</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
