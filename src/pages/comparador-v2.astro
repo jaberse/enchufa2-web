@@ -61,7 +61,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
               <option value="maletero-desc">Maletero ↓</option>
             </select>
           </div>
-          <button class="reset-btn" id="btn-reset" style="display:none;">Limpiar</button>
           <div class="topbar-spacer"></div>
           <div class="view-toggle" id="view-toggle">
             <button class="view-btn active" data-view="fichas">Fichas</button>
@@ -86,6 +85,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           <div class="panel-applied" id="panel-applied" style="display:none;">
             <span class="panel-applied-label">Filtrando</span>
             <div class="panel-applied-chips" id="panel-applied-chips"></div>
+            <button class="reset-btn" id="btn-reset" type="button">Limpiar</button>
           </div>
         </div>
 
