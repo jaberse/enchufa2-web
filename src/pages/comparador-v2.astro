@@ -1795,11 +1795,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .field-item.is-filtering {
     opacity: 1;
     border-color: var(--yellow);
-    background: #FEF5C7;
+    box-shadow: 0 0 0 1px var(--yellow);
+    background: #FFFDF3;
   }
   [data-theme="dark"] .field-item.is-filtering {
-    background: rgba(245, 197, 24, 0.12);
+    background: rgba(245, 197, 24, 0.08);
     border-color: var(--yellow);
+    box-shadow: 0 0 0 1px var(--yellow);
   }
 
   /* Head row: dot + label + contextual action */
@@ -1819,9 +1821,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     flex-shrink: 0;
     transition: background 0.15s, transform 0.15s;
   }
-  .field-item.active .field-chip-head::before,
-  .field-item.is-filtering .field-chip-head::before {
+  .field-item.active .field-chip-head::before {
     background: var(--black);
+  }
+  .field-item.is-filtering .field-chip-head::before {
+    background: var(--yellow);
+    box-shadow: 0 0 0 2px rgba(245,197,24,0.18);
   }
 
   /* Field label */
