@@ -1026,6 +1026,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
               '</button>' +
               '<div class="cmp-export-menu" data-export-menu="download" role="menu">' +
                 '<button type="button" data-export-action="csv" role="menuitem">Excel (CSV)</button>' +
+                '<button type="button" data-export-action="png" role="menuitem">Imagen (PNG)</button>' +
                 '<button type="button" data-export-action="pdf" role="menuitem">PDF</button>' +
               '</div>' +
             '</div>' +
@@ -1129,6 +1130,56 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
     }
 
+    function loadScriptOnce(src) {
+      window.__loadedScripts = window.__loadedScripts || {};
+      if (window.__loadedScripts[src]) return window.__loadedScripts[src];
+      window.__loadedScripts[src] = new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = src; s.async = true;
+        s.onload = () => resolve();
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+      return window.__loadedScripts[src];
+    }
+
+    async function captureTableCanvas() {
+      await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+      const table = compareWrap.querySelector('.cmp-table');
+      if (!table || !window.html2canvas) return null;
+      // Temporarily hide action buttons (keep logo visible for branding)
+      const actions = compareWrap.querySelector('.cmp-export-actions');
+      const prevActionsDisplay = actions ? actions.style.display : '';
+      if (actions) actions.style.display = 'none';
+      // Drop sticky positioning so html2canvas captures correctly
+      const scrollEl = compareWrap.querySelector('.cmp-table-scroll');
+      const stickyEls = compareWrap.querySelectorAll('.cmp-table-scroll .cmp-label, .cmp-table-scroll .cmp-label-head');
+      const prevStickyPos = [];
+      stickyEls.forEach(el => { prevStickyPos.push(el.style.position); el.style.position = 'static'; });
+      const prevOverflow = scrollEl ? scrollEl.style.overflow : '';
+      if (scrollEl) scrollEl.style.overflow = 'visible';
+      try {
+        const canvas = await window.html2canvas(table, {
+          scale: 2,
+          backgroundColor: '#ffffff',
+          useCORS: true,
+          logging: false,
+          windowWidth: table.scrollWidth,
+          width: table.scrollWidth,
+          height: table.scrollHeight,
+        });
+        return canvas;
+      } finally {
+        if (actions) actions.style.display = prevActionsDisplay;
+        stickyEls.forEach((el, i) => { el.style.position = prevStickyPos[i]; });
+        if (scrollEl) scrollEl.style.overflow = prevOverflow;
+      }
+    }
+
+    function canvasToBlob(canvas, type, quality) {
+      return new Promise((resolve) => canvas.toBlob(resolve, type, quality));
+    }
+
     function attachExportWidget(picked) {
       const widget = compareWrap.querySelector('.cmp-export-widget');
       if (!widget) return;
@@ -1157,7 +1208,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
       // Actions
       widget.querySelectorAll('[data-export-action]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', async (e) => {
           e.stopPropagation();
           const action = btn.getAttribute('data-export-action');
           widget.querySelectorAll('.cmp-export-menu').forEach(m => m.classList.remove('open'));
@@ -1165,13 +1216,39 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
           const names = picked.map(m => m.marca + ' ' + m.modelo).join(' vs ');
           const shareUrl = buildShareUrl(picked);
+          const dateStr = new Date().toISOString().slice(0,10);
 
           if (action === 'csv') {
             const csv = buildCsv(picked);
-            const fname = 'comparativa-' + new Date().toISOString().slice(0,10) + '.csv';
-            downloadBlob(csv, fname, 'text/csv;charset=utf-8');
+            downloadBlob(csv, 'comparativa-' + dateStr + '.csv', 'text/csv;charset=utf-8');
+          } else if (action === 'png') {
+            const prevText = btn.textContent;
+            btn.textContent = 'Generando…';
+            try {
+              const canvas = await captureTableCanvas();
+              if (!canvas) throw new Error('No table');
+              const blob = await canvasToBlob(canvas, 'image/png');
+              downloadBlob(blob, 'comparativa-' + dateStr + '.png', 'image/png');
+            } catch (err) {
+              alert('No se pudo generar la imagen. Intenta de nuevo.');
+            } finally { btn.textContent = prevText; }
           } else if (action === 'pdf') {
-            window.print();
+            const prevText = btn.textContent;
+            btn.textContent = 'Generando…';
+            try {
+              const canvas = await captureTableCanvas();
+              if (!canvas) throw new Error('No table');
+              await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+              const jsPDFCtor = window.jspdf && window.jspdf.jsPDF;
+              if (!jsPDFCtor) throw new Error('jsPDF unavailable');
+              const w = canvas.width, h = canvas.height;
+              const orientation = w > h ? 'landscape' : 'portrait';
+              const pdf = new jsPDFCtor({ orientation: orientation, unit: 'px', format: [w, h], hotfixes: ['px_scaling'] });
+              pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, w, h);
+              pdf.save('comparativa-' + dateStr + '.pdf');
+            } catch (err) {
+              alert('No se pudo generar el PDF. Intenta de nuevo.');
+            } finally { btn.textContent = prevText; }
           } else if (action === 'whatsapp') {
             const text = 'Comparativa EV en enchufa2.com: ' + names + ' — ' + shareUrl;
             window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
@@ -3216,7 +3293,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   [data-theme="dark"] .cmp-label { color: #bbb; }
 
   /* Export widget inside cmp-label-head */
-  .cmp-label-head { padding: 1rem .8rem .9rem; align-items: stretch; flex-direction: column; color: var(--black); overflow: visible; }
+  .cmp-label-head { padding: 1.9rem .8rem .6rem; align-items: stretch; flex-direction: column; color: var(--black); overflow: visible; }
   [data-theme="dark"] .cmp-label-head { color: #fff; }
   .cmp-export-widget {
     display: flex;
