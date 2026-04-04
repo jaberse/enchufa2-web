@@ -2688,7 +2688,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   /* Best value highlight — yellow stripe on left + subtle bg + italic star */
   .cmp-cell-best {
-    background: linear-gradient(to right, rgba(245,197,24,.10) 0%, rgba(245,197,24,.02) 100%);
+    background: linear-gradient(to right, rgba(245,197,24,.32) 0%, rgba(245,197,24,.14) 35%, rgba(245,197,24,.02) 100%);
     font-weight: 600;
     padding-left: calc(1rem + 3px);
   }
@@ -2712,7 +2712,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     transform: translateY(-50%);
   }
   [data-theme="dark"] .cmp-cell-best {
-    background: linear-gradient(to right, rgba(245,197,24,.08) 0%, rgba(245,197,24,.02) 100%);
+    background: linear-gradient(to right, rgba(245,197,24,.22) 0%, rgba(245,197,24,.10) 35%, rgba(245,197,24,.02) 100%);
     color: var(--yellow);
   }
 
