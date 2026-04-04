@@ -75,7 +75,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           <div class="panel-cats-row" id="panel-cats"></div>
           <div class="panel-section-label panel-section-label-num">
             <span>Campos numéricos</span>
-            <span class="panel-section-hint">Toggle activa columna · input filtra</span>
+            <span class="panel-section-hint">Click activa columna · expande para filtrar</span>
+            <button class="panel-advanced-btn" id="panel-advanced-btn" type="button" aria-pressed="false">
+              <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 3h10M3 6h6M5 9h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>
+              Filtros avanzados
+            </button>
             <button class="panel-select-all-btn" id="panel-select-all-btn" type="button">Seleccionar todos</button>
           </div>
           <div class="panel-grid" id="panel-grid"></div>
@@ -209,10 +213,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
     const DEFAULT_IDS = FIELDS.filter(f => f.dflt).map(f => f.id);
     let selectedFields = [...DEFAULT_IDS];
-    let filterVals = {};   // { fieldId: 'value' }
+    let filterRanges = {}; // { fieldId: {min: Number|null, max: Number|null} }
     let catVals = {};      // { catId: ['val1','val2',...] }
     let openPopover = null; // id of currently open popover
-    let filterModes = {};  // { fieldId: 'min'|'max' } — runtime override of filterType
+    let advancedMode = false; // histograma + dual slider expandido
     let allFieldsOn = false; // track select-all state
     let pickedIds = new Set();  // IDs of models picked for comparison
     let compareMode = false;    // true = show only picked models
@@ -241,13 +245,22 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     const panelCats = document.getElementById('panel-cats');
     const panelApplied = document.getElementById('panel-applied');
     const panelAppliedChips = document.getElementById('panel-applied-chips');
+    const panelAdvancedBtn = document.getElementById('panel-advanced-btn');
+    if (panelAdvancedBtn) {
+      panelAdvancedBtn.addEventListener('click', () => {
+        advancedMode = !advancedMode;
+        panelAdvancedBtn.classList.toggle('active', advancedMode);
+        panelAdvancedBtn.setAttribute('aria-pressed', advancedMode ? 'true' : 'false');
+        renderPanel();
+      });
+    }
     const panelSelectAllBtn = document.getElementById('panel-select-all-btn');
     if (panelSelectAllBtn) {
       panelSelectAllBtn.addEventListener('click', () => {
         const allOn = selectedFields.length === FIELDS.length;
         if (allOn) {
           selectedFields = [...DEFAULT_IDS];
-          FIELDS.forEach(f => { if (!DEFAULT_IDS.includes(f.id)) filterVals[f.id] = ''; });
+          FIELDS.forEach(f => { if (!DEFAULT_IDS.includes(f.id)) delete filterRanges[f.id]; });
         } else {
           selectedFields = FIELDS.map(f => f.id);
         }
@@ -309,8 +322,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       return m.foto ? '/comparador/' + m.slug + '.png?v=11' : '/comparador/placeholder.svg';
     }
 
+    function rangeIsActive(r) {
+      return r && (r.min != null || r.max != null);
+    }
     function hasAnyFilter() {
-      return Object.values(filterVals).some(v => v) || Object.values(catVals).some(v => v && v.length > 0);
+      return Object.values(filterRanges).some(rangeIsActive) || Object.values(catVals).some(v => v && v.length > 0);
     }
 
     // ═══════════════════════════════════════════════════════
@@ -329,6 +345,199 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       if (isNaN(n)) return val;
       if (f.fmt === 'eur') return n.toLocaleString('es-ES') + ' €';
       return n.toLocaleString('es-ES') + (f.unit ? ' ' + f.unit : '');
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // HISTOGRAM + DUAL RANGE SLIDER (advanced filter UI)
+    // ═══════════════════════════════════════════════════════
+    // Cross-filter: models passing every filter EXCEPT the one on fieldId
+    function modelsExceptFilter(fieldId) {
+      return allModelos.filter(m => {
+        // categories
+        for (const [id, vals] of Object.entries(catVals)) {
+          if (!vals || vals.length === 0) continue;
+          const c = CATS.find(x => x.id === id);
+          if (!c) continue;
+          if (!vals.includes(String(m[c.key]))) return false;
+        }
+        // numeric ranges, skipping fieldId
+        for (const [id, r] of Object.entries(filterRanges)) {
+          if (id === fieldId) continue;
+          if (!rangeIsActive(r)) continue;
+          const f2 = FIELDS.find(x => x.id === id);
+          if (!f2) continue;
+          const mv = getFieldVal(m, f2);
+          if (r.min != null && (mv == null ? 0 : mv) < r.min) return false;
+          if (r.max != null && (mv == null ? Infinity : mv) > r.max) return false;
+        }
+        return true;
+      });
+    }
+
+    function computeFieldDomain(f) {
+      const vals = modelsExceptFilter(f.id)
+        .map(m => getFieldVal(m, f))
+        .filter(v => v != null && !isNaN(Number(v)))
+        .map(Number);
+      if (vals.length === 0) return null;
+      const mn = Math.min(...vals), mx = Math.max(...vals);
+      return { min: mn, max: mx, vals };
+    }
+
+    function buildHistogram(vals, mn, mx, nBins) {
+      if (mx === mn) return [{ count: vals.length, lo: mn, hi: mx }];
+      const width = (mx - mn) / nBins;
+      const bins = [];
+      for (let i = 0; i < nBins; i++) {
+        bins.push({ count: 0, lo: mn + i * width, hi: mn + (i + 1) * width });
+      }
+      vals.forEach(v => {
+        let idx = Math.floor((v - mn) / width);
+        if (idx >= nBins) idx = nBins - 1;
+        if (idx < 0) idx = 0;
+        bins[idx].count++;
+      });
+      return bins;
+    }
+
+    // Smart "nice" rounding for slider step
+    function niceStep(range) {
+      if (range <= 0) return 1;
+      const mag = Math.pow(10, Math.floor(Math.log10(range)));
+      const norm = range / mag;
+      let step;
+      if (norm < 2) step = mag / 100;
+      else if (norm < 5) step = mag / 50;
+      else step = mag / 20;
+      return step;
+    }
+
+    function formatSliderVal(f, v) {
+      if (v == null || isNaN(v)) return '—';
+      if (f.fmt === 'mmDot') return Math.round(v).toLocaleString('es-ES').replace(/,/g, '.');
+      if (f.unit === '€' || f.fmt === 'eur') return Math.round(v).toLocaleString('es-ES');
+      const dec = (f.unit === 's' || f.id === 'cx') ? 2 : 0;
+      return Number(v).toFixed(dec);
+    }
+
+    function buildAdvancedFilter(f) {
+      const domain = computeFieldDomain(f);
+      if (!domain) return null;
+      const { min: dMin, max: dMax, vals } = domain;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'field-adv';
+      wrap.addEventListener('click', (e) => e.stopPropagation());
+
+      const current = filterRanges[f.id] || {};
+      const selMin = current.min != null ? Math.max(current.min, dMin) : dMin;
+      const selMax = current.max != null ? Math.min(current.max, dMax) : dMax;
+
+      // Histogram (12 bins)
+      const nBins = 12;
+      const bins = buildHistogram(vals, dMin, dMax, nBins);
+      const maxCount = Math.max(...bins.map(b => b.count), 1);
+
+      const histo = document.createElement('div');
+      histo.className = 'field-adv-histo';
+      bins.forEach(b => {
+        const bar = document.createElement('div');
+        bar.className = 'field-adv-bar';
+        // determine if bin overlaps selected range
+        const inRange = b.hi >= selMin && b.lo <= selMax;
+        if (inRange) bar.classList.add('in-range');
+        bar.style.height = Math.max(4, Math.round((b.count / maxCount) * 100)) + '%';
+        bar.title = b.count + ' modelos';
+        histo.appendChild(bar);
+      });
+      wrap.appendChild(histo);
+
+      // Dual range slider
+      if (dMax > dMin) {
+        const step = niceStep(dMax - dMin);
+        const slider = document.createElement('div');
+        slider.className = 'field-adv-slider';
+        slider.innerHTML =
+          '<div class="slider-track"></div>' +
+          '<div class="slider-track-active"></div>' +
+          '<input type="range" class="slider-input slider-min" min="' + dMin + '" max="' + dMax + '" step="' + step + '" value="' + selMin + '">' +
+          '<input type="range" class="slider-input slider-max" min="' + dMin + '" max="' + dMax + '" step="' + step + '" value="' + selMax + '">';
+        const inMin = slider.querySelector('.slider-min');
+        const inMax = slider.querySelector('.slider-max');
+        const activeTrack = slider.querySelector('.slider-track-active');
+        const pct = (v) => ((v - dMin) / (dMax - dMin)) * 100;
+        const refreshTrack = () => {
+          activeTrack.style.left = pct(parseFloat(inMin.value)) + '%';
+          activeTrack.style.right = (100 - pct(parseFloat(inMax.value))) + '%';
+        };
+        refreshTrack();
+        let debounceT = null;
+        const commit = () => {
+          let mn = parseFloat(inMin.value), mx = parseFloat(inMax.value);
+          if (mn > mx) { const t = mn; mn = mx; mx = t; }
+          // Store only if different from domain
+          const r = { min: null, max: null };
+          if (mn > dMin + 1e-9) r.min = mn;
+          if (mx < dMax - 1e-9) r.max = mx;
+          if (r.min == null && r.max == null) delete filterRanges[f.id];
+          else filterRanges[f.id] = r;
+          if (!selectedFields.includes(f.id)) selectedFields.push(f.id);
+          btnReset.style.display = hasAnyFilter() ? '' : 'none';
+          clearTimeout(debounceT);
+          debounceT = setTimeout(() => { renderPanel(); update(); }, 180);
+        };
+        const onSlide = () => {
+          // live feedback on track + histogram shading
+          if (parseFloat(inMin.value) > parseFloat(inMax.value)) {
+            const t = inMin.value; inMin.value = inMax.value; inMax.value = t;
+          }
+          refreshTrack();
+          // update histogram bar states
+          const mn = parseFloat(inMin.value), mx = parseFloat(inMax.value);
+          Array.from(histo.children).forEach((bar, i) => {
+            const b = bins[i];
+            const inR = b.hi >= mn && b.lo <= mx;
+            bar.classList.toggle('in-range', inR);
+          });
+          // update value labels
+          valMin.textContent = formatSliderVal(f, mn);
+          valMax.textContent = formatSliderVal(f, mx);
+        };
+        inMin.addEventListener('input', onSlide);
+        inMax.addEventListener('input', onSlide);
+        inMin.addEventListener('change', commit);
+        inMax.addEventListener('change', commit);
+        // Prevent chip toggle when clicking/dragging slider
+        ['click','mousedown','touchstart','keydown'].forEach(ev => {
+          inMin.addEventListener(ev, (e) => e.stopPropagation());
+          inMax.addEventListener(ev, (e) => e.stopPropagation());
+        });
+        wrap.appendChild(slider);
+
+        // Value labels
+        const labels = document.createElement('div');
+        labels.className = 'field-adv-labels';
+        const valMin = document.createElement('span');
+        valMin.className = 'field-adv-val field-adv-val-min';
+        valMin.textContent = formatSliderVal(f, selMin);
+        const unit = document.createElement('span');
+        unit.className = 'field-adv-unit';
+        unit.textContent = f.unit || '';
+        const sep = document.createElement('span');
+        sep.className = 'field-adv-sep';
+        sep.textContent = '—';
+        const valMax = document.createElement('span');
+        valMax.className = 'field-adv-val field-adv-val-max';
+        valMax.textContent = formatSliderVal(f, selMax);
+        labels.appendChild(valMin);
+        labels.appendChild(unit.cloneNode(true));
+        labels.appendChild(sep);
+        labels.appendChild(valMax);
+        labels.appendChild(unit);
+        wrap.appendChild(labels);
+      }
+
+      return wrap;
     }
 
     // ═══════════════════════════════════════════════════════
@@ -418,11 +627,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
       FIELDS.forEach(f => {
         const isActive = selectedFields.includes(f.id);
-        const fv = filterVals[f.id] || '';
-        const isFiltering = !!fv;
+        const range = filterRanges[f.id];
+        const isFiltering = rangeIsActive(range);
 
         const item = document.createElement('div');
-        item.className = 'field-item' + (isActive ? ' active' : '') + (isFiltering ? ' is-filtering' : '');
+        item.className = 'field-item' + (isActive ? ' active' : '') + (isFiltering ? ' is-filtering' : '') + (advancedMode && f.filterType ? ' advanced' : '');
         item.setAttribute('role', 'button');
         item.setAttribute('tabindex', '0');
         item.setAttribute('aria-pressed', isActive ? 'true' : 'false');
@@ -430,7 +639,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         const toggleColumn = () => {
           if (isActive) {
             selectedFields = selectedFields.filter(x => x !== f.id);
-            filterVals[f.id] = '';
+            delete filterRanges[f.id];
           } else {
             selectedFields.push(f.id);
           }
@@ -462,7 +671,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           actionBtn.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 2l6 6M8 2l-6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>';
           actionBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            filterVals[f.id] = '';
+            delete filterRanges[f.id];
             btnReset.style.display = hasAnyFilter() ? '' : 'none';
             renderPanel();
             update();
@@ -495,80 +704,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         head.appendChild(actionBtn);
         item.appendChild(head);
 
-        // Filter row — pills Mín/Máx + input + unit
-        if (f.filterType) {
-          const filterRow = document.createElement('div');
-          filterRow.className = 'field-chip-filter';
-          filterRow.addEventListener('click', (e) => e.stopPropagation());
-
-          const curMode = filterModes[f.id] || f.filterType;
-          const pills = document.createElement('div');
-          pills.className = 'field-pills';
-
-          const pillMin = document.createElement('button');
-          pillMin.type = 'button';
-          pillMin.className = 'field-pill' + (curMode === 'min' ? ' selected' : '');
-          pillMin.textContent = 'Mín';
-          pillMin.title = 'Filtro: mayor o igual';
-          pillMin.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (filterModes[f.id] !== 'min') {
-              filterModes[f.id] = 'min';
-              renderPanel();
-              if (filterVals[f.id]) update();
-            }
-          });
-
-          const pillMax = document.createElement('button');
-          pillMax.type = 'button';
-          pillMax.className = 'field-pill' + (curMode === 'max' ? ' selected' : '');
-          pillMax.textContent = 'Máx';
-          pillMax.title = 'Filtro: menor o igual';
-          pillMax.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (filterModes[f.id] !== 'max') {
-              filterModes[f.id] = 'max';
-              renderPanel();
-              if (filterVals[f.id]) update();
-            }
-          });
-
-          pills.appendChild(pillMin);
-          pills.appendChild(pillMax);
-
-          const input = document.createElement('input');
-          input.type = 'number';
-          input.className = 'field-filter-input';
-          input.placeholder = '—';
-          input.value = fv;
-          input.addEventListener('click', (e) => e.stopPropagation());
-          input.addEventListener('input', () => {
-            filterVals[f.id] = input.value;
-            btnReset.style.display = hasAnyFilter() ? '' : 'none';
-            if (input.value) {
-              item.classList.add('is-filtering');
-              if (!selectedFields.includes(f.id)) {
-                selectedFields.push(f.id);
-                item.classList.add('active');
-                item.setAttribute('aria-pressed', 'true');
-              }
-            } else {
-              item.classList.remove('is-filtering');
-            }
-            update();
-          });
-          input.addEventListener('blur', () => {
-            renderPanel();
-          });
-
-          const unit = document.createElement('span');
-          unit.className = 'field-filter-unit';
-          unit.textContent = f.unit;
-
-          filterRow.appendChild(pills);
-          filterRow.appendChild(input);
-          filterRow.appendChild(unit);
-          item.appendChild(filterRow);
+        // Advanced expanded block: histograma + dual range slider
+        if (advancedMode && f.filterType) {
+          const advBlock = buildAdvancedFilter(f);
+          if (advBlock) item.appendChild(advBlock);
         }
 
         container.appendChild(item);
@@ -589,13 +728,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           : vals.length + ' opciones';
         parts.push({ kind: 'cat', id: c.id, text: c.label + ': ' + valText });
       });
-      // Numeric filters
+      // Numeric range filters
       FIELDS.forEach(f => {
-        const v = filterVals[f.id];
-        if (!v) return;
-        const mode = filterModes[f.id] || f.filterType;
-        const sym = mode === 'min' ? '≥' : '≤';
-        parts.push({ kind: 'num', id: f.id, text: f.label + ' ' + sym + ' ' + formatFilterDisplayVal(f, v) });
+        const r = filterRanges[f.id];
+        if (!rangeIsActive(r)) return;
+        let txt;
+        if (r.min != null && r.max != null) txt = f.label + ' ' + formatFilterDisplayVal(f, r.min) + '–' + formatFilterDisplayVal(f, r.max);
+        else if (r.min != null) txt = f.label + ' ≥ ' + formatFilterDisplayVal(f, r.min);
+        else txt = f.label + ' ≤ ' + formatFilterDisplayVal(f, r.max);
+        parts.push({ kind: 'num', id: f.id, text: txt });
       });
 
       if (!parts.length) {
@@ -614,7 +755,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           if (p.kind === 'cat') {
             catVals[p.id] = [];
           } else {
-            filterVals[p.id] = '';
+            delete filterRanges[p.id];
           }
           btnReset.style.display = hasAnyFilter() ? '' : 'none';
           renderPanel();
@@ -661,17 +802,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     }
 
     function passesFilter(m) {
-      // Numeric filters
-      for (const [id, val] of Object.entries(filterVals)) {
-        if (!val) continue;
+      // Numeric range filters (dual slider: min+max)
+      for (const [id, r] of Object.entries(filterRanges)) {
+        if (!rangeIsActive(r)) continue;
         const f = FIELDS.find(x => x.id === id);
         if (!f) continue;
-        const n = parseFloat(val);
-        if (isNaN(n)) continue;
         const mval = getFieldVal(m, f);
-        const mode = filterModes[id] || f.filterType;
-        if (mode === 'min' && (mval == null ? 0 : mval) < n) return false;
-        if (mode === 'max' && (mval == null ? Infinity : mval) > n) return false;
+        if (r.min != null && (mval == null ? 0 : mval) < r.min) return false;
+        if (r.max != null && (mval == null ? Infinity : mval) > r.max) return false;
       }
       // Category filters (multi-select: model must match ANY of the selected values)
       for (const [id, vals] of Object.entries(catVals)) {
@@ -1088,12 +1226,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // RESET
     // ═══════════════════════════════════════════════════════
     btnReset.addEventListener('click', () => {
-      filterVals = {};
+      filterRanges = {};
       catVals = {};
       selectedFields = [...DEFAULT_IDS];
       tableSortId = null;
       tableSortAsc = true;
-      filterModes = {};
       allFieldsOn = false;
       pickedIds.clear();
       compareMode = false;
@@ -1544,8 +1681,40 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     color: var(--text-muted);
     opacity: 0.75;
   }
-  .panel-select-all-btn {
+  .panel-advanced-btn {
     margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: var(--font-sans);
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: none;
+    border: 1px dashed var(--text-muted);
+    border-radius: 4px;
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
+  [data-theme="dark"] .panel-advanced-btn { color: #C5C5C5; border-color: #606060; }
+  .panel-advanced-btn:hover {
+    color: var(--text);
+    border-color: var(--yellow);
+    border-style: solid;
+    background: var(--yellow-glow);
+  }
+  .panel-advanced-btn.active {
+    color: var(--black);
+    background: var(--yellow);
+    border-color: var(--yellow);
+    border-style: solid;
+  }
+  [data-theme="dark"] .panel-advanced-btn.active { color: var(--black); }
+  .panel-advanced-btn + .panel-select-all-btn { margin-left: 0.4rem; }
+  .panel-select-all-btn {
     font-family: var(--font-sans);
     font-size: 0.6rem;
     font-weight: 500;
@@ -1784,6 +1953,128 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     flex-shrink: 0;
   }
   .field-item.is-filtering .field-filter-unit { color: var(--text-secondary); }
+
+  /* ── Advanced mode: histograma + dual range slider ────────── */
+  .field-item.advanced { padding-bottom: 0.55rem; }
+  .field-adv {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.4rem 0.5rem 0;
+    margin-top: 0.35rem;
+    border-top: 1px solid var(--border, #E8E6DE);
+  }
+  [data-theme="dark"] .field-adv { border-top-color: rgba(255,255,255,0.06); }
+
+  /* Histogram */
+  .field-adv-histo {
+    display: flex;
+    align-items: flex-end;
+    gap: 1px;
+    height: 28px;
+    padding: 0;
+  }
+  .field-adv-bar {
+    flex: 1;
+    min-width: 0;
+    background: var(--gray-200, #E3E1D8);
+    border-radius: 1px 1px 0 0;
+    transition: background 0.12s, height 0.12s;
+  }
+  [data-theme="dark"] .field-adv-bar { background: rgba(255,255,255,0.12); }
+  .field-adv-bar.in-range { background: var(--yellow); }
+  [data-theme="dark"] .field-adv-bar.in-range { background: var(--yellow); }
+
+  /* Dual range slider (two overlapping native inputs) */
+  .field-adv-slider {
+    position: relative;
+    height: 18px;
+    margin: 0 2px;
+  }
+  .field-adv-slider .slider-track {
+    position: absolute;
+    top: 50%;
+    left: 0; right: 0;
+    height: 3px;
+    transform: translateY(-50%);
+    background: var(--gray-200, #E3E1D8);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+  [data-theme="dark"] .field-adv-slider .slider-track { background: rgba(255,255,255,0.12); }
+  .field-adv-slider .slider-track-active {
+    position: absolute;
+    top: 50%;
+    height: 3px;
+    transform: translateY(-50%);
+    background: var(--yellow);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+  .field-adv-slider .slider-input {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 18px;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+    pointer-events: none;
+  }
+  .field-adv-slider .slider-input::-webkit-slider-runnable-track {
+    background: transparent;
+    height: 18px;
+    border: none;
+  }
+  .field-adv-slider .slider-input::-moz-range-track {
+    background: transparent;
+    height: 18px;
+    border: none;
+  }
+  .field-adv-slider .slider-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--black);
+    border: 2px solid var(--yellow);
+    cursor: grab;
+    pointer-events: auto;
+    margin-top: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 2;
+  }
+  .field-adv-slider .slider-input::-webkit-slider-thumb:active { cursor: grabbing; }
+  .field-adv-slider .slider-input::-moz-range-thumb {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--black);
+    border: 2px solid var(--yellow);
+    cursor: grab;
+    pointer-events: auto;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  [data-theme="dark"] .field-adv-slider .slider-input::-webkit-slider-thumb { background: var(--white); border-color: var(--yellow); }
+  [data-theme="dark"] .field-adv-slider .slider-input::-moz-range-thumb { background: var(--white); border-color: var(--yellow); }
+
+  /* Value labels under slider */
+  .field-adv-labels {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    font-family: var(--font-sans);
+    font-size: 0.64rem;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: 0.01em;
+    line-height: 1;
+  }
+  .field-adv-val { font-variant-numeric: tabular-nums; }
+  .field-adv-unit { color: var(--text-muted); font-weight: 400; font-size: 0.58rem; }
+  .field-adv-sep { color: var(--text-muted); margin: 0 0.2rem; }
 
 
   /* ── Category chips (separate row above numeric grid) ────────── */
