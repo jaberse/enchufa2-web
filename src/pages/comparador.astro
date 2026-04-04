@@ -1306,6 +1306,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .pop-options {
     display: flex;
+    max-height: 45vh;
+    overflow-y: auto;
     flex-direction: column;
     gap: 2px;
   }
