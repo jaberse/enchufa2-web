@@ -1591,8 +1591,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     position: relative;
     padding: 0.55rem 0.65rem;
     border-radius: 7px;
-    border: 1px solid transparent;
-    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    background: transparent;
     transition: opacity 0.15s, background 0.15s, border-color 0.15s, box-shadow 0.15s;
     min-height: 60px;
     display: flex;
@@ -1600,17 +1600,21 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     gap: 0.4rem;
     cursor: pointer;
     user-select: none;
-    opacity: 0.55;
+    opacity: 0.7;
   }
-  [data-theme="dark"] .field-item { background: rgba(255,255,255,0.03); }
-  .field-item:hover { opacity: 0.85; }
+  [data-theme="dark"] .field-item { border-color: rgba(255,255,255,0.08); }
+  .field-item:hover { opacity: 1; border-color: var(--gray-300, #C0BFB9); }
+  [data-theme="dark"] .field-item:hover { border-color: rgba(255,255,255,0.2); }
   .field-item:focus-visible { outline: 2px solid var(--yellow); outline-offset: 1px; }
   .field-item.active {
     opacity: 1;
-    background: var(--surface-alt);
-    border-color: var(--gray-300, #C0BFB9);
+    background: var(--surface);
+    border-color: var(--black);
   }
-  [data-theme="dark"] .field-item.active { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.15); }
+  [data-theme="dark"] .field-item.active {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.35);
+  }
   .field-item.is-filtering {
     opacity: 1;
     border-color: var(--yellow);
@@ -1622,11 +1626,30 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     box-shadow: 0 0 0 1px var(--yellow);
   }
 
-  /* Head row: label + contextual action */
+  /* Head row: dot + label + contextual action */
   .field-chip-head {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.45rem;
+  }
+
+  /* Status dot — visible only when active/filtering */
+  .field-chip-head::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--gray-300, #C0BFB9);
+    flex-shrink: 0;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .field-item.active .field-chip-head::before {
+    background: var(--yellow);
+  }
+  .field-item.is-filtering .field-chip-head::before {
+    background: var(--yellow);
+    transform: scale(1.15);
+    box-shadow: 0 0 0 2px rgba(245,197,24,0.25);
   }
 
   /* Field label */
