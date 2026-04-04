@@ -763,17 +763,23 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       ]},
       { num:'02', name:'Prestaciones', rows:[
         { label:'Potencia',             key:'potencia_cv',         unit:'CV',  dir:'max', dec:0 },
-        { label:'0-100',                key:'aceleracion_0_100_s', unit:'s',   dir:'min', dec:1 },
+        { label:'Par motor',            key:'par_nm',              unit:'Nm',  dir:'max', dec:0 },
         { label:'Tracción',             key:'traccion',            isText:true },
+        { label:'0-100',                key:'aceleracion_0_100_s', unit:'s',   dir:'min', dec:1 },
+        { label:'Velocidad máxima',     key:'velocidad_max_kmh',   unit:'km/h', dir:'max', dec:0 },
         { label:'Autonomía WLTP',       key:'autonomia_wltp_km',   unit:'km',  dir:'max', dec:0 },
         { label:'Consumo WLTP',         key:'consumo_wltp_kwh100km', unit:'kWh/100', dir:'min', dec:1 },
-        { label:'Diámetro de giro',     key:'diametro_giro_m',     unit:'m',   dir:'min', dec:1 },
       ]},
       { num:'03', name:'Dimensiones', rows:[
         { label:'Largo',                key:'largo_mm',            unit:'mm',  dir:'max', dec:0, fmt:'mmDot' },
         { label:'Ancho',                key:'ancho_mm',            unit:'mm',  dir:'min', dec:0, fmt:'mmDot' },
         { label:'Alto',                 key:'alto_mm',             unit:'mm',  dir:'min', dec:0, fmt:'mmDot' },
+        { label:'Batalla',              key:'batalla_mm',          unit:'mm',  dir:'max', dec:0, fmt:'mmDot' },
+        { label:'Diámetro de giro',     key:'diametro_giro_m',     unit:'m',   dir:'min', dec:1 },
+        { label:'Cx',                   key:'cx',                  dir:'min',  dec:3 },
         { label:'Maletero',             key:'maletero_l',          unit:'L',   dir:'max', dec:0 },
+        { label:'Frunk',                key:'frunk_l',             unit:'L',   dir:'max', dec:0 },
+        { label:'Capacidad remolque',   key:'capacidad_remolque_kg', unit:'kg', dir:'max', dec:0, fmt:'mmDot' },
         { label:'Peso',                 key:'peso_kg',             unit:'kg',  dir:'min', dec:0, fmt:'mmDot' },
       ]},
       { num:'04', name:'Economía', rows:[
@@ -2645,37 +2651,56 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   /* Labels column (transparent, no box) */
   .cmp-label {
-    padding: .85rem 1.1rem;
+    padding: .95rem 1.25rem;
     font-size: .72rem;
     color: var(--text-secondary, var(--text-muted));
     background: transparent;
     display: flex;
     align-items: center;
     font-weight: 400;
+    letter-spacing: 0.005em;
   }
   .cmp-label-head { background: transparent; }
   [data-theme="dark"] .cmp-label { color: #bbb; }
 
   /* Data cells — white card background */
   .cmp-cell {
-    padding: .85rem .9rem;
-    font-size: .8rem;
+    padding: .95rem 1rem;
+    font-size: .84rem;
     color: var(--text);
     background: var(--surface, #fff);
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
+    gap: .4rem;
     font-variant-numeric: tabular-nums;
     font-weight: 400;
     scroll-snap-align: start;
   }
   [data-theme="dark"] .cmp-cell { background: #141414; color: #f5f5f5; border-bottom-color: #2a2a2a; }
-  .cmp-placeholder { color: var(--text-muted); font-style: italic; font-size: .74rem; }
+  .cmp-placeholder { color: var(--text-muted); font-style: italic; font-size: .76rem; }
 
-  /* Best value highlight */
+  /* Best value highlight — yellow stripe on left + subtle bg + italic star */
   .cmp-cell-best {
-    background: rgba(245,197,24,.15);
+    background: linear-gradient(to right, rgba(245,197,24,.18) 0%, rgba(245,197,24,.06) 100%);
     font-weight: 600;
+    position: relative;
+  }
+  .cmp-cell-best::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--yellow);
+  }
+  .cmp-cell-best .best-mark {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--yellow);
+    font-size: .95rem;
+    font-weight: 400;
+    line-height: 1;
+    margin-left: auto;
   }
   [data-theme="dark"] .cmp-cell-best { background: rgba(245,197,24,.12); color: var(--yellow); }
 
@@ -2730,34 +2755,37 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .cmp-head-badges .badge { font-size: .55rem; padding: .2rem .45rem; }
 
-  /* Category band — dramatic black full-width */
+  /* Category band — editorial black full-width with presence */
   .cmp-group {
     grid-column: 1 / -1;
     background: var(--black);
     color: var(--white);
-    padding: .8rem 1.1rem .75rem;
-    margin-top: 14px;
+    padding: 1.05rem 1.4rem 1rem;
+    margin-top: 18px;
     display: flex;
-    align-items: center;
-    gap: .8rem;
+    align-items: baseline;
+    gap: 1rem;
   }
   .cmp-group::before {
     content: '';
-    width: 10px; height: 10px;
+    width: 12px; height: 12px;
     background: var(--yellow);
     flex-shrink: 0;
+    align-self: center;
   }
   .cmp-group-num {
     font-family: var(--font-serif);
     font-style: italic;
-    font-size: 1.05rem;
+    font-size: 1.5rem;
     color: var(--yellow);
     font-weight: 400;
     line-height: 1;
+    letter-spacing: -.01em;
   }
   .cmp-group-name {
-    font-size: .7rem;
-    letter-spacing: .14em;
+    font-family: var(--font-sans);
+    font-size: .75rem;
+    letter-spacing: .16em;
     text-transform: uppercase;
     font-weight: 500;
     color: var(--white);
