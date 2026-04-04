@@ -654,15 +654,79 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     }
 
     // ═══════════════════════════════════════════════════════
-    // RENDER COMPARE TABLE (side-by-side · 1·B)
+    // RENDER COMPARE TABLE (4 categorías · card-on-card · 1·B)
     // ═══════════════════════════════════════════════════════
-    function renderCompareTable(picked) {
-      const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
-      const n = picked.length;
-      const cols = 'minmax(140px, 1fr) repeat(' + n + ', minmax(120px, 1fr))';
-      let html = '<div class="cmp-table" style="grid-template-columns:' + cols + '">';
+    // Fixed comparison structure — always shows these fields regardless of filter selection
+    const COMPARE_GROUPS = [
+      { num:'01', name:'Batería y carga', rows:[
+        { label:'Batería neta',         key:'bateria_neta_kwh',    unit:'kWh', dir:'max', dec:0 },
+        { label:'Batería bruta',        key:'bateria_bruta_kwh',   unit:'kWh', dir:'max', dec:0 },
+        { label:'Química',              key:'quimica',             isText:true },
+        { label:'Voltaje arquitectura', key:'voltaje',             unit:'V',   isText:true },
+        { label:'Carga DC máx',         key:'carga_dc_max_kw',     unit:'kW',  dir:'max', dec:0 },
+        { label:'Carga AC máx',         key:'carga_ac_max_kw',     unit:'kW',  dir:'max', dec:0 },
+        { label:'10 → 80% DC',          key:'t_10_80_min',         unit:'min', dir:'min', dec:0 },
+      ]},
+      { num:'02', name:'Prestaciones', rows:[
+        { label:'Potencia',             key:'potencia_cv',         unit:'CV',  dir:'max', dec:0 },
+        { label:'0-100',                key:'aceleracion_0_100_s', unit:'s',   dir:'min', dec:1 },
+        { label:'Tracción',             key:'traccion',            isText:true },
+        { label:'Autonomía WLTP',       key:'autonomia_wltp_km',   unit:'km',  dir:'max', dec:0 },
+        { label:'Consumo WLTP',         key:'consumo_wltp_kwh100km', unit:'kWh/100', dir:'min', dec:1 },
+        { label:'Diámetro de giro',     key:'diametro_giro_m',     unit:'m',   dir:'min', dec:1 },
+      ]},
+      { num:'03', name:'Dimensiones', rows:[
+        { label:'Largo',                key:'largo_mm',            unit:'mm',  dir:'max', dec:0, fmt:'mmDot' },
+        { label:'Ancho',                key:'ancho_mm',            unit:'mm',  dir:'min', dec:0, fmt:'mmDot' },
+        { label:'Alto',                 key:'alto_mm',             unit:'mm',  dir:'min', dec:0, fmt:'mmDot' },
+        { label:'Maletero',             key:'maletero_l',          unit:'L',   dir:'max', dec:0 },
+        { label:'Peso',                 key:'peso_kg',             unit:'kg',  dir:'min', dec:0, fmt:'mmDot' },
+      ]},
+      { num:'04', name:'Economía', rows:[
+        { label:'PVP',                  key:'pvp',                 fmt:'eur',  dir:'min' },
+        { label:'Garantía batería',     key:'garantia_bateria',    isText:true },
+        { label:'Garantía vehículo',    key:'garantia_vehiculo',   isText:true, placeholder:'por verificar' },
+        { label:'Plan Auto+ 2026',      key:'plan_auto_2026',      isText:true, placeholder:'por calcular' },
+      ]},
+    ];
 
-      // Header row: photos + brand/model/variant + badges integrated
+    function formatCellVal(m, row) {
+      const val = m[row.key];
+      if (val == null || val === '') {
+        return '<span class="cmp-placeholder">' + (row.placeholder || '—') + '</span>';
+      }
+      if (row.isText) {
+        return String(val) + (row.unit ? '\u00a0' + row.unit : '');
+      }
+      let numStr;
+      if (row.fmt === 'eur') {
+        numStr = Number(val).toLocaleString('es-ES') + '\u00a0€';
+      } else if (row.fmt === 'mmDot') {
+        numStr = Number(val).toLocaleString('es-ES').replace(/,/g,'.') + (row.unit ? '\u00a0' + row.unit : '');
+      } else {
+        const n = Number(val);
+        numStr = (row.dec != null ? n.toFixed(row.dec) : n.toString()) + (row.unit ? '\u00a0' + row.unit : '');
+      }
+      return numStr;
+    }
+
+    function computeRowBest(picked, row) {
+      if (row.isText || !row.dir) return null;
+      const vals = picked.map(m => m[row.key]).filter(v => v != null && !isNaN(Number(v))).map(Number);
+      if (vals.length === 0) return null;
+      return row.dir === 'max' ? Math.max(...vals) : Math.min(...vals);
+    }
+
+    function renderCompareTable(picked) {
+      const n = picked.length;
+      // ≤5: flex equal columns · ≥6: fixed-width with horizontal scroll
+      const colWidth = n <= 5 ? 'minmax(0, 1fr)' : '180px';
+      const labelWidth = n <= 5 ? '200px' : '200px';
+      const cols = labelWidth + ' repeat(' + n + ', ' + colWidth + ')';
+      const wrapClass = n >= 6 ? 'cmp-table cmp-table-scroll' : 'cmp-table';
+      let html = '<div class="' + wrapClass + '" style="grid-template-columns:' + cols + '">';
+
+      // Card headers row
       html += '<div class="cmp-label cmp-label-head"></div>';
       picked.forEach(m => {
         html += '<div class="cmp-head">' +
@@ -678,68 +742,25 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         '</div>';
       });
 
-      // Autonomy hero row
-      html += '<div class="cmp-label cmp-label-hero">Autonomía WLTP</div>';
-      const autoBest = (function() {
-        const vals = picked.map(m => m.autonomia_wltp_km).filter(v => v != null);
-        return vals.length > 0 ? Math.max(...vals) : null;
-      })();
-      picked.forEach(m => {
-        const isBest = m.autonomia_wltp_km === autoBest && autoBest != null;
-        html += '<div class="cmp-cell cmp-cell-hero' + (isBest ? ' cmp-cell-best' : '') + '">' +
-          '<span class="cmp-hero-val">' + fmt(m.autonomia_wltp_km) + '</span>' +
-          '<span class="cmp-hero-unit">km</span>' +
+      // Render 4 groups
+      COMPARE_GROUPS.forEach(g => {
+        html += '<div class="cmp-group">' +
+          '<span class="cmp-group-num">' + g.num + '</span>' +
+          '<span class="cmp-group-name">' + g.name + '</span>' +
         '</div>';
-      });
-
-      // Group separators + field rows
-      const groups = [
-        { label: 'Batería y carga', fields: ['bateria_neta','bateria_bruta','quimica','voltaje','carga_dc','carga_ac','t_10_80','bomba_calor'] },
-        { label: 'Prestaciones', fields: ['potencia_cv','potencia_kw','par','aceleracion','v_max','traccion'] },
-        { label: 'Dimensiones', fields: ['maletero','largo','ancho','diam_giro','frunk','plazas'] },
-        { label: 'Eficiencia', fields: ['consumo','peso'] },
-        { label: 'Precio y garantía', fields: ['pvp','garantia_bateria','garantia_general'] },
-      ];
-      const shownIds = new Set();
-      groups.forEach(g => {
-        const groupFields = activeFields.filter(f => g.fields.includes(f.id) && !shownIds.has(f.id));
-        if (groupFields.length === 0) return;
-        // Group title row spans all columns
-        html += '<div class="cmp-group" style="grid-column: 1 / -1">' + g.label + '</div>';
-        groupFields.forEach(f => {
-          shownIds.add(f.id);
-          html += '<div class="cmp-label">' + f.label + '</div>';
+        g.rows.forEach(row => {
+          const best = computeRowBest(picked, row);
+          html += '<div class="cmp-label">' + row.label + '</div>';
           picked.forEach(m => {
-            const val = m[f.key];
-            let display = fmtField(val, f);
-            if (f.unit && !f.fmt && !f.isText && val != null) display += '\u00a0' + f.unit;
-            const isBest = !f.isText && bestValues[f.id] != null && val === bestValues[f.id];
+            const val = m[row.key];
+            const isBest = best != null && Number(val) === best;
             html += '<div class="cmp-cell' + (isBest ? ' cmp-cell-best' : '') + '">' +
-              display +
-              (isBest ? ' <em class="best-mark" title="Mejor del grupo">★</em>' : '') +
-            '</div>';
-          });
-        });
-      });
-
-      // Any remaining active fields that didn't fit a group
-      const rest = activeFields.filter(f => !shownIds.has(f.id) && f.id !== 'autonomia');
-      if (rest.length > 0) {
-        html += '<div class="cmp-group" style="grid-column: 1 / -1">Otros</div>';
-        rest.forEach(f => {
-          html += '<div class="cmp-label">' + f.label + '</div>';
-          picked.forEach(m => {
-            const val = m[f.key];
-            let display = fmtField(val, f);
-            if (f.unit && !f.fmt && !f.isText && val != null) display += '\u00a0' + f.unit;
-            const isBest = !f.isText && bestValues[f.id] != null && val === bestValues[f.id];
-            html += '<div class="cmp-cell' + (isBest ? ' cmp-cell-best' : '') + '">' +
-              display +
+              formatCellVal(m, row) +
               (isBest ? ' <em class="best-mark">★</em>' : '') +
             '</div>';
           });
         });
-      }
+      });
 
       html += '</div>';
       compareWrap.innerHTML = html;
@@ -2352,57 +2373,69 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .listado-view.active { display: block; }
 
   /* ══════════════════════════════════════════
-     COMPARE VIEW (side-by-side table · 1·B)
+     COMPARE VIEW · card-on-card (4 grupos)
      ══════════════════════════════════════════ */
   .compare-view { padding: 1.5rem clamp(1rem, 3vw, 2rem); }
-  .compare-wrap { width: 100%; overflow-x: auto; }
+  .compare-wrap { width: 100%; }
+
   .cmp-table {
     display: grid;
-    gap: 0;
+    gap: 0 4px;
+    padding: 4px 0 0;
     font-family: var(--font-sans);
-    min-width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    background: var(--card-bg, #fff);
+    background: var(--surface-alt, #F2F1ED);
+    width: 100%;
   }
-  /* Label column (left, sticky-ish) */
+  .cmp-table-scroll {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: .5rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray-300) transparent;
+  }
+  .cmp-table-scroll::-webkit-scrollbar { height: 8px; }
+  .cmp-table-scroll::-webkit-scrollbar-track { background: transparent; }
+  .cmp-table-scroll::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 4px; }
+  /* Sticky label column in scroll mode */
+  .cmp-table-scroll .cmp-label,
+  .cmp-table-scroll .cmp-label-head {
+    position: sticky;
+    left: 0;
+    background: var(--surface-alt, #F2F1ED);
+    z-index: 2;
+  }
+  [data-theme="dark"] .cmp-table-scroll .cmp-label,
+  [data-theme="dark"] .cmp-table-scroll .cmp-label-head { background: #0b0b0b; }
+  [data-theme="dark"] .cmp-table { background: #0b0b0b; }
+
+  /* Labels column (transparent, no box) */
   .cmp-label {
-    padding: .65rem .85rem;
+    padding: .85rem 1.1rem;
     font-size: .72rem;
-    color: var(--text-muted);
-    background: var(--bg-muted, #F5F5F3);
-    border-bottom: 1px solid var(--border);
-    border-right: 1px solid var(--border);
+    color: var(--text-secondary, var(--text-muted));
+    background: transparent;
     display: flex;
     align-items: center;
     font-weight: 400;
   }
-  .cmp-label-head { background: var(--gray-100, #F5F5F3); border-bottom: 2px solid var(--black); }
-  .cmp-label-hero {
-    font-weight: 500;
-    color: var(--text);
-    background: var(--bg-muted, #F5F5F3);
-  }
-  [data-theme="dark"] .cmp-label { background: #1a1a1a; }
-  [data-theme="dark"] .cmp-label-head { background: #1a1a1a; border-bottom-color: var(--yellow); }
-  [data-theme="dark"] .cmp-label-hero { background: #1a1a1a; color: #fff; }
+  .cmp-label-head { background: transparent; }
+  [data-theme="dark"] .cmp-label { color: #bbb; }
 
-  /* Data cells (car columns) */
+  /* Data cells — white card background */
   .cmp-cell {
-    padding: .65rem .85rem;
-    font-size: .78rem;
+    padding: .85rem .9rem;
+    font-size: .8rem;
     color: var(--text);
-    background: var(--card-bg, #fff);
+    background: var(--surface, #fff);
     border-bottom: 1px solid var(--border);
-    border-right: 1px solid var(--border);
     display: flex;
     align-items: center;
     font-variant-numeric: tabular-nums;
-    font-weight: 500;
+    font-weight: 400;
+    scroll-snap-align: start;
   }
-  .cmp-cell:last-child { border-right: none; }
-  [data-theme="dark"] .cmp-cell { background: #0f0f0f; color: #fff; }
+  [data-theme="dark"] .cmp-cell { background: #141414; color: #f5f5f5; border-bottom-color: #2a2a2a; }
+  .cmp-placeholder { color: var(--text-muted); font-style: italic; font-size: .74rem; }
 
   /* Best value highlight */
   .cmp-cell-best {
@@ -2411,20 +2444,21 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   [data-theme="dark"] .cmp-cell-best { background: rgba(245,197,24,.12); color: var(--yellow); }
 
-  /* Header (photos + names) */
+  /* Card header (photo + name + badges) — rounded top, black bottom border */
   .cmp-head {
-    padding: 1.1rem .85rem .9rem;
-    background: var(--gray-100, #F5F5F3);
+    padding: 1.2rem .85rem 1rem;
+    background: var(--surface, #fff);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
     border-bottom: 2px solid var(--black);
-    border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: .5rem;
     text-align: center;
+    scroll-snap-align: start;
   }
-  .cmp-head:last-child { border-right: none; }
-  [data-theme="dark"] .cmp-head { background: #1a1a1a; border-bottom-color: var(--yellow); }
+  [data-theme="dark"] .cmp-head { background: #141414; border-bottom-color: var(--yellow); }
   .cmp-head-photo {
     width: 100%;
     max-width: 140px;
@@ -2433,12 +2467,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     align-items: center;
     justify-content: center;
   }
-  .cmp-head-photo img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-  }
-  .cmp-head-title { display: flex; flex-direction: column; line-height: 1.25; gap: .05rem; }
+  .cmp-head-photo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .cmp-head-title { display: flex; flex-direction: column; line-height: 1.3; gap: .08rem; }
   .cmp-head-marca {
     font-size: .6rem;
     letter-spacing: .08em;
@@ -2459,67 +2489,56 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-weight: 300;
   }
   .cmp-head-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .3rem;
-    justify-content: center;
+    display: flex; flex-wrap: wrap;
+    gap: .3rem; justify-content: center;
     margin-top: .35rem;
   }
   .cmp-head-badges .badge { font-size: .55rem; padding: .2rem .45rem; }
 
-  /* Hero row (autonomía) */
-  .cmp-cell-hero {
-    padding: .9rem .85rem;
-  }
-  .cmp-hero-val {
-    font-size: 1.6rem;
-    color: var(--yellow);
-    font-weight: 600;
-    letter-spacing: -.02em;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-  }
-  .cmp-hero-unit {
-    font-size: .6rem;
-    color: var(--text-muted);
-    margin-left: .3rem;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-  }
-  .cmp-cell-hero.cmp-cell-best .cmp-hero-val { color: var(--black); }
-  [data-theme="dark"] .cmp-cell-hero.cmp-cell-best .cmp-hero-val { color: var(--yellow); }
-
-  /* Badges row */
-  .cmp-cell-badges {
-    padding: .55rem .75rem;
-    flex-wrap: wrap;
-    gap: .3rem;
-  }
-  .cmp-cell-badges .badge { font-size: .58rem; padding: .2rem .45rem; }
-
-  /* Group title row */
+  /* Category band — dramatic black full-width */
   .cmp-group {
-    padding: .7rem .85rem .4rem;
-    font-size: .62rem;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    background: var(--card-bg, #fff);
-    border-bottom: 1px solid var(--border);
-    border-top: 1px solid var(--border);
-    font-weight: 500;
+    grid-column: 1 / -1;
+    background: var(--black);
+    color: var(--white);
+    padding: .8rem 1.1rem .75rem;
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: .8rem;
   }
-  [data-theme="dark"] .cmp-group { background: #0f0f0f; color: #888; }
+  .cmp-group::before {
+    content: '';
+    width: 10px; height: 10px;
+    background: var(--yellow);
+    flex-shrink: 0;
+  }
+  .cmp-group-num {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--yellow);
+    font-weight: 400;
+    line-height: 1;
+  }
+  .cmp-group-name {
+    font-size: .7rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--white);
+  }
+  [data-theme="dark"] .cmp-group { background: #000; }
 
-  /* Mobile: horizontal scroll, wider columns */
+  /* Mobile: tighter padding, force scroll */
   @media (max-width: 700px) {
     .compare-view { padding: 1rem .5rem; }
+    .cmp-table { overflow-x: auto; scroll-snap-type: x mandatory; }
     .cmp-head-modelo { font-size: .85rem; }
-    .cmp-hero-val { font-size: 1.4rem; }
-    .cmp-cell, .cmp-label { padding: .5rem .65rem; font-size: .72rem; }
-    .cmp-head { padding: .85rem .55rem .7rem; }
-    .cmp-head-photo { max-width: 90px; }
+    .cmp-cell, .cmp-label { padding: .65rem .75rem; font-size: .74rem; }
+    .cmp-head { padding: .95rem .55rem .75rem; }
+    .cmp-head-photo { max-width: 100px; }
+    .cmp-group { padding: .7rem .85rem .65rem; }
+    .cmp-group-name { font-size: .62rem; }
   }
 
   /* ══════════════════════════════════════════
