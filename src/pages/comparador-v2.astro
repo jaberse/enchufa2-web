@@ -1981,8 +1981,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     transition: background 0.12s, height 0.12s;
   }
   [data-theme="dark"] .field-adv-bar { background: rgba(255,255,255,0.12); }
-  .field-adv-bar.in-range { background: var(--black); }
-  [data-theme="dark"] .field-adv-bar.in-range { background: var(--white, #FAFAF8); }
+  .field-adv-bar.in-range { background: var(--gray-400, #9C9A90); }
+  .field-item.is-filtering .field-adv-bar.in-range { background: var(--black); }
+  [data-theme="dark"] .field-adv-bar.in-range { background: rgba(255,255,255,0.35); }
+  [data-theme="dark"] .field-item.is-filtering .field-adv-bar.in-range { background: var(--white, #FAFAF8); }
 
   /* Dual range slider (two overlapping native inputs) */
   .field-adv-slider {
@@ -2006,11 +2008,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     top: 50%;
     height: 3px;
     transform: translateY(-50%);
-    background: var(--black);
+    background: var(--gray-400, #9C9A90);
     border-radius: 2px;
     pointer-events: none;
   }
-  [data-theme="dark"] .field-adv-slider .slider-track-active { background: var(--white, #FAFAF8); }
+  .field-item.is-filtering .field-adv-slider .slider-track-active { background: var(--black); }
+  [data-theme="dark"] .field-adv-slider .slider-track-active { background: rgba(255,255,255,0.35); }
+  [data-theme="dark"] .field-item.is-filtering .field-adv-slider .slider-track-active { background: var(--white, #FAFAF8); }
   .field-adv-slider .slider-input {
     position: absolute;
     top: 0; left: 0;
