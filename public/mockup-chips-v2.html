@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Mockup chips v2 — histograma + slider</title>
+<style>
+  :root {
+    --black: #111111;
+    --yellow: #F5C518;
+    --bg: #F8F6F1;
+    --surface: #FFFFFF;
+    --surface-alt: #F2F1ED;
+    --border: #E3E1D8;
+    --gray-100: #F5F4F0;
+    --gray-200: #E3E1D8;
+    --gray-300: #C9C6BC;
+    --gray-400: #9C9A90;
+    --gray-500: #706E65;
+    --text: #1A1A1A;
+    --text-secondary: #4A4A46;
+    --text-muted: #8A8880;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 300;
+    background: var(--bg);
+    color: var(--text);
+    padding: 2.5rem 3rem;
+    margin: 0;
+  }
+  h1 { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; font-size: 1.75rem; margin: 0 0 0.5rem; }
+  h2 { font-family: 'Inter', sans-serif; font-weight: 500; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin: 2.5rem 0 1rem; }
+  p.desc { color: var(--text-secondary); font-size: 0.85rem; max-width: 680px; line-height: 1.55; margin: 0 0 2rem; }
+
+  .lane { display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-start; margin-bottom: 0.5rem; }
+  .chip-col { width: 172px; }
+  .variant-label { font-size: 0.58rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.45rem; }
+
+  /* ─── Base chip ─── */
+  .chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.45rem 0.6rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .chip-head {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 18px;
+  }
+  .chip-head::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gray-300);
+    flex-shrink: 0;
+  }
+  .chip-label {
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    flex: 1;
+    line-height: 1;
+  }
+  .chip-sort {
+    color: var(--gray-400);
+    font-size: 0.65rem;
+    opacity: 0.5;
+  }
+
+  /* ─── Inactive (compact) ─── */
+  .chip.inactive { opacity: 0.72; }
+
+  /* ─── Active ─── */
+  .chip.active .chip-head::before { background: var(--black); }
+  .chip.active .chip-label { color: var(--text); font-weight: 500; }
+
+  /* ─── Filtering (range modified) ─── */
+  .chip.filtering { border-color: var(--black); }
+
+  /* ─── Expanded (advanced mode) ─── */
+  .chip.expanded { padding-bottom: 0.55rem; }
+  .adv {
+    margin-top: 0.5rem;
+    padding-top: 0.45rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .histo {
+    display: flex;
+    align-items: flex-end;
+    gap: 1px;
+    height: 26px;
+  }
+  .histo > div {
+    flex: 1;
+    min-width: 0;
+    border-radius: 1px 1px 0 0;
+  }
+  .slider {
+    position: relative;
+    height: 18px;
+    margin: 0 6px;
+  }
+  .slider .track {
+    position: absolute;
+    top: 50%;
+    left: 0; right: 0;
+    height: 3px;
+    transform: translateY(-50%);
+    background: var(--gray-200);
+    border-radius: 2px;
+  }
+  .slider .track-active {
+    position: absolute;
+    top: 50%;
+    height: 3px;
+    transform: translateY(-50%);
+    border-radius: 2px;
+  }
+  .slider .thumb {
+    position: absolute;
+    top: 50%;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+  .labels {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    font-size: 0.62rem;
+    font-weight: 500;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .labels .unit { color: var(--text-muted); font-size: 0.56rem; font-weight: 400; }
+  .labels .sep { color: var(--gray-400); margin: 0 0.1rem; }
+
+  /* ═══════ VARIANT A: Grises puros ═══════ */
+  .v-a .histo > div { background: var(--gray-200); }
+  .v-a .histo > div.in { background: var(--gray-500); }
+  .v-a .slider .track-active { background: var(--gray-500); }
+  .v-a .slider .thumb { background: var(--black); border: 2px solid var(--surface); }
+
+  /* ═══════ VARIANT B: Amarillo solo en dot + track ═══════ */
+  .v-b .histo > div { background: var(--gray-200); }
+  .v-b .histo > div.in { background: var(--gray-400); }
+  .v-b .slider .track-active { background: var(--black); }
+  .v-b .slider .thumb { background: var(--surface); border: 2px solid var(--black); }
+  .v-b.filtering .chip-head::before { background: var(--yellow); box-shadow: 0 0 0 2px rgba(245,197,24,0.2); }
+
+  /* ═══════ VARIANT C: Acento grafito con amarillo solo en label ═══════ */
+  .v-c .histo > div { background: #D7D4CA; }
+  .v-c .histo > div.in { background: #2A2A28; }
+  .v-c .slider .track { background: #D7D4CA; }
+  .v-c .slider .track-active { background: #2A2A28; }
+  .v-c .slider .thumb { background: #2A2A28; border: 2px solid var(--surface); }
+  .v-c.filtering { border-left: 2px solid var(--yellow); padding-left: calc(0.6rem - 1px); }
+
+  /* ═══════ VARIANT D: Duotono (barras grises + in-range negro fino) ═══════ */
+  .v-d .histo { gap: 2px; }
+  .v-d .histo > div { background: var(--gray-200); }
+  .v-d .histo > div.in { background: var(--black); }
+  .v-d .slider .track { background: var(--gray-200); height: 2px; }
+  .v-d .slider .track-active { background: var(--black); height: 2px; }
+  .v-d .slider .thumb { background: var(--surface); border: 2px solid var(--black); width: 11px; height: 11px; }
+  .v-d.filtering .chip-head::before { background: var(--black); }
+
+  /* ═══════ VARIANT E: Muy minimal, barras finas ═══════ */
+  .v-e .histo { height: 18px; }
+  .v-e .histo > div { background: var(--gray-300); opacity: 0.5; }
+  .v-e .histo > div.in { background: var(--gray-500); opacity: 1; }
+  .v-e .slider .track-active { background: var(--gray-500); }
+  .v-e .slider .thumb { background: var(--black); border: 2px solid var(--surface); width: 11px; height: 11px; }
+
+  /* ═══════ VARIANT F: Sobrio con fondo diferenciado ═══════ */
+  .v-f .adv { background: var(--surface-alt); margin: 0.5rem -0.6rem -0.55rem; padding: 0.5rem 0.6rem 0.55rem; border-top: 1px solid var(--border); border-radius: 0 0 5px 5px; }
+  .v-f .histo > div { background: var(--gray-300); }
+  .v-f .histo > div.in { background: var(--black); }
+  .v-f .slider .track { background: var(--gray-300); }
+  .v-f .slider .track-active { background: var(--black); }
+  .v-f .slider .thumb { background: var(--surface); border: 2px solid var(--black); }
+
+  .legend { font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 1rem; }
+  .legend strong { color: var(--text); font-weight: 500; }
+
+  .notes { margin-top: 3rem; padding: 1.25rem 1.5rem; background: var(--surface); border-radius: 6px; border: 1px solid var(--border); }
+  .notes h3 { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); margin: 0 0 0.5rem; }
+  .notes p { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.55; margin: 0.4rem 0; }
+</style>
+</head>
+<body>
+
+<h1>Chips del comparador — propuestas v2</h1>
+<p class="desc">Chip inactivo más compacto (sin padding extra). 6 variantes cromáticas del modo expandido: escoge cuál prefieres. Cada lane muestra los tres estados: <strong>Inactivo</strong> · <strong>Activo (sin filtro)</strong> · <strong>Activo con filtro aplicado</strong> · <strong>Expandido</strong>.</p>
+
+<h2>Referencia — chip compacto (inactivo · activo · filtrando)</h2>
+<p class="legend">Altura reducida: <strong>~34 px</strong> (antes ~56 px). Solo una palabra, sin filas extra.</p>
+<div class="lane">
+  <div class="chip-col">
+    <div class="variant-label">Inactivo</div>
+    <div class="chip inactive">
+      <div class="chip-head">
+        <span class="chip-label">Autonomía</span>
+        <span class="chip-sort">↕</span>
+      </div>
+    </div>
+  </div>
+  <div class="chip-col">
+    <div class="variant-label">Activo</div>
+    <div class="chip active">
+      <div class="chip-head">
+        <span class="chip-label">Autonomía</span>
+        <span class="chip-sort">↕</span>
+      </div>
+    </div>
+  </div>
+  <div class="chip-col">
+    <div class="variant-label">Filtrando</div>
+    <div class="chip active filtering v-b">
+      <div class="chip-head">
+        <span class="chip-label">Autonomía</span>
+        <span class="chip-sort">↕</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Variante A — Grises puros (sin amarillo)</h2>
+<p class="legend">Todo en escala de grises. Thumb negro. Minimal y sobrio.</p>
+<div class="lane">
+  <div class="chip-col">
+    <div class="variant-label">Expandido</div>
+    <div class="chip active expanded v-a">
+      <div class="chip-head"><span class="chip-label">Autonomía</span><span class="chip-sort">↕</span></div>
+      <div class="adv">
+        <div class="histo">
+          <div style="height:18%"></div><div style="height:32%"></div><div style="height:58%" class="in"></div><div style="height:88%" class="in"></div><div style="height:100%" class="in"></div><div style="height:72%" class="in"></div><div style="height:54%" class="in"></div><div style="height:42%" class="in"></div><div style="height:28%"></div><div style="height:18%"></div><div style="height:12%"></div><div style="height:8%"></div>
+        </div>
+        <div class="slider">
+          <div class="track"></div>
+          <div class="track-active" style="left:18%;right:28%"></div>
+          <div class="thumb" style="left:18%"></div>
+          <div class="thumb" style="left:72%"></div>
+        </div>
+        <div class="labels"><span>350</span><span class="unit">km</span><span class="sep">—</span><span>620</span><span class="unit">km</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Variante B — Track y thumb negro, barras grises</h2>
+<p class="legend">Contraste alto con negro. Amarillo SOLO en el dot cuando filtra (indicador mínimo).</p>
+<div class="lane">
+  <div class="chip-col">
+    <div class="variant-label">Expandido</div>
+    <div class="chip active expanded v-b filtering">
+      <div class="chip-head"><span class="chip-label">Autonomía</span><span class="chip-sort">↕</span></div>
+      <div class="adv">
+        <div class="histo">
+          <div style="height:18%"></div><div style="height:32%"></div><div style="height:58%" class="in"></div><div style="height:88%" class="in"></div><div style="height:100%" class="in"></div><div style="height:72%" class="in"></div><div style="height:54%" class="in"></div><div style="height:42%" class="in"></div><div style="height:28%"></div><div style="height:18%"></div><div style="height:12%"></div><div style="height:8%"></div>
+        </div>
+        <div class="slider">
+          <div class="track"></div>
+          <div class="track-active" style="left:18%;right:28%"></div>
+          <div class="thumb" style="left:18%"></div>
+          <div class="thumb" style="left:72%"></div>
+        </div>
+        <div class="labels"><span>350</span><span class="unit">km</span><span class="sep">—</span><span>620</span><span class="unit">km</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Variante C — Grafito (#2A2A28) con borde amarillo lateral si filtra</h2>
+<p class="legend">Todo en grafito oscuro. Cuando hay filtro, aparece una línea amarilla vertical a la izquierda del chip.</p>
+<div class="lane">
+  <div class="chip-col">
+    <div class="variant-label">Expandido + filtrando</div>
+    <div class="chip active expanded v-c filtering">
+      <div class="chip-head"><span class="chip-label">Autonomía</span><span class="chip-sort">↕</span></div>
+      <div class="adv">
+        <div class="histo">
+          <div style="height:18%"></div><div style="height:32%"></div><div style="height:58%" class="in"></div><div style="height:88%" class="in"></div><div style="height:100%" class="in"></div><div style="height:72%" class="in"></div><div style="height:54%" class="in"></div><div style="height:42%" class="in"></div><div style="height:28%"></div><div style="height:18%"></div><div style="height:12%"></div><div style="height:8%"></div>
+        </div>
+        <div class="slider">
+          <div class="track"></div>
+          <div class="track-active" style="left:18%;right:28%"></div>
+          <div class="thumb" style="left:18%"></div>
+          <div class="thumb" style="left:72%"></div>
+        </div>
+        <div class="labels"><span>350</span><span class="unit">km</span><span class="sep">—</span><span>620</span><span class="unit">km</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Variante D — Duotono: barras negras in-range, grises fuera (slider ultrafino)</h2>
+<p class="legend">Slider reducido a 2 px. Contraste negro absoluto solo en las barras seleccionadas.</p>
+<div class="lane">
+  <div class="chip-col">
+    <div class="variant-label">Expandido</div>
+    <div class="chip active expanded v-d">
+      <div class="chip-head"><span class="chip-label">Autonomía</span><span class="chip-sort">↕</span></div>
+      <div class="adv">
+        <div class="histo">
+          <div style="height:18%"></div><div style="height:32%"></div><div style="height:58%" class="in"></div><div style="height:88%" class="in"></div><div style="height:100%" class="in"></div><div style="height:72%" class="in"></div><div style="height:54%" class="in"></div><div style="height:42%" class="in"></div><div style="height:28%"></div><div style="height:18%"></div><div style="height:12%"></div><div style="height:8%"></div>
+        </div>
+        <div class="slider">
+          <div class="track"></div>
+          <div class="track-active" style="left:18%;right:28%"></div>
+          <div class="thumb" style="left:18%"></div>
+          <div class="thumb" style="left:72%"></div>
+        </div>
+        <div class="labels"><span>350</span><span class="unit">km</span><span class="sep">—</span><span>620</span><span class="unit">km</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Variante E — Minimal: histograma muy bajo + opacidad</h2>
+<p class="legend">Barras al 50% de opacidad fuera del rango, 100% dentro. Todo en gris medio.</p>
+<div class="lane">
+  <div class="chip-col">
+    <div class="variant-label">Expandido</div>
+    <div class="chip active expanded v-e">
+      <div class="chip-head"><span class="chip-label">Autonomía</span><span class="chip-sort">↕</span></div>
+      <div class="adv">
+        <div class="histo">
+          <div style="height:18%"></div><div style="height:32%"></div><div style="height:58%" class="in"></div><div style="height:88%" class="in"></div><div style="height:100%" class="in"></div><div style="height:72%" class="in"></div><div style="height:54%" class="in"></div><div style="height:42%" class="in"></div><div style="height:28%"></div><div style="height:18%"></div><div style="height:12%"></div><div style="height:8%"></div>
+        </div>
+        <div class="slider">
+          <div class="track"></div>
+          <div class="track-active" style="left:18%;right:28%"></div>
+          <div class="thumb" style="left:18%"></div>
+          <div class="thumb" style="left:72%"></div>
+        </div>
+        <div class="labels"><span>350</span><span class="unit">km</span><span class="sep">—</span><span>620</span><span class="unit">km</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Variante F — Fondo diferenciado (cream-alt) para el bloque expandido</h2>
+<p class="legend">El bloque avanzado tiene fondo ligeramente más oscuro (#F2F1ED) para separarlo. Barras negras in-range.</p>
+<div class="lane">
+  <div class="chip-col">
+    <div class="variant-label">Expandido</div>
+    <div class="chip active expanded v-f">
+      <div class="chip-head"><span class="chip-label">Autonomía</span><span class="chip-sort">↕</span></div>
+      <div class="adv">
+        <div class="histo">
+          <div style="height:18%"></div><div style="height:32%"></div><div style="height:58%" class="in"></div><div style="height:88%" class="in"></div><div style="height:100%" class="in"></div><div style="height:72%" class="in"></div><div style="height:54%" class="in"></div><div style="height:42%" class="in"></div><div style="height:28%"></div><div style="height:18%"></div><div style="height:12%"></div><div style="height:8%"></div>
+        </div>
+        <div class="slider">
+          <div class="track"></div>
+          <div class="track-active" style="left:18%;right:28%"></div>
+          <div class="thumb" style="left:18%"></div>
+          <div class="thumb" style="left:72%"></div>
+        </div>
+        <div class="labels"><span>350</span><span class="unit">km</span><span class="sep">—</span><span>620</span><span class="unit">km</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Comparativa lado a lado (todas las variantes)</h2>
+<div class="lane">
+  <div class="chip-col"><div class="variant-label">A · Grises puros</div><div class="chip active expanded v-a"><div class="chip-head"><span class="chip-label">Autonomía</span><span class="chip-sort">↕</span></div><div class="adv"><div class="histo"><div style="height:18%"></div><div style="height:32%"></div><div style="height:58%" class="in"></div><div style="height:88%" class="in"></div><div style="height:100%" class="in"></div><div style="height:72%" class="in"></div><div style="height:54%" class="in"></div><div style="height:42%" class="in"></div><div style="height:28%"></div><div style="height:18%"></div><div style="height:12%"></div><div style="height:8%"></div></div><div class="slider"><div class="track"></div><div class="track-active" style="left:18%;right:28%"></div><div class="thumb" style="left:18%"></div><div class="thumb" style="left:72%"></div></div><div class="labels"><span>350</span><span class="unit">km</span><span class="sep">—</span><span>620</span><span class="unit">km</span></div></div></div></div>
+  <div class="chip-col"><div class="variant-label">B · Track negro</div><div class="chip active expanded v-b filtering"><div class="chip-head"><span class="chip-label">Autonomía</span><span class="chip-sort">↕</span></div><div class="adv"><div class="histo"><div style="height:18%"></div><div style="height:32%"></div><div style="height:58%" class="in"></div><div style="height:88%" class="in"></div><div style="height:100%" class="in"></div><div style="height:72%" class="in"></div><div style="height:54%" class="in"></div><div style="height:42%" class="in"></div><div style="height:28%"></div><div style="height:18%"></div><div style="height:12%"></div><div style="height:8%"></div></div><div class="slider"><div class="track"></div><div class="track-active" style="left:18%;right:28%"></div><div class="thumb" style="left:18%"></div><div class="thumb" style="left:72%"></div></div><div class="labels"><span>350</span><span class="unit">km</span><span class="sep">—</span><span>620</span><span class="unit">km</span></div></div></div></div>
+  <div class="chip-col"><div class="variant-label">C · Grafito + borde ama.</div><div class="chip active expanded v-c filtering"><div class="chip-head"><span class="chip-label">Autonomía</span><span class="chip-sort">↕</span></div><div class="adv"><div class="histo"><div style="height:18%"></div><div style="height:32%"></div><div style="height:58%" class="in"></div><div style="height:88%" class="in"></div><div style="height:100%" class="in"></div><div style="height:72%" class="in"></div><div style="height:54%" class="in"></div><div style="height:42%" class="in"></div><div style="height:28%"></div><div style="height:18%"></div><div style="height:12%"></div><div style="height:8%"></div></div><div class="slider"><div class="track"></div><div class="track-active" style="left:18%;right:28%"></div><div class="thumb" style="left:18%"></div><div class="thumb" style="left:72%"></div></div><div class="labels"><span>350</span><span class="unit">km</span><span class="sep">—</span><span>620</span><span class="unit">km</span></div></div></div></div>
+  <div class="chip-col"><div class="variant-label">D · Duotono ultrafino</div><div class="chip active expanded v-d"><div class="chip-head"><span class="chip-label">Autonomía</span><span class="chip-sort">↕</span></div><div class="adv"><div class="histo"><div style="height:18%"></div><div style="height:32%"></div><div style="height:58%" class="in"></div><div style="height:88%" class="in"></div><div style="height:100%" class="in"></div><div style="height:72%" class="in"></div><div style="height:54%" class="in"></div><div style="height:42%" class="in"></div><div style="height:28%"></div><div style="height:18%"></div><div style="height:12%"></div><div style="height:8%"></div></div><div class="slider"><div class="track"></div><div class="track-active" style="left:18%;right:28%"></div><div class="thumb" style="left:18%"></div><div class="thumb" style="left:72%"></div></div><div class="labels"><span>350</span><span class="unit">km</span><span class="sep">—</span><span>620</span><span class="unit">km</span></div></div></div></div>
+  <div class="chip-col"><div class="variant-label">E · Opacidad</div><div class="chip active expanded v-e"><div class="chip-head"><span class="chip-label">Autonomía</span><span class="chip-sort">↕</span></div><div class="adv"><div class="histo"><div style="height:18%"></div><div style="height:32%"></div><div style="height:58%" class="in"></div><div style="height:88%" class="in"></div><div style="height:100%" class="in"></div><div style="height:72%" class="in"></div><div style="height:54%" class="in"></div><div style="height:42%" class="in"></div><div style="height:28%"></div><div style="height:18%"></div><div style="height:12%"></div><div style="height:8%"></div></div><div class="slider"><div class="track"></div><div class="track-active" style="left:18%;right:28%"></div><div class="thumb" style="left:18%"></div><div class="thumb" style="left:72%"></div></div><div class="labels"><span>350</span><span class="unit">km</span><span class="sep">—</span><span>620</span><span class="unit">km</span></div></div></div></div>
+  <div class="chip-col"><div class="variant-label">F · Fondo diferenciado</div><div class="chip active expanded v-f"><div class="chip-head"><span class="chip-label">Autonomía</span><span class="chip-sort">↕</span></div><div class="adv"><div class="histo"><div style="height:18%"></div><div style="height:32%"></div><div style="height:58%" class="in"></div><div style="height:88%" class="in"></div><div style="height:100%" class="in"></div><div style="height:72%" class="in"></div><div style="height:54%" class="in"></div><div style="height:42%" class="in"></div><div style="height:28%"></div><div style="height:18%"></div><div style="height:12%"></div><div style="height:8%"></div></div><div class="slider"><div class="track"></div><div class="track-active" style="left:18%;right:28%"></div><div class="thumb" style="left:18%"></div><div class="thumb" style="left:72%"></div></div><div class="labels"><span>350</span><span class="unit">km</span><span class="sep">—</span><span>620</span><span class="unit">km</span></div></div></div></div>
+</div>
+
+<div class="notes">
+  <h3>Notas</h3>
+  <p><strong>Chip inactivo:</strong> pasa de ~56 px a ~34 px — solo la línea del título con dot indicador, sin filas extra.</p>
+  <p><strong>Indicador "filtro activo":</strong> en cada variante es distinto (borde oscuro, dot amarillo mínimo, línea amarilla lateral…). Dime cuál funciona mejor.</p>
+  <p><strong>Nota sobre histograma:</strong> el número de "bins" con color "in-range" cambia según el rango del slider. En todas las variantes la señal visual es la misma — solo cambia el tratamiento cromático.</p>
+</div>
+
+</body>
+</html>
