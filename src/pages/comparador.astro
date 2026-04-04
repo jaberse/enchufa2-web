@@ -1272,11 +1272,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-size: 0.72rem;
     font-weight: 400;
     color: var(--text-secondary);
-    white-space: nowrap;
+    line-height: 1.25;
     flex: 1;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
   .field-item:not(.active) .field-label {
     color: var(--text);
@@ -1338,21 +1341,28 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .panel-select-all-btn {
     font-family: var(--font-sans);
     font-size: 0.625rem;
-    font-weight: 400;
-    color: var(--text-muted);
+    font-weight: 500;
+    color: var(--text-secondary);
     background: none;
-    border: 1px dashed var(--border);
+    border: 1px dashed var(--text-muted);
     border-radius: 4px;
     padding: 0.2rem 0.55rem;
     cursor: pointer;
     transition: all 0.15s;
     letter-spacing: 0.01em;
   }
+  [data-theme="dark"] .panel-select-all-btn {
+    color: #C5C5C5;
+    border-color: #606060;
+  }
   .panel-select-all-btn:hover {
     color: var(--text);
     border-color: var(--yellow);
     border-style: solid;
     background: var(--yellow-glow);
+  }
+  [data-theme="dark"] .panel-select-all-btn:hover {
+    color: var(--yellow);
   }
 
   /* Per-field sort button */
@@ -1509,13 +1519,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   /* Separator bar between filters and results */
   .comp-panel-separator {
-    height: 3px;
-    background: linear-gradient(to right, var(--panel-border), var(--yellow) 20%, var(--yellow) 80%, var(--panel-border));
+    height: 1px;
+    background: var(--panel-separator);
     border-left: 1px solid var(--panel-border);
     border-right: 1px solid var(--panel-border);
-  }
-  [data-theme="dark"] .comp-panel-separator {
-    background: linear-gradient(to right, var(--panel-border), var(--yellow) 20%, var(--yellow) 80%, var(--panel-border));
   }
 
   /* ══════════════════════════════════════════
@@ -1743,7 +1750,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .ev-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-bottom: 2px solid var(--yellow);
+    border-left: 3px solid var(--yellow);
     border-radius: 8px;
     overflow: hidden;
     box-shadow: none;
@@ -1751,6 +1758,13 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     display: flex;
     flex-direction: column;
     cursor: pointer;
+  }
+  .ev-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+  [data-theme="dark"] .ev-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
   }
   .ev-card:hover {
     box-shadow: 0 4px 16px rgba(0,0,0,0.08);
@@ -1772,17 +1786,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   [data-theme="dark"] .ev-card-photo {
     background: linear-gradient(180deg, #1C1C1C 0%, #141414 100%);
-  }
-  /* Yellow accent line separating photo from body */
-  .ev-card-photo::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--yellow), rgba(245,197,24,.25));
-    z-index: 2;
   }
   .ev-card-photo img {
     width: 90%;
@@ -2022,11 +2025,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     letter-spacing: .06em;
     white-space: nowrap;
     background: var(--table-header-bg);
-    border-bottom: 2px solid var(--yellow);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: #FFFFFF;
   }
   [data-theme="dark"] .listado-table th {
     background: #000000;
-    border-bottom-color: var(--yellow);
+    border-bottom-color: rgba(255,255,255,0.08);
   }
   .listado-table th.col-num { text-align: right; }
 
@@ -2035,11 +2039,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     left: 0;
     background: var(--table-header-bg);
     z-index: 21;
-    min-width: 320px;
+    min-width: 360px;
+    width: 360px;
   }
   [data-theme="dark"] .listado-table th:first-child {
     background: #000000;
-    border-bottom-color: var(--yellow);
+    border-bottom-color: rgba(255,255,255,0.08);
   }
 
   .listado-table th:last-child {
@@ -2068,8 +2073,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     left: 0;
     background: var(--surface);
     z-index: 10;
-    min-width: 320px;
+    min-width: 360px;
+    width: 360px;
     white-space: normal;
+    padding-right: 1rem;
   }
   .listado-table td:first-child::after {
     content: '';
@@ -2116,10 +2123,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     height: 100%;
     object-fit: contain;
   }
-  .table-modelo { font-weight: 600; color: var(--text); font-size: .78rem; }
-  .table-variante { font-size: .62rem; color: var(--text-secondary); }
-  .table-badges { display: flex; gap: .15rem; flex-wrap: wrap; margin-top: .15rem; }
-  .table-badges .badge { font-size: .45rem; padding: .08rem .25rem; }
+  .table-modelo-wrap > div:last-child { min-width: 0; flex: 1; }
+  .table-modelo { font-weight: 600; color: var(--text); font-size: .78rem; white-space: normal; line-height: 1.2; }
+  .table-variante { font-size: .62rem; color: var(--text-secondary); white-space: normal; line-height: 1.3; }
+  .table-badges { display: flex; gap: .2rem; flex-wrap: wrap; margin-top: .25rem; }
+  .table-badges .badge { font-size: .45rem; padding: .08rem .3rem; }
   .table-autonomia { color: var(--yellow) !important; font-weight: 600 !important; }
 
   /* Scroll nav */

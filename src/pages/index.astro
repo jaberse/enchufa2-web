@@ -503,9 +503,23 @@ const totalGuides = categories.reduce((sum, cat) => sum + cat.guides.length, 0);
   .cat-sidebar {
     padding: 1.5rem clamp(1rem, 2.5vw, 1.75rem);
     border-right: 1px solid var(--border);
+    background: #2A2A28;
+    color: #F0EFEB;
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
+  }
+  .cat-sidebar .cat-sidebar-label {
+    color: #A5A49E;
+  }
+  .cat-sidebar .cat-sidebar-text {
+    color: #D5D4CF;
+  }
+  .cat-sidebar .cat-barrier-desc {
+    color: #C0BFB9;
+  }
+  .cat-sidebar .cat-barrier-desc small {
+    color: #8A8985;
   }
 
   .cat-sidebar-label {
