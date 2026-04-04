@@ -942,15 +942,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
      ══════════════════════════════════════════ */
   :root {
     --photo-bg: linear-gradient(180deg, #0E0E0E, #1A1A1A);
-    --panel-bg: #FFFFFF;
-    --panel-border: #EEEEEE;
-    --panel-separator: #EEEEEE;
+    --panel-bg: #FAFAF8;
+    --panel-border: #E0E0DE;
+    --panel-separator: #E0E0DE;
   }
   [data-theme="dark"] {
     --photo-bg: linear-gradient(180deg, #0A0A0A, #141414);
-    --panel-bg: #141414;
-    --panel-border: #222222;
-    --panel-separator: #222222;
+    --panel-bg: #111111;
+    --panel-border: #1E1E1E;
+    --panel-separator: #1E1E1E;
   }
 
   /* ══════════════════════════════════════════
@@ -996,6 +996,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     margin-inline: auto;
     padding-inline: var(--hub-gutter);
     padding-bottom: clamp(2rem, 4vw, 3rem);
+    background: var(--surface);
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.05);
+    border-radius: 0 0 12px 12px;
+  }
+  [data-theme="dark"] .comp-outer {
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.04);
   }
 
   /* Block 1: Intro — rounded top, overlaps hero */
@@ -1969,7 +1975,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     left: 0;
     background: var(--table-header-bg);
     z-index: 21;
-    min-width: 280px;
+    min-width: 320px;
   }
   [data-theme="dark"] .listado-table th:first-child {
     background: #000000;
@@ -2001,7 +2007,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     left: 0;
     background: #FFFFFF;
     z-index: 10;
-    min-width: 280px;
+    min-width: 320px;
+    white-space: normal;
   }
   [data-theme="dark"] .listado-table td:first-child {
     background: #141414;
