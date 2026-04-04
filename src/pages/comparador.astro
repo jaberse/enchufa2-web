@@ -1714,7 +1714,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .listado-table thead {
     position: sticky;
     top: 0;
-    background: var(--black);
+    background: var(--table-header-bg);
     color: var(--white);
     z-index: 20;
   }
@@ -1727,14 +1727,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     text-transform: uppercase;
     letter-spacing: .06em;
     white-space: nowrap;
-    background: #111111;
+    background: var(--table-header-bg);
 }
   .listado-table th.col-num { text-align: right; }
 
   .listado-table th:first-child {
     position: sticky;
     left: 0;
-    background: #111111;
+    background: var(--table-header-bg);
     z-index: 21;
     min-width: 220px;
   }
