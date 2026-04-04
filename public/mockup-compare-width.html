@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Mockup · Ancho tabla y uso del rectángulo gris</title>
+<style>
+  :root {
+    --black: #111111;
+    --yellow: #F5C518;
+    --bg: #F8F6F1;
+    --surface: #FFFFFF;
+    --border: #E3E1D8;
+    --gray-100: #F5F5F3;
+    --gray-300: #C0BFB9;
+    --gray-400: #9C9A90;
+    --text: #111111;
+    --text-secondary: #444444;
+    --text-muted: #76756F;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); font-family: Inter, system-ui, sans-serif; padding: 40px 0; }
+  h2 {
+    max-width: 1200px; margin: 0 auto 14px; padding: 0 24px;
+    font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--text-secondary);
+  }
+  h2 em {
+    font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400;
+    text-transform: none; letter-spacing: 0; color: var(--text-muted); font-size: 14px; margin-left: 8px;
+  }
+  .comp-results {
+    max-width: 1200px; margin: 0 auto 60px;
+    padding: 24px 32px;
+    background: var(--surface);
+    border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+  }
+  /* Width A: compare-view full width (no horizontal padding) */
+  .width-a .compare-view { padding: 8px 0; }
+  /* Width B: half the current margin (old: 1rem-2rem → new: 0.5rem-1rem) */
+  .width-b .compare-view { padding: 8px clamp(.5rem, 1.5vw, 1rem); }
+  /* Width current (reference): clamp(1rem, 3vw, 2rem) */
+  .width-current .compare-view { padding: 8px clamp(1rem, 3vw, 2rem); }
+
+  .cmp-table {
+    display: grid; grid-template-columns: 170px repeat(4, minmax(0, 1fr)); gap: 0;
+    font-family: Inter, sans-serif; width: 100%; border-radius: 12px; overflow: hidden;
+    background: var(--surface);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+  }
+  .cmp-label-head { background: var(--gray-100); display: flex; align-items: center; justify-content: center; }
+  .cmp-label { padding: 14px 18px; font-size: 11.5px; color: var(--text-secondary); background: var(--surface); display: flex; align-items: center; }
+  .cmp-cell { padding: 14px 16px; font-size: 13px; color: var(--text); background: var(--surface); display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; gap: 6px; }
+  .cmp-cell.row-even, .cmp-label.row-even { background: #FAFAF8; }
+  .cmp-cell.is-best { font-weight: 700; }
+  .best-mark { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: var(--yellow); font-size: 16px; margin-left: 2px; }
+
+  .cmp-head {
+    padding: 18px 12px 14px; background: var(--surface);
+    display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;
+    position: relative;
+  }
+  .cmp-head:first-of-type { border-left: 3px solid var(--yellow); }
+  .cmp-head + .cmp-head::before { content: ''; position: absolute; left: 0; top: 14px; bottom: 14px; width: 1px; background: var(--border); }
+  .cmp-head-photo { width: 100%; max-width: 130px; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; }
+  .cmp-head-photo svg { width: 100%; height: 100%; }
+  .cmp-head-marca { font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-weight: 500; }
+  .cmp-head-modelo { font-size: 15px; font-weight: 600; }
+  .cmp-head-variante { font-size: 11px; color: var(--text-secondary); font-weight: 300; }
+  .cmp-group { grid-column:1/-1; background: var(--black); color:#fff; padding: 10px 20px; }
+  .cmp-group-inner { display: flex; align-items: center; gap: 8px; }
+  .cmp-group-num { font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--yellow); }
+  .cmp-group-sep { color: rgba(255,255,255,0.28); font-size: 9.5px; }
+  .cmp-group-name { font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; }
+
+  /* Gray rectangle options */
+  .corner-opt { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 12px 10px; text-align: center; gap: 4px; }
+  .corner-count { font-size: 28px; font-weight: 700; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: var(--black); line-height: 1; }
+  .corner-label { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); font-weight: 500; }
+  .corner-toggle { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 10px; }
+  .corner-toggle-btn { background: var(--surface); border: 1px solid var(--border); padding: 6px 10px; font-size: 10px; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-weight: 500; }
+  .corner-toggle-btn.active { background: var(--yellow); border-color: var(--yellow); color: var(--black); }
+  .corner-toggle-label { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .corner-title { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; height: 100%; padding: 16px 18px; gap: 4px; }
+  .corner-title-big { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 20px; color: var(--black); line-height: 1.1; }
+  .corner-title-small { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); font-weight: 500; }
+  .corner-diff { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 10px; gap: 6px; }
+  .corner-diff label { font-size: 10px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 500; }
+  .corner-diff input[type=checkbox] { width: 12px; height: 12px; accent-color: var(--yellow); }
+  .corner-diff-hint { font-size: 9px; color: var(--text-muted); line-height: 1.3; }
+
+  /* Sample compact data rows */
+  .demo-row { contents: none; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="car" viewBox="0 0 100 50">
+      <path d="M10 35 L15 25 L30 20 L70 20 L85 25 L90 35 L88 40 L82 40 L78 35 L22 35 L18 40 L12 40 Z" fill="#999" stroke="#666" stroke-width="0.5"/>
+      <circle cx="25" cy="40" r="5" fill="#333"/><circle cx="75" cy="40" r="5" fill="#333"/>
+    </symbol>
+  </defs>
+</svg>
+
+<h2>Ancho Actual <em>— padding clamp(1rem, 3vw, 2rem) · referencia</em></h2>
+<div class="comp-results width-current"><div class="compare-view"><div class="cmp-table">
+  <div class="cmp-label cmp-label-head"></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">VW</span><span class="cmp-head-modelo">ID.7</span><span class="cmp-head-variante">Pro S</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3</span><span class="cmp-head-variante">LR AWD</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">POLESTAR</span><span class="cmp-head-modelo">2</span><span class="cmp-head-variante">LR Single</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model Y</span><span class="cmp-head-variante">RWD LR</span></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y carga</span></div></div>
+  <div class="cmp-label row-odd">Batería neta</div>
+  <div class="cmp-cell row-odd is-best">86 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-label row-even">Carga DC máx</div>
+  <div class="cmp-cell row-even">200 kW</div>
+  <div class="cmp-cell row-even is-best">250 kW <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-even">207 kW</div>
+  <div class="cmp-cell row-even is-best">250 kW <em class="best-mark">★</em></div>
+</div></div></div>
+
+<h2>Propuesta Ancho A <em>— Full width (sin margen lateral)</em></h2>
+<div class="comp-results width-a"><div class="compare-view"><div class="cmp-table">
+  <div class="cmp-label cmp-label-head"></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">VW</span><span class="cmp-head-modelo">ID.7</span><span class="cmp-head-variante">Pro S</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3</span><span class="cmp-head-variante">LR AWD</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">POLESTAR</span><span class="cmp-head-modelo">2</span><span class="cmp-head-variante">LR Single</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model Y</span><span class="cmp-head-variante">RWD LR</span></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y carga</span></div></div>
+  <div class="cmp-label row-odd">Batería neta</div>
+  <div class="cmp-cell row-odd is-best">86 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-label row-even">Carga DC máx</div>
+  <div class="cmp-cell row-even">200 kW</div>
+  <div class="cmp-cell row-even is-best">250 kW <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-even">207 kW</div>
+  <div class="cmp-cell row-even is-best">250 kW <em class="best-mark">★</em></div>
+</div></div></div>
+
+<h2>Propuesta Ancho B <em>— Mitad del margen actual</em></h2>
+<div class="comp-results width-b"><div class="compare-view"><div class="cmp-table">
+  <div class="cmp-label cmp-label-head"></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">VW</span><span class="cmp-head-modelo">ID.7</span><span class="cmp-head-variante">Pro S</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3</span><span class="cmp-head-variante">LR AWD</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">POLESTAR</span><span class="cmp-head-modelo">2</span><span class="cmp-head-variante">LR Single</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model Y</span><span class="cmp-head-variante">RWD LR</span></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y carga</span></div></div>
+  <div class="cmp-label row-odd">Batería neta</div>
+  <div class="cmp-cell row-odd is-best">86 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-label row-even">Carga DC máx</div>
+  <div class="cmp-cell row-even">200 kW</div>
+  <div class="cmp-cell row-even is-best">250 kW <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-even">207 kW</div>
+  <div class="cmp-cell row-even is-best">250 kW <em class="best-mark">★</em></div>
+</div></div></div>
+
+<hr style="max-width:1200px;margin:60px auto;border:none;border-top:1px dashed var(--gray-300)">
+
+<h2>Opciones rectángulo gris <em>— 4 usos posibles</em></h2>
+
+<h2 style="font-size:11px;margin-top:20px">Opción 1 <em>— Contador de coches</em></h2>
+<div class="comp-results width-a"><div class="compare-view"><div class="cmp-table">
+  <div class="cmp-label cmp-label-head"><div class="corner-opt"><span class="corner-count">4</span><span class="corner-label">Modelos</span></div></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">VW</span><span class="cmp-head-modelo">ID.7</span><span class="cmp-head-variante">Pro S</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3</span><span class="cmp-head-variante">LR AWD</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">POLESTAR</span><span class="cmp-head-modelo">2</span><span class="cmp-head-variante">LR Single</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model Y</span><span class="cmp-head-variante">RWD LR</span></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y carga</span></div></div>
+  <div class="cmp-label row-odd">Batería neta</div>
+  <div class="cmp-cell row-odd is-best">86 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+</div></div></div>
+
+<h2 style="font-size:11px">Opción 2 <em>— Título editorial "Ficha técnica"</em></h2>
+<div class="comp-results width-a"><div class="compare-view"><div class="cmp-table">
+  <div class="cmp-label cmp-label-head"><div class="corner-title"><span class="corner-title-big">Ficha</span><span class="corner-title-small">Comparativa · 4 modelos</span></div></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">VW</span><span class="cmp-head-modelo">ID.7</span><span class="cmp-head-variante">Pro S</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3</span><span class="cmp-head-variante">LR AWD</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">POLESTAR</span><span class="cmp-head-modelo">2</span><span class="cmp-head-variante">LR Single</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model Y</span><span class="cmp-head-variante">RWD LR</span></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y carga</span></div></div>
+  <div class="cmp-label row-odd">Batería neta</div>
+  <div class="cmp-cell row-odd is-best">86 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+</div></div></div>
+
+<h2 style="font-size:11px">Opción 3 <em>— Toggle "Solo diferencias"</em></h2>
+<div class="comp-results width-a"><div class="compare-view"><div class="cmp-table">
+  <div class="cmp-label cmp-label-head"><div class="corner-diff"><label><input type="checkbox" checked> Solo diferencias</label><span class="corner-diff-hint">Oculta filas con valores iguales</span></div></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">VW</span><span class="cmp-head-modelo">ID.7</span><span class="cmp-head-variante">Pro S</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3</span><span class="cmp-head-variante">LR AWD</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">POLESTAR</span><span class="cmp-head-modelo">2</span><span class="cmp-head-variante">LR Single</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model Y</span><span class="cmp-head-variante">RWD LR</span></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y carga</span></div></div>
+  <div class="cmp-label row-odd">Batería neta</div>
+  <div class="cmp-cell row-odd is-best">86 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+</div></div></div>
+
+<h2 style="font-size:11px">Opción 4 <em>— Vacío editorial (dejarlo limpio)</em></h2>
+<div class="comp-results width-a"><div class="compare-view"><div class="cmp-table">
+  <div class="cmp-label cmp-label-head"></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">VW</span><span class="cmp-head-modelo">ID.7</span><span class="cmp-head-variante">Pro S</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model 3</span><span class="cmp-head-variante">LR AWD</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">POLESTAR</span><span class="cmp-head-modelo">2</span><span class="cmp-head-variante">LR Single</span></div>
+  <div class="cmp-head"><div class="cmp-head-photo"><svg><use href="#car"/></svg></div><span class="cmp-head-marca">TESLA</span><span class="cmp-head-modelo">Model Y</span><span class="cmp-head-variante">RWD LR</span></div>
+  <div class="cmp-group"><div class="cmp-group-inner"><span class="cmp-group-num">01</span><span class="cmp-group-sep">—</span><span class="cmp-group-name">Batería y carga</span></div></div>
+  <div class="cmp-label row-odd">Batería neta</div>
+  <div class="cmp-cell row-odd is-best">86 kWh <em class="best-mark">★</em></div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+  <div class="cmp-cell row-odd">79 kWh</div>
+</div></div></div>
+
+</body>
+</html>
