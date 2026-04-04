@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>enchufa2 — Mockup botón exportar</title>
+<title>enchufa2 — Mockup botón exportar v2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -31,12 +31,11 @@
   }
   h1 { font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: 2rem; margin: 0 0 .5rem; }
   .subtitle { color: var(--gray-600); margin-bottom: 3rem; max-width: 680px; line-height: 1.6; }
-  h2 { font-size: 1rem; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; margin: 3rem 0 1rem; color: var(--gray-600); }
   .variant-label { font-family: var(--font-serif); font-style: italic; font-size: 1.15rem; color: var(--black); margin-bottom: .25rem; }
   .variant-desc { font-size: .85rem; color: var(--gray-600); margin-bottom: 1rem; line-height: 1.5; }
   .variant-wrap { background: var(--surface); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
 
-  /* simula el rectángulo gris del comparador */
+  /* simula el rectángulo del comparador */
   .cell-preview {
     background: var(--gray-100);
     border-radius: 8px;
@@ -45,178 +44,38 @@
     padding: 1.1rem .85rem 1rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     gap: .6rem;
   }
-  .cell-preview.align-start {
-    justify-content: space-between;
-    text-align: left;
-    align-items: stretch;
-  }
-
-  /* ============================================== */
-  /* VARIANTE A — Botón grande centrado             */
-  /* ============================================== */
-  .btn-export-big {
-    display: inline-flex;
-    align-items: center;
+  .cell-center {
     justify-content: center;
-    gap: .5rem;
-    padding: .7rem 1.1rem;
-    background: var(--black);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-family: var(--font-sans);
-    font-weight: 500;
-    font-size: .85rem;
-    cursor: pointer;
-    transition: all .2s;
+    align-items: center;
+    text-align: center;
   }
-  .btn-export-big:hover { background: #000; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-  .btn-export-big svg { width: 16px; height: 16px; }
-  .context-label {
-    font-size: .7rem;
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    color: var(--gray-600);
-    font-weight: 500;
-  }
-  .context-count {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-size: 2rem;
-    line-height: 1;
-    color: var(--black);
+  .cell-between {
+    justify-content: space-between;
   }
 
   /* ============================================== */
-  /* VARIANTE B — Contador + botón discreto         */
+  /* VARIANTE A — Editorial con link                */
   /* ============================================== */
-  .btn-export-ghost {
-    display: inline-flex;
-    align-items: center;
-    gap: .4rem;
-    padding: .5rem .75rem;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--black);
-    border-radius: 6px;
-    font-family: var(--font-sans);
-    font-weight: 400;
-    font-size: .78rem;
-    cursor: pointer;
-    transition: all .15s;
-  }
-  .btn-export-ghost:hover { background: var(--surface); border-color: var(--black); }
-  .btn-export-ghost svg { width: 13px; height: 13px; }
-
-  /* ============================================== */
-  /* VARIANTE C — Dropdown inline                   */
-  /* ============================================== */
-  .btn-export-dropdown {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    padding: .6rem .85rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--black);
-    border-radius: 8px;
-    font-family: var(--font-sans);
-    font-weight: 500;
-    font-size: .82rem;
-    cursor: pointer;
-    position: relative;
-    transition: all .15s;
-  }
-  .btn-export-dropdown:hover { border-color: var(--black); }
-  .btn-export-dropdown svg { width: 14px; height: 14px; }
-  .btn-export-dropdown .chevron { margin-left: .2rem; transition: transform .2s; }
-  .dropdown-menu {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    right: 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    padding: .35rem;
-    z-index: 10;
-  }
-  .dropdown-menu button {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    width: 100%;
-    padding: .5rem .6rem;
-    background: transparent;
-    border: none;
-    border-radius: 5px;
-    font-family: var(--font-sans);
-    font-size: .8rem;
-    color: var(--black);
-    cursor: pointer;
-    text-align: left;
-    font-weight: 400;
-  }
-  .dropdown-menu button:hover { background: var(--gray-100); }
-  .dropdown-menu button svg { width: 12px; height: 12px; color: var(--gray-600); }
-  .dropdown-menu .sep { height: 1px; background: var(--border); margin: .25rem 0; }
-
-  /* ============================================== */
-  /* VARIANTE D — Iconos pill                       */
-  /* ============================================== */
-  .pill-group {
-    display: inline-flex;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: .2rem;
-    gap: .15rem;
-  }
-  .pill-group button {
-    display: inline-flex;
-    align-items: center;
-    gap: .3rem;
-    padding: .4rem .7rem;
-    background: transparent;
-    border: none;
-    border-radius: 100px;
-    font-family: var(--font-sans);
-    font-weight: 500;
-    font-size: .75rem;
-    color: var(--black);
-    cursor: pointer;
-    transition: all .15s;
-  }
-  .pill-group button:hover { background: var(--gray-100); }
-  .pill-group button svg { width: 12px; height: 12px; }
-  .pill-group button.active { background: var(--black); color: #fff; }
-
-  /* ============================================== */
-  /* VARIANTE E — Editorial con link                */
-  /* ============================================== */
-  .editorial-stack { display: flex; flex-direction: column; gap: .35rem; align-items: center; }
-  .editorial-count {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-size: 2.4rem;
-    line-height: 1;
-    color: var(--black);
-  }
-  .editorial-label {
-    font-size: .68rem;
+  .editorial-eyebrow {
+    font-size: .65rem;
     text-transform: uppercase;
     letter-spacing: .12em;
     color: var(--gray-600);
     font-weight: 500;
+    margin-bottom: .4rem;
+  }
+  .editorial-title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.35rem;
+    line-height: 1.15;
+    color: var(--black);
+    margin-bottom: .9rem;
   }
   .editorial-link {
-    margin-top: .5rem;
-    font-size: .75rem;
+    font-size: .78rem;
     color: var(--black);
     text-decoration: underline;
     text-underline-offset: 3px;
@@ -226,43 +85,143 @@
     font-weight: 400;
     display: inline-flex;
     align-items: center;
-    gap: .3rem;
+    gap: .35rem;
+    align-self: flex-start;
   }
   .editorial-link:hover { text-decoration-thickness: 2px; }
-  .editorial-link svg { width: 11px; height: 11px; }
+  .editorial-link svg { width: 12px; height: 12px; }
 
   /* ============================================== */
-  /* VARIANTE F — Icono solo con tooltip            */
+  /* VARIANTE B — Botón dropdown centrado           */
   /* ============================================== */
-  .stack-align-between { display: flex; flex-direction: column; height: 100%; width: 100%; }
-  .stack-top { text-align: left; }
-  .stack-bottom { margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
-  .icon-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    background: transparent;
-    border: 1px solid var(--border);
+  .btn-export-dropdown {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    gap: .5rem;
+    padding: .65rem .9rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--black);
+    border-radius: 8px;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: .8rem;
     cursor: pointer;
     transition: all .15s;
-    color: var(--black);
   }
-  .icon-btn:hover { background: var(--black); color: #fff; border-color: var(--black); }
-  .icon-btn svg { width: 14px; height: 14px; }
-  .mini-count {
+  .btn-export-dropdown:hover { border-color: var(--black); }
+  .btn-export-dropdown svg { width: 14px; height: 14px; }
+  .btn-export-dropdown .chevron { margin-left: .1rem; }
+
+  .btn-label-stack {
     font-family: var(--font-serif);
     font-style: italic;
-    font-size: 1.4rem;
+    font-size: 1.1rem;
+    line-height: 1.2;
+    color: var(--black);
+    margin-bottom: .2rem;
   }
-  .mini-label {
-    font-size: .62rem;
+  .btn-label-sub {
+    font-size: .68rem;
     text-transform: uppercase;
     letter-spacing: .1em;
     color: var(--gray-600);
+    font-weight: 500;
+    margin-bottom: .85rem;
   }
+
+  /* ============================================== */
+  /* VARIANTE C — Botón negro CTA                   */
+  /* ============================================== */
+  .btn-export-solid {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    padding: .75rem 1rem;
+    background: var(--black);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: .8rem;
+    cursor: pointer;
+    transition: all .2s;
+    width: 100%;
+  }
+  .btn-export-solid:hover { background: #000; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .btn-export-solid svg { width: 14px; height: 14px; }
+
+  .cta-title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.2;
+    color: var(--black);
+    margin-bottom: .8rem;
+  }
+
+  /* ============================================== */
+  /* Dropdown menu (compartido)                     */
+  /* ============================================== */
+  .dropdown-showcase {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .menu-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    padding: .4rem;
+    width: 250px;
+    display: inline-block;
+    vertical-align: top;
+  }
+  .menu-card-title {
+    font-size: .65rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--gray-600);
+    font-weight: 500;
+    padding: .5rem .6rem .3rem;
+  }
+  .menu-card button {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    width: 100%;
+    padding: .55rem .6rem;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-size: .82rem;
+    color: var(--black);
+    cursor: pointer;
+    text-align: left;
+    font-weight: 400;
+  }
+  .menu-card button:hover { background: var(--gray-100); }
+  .menu-card button .icon-wrap {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .menu-card button .icon-wrap svg { width: 14px; height: 14px; }
+  .menu-card button .icon-wrap.csv { background: #E8F5E9; color: #2E7D32; }
+  .menu-card button .icon-wrap.pdf { background: #FFEBEE; color: #C62828; }
+  .menu-card button .icon-wrap.wa { background: #E8F5E9; color: #25D366; }
+  .menu-card button .icon-wrap.mail { background: #E3F2FD; color: #1565C0; }
+  .menu-card button .icon-wrap.link { background: #FFF8E1; color: #B8860B; }
+  .menu-card .sep { height: 1px; background: var(--border); margin: .3rem .4rem; }
+  .menu-card .hint { font-size: .7rem; color: var(--gray-600); margin-left: auto; font-weight: 300; }
 
   /* ============================================== */
   /* recomendación                                  */
@@ -275,125 +234,112 @@
     margin-top: 2rem;
   }
   .recommendation h3 { margin: 0 0 .5rem; font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: 1.25rem; }
-  .recommendation p { margin: 0; color: var(--gray-600); line-height: 1.6; font-size: .9rem; }
+  .recommendation p { margin: 0 0 .5rem; color: var(--gray-600); line-height: 1.6; font-size: .9rem; }
   .recommendation strong { color: var(--black); font-weight: 500; }
 </style>
 </head>
 <body>
-  <h1>Botón de exportar — mockup</h1>
-  <p class="subtitle">Seis variantes para ocupar el rectángulo gris arriba-izquierda del comparador. Exportar a CSV/PDF y copiar enlace. El rectángulo simulado mide 175×230 px, igual que el de las cabeceras del comparador.</p>
+  <h1>Botón de exportar — v2</h1>
+  <p class="subtitle">Sin contador de modelos, con copy editorial. El menú desplegable ofrece: descargar CSV, descargar PDF, enviar por WhatsApp, enviar por email, copiar enlace.</p>
 
-  <!-- VARIANTE A -->
+  <!-- VARIANTE A: Editorial con link -->
   <div class="variant-wrap">
-    <div class="variant-label">A · Botón grande centrado</div>
-    <div class="variant-desc">Protagonismo máximo, CTA negro. Directo y poco ambiguo. Menos editorial.</div>
-    <div class="cell-preview">
-      <div class="context-count">4</div>
-      <div class="context-label">Modelos</div>
-      <button class="btn-export-big">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Exportar
-      </button>
+    <div class="variant-label">A · Editorial con link subrayado</div>
+    <div class="variant-desc">Lenguaje editorial enchufa2: eyebrow uppercase + título serif italic + link con subrayado amarillo. El link abre el menú desplegable.</div>
+    <div class="cell-preview cell-between">
+      <div>
+        <div class="editorial-eyebrow">Exportar</div>
+        <div class="editorial-title">Tabla<br>comparativa</div>
+      </div>
+      <a class="editorial-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Descargar o compartir
+      </a>
     </div>
   </div>
 
-  <!-- VARIANTE B -->
+  <!-- VARIANTE B: Título editorial + botón dropdown -->
   <div class="variant-wrap">
-    <div class="variant-label">B · Contador grande + botón ghost</div>
-    <div class="variant-desc">Más editorial. El número manda, el botón es secundario. Respeta la jerarquía enchufa2.</div>
-    <div class="cell-preview">
+    <div class="variant-label">B · Título + botón dropdown</div>
+    <div class="variant-desc">Título editorial arriba, botón outline con chevron abajo. Más convencional como CTA pero mantiene el tono.</div>
+    <div class="cell-preview cell-center">
       <div style="text-align: center;">
-        <div class="context-count">4</div>
-        <div class="context-label" style="margin-top: .3rem;">Modelos</div>
+        <div class="btn-label-stack">Exportar<br>tabla</div>
+        <div class="btn-label-sub">Comparativa</div>
       </div>
-      <button class="btn-export-ghost">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Exportar
+      <button class="btn-export-dropdown">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Descargar
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
     </div>
   </div>
 
-  <!-- VARIANTE C -->
+  <!-- VARIANTE C: CTA negro -->
   <div class="variant-wrap">
-    <div class="variant-label">C · Dropdown con menú</div>
-    <div class="variant-desc">Un único botón que despliega opciones: CSV, PDF, copiar enlace. Escalable si añades más formatos.</div>
-    <div class="cell-preview">
-      <div style="text-align: center; margin-bottom: .3rem;">
-        <div class="context-count">4</div>
-        <div class="context-label" style="margin-top: .3rem;">Modelos</div>
+    <div class="variant-label">C · Título + CTA negro</div>
+    <div class="variant-desc">Título editorial + botón negro full-width, mayor protagonismo visual. Más directo.</div>
+    <div class="cell-preview cell-between">
+      <div style="text-align: center; padding-top: 1.5rem;">
+        <div class="editorial-eyebrow">Comparativa</div>
+        <div class="cta-title">Exportar<br>tabla</div>
       </div>
-      <div style="position: relative;">
-        <button class="btn-export-dropdown">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Exportar
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="dropdown-menu">
-          <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Descargar CSV</button>
-          <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Descargar PDF</button>
-          <div class="sep"></div>
-          <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Copiar enlace</button>
-        </div>
-      </div>
+      <button class="btn-export-solid">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Descargar o compartir
+      </button>
     </div>
   </div>
 
-  <!-- VARIANTE D -->
-  <div class="variant-wrap">
-    <div class="variant-label">D · Pills segmentadas</div>
-    <div class="variant-desc">Tres botones explícitos. Rápido, visual. Puede competir con la tabla — evaluar si distrae.</div>
-    <div class="cell-preview">
-      <div style="text-align: center; margin-bottom: .5rem;">
-        <div class="editorial-count" style="font-size: 1.8rem;">4</div>
-        <div class="editorial-label">Modelos</div>
-      </div>
-      <div class="pill-group">
-        <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>CSV</button>
-        <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>PDF</button>
-        <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/></svg>Link</button>
-      </div>
-    </div>
-  </div>
+  <!-- Menú desplegable showcase -->
+  <div class="dropdown-showcase">
+    <h2 style="font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: 1.4rem; margin: 0 0 .5rem;">Menú desplegable</h2>
+    <p style="color: var(--gray-600); margin: 0 0 1.5rem; font-size: .9rem;">Mismo menú para las tres variantes. Agrupado en descargar y compartir.</p>
 
-  <!-- VARIANTE E -->
-  <div class="variant-wrap">
-    <div class="variant-label">E · Editorial con link subrayado amarillo</div>
-    <div class="variant-desc">Máxima integración con el estilo enchufa2. Subrayado amarillo = lenguaje propio de la marca. El link abre el desplegable al hacer click.</div>
-    <div class="cell-preview">
-      <div class="editorial-stack">
-        <div class="editorial-count">4</div>
-        <div class="editorial-label">Modelos</div>
-        <a class="editorial-link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Exportar comparativa
-        </a>
-      </div>
+    <div class="menu-card">
+      <div class="menu-card-title">Descargar</div>
+      <button>
+        <span class="icon-wrap csv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+        Archivo CSV
+        <span class="hint">Excel</span>
+      </button>
+      <button>
+        <span class="icon-wrap pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+        Documento PDF
+        <span class="hint">Imprimir</span>
+      </button>
+      <div class="sep"></div>
+      <div class="menu-card-title">Compartir</div>
+      <button>
+        <span class="icon-wrap wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span>
+        WhatsApp
+      </button>
+      <button>
+        <span class="icon-wrap mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+        Correo electrónico
+      </button>
+      <button>
+        <span class="icon-wrap link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
+        Copiar enlace
+      </button>
     </div>
-  </div>
 
-  <!-- VARIANTE F -->
-  <div class="variant-wrap">
-    <div class="variant-label">F · Icono solo + contador (compacto)</div>
-    <div class="variant-desc">Minimalista. Contador arriba, icono abajo con tooltip. Prioriza espacio para la tabla.</div>
-    <div class="cell-preview align-start">
-      <div class="stack-align-between">
-        <div class="stack-top">
-          <div class="mini-count">4</div>
-          <div class="mini-label">Modelos</div>
-        </div>
-        <div class="stack-bottom">
-          <span style="font-size: .7rem; color: var(--gray-600); font-weight: 400;">Exportar</span>
-          <button class="icon-btn" title="Descargar / compartir">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          </button>
-        </div>
-      </div>
+    <div style="display: inline-block; vertical-align: top; margin-left: 1.5rem; max-width: 380px; padding-top: .5rem;">
+      <p style="font-size: .85rem; color: var(--gray-600); line-height: 1.6; margin: 0 0 .75rem;"><strong style="color: var(--black); font-weight: 500;">Cómo funciona cada opción:</strong></p>
+      <ul style="font-size: .8rem; color: var(--gray-600); line-height: 1.7; padding-left: 1.2rem; margin: 0;">
+        <li><strong>CSV</strong> — descarga directa, abre en Excel</li>
+        <li><strong>PDF</strong> — window.print() con @media print</li>
+        <li><strong>WhatsApp</strong> — wa.me con enlace de la comparativa</li>
+        <li><strong>Email</strong> — mailto: con asunto y cuerpo + enlace</li>
+        <li><strong>Enlace</strong> — copia URL con los modelos seleccionados</li>
+      </ul>
     </div>
   </div>
 
   <div class="recommendation">
-    <h3>Mi recomendación: <strong>Variante E</strong></h3>
-    <p>Encaja con el lenguaje editorial de enchufa2 (serif italic + subrayado amarillo), da peso visual al número de modelos, y el link es claro pero no compite con la tabla. El click abre el dropdown de la variante C (CSV / PDF / copiar enlace) como menú contextual. <strong>Alternativa sólida: variante C</strong> si prefieres que el botón sea más reconocible como CTA.</p>
+    <h3>Mi recomendación: <strong>Variante A</strong></h3>
+    <p>Máxima integración editorial con el resto del comparador: eyebrow uppercase + título serif italic + link con subrayado amarillo (lenguaje propio de enchufa2). El título "Tabla comparativa" es autoexplicativo sin competir con el contenido. El link "Descargar o compartir" unifica ambas acciones sin ambigüedad.</p>
+    <p><strong>Alternativa:</strong> Variante B si prefieres un CTA más reconocible visualmente.</p>
   </div>
 </body>
 </html>
