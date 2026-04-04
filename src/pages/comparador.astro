@@ -69,6 +69,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           <div class="panel-grid" id="panel-grid"></div>
         </div>
 
+        <!-- Separator bar between filters and results -->
+        <div class="comp-panel-separator"></div>
+
         <!-- Block 4: Results -->
         <div class="comp-results">
           <div class="fichas-view active" id="fichas-view">
@@ -825,13 +828,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
      ══════════════════════════════════════════ */
   :root {
     --photo-bg: linear-gradient(180deg, #131313, #1a1a1a);
-    --panel-bg: #FBF6E6;
-    --panel-border: #EDE5C8;
+    --panel-bg: #ECEDF0;
+    --panel-border: #D8DAE0;
+    --panel-separator: #B0B3BC;
   }
   [data-theme="dark"] {
     --photo-bg: linear-gradient(180deg, #111318, #161921);
     --panel-bg: #1C1F2A;
     --panel-border: #2A2D3A;
+    --panel-separator: #3A3D4A;
   }
 
   /* ══════════════════════════════════════════
@@ -1327,6 +1332,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     font-weight: 600 !important;
   }
 
+  /* Separator bar between filters and results */
+  .comp-panel-separator {
+    height: 3px;
+    background: var(--panel-separator);
+    border-left: 1px solid var(--panel-border);
+    border-right: 1px solid var(--panel-border);
+  }
+
   /* ── Results ─────────────────────────── */
   .comp-results {
     padding: 1.5rem clamp(1.5rem, 3vw, 2.5rem);
@@ -1765,9 +1778,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   .listado-table tbody tr:nth-child(even) td { background: var(--bg); }
   .listado-table tbody tr:nth-child(even) td:first-child { background: var(--bg); }
-  .listado-table tbody tr:hover td { background: #FFFDF5; }
+  .listado-table tbody tr:hover td { background: #E8E9ED; }
   [data-theme="dark"] .listado-table tbody tr:hover td { background: #1E2028; }
-  .listado-table tbody tr:hover td:first-child { background: #FFFDF5; }
+  .listado-table tbody tr:hover td:first-child { background: #E8E9ED; }
   [data-theme="dark"] .listado-table tbody tr:hover td:first-child { background: #1E2028; }
 
   .table-modelo-wrap {
@@ -1858,7 +1871,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     background: var(--table-row-even);
   }
   .scroll-mode .ev-row:hover .col-sticky {
-    background: #FFFDF5;
+    background: #E8E9ED;
   }
   [data-theme="dark"] .scroll-mode .ev-row:hover .col-sticky {
     background: #1E2028;
