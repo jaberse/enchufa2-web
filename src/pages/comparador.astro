@@ -1008,14 +1008,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     z-index: 10;
   }
 
+  .comp-fields-panel { overflow: hidden; }
   .panel-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0.15rem 0.5rem;
   }
-  @media (max-width: 1100px) { .panel-grid { grid-template-columns: repeat(4, 1fr); } }
-  @media (max-width: 800px)  { .panel-grid { grid-template-columns: repeat(3, 1fr); } }
-  @media (max-width: 500px)  { .panel-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 1100px) { .panel-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 800px)  { .panel-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 500px)  { .panel-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
   .panel-divider {
     grid-column: 1 / -1;
