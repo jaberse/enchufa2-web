@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mockup filtros — enchufa2</title>
+<style>
+  :root {
+    --black: #111111;
+    --yellow: #F5C518;
+    --yellow-glow: rgba(245, 197, 24, 0.12);
+    --surface: #FFFFFF;
+    --surface-alt: #F2F1ED;
+    --border: #E5E4DE;
+    --text: #111111;
+    --text-secondary: #4A4A4A;
+    --text-muted: #999999;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    font-weight: 300;
+    background: var(--surface-alt);
+    color: var(--text);
+    padding: 2rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+  h1 {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 2rem;
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.01em;
+  }
+  h2 {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    margin: 2rem 0 0.75rem;
+  }
+  .lead { color: var(--text-secondary); font-size: 0.9rem; max-width: 720px; margin: 0 0 2rem; }
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
+  .section-label { font-size: 0.65rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.75rem; }
+
+  /* ═══ CURRENT (actual) ═══ */
+  .grid-current { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.15rem 0.5rem; }
+  .cur-item {
+    display: flex; align-items: center; gap: 0.25rem;
+    padding: 0.25rem 0.3rem; border-radius: 5px;
+    transition: opacity 0.15s; position: relative;
+  }
+  .cur-item:not(.active) { opacity: 0.55; }
+  .cur-item:hover { background: rgba(0,0,0,0.03); opacity: 1; }
+  .cur-item.locked { background: rgba(245, 197, 24, 0.04); }
+  .cur-toggle { width: 22px; height: 12px; border-radius: 6px; background: var(--surface-alt); border: 1px solid var(--border); flex-shrink: 0; position: relative; padding: 0; }
+  .cur-toggle.on { background: var(--yellow); border-color: var(--yellow); }
+  .cur-knob { width: 8px; height: 8px; border-radius: 50%; background: white; position: absolute; top: 1px; left: 1px; box-shadow: 0 0.5px 1.5px rgba(0,0,0,0.2); }
+  .cur-toggle.on .cur-knob { left: 11px; }
+  .cur-sort { width: 12px; height: 12px; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); opacity: 0.45; }
+  .cur-label { font-size: 0.72rem; flex: 1; color: var(--text-secondary); min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .cur-item.active .cur-label { color: var(--text); font-weight: 500; }
+  .cur-filter { display: flex; align-items: center; gap: 0.15rem; flex-shrink: 0; }
+  .cur-sym { font-size: 0.5625rem; color: var(--text-muted); width: 0.65rem; text-align: center; }
+  .cur-input { width: 42px; font-size: 0.6875rem; padding: 0.2rem 0.3rem; border: 1px solid var(--border); border-radius: 4px; background: var(--surface); color: var(--text); text-align: right; outline: none; font-family: inherit; }
+  .cur-input.filtering { border-color: var(--yellow); background: var(--yellow-glow); }
+  .cur-unit { font-size: 0.5rem; color: var(--text-muted); min-width: 1.5rem; }
+  .cur-catbtn { font-size: 0.625rem; color: var(--text-muted); background: var(--surface-alt); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; white-space: nowrap; display: inline-flex; align-items: center; gap: 2px; }
+  .cur-catbtn.has-val { background: var(--yellow-glow); border-color: var(--yellow); color: var(--text); font-weight: 500; }
+
+  /* ═══ PROPUESTA A — Chip de dos líneas ═══ */
+  .grid-A {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.35rem 0.5rem;
+  }
+  .A-item {
+    position: relative;
+    padding: 0.45rem 0.55rem 0.5rem;
+    border-radius: 7px;
+    border: 1px solid transparent;
+    background: var(--surface-alt);
+    transition: all 0.15s;
+    min-height: 54px;
+  }
+  .A-item:not(.active) { opacity: 0.5; }
+  .A-item:hover { opacity: 1; border-color: var(--border); }
+  .A-item.active { background: var(--surface); border-color: var(--border); }
+  .A-item.filtering { border-color: var(--yellow); box-shadow: 0 0 0 1px var(--yellow); background: #FFFDF3; }
+  .A-item.locked { background: var(--surface); border-color: var(--border); }
+  .A-item.locked.filtering { background: #FFFDF3; }
+  .A-head { display: flex; align-items: center; gap: 0.35rem; margin-bottom: 0.35rem; }
+  .A-toggle { width: 22px; height: 12px; border-radius: 6px; background: var(--surface-alt); border: 1px solid var(--border); flex-shrink: 0; position: relative; padding: 0; cursor: pointer; }
+  .A-item.active .A-toggle { background: var(--yellow); border-color: var(--yellow); }
+  .A-knob { width: 8px; height: 8px; border-radius: 50%; background: white; position: absolute; top: 1px; left: 1px; box-shadow: 0 0.5px 1.5px rgba(0,0,0,0.2); transition: left 0.15s; }
+  .A-item.active .A-knob { left: 11px; }
+  .A-label { font-size: 0.72rem; font-weight: 500; color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .A-sort { width: 14px; height: 14px; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; flex-shrink: 0; opacity: 0; transition: opacity 0.15s; }
+  .A-item:hover .A-sort { opacity: 0.55; }
+  .A-sort.active { opacity: 1; color: var(--yellow); }
+  .A-clear { width: 14px; height: 14px; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; flex-shrink: 0; font-size: 0.75rem; line-height: 1; opacity: 0.7; }
+  .A-clear:hover { color: var(--text); opacity: 1; }
+  .A-filter { display: flex; align-items: center; gap: 0.3rem; }
+  .A-sym { font-size: 0.7rem; color: var(--text-muted); font-weight: 500; width: 1rem; text-align: center; cursor: pointer; border-radius: 3px; padding: 0.1rem 0; user-select: none; }
+  .A-sym:hover { color: var(--yellow); background: var(--yellow-glow); }
+  .A-input { flex: 1; font-size: 0.75rem; padding: 0.25rem 0.4rem; border: 1px solid var(--border); border-radius: 4px; background: var(--surface); color: var(--text); text-align: right; outline: none; font-family: inherit; min-width: 0; }
+  .A-item.filtering .A-input { border-color: var(--yellow); background: #FFFDF3; font-weight: 500; }
+  .A-unit { font-size: 0.62rem; color: var(--text-muted); min-width: 1.8rem; }
+  .A-input::-webkit-inner-spin-button, .A-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+  /* Category chips (propuesta A - promovidos) */
+  .A-cats-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.35rem 0.5rem; margin-bottom: 0.5rem; }
+  .A-catchip {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.45rem 0.55rem;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.15s;
+    min-height: 54px;
+  }
+  .A-catchip:hover { border-color: var(--text-muted); }
+  .A-catchip.filtering { border-color: var(--yellow); box-shadow: 0 0 0 1px var(--yellow); background: #FFFDF3; }
+  .A-catchip-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+  .A-catchip-value { font-size: 0.78rem; color: var(--text); font-weight: 500; display: flex; align-items: center; gap: 0.35rem; }
+  .A-catchip.filtering .A-catchip-value { color: var(--text); }
+  .A-catchip:not(.filtering) .A-catchip-value { color: var(--text-muted); font-weight: 400; }
+  .A-catchip-badge { background: var(--yellow); color: var(--black); font-size: 0.6rem; font-weight: 600; padding: 0.05rem 0.35rem; border-radius: 8px; min-width: 16px; text-align: center; }
+  .A-caret { color: var(--text-muted); font-size: 0.55rem; }
+  .A-catchip-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.25rem; }
+  .A-catchip-content { display: flex; flex-direction: column; width: 100%; }
+
+  /* Separator label */
+  .A-section-label { grid-column: 1/-1; font-size: 0.6rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); padding: 0.5rem 0 0.25rem; border-top: 1px solid var(--border); margin-top: 0.25rem; }
+  .A-section-label:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+
+  /* Applied filters strip */
+  .applied-strip { display: flex; flex-wrap: wrap; gap: 0.35rem; padding: 0.6rem 0 0; margin-top: 0.75rem; border-top: 1px dashed var(--border); align-items: center; }
+  .applied-label { font-size: 0.62rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-right: 0.25rem; }
+  .applied-chip {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    background: var(--yellow);
+    color: var(--black);
+    font-size: 0.7rem; font-weight: 500;
+    padding: 0.2rem 0.35rem 0.2rem 0.55rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .applied-chip x { font-weight: 600; opacity: 0.65; }
+  .applied-chip:hover x { opacity: 1; }
+
+  /* Annotations */
+  .annotation { background: #FFFDF3; border-left: 2px solid var(--yellow); padding: 0.5rem 0.75rem; font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.75rem; line-height: 1.55; border-radius: 0 4px 4px 0; }
+  .annotation strong { color: var(--text); font-weight: 600; }
+  .kbd { font-family: ui-monospace, monospace; font-size: 0.68rem; background: var(--surface-alt); padding: 0.05rem 0.3rem; border-radius: 3px; border: 1px solid var(--border); }
+
+  /* 2-column layout on wide screens */
+  @media (min-width: 1400px) {
+    .wrap { max-width: 1600px; margin: 0 auto; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Rediseño de filtros — comparador</h1>
+<p class="lead">Mismo modelo mental (campos = filtros), mejor jerarquía visual. El objetivo es que distingas de un vistazo qué campos están <em>visibles en la tabla</em> vs. qué campos están <em>filtrando activamente</em>.</p>
+
+<!-- ═══ CURRENT ═══ -->
+<h2>Estado actual</h2>
+<div class="section">
+  <div class="section-label">5 columnas · chips en una sola línea</div>
+  <div class="grid-current">
+    <!-- Category (locked) -->
+    <div class="cur-item locked active"><span class="cur-label">Marca</span><button class="cur-catbtn has-val"><span>Tesla, BYD</span> ▾</button></div>
+    <div class="cur-item locked active"><span class="cur-label">Segmento</span><button class="cur-catbtn">Todo ▾</button></div>
+    <div class="cur-item locked active"><span class="cur-label">Tracción</span><button class="cur-catbtn">Todo ▾</button></div>
+    <div class="cur-item locked active"><span class="cur-label">Química</span><button class="cur-catbtn has-val">LFP ▾</button></div>
+    <div class="cur-item locked active"><span class="cur-label">Voltaje</span><button class="cur-catbtn">Todo ▾</button></div>
+    <!-- Numeric fields -->
+    <div class="cur-item active"><button class="cur-toggle on"><span class="cur-knob"></span></button><span class="cur-sort">⇅</span><span class="cur-label">Autonomía</span><div class="cur-filter"><span class="cur-sym">≥</span><input class="cur-input" value="450"><span class="cur-unit">km</span></div></div>
+    <div class="cur-item active"><button class="cur-toggle on"><span class="cur-knob"></span></button><span class="cur-sort">⇅</span><span class="cur-label">Potencia</span><div class="cur-filter"><span class="cur-sym">≥</span><input class="cur-input" placeholder="—"><span class="cur-unit">CV</span></div></div>
+    <div class="cur-item active"><button class="cur-toggle on"><span class="cur-knob"></span></button><span class="cur-sort">⇅</span><span class="cur-label">Carga DC</span><div class="cur-filter"><span class="cur-sym">≥</span><input class="cur-input filtering" value="150"><span class="cur-unit">kW</span></div></div>
+    <div class="cur-item"><button class="cur-toggle"><span class="cur-knob"></span></button><span class="cur-sort">⇅</span><span class="cur-label">Carga AC</span><div class="cur-filter"><span class="cur-sym">≥</span><input class="cur-input" placeholder="—"><span class="cur-unit">kW</span></div></div>
+    <div class="cur-item"><button class="cur-toggle"><span class="cur-knob"></span></button><span class="cur-sort">⇅</span><span class="cur-label">T 10→80%</span><div class="cur-filter"><span class="cur-sym">≤</span><input class="cur-input" placeholder="—"><span class="cur-unit">min</span></div></div>
+    <div class="cur-item active"><button class="cur-toggle on"><span class="cur-knob"></span></button><span class="cur-sort">⇅</span><span class="cur-label">Batería neta</span><div class="cur-filter"><span class="cur-sym">≥</span><input class="cur-input" placeholder="—"><span class="cur-unit">kWh</span></div></div>
+    <div class="cur-item active"><button class="cur-toggle on"><span class="cur-knob"></span></button><span class="cur-sort">⇅</span><span class="cur-label">Maletero</span><div class="cur-filter"><span class="cur-sym">≥</span><input class="cur-input" placeholder="—"><span class="cur-unit">L</span></div></div>
+    <div class="cur-item active"><button class="cur-toggle on"><span class="cur-knob"></span></button><span class="cur-sort">⇅</span><span class="cur-label">0-100</span><div class="cur-filter"><span class="cur-sym">≤</span><input class="cur-input" placeholder="—"><span class="cur-unit">s</span></div></div>
+    <div class="cur-item active"><button class="cur-toggle on"><span class="cur-knob"></span></button><span class="cur-sort">⇅</span><span class="cur-label">Consumo</span><div class="cur-filter"><span class="cur-sym">≤</span><input class="cur-input" placeholder="—"><span class="cur-unit">kWh/100</span></div></div>
+    <div class="cur-item active"><button class="cur-toggle on"><span class="cur-knob"></span></button><span class="cur-sort">⇅</span><span class="cur-label">PVP</span><div class="cur-filter"><span class="cur-sym">≤</span><input class="cur-input filtering" value="45000"><span class="cur-unit">€</span></div></div>
+  </div>
+  <div class="annotation">
+    <strong>Problemas:</strong> 5-6 elementos por chip en un pill estrecho. Toggle, sort, label, símbolo, input, unidad. Sort solo aparece al hover (afordancia escondida). Un input con valor se distingue muy sutilmente (solo borde amarillo). Categoricos y numéricos comparten la misma apariencia pese a comportarse distinto. Con 25 chips activos, difícil escanear rápido dónde aplicaste qué.
+  </div>
+</div>
+
+<!-- ═══ PROPUESTA A ═══ -->
+<h2>Propuesta · chip de dos líneas + filtros activos destacados</h2>
+<div class="section">
+  <div class="section-label">Categoricos separados arriba · numéricos en grid más espaciado</div>
+
+  <!-- Categoricos row -->
+  <div class="A-section-label">Categorías</div>
+  <div class="A-cats-row">
+    <div class="A-catchip filtering">
+      <div class="A-catchip-content">
+        <div class="A-catchip-top"><span class="A-catchip-label">Marca</span><span class="A-catchip-badge">2</span></div>
+        <span class="A-catchip-value">Tesla, BYD</span>
+      </div>
+    </div>
+    <div class="A-catchip">
+      <div class="A-catchip-content">
+        <div class="A-catchip-top"><span class="A-catchip-label">Segmento</span><span class="A-caret">▾</span></div>
+        <span class="A-catchip-value">Todos</span>
+      </div>
+    </div>
+    <div class="A-catchip">
+      <div class="A-catchip-content">
+        <div class="A-catchip-top"><span class="A-catchip-label">Tracción</span><span class="A-caret">▾</span></div>
+        <span class="A-catchip-value">Todas</span>
+      </div>
+    </div>
+    <div class="A-catchip filtering">
+      <div class="A-catchip-content">
+        <div class="A-catchip-top"><span class="A-catchip-label">Química</span><span class="A-catchip-badge">1</span></div>
+        <span class="A-catchip-value">LFP</span>
+      </div>
+    </div>
+    <div class="A-catchip">
+      <div class="A-catchip-content">
+        <div class="A-catchip-top"><span class="A-catchip-label">Voltaje</span><span class="A-caret">▾</span></div>
+        <span class="A-catchip-value">Todos</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Numéricos grid -->
+  <div class="A-section-label">Campos numéricos (toggle activa columna, campo filtra)</div>
+  <div class="grid-A">
+    <!-- Active con filtro aplicado -->
+    <div class="A-item active filtering">
+      <div class="A-head">
+        <button class="A-toggle"><span class="A-knob"></span></button>
+        <span class="A-label">Autonomía</span>
+        <span class="A-clear" title="Quitar filtro">×</span>
+      </div>
+      <div class="A-filter">
+        <span class="A-sym" title="Cambiar a ≤">≥</span>
+        <input class="A-input" value="450">
+        <span class="A-unit">km</span>
+      </div>
+    </div>
+    <div class="A-item active filtering">
+      <div class="A-head">
+        <button class="A-toggle"><span class="A-knob"></span></button>
+        <span class="A-label">Carga DC</span>
+        <span class="A-clear" title="Quitar filtro">×</span>
+      </div>
+      <div class="A-filter">
+        <span class="A-sym">≥</span>
+        <input class="A-input" value="150">
+        <span class="A-unit">kW</span>
+      </div>
+    </div>
+    <div class="A-item active filtering">
+      <div class="A-head">
+        <button class="A-toggle"><span class="A-knob"></span></button>
+        <span class="A-label">PVP</span>
+        <span class="A-clear" title="Quitar filtro">×</span>
+      </div>
+      <div class="A-filter">
+        <span class="A-sym">≤</span>
+        <input class="A-input" value="45000">
+        <span class="A-unit">€</span>
+      </div>
+    </div>
+    <!-- Active sin filtro -->
+    <div class="A-item active">
+      <div class="A-head">
+        <button class="A-toggle"><span class="A-knob"></span></button>
+        <span class="A-label">Potencia</span>
+        <span class="A-sort active" title="Ordenando">▼</span>
+      </div>
+      <div class="A-filter">
+        <span class="A-sym">≥</span>
+        <input class="A-input" placeholder="sin límite">
+        <span class="A-unit">CV</span>
+      </div>
+    </div>
+    <div class="A-item active">
+      <div class="A-head">
+        <button class="A-toggle"><span class="A-knob"></span></button>
+        <span class="A-label">Batería neta</span>
+        <span class="A-sort" title="Ordenar">⇅</span>
+      </div>
+      <div class="A-filter">
+        <span class="A-sym">≥</span>
+        <input class="A-input" placeholder="sin límite">
+        <span class="A-unit">kWh</span>
+      </div>
+    </div>
+    <div class="A-item active">
+      <div class="A-head">
+        <button class="A-toggle"><span class="A-knob"></span></button>
+        <span class="A-label">Maletero</span>
+        <span class="A-sort" title="Ordenar">⇅</span>
+      </div>
+      <div class="A-filter">
+        <span class="A-sym">≥</span>
+        <input class="A-input" placeholder="sin límite">
+        <span class="A-unit">L</span>
+      </div>
+    </div>
+    <div class="A-item active">
+      <div class="A-head">
+        <button class="A-toggle"><span class="A-knob"></span></button>
+        <span class="A-label">0-100</span>
+        <span class="A-sort" title="Ordenar">⇅</span>
+      </div>
+      <div class="A-filter">
+        <span class="A-sym">≤</span>
+        <input class="A-input" placeholder="sin límite">
+        <span class="A-unit">s</span>
+      </div>
+    </div>
+    <div class="A-item active">
+      <div class="A-head">
+        <button class="A-toggle"><span class="A-knob"></span></button>
+        <span class="A-label">Consumo</span>
+        <span class="A-sort" title="Ordenar">⇅</span>
+      </div>
+      <div class="A-filter">
+        <span class="A-sym">≤</span>
+        <input class="A-input" placeholder="sin límite">
+        <span class="A-unit">kWh/100</span>
+      </div>
+    </div>
+    <div class="A-item active">
+      <div class="A-head">
+        <button class="A-toggle"><span class="A-knob"></span></button>
+        <span class="A-label">Peso</span>
+        <span class="A-sort" title="Ordenar">⇅</span>
+      </div>
+      <div class="A-filter">
+        <span class="A-sym">≤</span>
+        <input class="A-input" placeholder="sin límite">
+        <span class="A-unit">kg</span>
+      </div>
+    </div>
+    <!-- Inactive -->
+    <div class="A-item">
+      <div class="A-head">
+        <button class="A-toggle"><span class="A-knob"></span></button>
+        <span class="A-label">Carga AC</span>
+      </div>
+      <div class="A-filter">
+        <span class="A-sym">≥</span>
+        <input class="A-input" placeholder="sin límite">
+        <span class="A-unit">kW</span>
+      </div>
+    </div>
+    <div class="A-item">
+      <div class="A-head">
+        <button class="A-toggle"><span class="A-knob"></span></button>
+        <span class="A-label">T 10→80%</span>
+      </div>
+      <div class="A-filter">
+        <span class="A-sym">≤</span>
+        <input class="A-input" placeholder="sin límite">
+        <span class="A-unit">min</span>
+      </div>
+    </div>
+    <div class="A-item">
+      <div class="A-head">
+        <button class="A-toggle"><span class="A-knob"></span></button>
+        <span class="A-label">Vel. máx</span>
+      </div>
+      <div class="A-filter">
+        <span class="A-sym">≥</span>
+        <input class="A-input" placeholder="sin límite">
+        <span class="A-unit">km/h</span>
+      </div>
+    </div>
+    <div class="A-item">
+      <div class="A-head">
+        <button class="A-toggle"><span class="A-knob"></span></button>
+        <span class="A-label">Batalla</span>
+      </div>
+      <div class="A-filter">
+        <span class="A-sym">≥</span>
+        <input class="A-input" placeholder="sin límite">
+        <span class="A-unit">mm</span>
+      </div>
+    </div>
+    <div class="A-item">
+      <div class="A-head">
+        <button class="A-toggle"><span class="A-knob"></span></button>
+        <span class="A-label">Cx</span>
+      </div>
+      <div class="A-filter">
+        <span class="A-sym">≤</span>
+        <input class="A-input" placeholder="sin límite">
+        <span class="A-unit">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Applied filters strip -->
+  <div class="applied-strip">
+    <span class="applied-label">Filtrando</span>
+    <span class="applied-chip">Marca: Tesla, BYD <x>×</x></span>
+    <span class="applied-chip">Química: LFP <x>×</x></span>
+    <span class="applied-chip">Autonomía ≥ 450 km <x>×</x></span>
+    <span class="applied-chip">Carga DC ≥ 150 kW <x>×</x></span>
+    <span class="applied-chip">PVP ≤ 45.000 € <x>×</x></span>
+  </div>
+
+  <div class="annotation">
+    <strong>Cambios clave:</strong>
+    <br>· <strong>Dos líneas por chip numérico:</strong> cabecera (toggle + nombre + acción contextual) arriba, control de filtro abajo. Cada control respira.
+    <br>· <strong>Estado "filtrando" visualmente distinto:</strong> borde amarillo + halo amarillo + fondo crema. Se ve desde lejos qué campos están filtrando vs. solo visibles.
+    <br>· <strong>Acción contextual por chip:</strong> si filtras, aparece × para limpiar ese filtro. Si no filtras y el campo está activo, aparece icono de orden. No compiten.
+    <br>· <strong>Categóricos arriba separados:</strong> misma altura de chip pero sin toggle — son siempre activos. Badge con contador cuando hay selección múltiple.
+    <br>· <strong>Strip "Filtrando" inferior:</strong> resumen de filtros activos como chips amarillos eliminables. Feedback inmediato de qué tienes aplicado.
+    <br>· <strong>Placeholder más hablador:</strong> "sin límite" es más claro que "—".
+  </div>
+</div>
+
+</div>
+</body>
+</html>
