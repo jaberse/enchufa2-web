@@ -583,6 +583,22 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     }
 
     // ═══════════════════════════════════════════════════════
+    // COMPUTE BEST VALUES (for compare mode highlights)
+    // ═══════════════════════════════════════════════════════
+    let bestValues = {};  // { fieldId: bestNumericValue }
+    function computeBestValues() {
+      bestValues = {};
+      if (!compareMode || pickedIds.size < 2) return;
+      const pickedModels = modelos.filter(m => pickedIds.has(modelId(m)));
+      FIELDS.forEach(f => {
+        if (f.isText) return;
+        const vals = pickedModels.map(m => m[f.key]).filter(v => v != null && !isNaN(v));
+        if (vals.length < 2) return;
+        bestValues[f.id] = f.sortAsc ? Math.min(...vals) : Math.max(...vals);
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════
     // RENDER CARD (FICHAS)
     // ═══════════════════════════════════════════════════════
     function renderCard(m) {
@@ -592,6 +608,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       card.addEventListener('click', () => togglePick(m));
 
       const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
+      const showBest = compareMode && pickedIds.size >= 2;
 
       // All fields as clean detail rows (no stats grid)
       let detailsHtml = '';
@@ -600,7 +617,9 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         let display = fmtField(val, f);
         if (f.unit && !f.fmt && !f.isText && val != null) display += '\u00a0' + f.unit;
         const isPrice = f.id === 'pvp';
-        detailsHtml += '<div class="ev-detail' + (isPrice ? ' ev-detail-price' : '') + '"><span>' + f.label + '</span><span>' + display + '</span></div>';
+        const isBest = showBest && val != null && bestValues[f.id] != null && val === bestValues[f.id];
+        const cls = 'ev-detail' + (isPrice ? ' ev-detail-price' : '') + (isBest ? ' ev-detail-best' : '');
+        detailsHtml += '<div class="' + cls + '"><span>' + f.label + '</span><span>' + display + (isBest ? ' <em class="best-mark" title="Mejor valor del grupo">★</em>' : '') + '</span></div>';
       });
 
       card.innerHTML =
@@ -784,6 +803,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       countEl.textContent = filtered.length;
       noResults.style.display = hasResults ? 'none' : 'block';
 
+      computeBestValues();
+
       if (currentView === 'fichas') {
         grid.innerHTML = '';
         filtered.forEach(m => grid.appendChild(renderCard(m)));
@@ -865,12 +886,14 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           if (!pickedIds.has(modelId(m))) return;
           const thumb = document.createElement('div');
           thumb.className = 'sel-thumb';
-          thumb.title = m.marca + ' ' + m.modelo + ' ' + (m.variante || '');
-          const shortName = m.modelo + (m.variante ? ' · ' + m.variante : '');
+          thumb.title = m.marca + ' ' + m.modelo + (m.variante ? ' ' + m.variante : '');
           thumb.innerHTML =
-            '<img src="' + photoSrc(m) + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy">' +
-            '<span class="sel-thumb-name">' + shortName + '</span>' +
-            '<button class="sel-thumb-remove" type="button" aria-label="Quitar ' + m.marca + ' ' + m.modelo + '">×</button>';
+            '<div class="sel-thumb-img">' +
+              '<img src="' + photoSrc(m) + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy">' +
+              '<button class="sel-thumb-remove" type="button" aria-label="Quitar ' + m.marca + ' ' + m.modelo + '">×</button>' +
+            '</div>' +
+            '<span class="sel-thumb-brand">' + m.marca + '</span>' +
+            '<span class="sel-thumb-name">' + m.modelo + '</span>';
           thumb.querySelector('.sel-thumb-remove').addEventListener('click', (e) => {
             e.stopPropagation();
             pickedIds.delete(modelId(m));
@@ -1702,18 +1725,27 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     flex: 1;
     min-width: 0;
     display: flex;
-    align-items: center;
-    gap: .35rem;
+    align-items: flex-start;
+    gap: .55rem;
     overflow-x: auto;
+    overflow-y: visible;
     scrollbar-width: none;
-    padding: .15rem 0;
+    padding: .5rem .2rem .1rem;
   }
   .sel-footer-thumbs::-webkit-scrollbar { display: none; }
   .sel-thumb {
     flex-shrink: 0;
     position: relative;
-    width: 56px;
-    height: 42px;
+    width: 92px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: .25rem;
+  }
+  .sel-thumb-img {
+    position: relative;
+    width: 92px;
+    height: 52px;
     background: #1a1a1a;
     border: 1px solid #2a2a2a;
     border-radius: 4px;
@@ -1723,24 +1755,24 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     overflow: hidden;
     transition: border-color .15s;
   }
-  .sel-thumb:hover { border-color: var(--yellow); }
-  .sel-thumb img {
-    max-width: 85%;
-    max-height: 85%;
+  .sel-thumb:hover .sel-thumb-img { border-color: var(--yellow); }
+  .sel-thumb-img img {
+    max-width: 90%;
+    max-height: 90%;
     object-fit: contain;
     filter: brightness(1.05);
   }
   .sel-thumb-remove {
     position: absolute;
-    top: -6px;
-    right: -6px;
-    width: 18px;
-    height: 18px;
+    top: -7px;
+    right: -7px;
+    width: 20px;
+    height: 20px;
     background: var(--yellow);
     color: #0A0A0A;
     border: none;
     border-radius: 50%;
-    font-size: .75rem;
+    font-size: .85rem;
     font-weight: 700;
     cursor: pointer;
     display: flex;
@@ -1750,7 +1782,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     padding: 0;
     opacity: 0;
     transition: opacity .15s, transform .15s;
-    box-shadow: 0 2px 6px rgba(0,0,0,.4);
+    box-shadow: 0 2px 8px rgba(0,0,0,.5);
+    z-index: 2;
   }
   .sel-thumb:hover .sel-thumb-remove,
   .sel-thumb-remove:focus-visible {
@@ -1759,21 +1792,28 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .sel-thumb-remove:hover { background: #fff; }
   .sel-thumb-name {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,.85), transparent);
-    color: #fff;
-    font-size: .5rem;
-    padding: .3rem .25rem .15rem;
+    font-size: .62rem;
+    color: #ccc;
     text-align: center;
-    letter-spacing: .02em;
-    font-weight: 500;
+    letter-spacing: .01em;
+    font-weight: 400;
+    line-height: 1.15;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    pointer-events: none;
+    padding: 0 .1rem;
+  }
+  .sel-thumb-brand {
+    font-size: .56rem;
+    color: #888;
+    text-align: center;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    font-weight: 500;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .sel-footer-actions {
     flex-shrink: 0;
@@ -1841,8 +1881,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     .sel-footer-inner { gap: .65rem; padding: .55rem .85rem; }
     .sel-footer-text { display: none; }
     .sel-footer-count { font-size: 1.1rem; }
-    .sel-thumb { width: 44px; height: 34px; }
-    .sel-thumb-name { display: none; }
+    .sel-thumb { width: 68px; }
+    .sel-thumb-img { width: 68px; height: 40px; }
+    .sel-thumb-name { font-size: .58rem; }
+    .sel-thumb-brand { font-size: .52rem; }
     .sel-footer-cta { padding: .5rem 1rem; font-size: .75rem; }
     .sel-footer-clear { padding: .45rem .7rem; font-size: .68rem; }
     .sel-footer-cta-text { display: none; }
@@ -2167,6 +2209,26 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .ev-detail-price span:last-child {
     font-weight: 600;
     color: var(--text);
+  }
+  .ev-detail-best {
+    background: linear-gradient(90deg, rgba(245,197,24,.12) 0%, rgba(245,197,24,.02) 100%);
+    border-radius: 3px;
+    margin: 0 -.4rem;
+    padding-left: .4rem !important;
+    padding-right: .4rem !important;
+  }
+  .ev-detail-best span:last-child {
+    color: var(--black);
+    font-weight: 600;
+  }
+  [data-theme="dark"] .ev-detail-best span:last-child { color: var(--yellow); }
+  .best-mark {
+    color: var(--yellow);
+    font-style: normal;
+    font-size: .75em;
+    margin-left: .25rem;
+    vertical-align: .05em;
+    text-shadow: 0 0 8px rgba(245,197,24,.4);
   }
 
   /* View control */
