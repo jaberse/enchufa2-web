@@ -1765,8 +1765,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
   .listado-table tbody tr:nth-child(even) td { background: var(--bg); }
   .listado-table tbody tr:nth-child(even) td:first-child { background: var(--bg); }
-  .listado-table tbody tr:hover td { background: rgba(245,197,24,.04); }
-  .listado-table tbody tr:hover td:first-child { background: rgba(245,197,24,.04); }
+  .listado-table tbody tr:hover td { background: #FFFDF5; }
+  [data-theme="dark"] .listado-table tbody tr:hover td { background: #1E2028; }
+  .listado-table tbody tr:hover td:first-child { background: #FFFDF5; }
+  [data-theme="dark"] .listado-table tbody tr:hover td:first-child { background: #1E2028; }
 
   .table-modelo-wrap {
     display: flex;
@@ -1854,6 +1856,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   }
   .scroll-mode .ev-row:nth-child(even) .col-sticky {
     background: var(--table-row-even);
+  }
+  .scroll-mode .ev-row:hover .col-sticky {
+    background: #FFFDF5;
+  }
+  [data-theme="dark"] .scroll-mode .ev-row:hover .col-sticky {
+    background: #1E2028;
   }
   .scroll-mode .col-sticky::after {
     content: '';
