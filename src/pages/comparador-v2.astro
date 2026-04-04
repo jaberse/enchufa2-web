@@ -194,7 +194,8 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       { id:'diametro_giro', label:'Diám. giro',      shortLabel:'D.giro',  unit:'m',         key:'diametro_giro_m',         dflt:false, sortAsc:true,  filterType:'max', dec:1 },
       { id:'frunk',         label:'Frunk',           shortLabel:'Frunk',   unit:'L',         key:'frunk_l',                 dflt:false, sortAsc:false, filterType:'min' },
       { id:'remolque',      label:'Remolque',        shortLabel:'Remolq.', unit:'kg',        key:'capacidad_remolque_kg',   dflt:false, sortAsc:false, filterType:'min' },
-      { id:'garantia',      label:'Garantía bat.',   shortLabel:'Garant.', unit:'',          key:'garantia_bateria',        dflt:false, sortAsc:false, filterType:null, isText:true },
+      { id:'garantia_anos', label:'Garantía años',   shortLabel:'Gar.años', unit:'años',     key:'garantia_bateria',        dflt:false, sortAsc:false, filterType:'min', derive: (m) => { const s = m.garantia_bateria; if (!s) return null; const x = String(s).match(/(\d+)\s*año/i); return x ? parseInt(x[1], 10) : null; } },
+      { id:'garantia_km',   label:'Garantía km',     shortLabel:'Gar.km',  unit:'km',        key:'garantia_bateria',        dflt:false, sortAsc:false, filterType:'min', derive: (m) => { const s = m.garantia_bateria; if (!s) return null; const x = String(s).match(/([\d.]+)\s*km/i); return x ? parseInt(x[1].replace(/\./g, ''), 10) : null; }, fmt:'mmDot' },
     ];
 
     const CATS = [
@@ -654,6 +655,11 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // ═══════════════════════════════════════════════════════
     // FILTERING
     // ═══════════════════════════════════════════════════════
+    // Read numeric value from a model for a field — supports derived values
+    function getFieldVal(m, f) {
+      return f.derive ? f.derive(m) : m[f.key];
+    }
+
     function passesFilter(m) {
       // Numeric filters
       for (const [id, val] of Object.entries(filterVals)) {
@@ -662,10 +668,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         if (!f) continue;
         const n = parseFloat(val);
         if (isNaN(n)) continue;
-        const mval = m[f.key];
+        const mval = getFieldVal(m, f);
         const mode = filterModes[id] || f.filterType;
-        if (mode === 'min' && (mval || 0) < n) return false;
-        if (mode === 'max' && (mval || Infinity) > n) return false;
+        if (mode === 'min' && (mval == null ? 0 : mval) < n) return false;
+        if (mode === 'max' && (mval == null ? Infinity : mval) > n) return false;
       }
       // Category filters (multi-select: model must match ANY of the selected values)
       for (const [id, vals] of Object.entries(catVals)) {
@@ -685,7 +691,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         const f = FIELDS.find(x => x.id === tableSortId);
         if (f) {
           arr.sort((a, b) => {
-            const va = a[f.key], vb = b[f.key];
+            const va = getFieldVal(a, f), vb = getFieldVal(b, f);
             if (va == null) return 1;
             if (vb == null) return -1;
             return tableSortAsc ? va - vb : vb - va;
@@ -717,7 +723,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       const pickedModels = modelos.filter(m => pickedIds.has(modelId(m)));
       FIELDS.forEach(f => {
         if (f.isText) return;
-        const vals = pickedModels.map(m => m[f.key]).filter(v => v != null && !isNaN(v));
+        const vals = pickedModels.map(m => getFieldVal(m, f)).filter(v => v != null && !isNaN(v));
         if (vals.length < 2) return;
         bestValues[f.id] = f.sortAsc ? Math.min(...vals) : Math.max(...vals);
       });
@@ -738,7 +744,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       // All fields as clean detail rows (no stats grid)
       let detailsHtml = '';
       activeFields.forEach(f => {
-        const val = m[f.key];
+        const val = getFieldVal(m, f);
         let display = fmtField(val, f);
         if (f.unit && !f.fmt && !f.isText && val != null) display += '\u00a0' + f.unit;
         const isPrice = f.id === 'pvp';
@@ -807,14 +813,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       ]},
       { num:'04', name:'Economía', rows:[
         { label:'PVP',                  key:'pvp',                 fmt:'eur',  dir:'min' },
-        { label:'Garantía batería',     key:'garantia_bateria',    isText:true },
+        { label:'Garantía batería (años)', key:'garantia_bateria', unit:'años', dir:'max', dec:0, derive:(m)=>{ const s=m.garantia_bateria; if(!s) return null; const x=String(s).match(/(\d+)\s*año/i); return x?parseInt(x[1],10):null; } },
+        { label:'Garantía batería (km)',   key:'garantia_bateria', unit:'km',  dir:'max', dec:0, fmt:'mmDot', derive:(m)=>{ const s=m.garantia_bateria; if(!s) return null; const x=String(s).match(/([\d.]+)\s*km/i); return x?parseInt(x[1].replace(/\./g,''),10):null; } },
         { label:'Garantía vehículo',    key:'garantia_vehiculo',   isText:true, placeholder:'por verificar' },
         { label:'Plan Auto+ 2026',      key:'plan_auto_2026',      isText:true, placeholder:'por calcular' },
       ]},
     ];
 
     function formatCellVal(m, row) {
-      const val = m[row.key];
+      const val = row.derive ? row.derive(m) : m[row.key];
       if (val == null || val === '') {
         return '<span class="cmp-placeholder">' + (row.placeholder || '—') + '</span>';
       }
@@ -835,7 +842,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
 
     function computeRowBest(picked, row) {
       if (row.isText || !row.dir) return null;
-      const vals = picked.map(m => m[row.key]).filter(v => v != null && !isNaN(Number(v))).map(Number);
+      const vals = picked.map(m => row.derive ? row.derive(m) : m[row.key]).filter(v => v != null && !isNaN(Number(v))).map(Number);
       if (vals.length === 0) return null;
       return row.dir === 'max' ? Math.max(...vals) : Math.min(...vals);
     }
@@ -878,7 +885,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           const best = computeRowBest(picked, row);
           html += '<div class="cmp-label">' + row.label + '</div>';
           picked.forEach(m => {
-            const val = m[row.key];
+            const val = row.derive ? row.derive(m) : m[row.key];
             const isBest = best != null && Number(val) === best;
             html += '<div class="cmp-cell' + (isBest ? ' cmp-cell-best' : '') + '">' +
               formatCellVal(m, row) +
@@ -1022,7 +1029,7 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         '</div></td>';
 
       activeFields.forEach(f => {
-        const val = m[f.key];
+        const val = getFieldVal(m, f);
         let display = fmtField(val, f);
         let unitHtml = '';
         if (f.unit && !f.fmt && !f.isText && val != null) {
