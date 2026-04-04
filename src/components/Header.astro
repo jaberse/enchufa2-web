@@ -1,4 +1,7 @@
 ---
+const currentPath = Astro.url.pathname;
+const isHome = currentPath === '/' || currentPath === '';
+const isComparador = currentPath.startsWith('/comparador');
 ---
 <header class="site-header" id="site-header">
 
@@ -44,13 +47,13 @@
   <!-- Category navigation bar (yellow) -->
   <nav class="cat-nav" aria-label="Categorías">
     <div class="cat-nav-inner hub-width">
-      <a href="/" class="active">Inicio</a>
-      <a href="#me-compensa">¿Me compensa?</a>
-      <a href="#como-cargo">¿Cómo cargo?</a>
-      <a href="#puedo-viajar">¿Puedo viajar?</a>
-      <a href="#como-funciona">¿Cómo funciona?</a>
-      <a href="#como-cuido">¿Cómo lo cuido?</a>
-      <a href="/comparador">Comparador</a>
+      <a href="/" class={isHome ? 'active' : ''}>Inicio</a>
+      <a href={isHome ? '#me-compensa' : '/#me-compensa'}>¿Me compensa?</a>
+      <a href={isHome ? '#como-cargo' : '/#como-cargo'}>¿Cómo cargo?</a>
+      <a href={isHome ? '#puedo-viajar' : '/#puedo-viajar'}>¿Puedo viajar?</a>
+      <a href={isHome ? '#como-funciona' : '/#como-funciona'}>¿Cómo funciona?</a>
+      <a href={isHome ? '#como-cuido' : '/#como-cuido'}>¿Cómo lo cuido?</a>
+      <a href="/comparador" class={isComparador ? 'active' : ''}>Comparador</a>
     </div>
   </nav>
 
