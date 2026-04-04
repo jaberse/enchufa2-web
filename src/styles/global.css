@@ -1,34 +1,67 @@
 /* ─────────────────────────────────────────────
-   DESIGN TOKENS — Warm Minimal palette
+   DESIGN TOKENS — High Contrast Editorial
 ───────────────────────────────────────────── */
 :root {
-  --black:    #111111;
-  --white:    #FAFAF8;
+  --black:    #0A0A0A;
+  --white:    #FFFFFF;
   --yellow:   #F5C518;
-  --yellow-glow: rgba(245,197,24,0.15);
-  --cream:    #F8F6F1;
-  --gray-50:  #F2F1ED;
-  --gray-100: #E8E7E3;
-  --gray-200: #D5D4CF;
-  --gray-300: #C0BFB9;
-  --gray-400: #999894;
-  --gray-500: #76756F;
-  --gray-600: #555550;
+  --yellow-glow: rgba(245,197,24,0.12);
+  --cream:    #FFFFFF;
+  --gray-50:  #F5F5F5;
+  --gray-100: #EEEEEE;
+  --gray-200: #DDDDDD;
+  --gray-300: #CCCCCC;
+  --gray-400: #8A8A8A;
+  --gray-500: #4A4A4A;
+  --gray-600: #4A4A4A;
 
   /* Semantic aliases (overridden by dark theme) */
-  --bg:       var(--cream);
+  --bg:       #FFFFFF;
   --surface:  #FFFFFF;
-  --surface-alt: var(--gray-50);
-  --text:     var(--black);
-  --text-secondary: var(--gray-600);
-  --text-muted: var(--gray-400);
-  --border:   var(--gray-100);
-  --header-bg: var(--black);
-  --header-text: var(--white);
-  --table-header-bg: var(--black);
-  --table-row-even: #F5F5F3;
+  --surface-alt: #F5F5F5;
+  --text:     #0A0A0A;
+  --text-secondary: #4A4A4A;
+  --text-muted: #8A8A8A;
+  --border:   #DDDDDD;
+  --border-subtle: #EEEEEE;
+  --header-bg: #0A0A0A;
+  --header-text: #FFFFFF;
+  --table-header-bg: #0A0A0A;
+  --table-row-even: #F7F7F7;
   --card-bg:  #FFFFFF;
-  --yellow-text: #8a6d00;
+  --yellow-text: #7A5E00;
+
+  /* Comparador-specific tokens */
+  --card-shadow: none;
+  --card-hover-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  --sticky-shadow: 0 0 0 1px rgba(0,0,0,0.08);
+  --pop-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  --panel-locked-bg: rgba(245,197,24,0.05);
+  --toggle-off-bg: #D0D0D0;
+  --toggle-off-border: #BBBBBB;
+
+  /* Badge tokens */
+  --badge-nmc-bg: transparent;
+  --badge-nmc-border: #4A7FBD;
+  --badge-nmc-text: #2E5E8E;
+  --badge-nca-bg: transparent;
+  --badge-nca-border: #7B5FC8;
+  --badge-nca-text: #5A3FA8;
+  --badge-800v-bg: transparent;
+  --badge-800v-border: #C87834;
+  --badge-800v-text: #A06028;
+  --badge-bcalor-bg: transparent;
+  --badge-bcalor-border: #3A8C5A;
+  --badge-bcalor-text: #2A6C44;
+  --badge-lfp-bg: var(--yellow);
+  --badge-lfp-border: var(--yellow);
+  --badge-lfp-text: #0A0A0A;
+  --badge-tipo-bg: transparent;
+  --badge-tipo-border: #CCCCCC;
+  --badge-tipo-text: #6A6A6A;
+  --badge-traccion-bg: #0A0A0A;
+  --badge-traccion-border: #0A0A0A;
+  --badge-traccion-text: #FFFFFF;
 
   --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
   --font-serif: 'Instrument Serif', Georgia, serif;
@@ -45,7 +78,7 @@
 }
 
 /* ─────────────────────────────────────────────
-   DARK THEME — Neutral (sin tinte azulado)
+   DARK THEME — High Contrast Editorial
 ───────────────────────────────────────────── */
 [data-theme="dark"] {
   --bg:       #0A0A0A;
@@ -54,7 +87,8 @@
   --text:     #F0F0F0;
   --text-secondary: #B0B0B0;
   --text-muted: #707070;
-  --border:   #2E2E2E;
+  --border:   #333333;
+  --border-subtle: #222222;
   --header-bg: #000000;
   --header-text: #F0F0F0;
   --table-header-bg: #141414;
@@ -62,6 +96,30 @@
   --card-bg:  #141414;
   --yellow-text: #F5C518;
   --yellow-glow: rgba(245,197,24,0.10);
+
+  --card-shadow: none;
+  --card-hover-shadow: 0 4px 16px rgba(255,255,255,0.04);
+  --sticky-shadow: 0 0 0 1px rgba(255,255,255,0.06);
+  --pop-shadow: 0 4px 20px rgba(0,0,0,0.50);
+  --panel-locked-bg: rgba(245,197,24,0.06);
+  --toggle-off-bg: #333333;
+  --toggle-off-border: #444444;
+
+  /* Badge tokens dark */
+  --badge-nmc-border: #6B9BD4;
+  --badge-nmc-text: #8BB4E0;
+  --badge-nca-border: #9B8AE0;
+  --badge-nca-text: #B3A4F0;
+  --badge-800v-border: #D4944A;
+  --badge-800v-text: #E0A85E;
+  --badge-bcalor-border: #5BBD7A;
+  --badge-bcalor-text: #80D098;
+  --badge-lfp-text: #0A0A0A;
+  --badge-tipo-border: #444444;
+  --badge-tipo-text: #808080;
+  --badge-traccion-bg: #F0F0F0;
+  --badge-traccion-border: #F0F0F0;
+  --badge-traccion-text: #0A0A0A;
 }
 
 /* ─────────────────────────────────────────────

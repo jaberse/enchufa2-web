@@ -1,0 +1,1068 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import data from '../data/comparador.json';
+
+const modelos = data.modelos;
+const marcas = [...new Set(modelos.map(m => m.marca))].sort();
+const tipos = [...new Set(modelos.map(m => m.tipo).filter(Boolean))].sort();
+const tracciones = [...new Set(modelos.map(m => m.traccion).filter(Boolean))].sort();
+const quimicas = [...new Set(modelos.map(m => m.quimica).filter(Boolean))].sort();
+const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort((a,b) => a - b);
+---
+
+<Layout
+  title="Comparador de coches eléctricos — enchufa2"
+  description="Compara los 37 coches eléctricos más vendidos en Europa. Filtra por autonomía, potencia, maletero, tracción y más."
+>
+  <Header />
+
+  <main class="comparador">
+    <!-- DISCLAIMER -->
+    <div class="comp-disclaimer">
+      <div class="page-width">
+        <span class="disclaimer-icon">🚧</span>
+        <p>Esta herramienta está <strong>en construcción</strong>. Estamos añadiendo modelos, datos y funcionalidades. Si encuentras algún error, escríbenos.</p>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="comp-hero">
+      <div class="page-width">
+        <span class="comp-label">Herramienta</span>
+        <h1 class="t-heading">Comparador de eléctricos</h1>
+        <p class="comp-deck">
+          Dinos qué necesitas. Nosotros te decimos qué coches lo cumplen.<br/>
+          <span class="accent">{data.total_modelos} modelos</span> · Datos verificados de fabricantes
+        </p>
+      </div>
+    </section>
+
+    <!-- FILTERS -->
+    <section class="comp-filters" id="filtros">
+      <div class="page-width">
+        <div class="filters-header">
+          <h2>Tus requisitos</h2>
+          <button class="btn-reset" id="btn-reset">Limpiar filtros</button>
+        </div>
+
+        <div class="filters-grid">
+          <div class="filter-group">
+            <label for="f-autonomia">Autonomía mínima</label>
+            <div class="filter-input-wrap">
+              <input type="number" id="f-autonomia" placeholder="p. ej. 400" min="0" max="1000" step="10" />
+              <span class="filter-unit">km</span>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label for="f-potencia">Potencia mínima</label>
+            <div class="filter-input-wrap">
+              <input type="number" id="f-potencia" placeholder="p. ej. 200" min="0" max="700" step="10" />
+              <span class="filter-unit">CV</span>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label for="f-maletero">Maletero mínimo</label>
+            <div class="filter-input-wrap">
+              <input type="number" id="f-maletero" placeholder="p. ej. 450" min="0" max="3000" step="10" />
+              <span class="filter-unit">L</span>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label for="f-peso-max">Peso máximo</label>
+            <div class="filter-input-wrap">
+              <input type="number" id="f-peso-max" placeholder="p. ej. 2000" min="0" max="3000" step="50" />
+              <span class="filter-unit">kg</span>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label for="f-tipo">Tipo</label>
+            <select id="f-tipo">
+              <option value="">Todos</option>
+              {tipos.map(t => <option value={t}>{t}</option>)}
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="f-traccion">Tracción</label>
+            <select id="f-traccion">
+              <option value="">Todas</option>
+              {tracciones.map(t => <option value={t}>{t}</option>)}
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="f-marca">Marca</label>
+            <select id="f-marca">
+              <option value="">Todas</option>
+              {marcas.map(m => <option value={m}>{m}</option>)}
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="f-carga-dc">Carga DC mínima</label>
+            <div class="filter-input-wrap">
+              <input type="number" id="f-carga-dc" placeholder="p. ej. 150" min="0" max="400" step="10" />
+              <span class="filter-unit">kW</span>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label for="f-precio-max">Precio máximo</label>
+            <div class="filter-input-wrap">
+              <input type="number" id="f-precio-max" placeholder="p. ej. 45000" min="0" max="150000" step="1000" />
+              <span class="filter-unit">€</span>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label for="f-quimica">Química batería</label>
+            <select id="f-quimica">
+              <option value="">Todas</option>
+              {quimicas.map(q => <option value={q}>{q}</option>)}
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="f-accel-max">0-100 km/h máximo</label>
+            <div class="filter-input-wrap">
+              <input type="number" id="f-accel-max" placeholder="p. ej. 7" min="0" max="25" step="0.5" />
+              <span class="filter-unit">s</span>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label for="f-consumo-max">Consumo máximo</label>
+            <div class="filter-input-wrap">
+              <input type="number" id="f-consumo-max" placeholder="p. ej. 15" min="0" max="30" step="0.5" />
+              <span class="filter-unit">kWh/100km</span>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label for="f-voltaje">Voltaje</label>
+            <select id="f-voltaje">
+              <option value="">Todos</option>
+              {voltajes.map(v => <option value={v}>{v} V</option>)}
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="f-bomba-calor">Bomba de calor</label>
+            <select id="f-bomba-calor">
+              <option value="">Todos</option>
+              <option value="Sí">Sí</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="f-carga-ac">Carga AC mínima</label>
+            <div class="filter-input-wrap">
+              <input type="number" id="f-carga-ac" placeholder="p. ej. 11" min="0" max="22" step="1" />
+              <span class="filter-unit">kW</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section class="comp-results" id="resultados">
+      <div class="page-width">
+        <div class="results-header">
+          <p class="results-count"><span id="count">{data.total_modelos}</span> coches cumplen tus requisitos</p>
+          <div class="results-controls">
+            <!-- View toggle -->
+            <div class="view-toggle" id="view-toggle">
+              <button class="view-btn active" data-view="fichas" title="Vista fichas">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="1" y="1" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="1" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="1" y="10" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="10" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>
+                Fichas
+              </button>
+              <button class="view-btn" data-view="listado" title="Vista listado">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><line x1="1" y1="3" x2="17" y2="3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="1" y1="9" x2="17" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="1" y1="15" x2="17" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                Listado
+              </button>
+            </div>
+            <div class="results-sort">
+              <label for="sort-by">Ordenar por</label>
+              <select id="sort-by">
+                <option value="autonomia">Autonomía</option>
+                <option value="potencia">Potencia</option>
+                <option value="precio">Precio</option>
+                <option value="peso">Peso</option>
+                <option value="maletero">Maletero</option>
+                <option value="aceleracion">0-100 km/h</option>
+                <option value="carga">Carga DC</option>
+                <option value="consumo">Consumo</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fichas grid -->
+        <div class="results-grid" id="results-grid"></div>
+
+        <!-- Listado table -->
+        <div class="results-table-wrap" id="results-table-wrap" style="display:none;">
+          <table class="results-table" id="results-table">
+            <thead>
+              <tr>
+                <th class="col-modelo">Modelo</th>
+                <th class="col-tipo">Tipo</th>
+                <th class="col-num">Autonomía</th>
+                <th class="col-num">Potencia</th>
+                <th class="col-num">Carga DC</th>
+                <th class="col-num">Maletero</th>
+                <th class="col-num">0-100</th>
+                <th class="col-num">Consumo</th>
+                <th class="col-num">Peso</th>
+                <th class="col-num">Batería</th>
+                <th class="col-num col-precio">PVP</th>
+              </tr>
+            </thead>
+            <tbody id="results-tbody"></tbody>
+          </table>
+        </div>
+
+        <p class="results-empty" id="no-results" style="display:none;">
+          Ningún modelo cumple todos tus requisitos. Prueba a relajar algún filtro.
+        </p>
+      </div>
+    </section>
+
+    <!-- METHODOLOGY -->
+    <section class="comp-methodology">
+      <div class="page-width">
+        <p class="t-small">Sobre estos datos</p>
+        <p>
+          Todos los datos provienen de las fichas técnicas oficiales de cada fabricante
+          para el mercado español. Cuando no hay dato oficial disponible, se indica la fuente
+          alternativa. Las cifras de autonomía corresponden al ciclo WLTP combinado.
+          Última actualización: marzo 2026.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script define:vars={{ modelos: data.modelos }}>
+    const allModelos = modelos;
+    let currentView = 'fichas';
+
+    const grid = document.getElementById('results-grid');
+    const tableWrap = document.getElementById('results-table-wrap');
+    const tbody = document.getElementById('results-tbody');
+    const countEl = document.getElementById('count');
+    const noResults = document.getElementById('no-results');
+    const btnReset = document.getElementById('btn-reset');
+    const sortSelect = document.getElementById('sort-by');
+    const tableEl = document.getElementById('results-table');
+
+    // View toggle
+    document.querySelectorAll('.view-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentView = btn.dataset.view;
+        update();
+      });
+    });
+
+    const filters = {
+      autonomia:  document.getElementById('f-autonomia'),
+      potencia:   document.getElementById('f-potencia'),
+      maletero:   document.getElementById('f-maletero'),
+      pesoMax:    document.getElementById('f-peso-max'),
+      tipo:       document.getElementById('f-tipo'),
+      traccion:   document.getElementById('f-traccion'),
+      marca:      document.getElementById('f-marca'),
+      cargaDc:    document.getElementById('f-carga-dc'),
+      precioMax:  document.getElementById('f-precio-max'),
+      quimica:    document.getElementById('f-quimica'),
+      accelMax:   document.getElementById('f-accel-max'),
+      consumoMax: document.getElementById('f-consumo-max'),
+      voltaje:    document.getElementById('f-voltaje'),
+      bombaCalor: document.getElementById('f-bomba-calor'),
+      cargaAc:    document.getElementById('f-carga-ac'),
+    };
+
+    // Map filter keys to their data field names for highlight logic
+    // Each entry: { filter key, card detail label, table column index (0-based) }
+    const FIELD_MAP = [
+      { filter: 'autonomia', label: 'Autonom\u00eda', col: 2, stat: 'autonomia' },
+      { filter: 'potencia',  label: 'Potencia',  col: 3, stat: 'potencia' },
+      { filter: 'cargaDc',   label: 'Carga DC',  col: 4, stat: 'carga' },
+      { filter: 'maletero',  label: 'Maletero',  col: 5, stat: 'maletero' },
+      { filter: 'accelMax',  label: '0-100',     col: 6, detail: '0-100 km/h' },
+      { filter: 'consumoMax',label: 'Consumo',   col: 7, detail: 'Consumo' },
+      { filter: 'pesoMax',   label: 'Peso',      col: 8, detail: 'Peso' },
+      { filter: 'precioMax', label: 'PVP',       col: 10, detail: 'PVP' },
+    ];
+
+    function getActiveFilters() {
+      const active = new Set();
+      if (filters.autonomia.value) active.add('autonomia');
+      if (filters.potencia.value)  active.add('potencia');
+      if (filters.maletero.value)  active.add('maletero');
+      if (filters.pesoMax.value)   active.add('pesoMax');
+      if (filters.tipo.value)      active.add('tipo');
+      if (filters.traccion.value)  active.add('traccion');
+      if (filters.marca.value)     active.add('marca');
+      if (filters.cargaDc.value)   active.add('cargaDc');
+      if (filters.precioMax.value) active.add('precioMax');
+      if (filters.quimica.value)   active.add('quimica');
+      if (filters.accelMax.value)  active.add('accelMax');
+      if (filters.consumoMax.value) active.add('consumoMax');
+      return active;
+    }
+
+    function getFilterValues() {
+      return {
+        autonomia:  parseFloat(filters.autonomia.value) || 0,
+        potencia:   parseFloat(filters.potencia.value) || 0,
+        maletero:   parseFloat(filters.maletero.value) || 0,
+        pesoMax:    parseFloat(filters.pesoMax.value) || Infinity,
+        tipo:       filters.tipo.value,
+        traccion:   filters.traccion.value,
+        marca:      filters.marca.value,
+        cargaDc:    parseFloat(filters.cargaDc.value) || 0,
+        precioMax:  parseFloat(filters.precioMax.value) || Infinity,
+        quimica:    filters.quimica.value,
+        accelMax:   parseFloat(filters.accelMax.value) || Infinity,
+        consumoMax: parseFloat(filters.consumoMax.value) || Infinity,
+        voltaje:    filters.voltaje.value,
+        bombaCalor: filters.bombaCalor.value,
+        cargaAc:    parseFloat(filters.cargaAc.value) || 0,
+      };
+    }
+
+    function passesFilter(m, f) {
+      if (f.autonomia > 0 && (m.autonomia_wltp_km || 0) < f.autonomia) return false;
+      if (f.potencia > 0 && (m.potencia_cv || 0) < f.potencia) return false;
+      if (f.maletero > 0 && (m.maletero_l || 0) < f.maletero) return false;
+      if (f.pesoMax < Infinity && (m.peso_kg || Infinity) > f.pesoMax) return false;
+      if (f.tipo && m.tipo !== f.tipo) return false;
+      if (f.traccion && m.traccion !== f.traccion) return false;
+      if (f.marca && m.marca !== f.marca) return false;
+      if (f.cargaDc > 0 && (m.carga_dc_max_kw || 0) < f.cargaDc) return false;
+      if (f.precioMax < Infinity && m.pvp && m.pvp > f.precioMax) return false;
+      if (f.quimica && m.quimica !== f.quimica) return false;
+      if (f.accelMax < Infinity && (m.aceleracion_0_100_s || Infinity) > f.accelMax) return false;
+      if (f.consumoMax < Infinity && (m.consumo_wltp_kwh100km || Infinity) > f.consumoMax) return false;
+      if (f.voltaje && m.voltaje != f.voltaje) return false;
+      if (f.bombaCalor && m.bomba_calor !== f.bombaCalor) return false;
+      if (f.cargaAc > 0 && (m.carga_ac_max_kw || 0) < f.cargaAc) return false;
+      return true;
+    }
+
+    function getSortKey(m) {
+      const key = sortSelect.value;
+      switch (key) {
+        case 'autonomia':   return -(m.autonomia_wltp_km || 0);
+        case 'potencia':    return -(m.potencia_cv || 0);
+        case 'precio':      return (m.pvp || 999999);
+        case 'peso':        return (m.peso_kg || 9999);
+        case 'maletero':    return -(m.maletero_l || 0);
+        case 'aceleracion': return (m.aceleracion_0_100_s || 99);
+        case 'carga':       return -(m.carga_dc_max_kw || 0);
+        case 'consumo':     return (m.consumo_wltp_kwh100km || 99);
+        default:            return -(m.autonomia_wltp_km || 0);
+      }
+    }
+
+    function fmt(val, unit, decimals) {
+      if (val === null || val === undefined) return '\u2014';
+      if (decimals !== undefined) return val.toFixed(decimals) + (unit ? '\u00a0' + unit : '');
+      return val.toLocaleString('es-ES') + (unit ? '\u00a0' + unit : '');
+    }
+
+    function badgeClass(quimica) {
+      if (!quimica) return '';
+      const q = quimica.toLowerCase();
+      if (q === 'lfp') return 'badge-lfp';
+      if (q === 'nmc') return 'badge-nmc';
+      if (q === 'nca') return 'badge-nca';
+      return '';
+    }
+
+    // ── Highlight helpers ──────────────────
+    // For card: adds .hl class to stats and detail rows that match active filters
+    function hlStat(key, active) {
+      return active.has(key) ? ' hl' : '';
+    }
+    function hlDetail(filterKey, active) {
+      return active.has(filterKey) ? ' ev-detail-hl' : '';
+    }
+
+    function renderCard(m, active) {
+      const card = document.createElement('article');
+      card.className = 'ev-card';
+
+      const tracBadge = m.traccion ? '<span class="badge badge-traccion">' + m.traccion + '</span>' : '';
+      const quimBadge = m.quimica ? '<span class="badge badge-quimica ' + badgeClass(m.quimica) + '">' + m.quimica + '</span>' : '';
+      const tipoBadge = m.tipo ? '<span class="badge badge-tipo">' + m.tipo + '</span>' : '';
+
+      // Autonomia is always shown as highlight; add extra glow if user filtered by it
+      const autoHl = active.has('autonomia') ? ' ev-highlight-active' : '';
+
+      // Photo: use /comparador/[slug].webp if it exists, otherwise placeholder
+      const photoSrc = m.foto
+        ? '/comparador/' + m.slug + '.webp'
+        : '/comparador/placeholder.svg';
+
+      card.innerHTML =
+        '<div class="ev-card-photo">' +
+          '<img src="' + photoSrc + '" alt="' + m.marca + ' ' + m.modelo + '" loading="lazy" />' +
+        '</div>' +
+        '<div class="ev-card-body">' +
+          '<div class="ev-card-header">' +
+            '<div class="ev-card-title">' +
+              '<span class="ev-marca">' + m.marca + '</span>' +
+              '<span class="ev-modelo">' + m.modelo + '</span>' +
+              '<span class="ev-variante">' + m.variante + '</span>' +
+            '</div>' +
+            '<div class="ev-card-autonomia' + autoHl + '">' +
+              '<span class="ev-autonomia-value">' + fmt(m.autonomia_wltp_km) + '</span>' +
+              '<span class="ev-autonomia-unit">km</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="ev-badges">' + tipoBadge + tracBadge + quimBadge + '</div>' +
+          '<div class="ev-card-stats">' +
+            '<div class="ev-stat' + hlStat('potencia', active) + '"><span class="ev-stat-value">' + fmt(m.potencia_cv) + '</span><span class="ev-stat-label">CV</span></div>' +
+            '<div class="ev-stat' + hlStat('cargaDc', active) + '"><span class="ev-stat-value">' + fmt(m.carga_dc_max_kw) + '</span><span class="ev-stat-label">kW DC</span></div>' +
+            '<div class="ev-stat' + hlStat('maletero', active) + '"><span class="ev-stat-value">' + fmt(m.maletero_l) + '</span><span class="ev-stat-label">L</span></div>' +
+            '<div class="ev-stat' + hlStat('accelMax', active) + '"><span class="ev-stat-value">' + fmt(m.aceleracion_0_100_s, '', 1) + '</span><span class="ev-stat-label">0-100</span></div>' +
+          '</div>' +
+          '<div class="ev-card-details">' +
+            '<div class="ev-detail' + hlDetail('consumoMax', active) + '"><span>Consumo</span><span>' + fmt(m.consumo_wltp_kwh100km, 'kWh/100km', 1) + '</span></div>' +
+            '<div class="ev-detail' + hlDetail('pesoMax', active) + '"><span>Peso</span><span>' + fmt(m.peso_kg, 'kg') + '</span></div>' +
+            '<div class="ev-detail"><span>Bater\u00eda</span><span>' + fmt(m.bateria_neta_kwh, 'kWh', 1) + ' · ' + (m.voltaje || '') + '\u00a0V</span></div>' +
+            '<div class="ev-detail"><span>Carga AC</span><span>' + fmt(m.carga_ac_max_kw, 'kW') + '</span></div>' +
+            (m.garantia_bateria ? '<div class="ev-detail"><span>Garant\u00eda bat.</span><span>' + m.garantia_bateria + '</span></div>' : '') +
+            (m.frunk_l ? '<div class="ev-detail"><span>Frunk</span><span>' + m.frunk_l + '\u00a0L</span></div>' : '') +
+            (m.capacidad_remolque_kg ? '<div class="ev-detail"><span>Remolque</span><span>' + m.capacidad_remolque_kg.toLocaleString('es-ES') + '\u00a0kg</span></div>' : '') +
+            (m.pvp ? '<div class="ev-detail ev-detail-price' + hlDetail('precioMax', active) + '"><span>PVP</span><span>' + m.pvp.toLocaleString('es-ES') + '\u00a0\u20ac</span></div>' : '') +
+          '</div>' +
+        '</div>';
+      return card;
+    }
+
+    function renderRow(m, active) {
+      const tr = document.createElement('tr');
+      tr.className = 'ev-row';
+      const quimCls = badgeClass(m.quimica);
+
+      // Build cells; active-filter columns get .col-hl class
+      function cell(colIdx, content, extraClass) {
+        const isHl = FIELD_MAP.some(f => f.col === colIdx && active.has(f.filter));
+        return '<td class="' + (extraClass || '') + (isHl ? ' col-hl' : '') + '">' + content + '</td>';
+      }
+
+      tr.innerHTML =
+        '<td class="col-modelo">' +
+          '<div class="row-modelo">' +
+            '<span class="row-marca">' + m.marca + '</span>' +
+            '<span class="row-nombre">' + m.modelo + ' ' + m.variante + '</span>' +
+          '</div>' +
+        '</td>' +
+        '<td class="col-tipo">' +
+          (m.tipo ? '<span class="badge badge-tipo">' + m.tipo + '</span>' : '') +
+          (m.traccion ? '<span class="badge badge-traccion">' + m.traccion + '</span>' : '') +
+          (m.quimica ? '<span class="badge badge-quimica ' + quimCls + '">' + m.quimica + '</span>' : '') +
+        '</td>' +
+        cell(2, '<strong>' + fmt(m.autonomia_wltp_km) + '</strong> <small>km</small>', 'col-num col-autonomia') +
+        cell(3, fmt(m.potencia_cv) + ' <small>CV</small>', 'col-num') +
+        cell(4, fmt(m.carga_dc_max_kw) + ' <small>kW</small>', 'col-num') +
+        cell(5, fmt(m.maletero_l) + ' <small>L</small>', 'col-num') +
+        cell(6, fmt(m.aceleracion_0_100_s, '', 1) + ' <small>s</small>', 'col-num') +
+        cell(7, fmt(m.consumo_wltp_kwh100km, '', 1) + ' <small>kWh</small>', 'col-num') +
+        cell(8, fmt(m.peso_kg) + ' <small>kg</small>', 'col-num') +
+        '<td class="col-num">' + fmt(m.bateria_neta_kwh, '', 1) + ' <small>kWh</small></td>' +
+        cell(10, (m.pvp ? m.pvp.toLocaleString('es-ES') + '\u00a0\u20ac' : '\u2014'), 'col-num col-precio');
+      return tr;
+    }
+
+    // Highlight table header columns that match active filters
+    function updateTableHeaders(active) {
+      const ths = tableEl.querySelectorAll('thead th');
+      ths.forEach((th, idx) => {
+        const isHl = FIELD_MAP.some(f => f.col === idx && active.has(f.filter));
+        th.classList.toggle('th-hl', isHl);
+      });
+    }
+
+    function update() {
+      const f = getFilterValues();
+      const active = getActiveFilters();
+      let filtered = allModelos.filter(m => passesFilter(m, f));
+      filtered.sort((a, b) => getSortKey(a) - getSortKey(b));
+
+      const hasResults = filtered.length > 0;
+      countEl.textContent = filtered.length;
+      noResults.style.display = hasResults ? 'none' : 'block';
+
+      if (currentView === 'fichas') {
+        grid.style.display = hasResults ? '' : 'none';
+        tableWrap.style.display = 'none';
+        grid.innerHTML = '';
+        filtered.forEach(m => grid.appendChild(renderCard(m, active)));
+      } else {
+        grid.style.display = 'none';
+        tableWrap.style.display = hasResults ? '' : 'none';
+        tbody.innerHTML = '';
+        filtered.forEach(m => tbody.appendChild(renderRow(m, active)));
+        updateTableHeaders(active);
+      }
+    }
+
+    // Event listeners
+    Object.values(filters).forEach(el => {
+      el.addEventListener('input', update);
+      el.addEventListener('change', update);
+    });
+    sortSelect.addEventListener('change', update);
+
+    btnReset.addEventListener('click', () => {
+      Object.values(filters).forEach(el => {
+        if (el.tagName === 'SELECT') el.value = '';
+        else el.value = '';
+      });
+      update();
+    });
+
+    update();
+  </script>
+</Layout>
+
+<!-- Use is:global so styles apply to JS-rendered elements -->
+<style is:global>
+  /* ── Disclaimer ──────────────────────── */
+  .comp-disclaimer {
+    background: var(--yellow);
+    padding: 0.75rem 0;
+  }
+  .comp-disclaimer .page-width {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .disclaimer-icon { font-size: 1.25rem; flex-shrink: 0; }
+  .comp-disclaimer p {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: var(--black);
+    margin: 0;
+    line-height: 1.5;
+  }
+  .comp-disclaimer strong { font-weight: 600; }
+
+  /* ── Hero ─────────────────────────────── */
+  .comp-hero {
+    background: var(--black);
+    color: var(--white);
+    padding: clamp(4rem, 8vw, 7rem) 0 clamp(2.5rem, 5vw, 4rem);
+  }
+  .comp-label {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--yellow);
+    margin-bottom: 1rem;
+  }
+  .comp-hero h1 { margin: 0 0 1rem; letter-spacing: -0.02em; }
+  .comp-deck {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--gray-400);
+    line-height: 1.6;
+  }
+
+  /* ── Filters ──────────────────────────── */
+  .comp-filters {
+    background: var(--white);
+    padding: clamp(1.5rem, 3vw, 2.5rem) 0;
+    border-bottom: 1px solid var(--gray-100);
+    position: sticky;
+    top: 0;
+    z-index: 90;
+  }
+  .filters-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+  }
+  .filters-header h2 {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 1.125rem;
+    color: var(--black);
+    margin: 0;
+  }
+  .btn-reset {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: var(--gray-600);
+    background: none;
+    border: 1px solid #ddd;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-reset:hover { color: var(--black); border-color: var(--gray-400); }
+
+  .filters-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+  }
+  @media (max-width: 900px) { .filters-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .filters-grid { grid-template-columns: 1fr; } }
+
+  .filter-group { display: flex; flex-direction: column; gap: 0.3rem; }
+  .filter-group label {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gray-600);
+  }
+  .filter-input-wrap {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .filter-input-wrap:focus-within { border-color: var(--yellow); }
+  .filter-input-wrap input {
+    flex: 1;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 400;
+    padding: 0.5rem 0.65rem;
+    border: none;
+    background: transparent;
+    color: var(--black);
+    outline: none;
+    min-width: 0;
+  }
+  .filter-input-wrap input::placeholder { color: #bbb; }
+  .filter-unit {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    color: var(--gray-400);
+    padding-right: 0.65rem;
+    white-space: nowrap;
+  }
+  .comparador select {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    padding: 0.5rem 0.65rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    color: var(--black);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: auto;
+  }
+  .comparador select:focus { border-color: var(--yellow); }
+
+  /* ── Results ─────────────────────────── */
+  .comp-results {
+    padding: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(3rem, 6vw, 5rem);
+    background: #F0EDE8;
+    min-height: 60vh;
+  }
+  .results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .results-count {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 1rem;
+    color: var(--gray-600);
+    margin: 0;
+  }
+  .results-count span { font-weight: 500; color: var(--black); }
+
+  .results-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  /* View toggle */
+  .view-toggle {
+    display: flex;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .view-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--gray-600);
+    background: transparent;
+    border: none;
+    padding: 0.45rem 0.75rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .view-btn:not(:last-child) { border-right: 1px solid #ddd; }
+  .view-btn.active {
+    background: var(--yellow);
+    color: var(--black);
+  }
+  .view-btn svg { width: 14px; height: 14px; }
+
+  .results-sort {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .results-sort label {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: var(--gray-600);
+  }
+  .results-sort select {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.5rem;
+    background: #fff;
+    color: var(--black);
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  .results-empty {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--gray-600);
+    text-align: center;
+    padding: 4rem 0;
+  }
+
+  /* ═══════════════════════════════════════
+     FICHAS VIEW — Propuesta F
+     ═══════════════════════════════════════ */
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+  @media (max-width: 500px) { .results-grid { grid-template-columns: 1fr; } }
+
+  .ev-card {
+    background: #fff;
+    border: none;
+    border-left: 3px solid var(--yellow);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    transition: all 0.25s;
+    display: flex;
+    flex-direction: column;
+  }
+  .ev-card:hover {
+    box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+    transform: translateY(-3px);
+  }
+
+  /* Photo — keeps dark gradient background for contrast */
+  .ev-card-photo {
+    background: linear-gradient(180deg, #0e0e0e, #1a1a1a);
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ev-card-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  .ev-card:hover .ev-card-photo img {
+    transform: scale(1.03);
+  }
+
+  .ev-card-body { padding: 1rem 1.25rem 1.25rem; }
+
+  /* Header: name left, autonomy right */
+  .ev-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .ev-card-title { display: flex; flex-direction: column; }
+  .ev-marca {
+    font-family: var(--font-sans);
+    font-size: 0.625rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #999;
+  }
+  .ev-modelo {
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: var(--black);
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+  .ev-variante {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 300;
+    color: #999;
+  }
+
+  /* Autonomy integrated in header */
+  .ev-card-autonomia {
+    display: flex;
+    align-items: baseline;
+    gap: 0.2rem;
+    flex-shrink: 0;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+  .ev-card-autonomia.ev-highlight-active {
+    background: rgba(245,197,24,0.15);
+  }
+  .ev-autonomia-value {
+    font-family: var(--font-sans);
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--yellow);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .ev-autonomia-unit {
+    font-family: var(--font-sans);
+    font-size: 0.65rem;
+    font-weight: 400;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* Badges row */
+  .ev-badges {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+  .badge {
+    font-family: var(--font-sans);
+    font-size: 0.5625rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .badge-tipo { background: #F0EDE8; color: var(--gray-600); }
+  .badge-traccion { background: var(--black); color: #fff; }
+  .badge-quimica { color: #fff; }
+  .badge-lfp { background: var(--yellow); color: var(--black); }
+  .badge-nmc { background: #4A90D9; }
+  .badge-nca { background: #7B68EE; }
+
+  /* Stats row (4 cols) */
+  .ev-card-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 0.75rem;
+  }
+  .ev-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .ev-stat-value {
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: var(--black);
+    line-height: 1.2;
+  }
+  .ev-stat-label {
+    font-family: var(--font-sans);
+    font-size: 0.5625rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #999;
+    margin-top: 0.1rem;
+  }
+
+  /* Detail rows */
+  .ev-card-details { display: flex; flex-direction: column; gap: 0.2rem; }
+  .ev-detail {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    color: #999;
+    padding: 0.15rem 0;
+  }
+  .ev-detail span:last-child { font-weight: 400; color: var(--black); }
+  .ev-detail-price span:last-child { font-weight: 600; color: var(--black); }
+
+  /* ── Active-filter highlights (cards) ── */
+  .ev-stat.hl {
+    background: rgba(245,197,24,0.12);
+    border-radius: 6px;
+    padding: 0.3rem 0.15rem;
+  }
+  .ev-stat.hl .ev-stat-value { color: var(--yellow); font-weight: 600; }
+  .ev-detail-hl {
+    background: rgba(245,197,24,0.1);
+    border-radius: 4px;
+    padding: 0.2rem 0.4rem !important;
+    margin: 0 -0.4rem;
+  }
+  .ev-detail-hl span:last-child { font-weight: 500 !important; color: var(--yellow); }
+
+  /* ═══════════════════════════════════════
+     LISTADO VIEW (table)
+     ═══════════════════════════════════════ */
+  .results-table-wrap {
+    overflow-x: auto;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #fff;
+  }
+  .results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+  .results-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .results-table th {
+    background: var(--black);
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.7rem 0.75rem;
+    text-align: left;
+    border: none;
+  }
+  .results-table th.col-num { text-align: right; }
+  .results-table th.col-tipo { text-align: center; }
+
+  .results-table td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid #eee;
+    color: var(--black);
+    font-weight: 400;
+  }
+  .results-table td.col-num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .results-table td.col-tipo {
+    text-align: center;
+  }
+  .results-table td small {
+    font-size: 0.625rem;
+    color: #999;
+    margin-left: 0.15rem;
+  }
+
+  /* Autonomia column highlight */
+  .col-autonomia strong {
+    color: var(--yellow);
+    font-weight: 600;
+  }
+
+  /* Price column */
+  .col-precio { font-weight: 500 !important; }
+
+  /* Row modelo info */
+  .row-modelo { display: flex; flex-direction: column; }
+  .row-marca {
+    font-size: 0.5625rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #999;
+    line-height: 1.2;
+  }
+  .row-nombre {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--black);
+    line-height: 1.3;
+  }
+
+  /* Badges inside table */
+  .col-tipo .badge { margin: 0.1rem; }
+
+  /* Alternating row colors */
+  .ev-row:nth-child(even) td { background: #fafaf8; }
+  .ev-row:hover td { background: rgba(245,197,24,0.08); }
+
+  /* ── Active-filter highlights (table) ── */
+  .th-hl {
+    background: var(--yellow) !important;
+    color: var(--black) !important;
+  }
+  .col-hl {
+    background: rgba(245,197,24,0.08) !important;
+    font-weight: 500;
+  }
+  .ev-row:nth-child(even) td.col-hl { background: rgba(245,197,24,0.10) !important; }
+  .ev-row:hover td.col-hl { background: rgba(245,197,24,0.18) !important; }
+
+  /* ── Methodology ──────────────────────── */
+  .comp-methodology {
+    padding: 2rem 0;
+    border-top: 1px solid #ddd;
+    background: #F0EDE8;
+  }
+  .comp-methodology p {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    color: var(--gray-600);
+    line-height: 1.6;
+    max-width: 700px;
+  }
+  .comp-methodology .t-small { margin-bottom: 0.5rem; color: #999; }
+</style>
