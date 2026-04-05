@@ -4,7 +4,9 @@
   "version": "0.3.0",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "data:migrate": "node scripts/data-pipeline/migrate.mjs",
+    "data:build": "node scripts/data-pipeline/build.mjs",
+    "build": "npm run data:build && astro build",
     "preview": "astro preview"
   },
   "dependencies": {

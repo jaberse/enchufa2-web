@@ -1,0 +1,200 @@
+{
+  "id": "mini-aceman-se",
+  "slug": "mini-aceman-se",
+  "marca": "Mini",
+  "modelo": "Aceman",
+  "variante": "SE",
+  "nombre_completo": "Mini Aceman SE",
+  "segmento": "Compacto",
+  "imagen": "/comparador/mini-aceman-se.webp",
+  "specs": {
+    "bateria_neta_kwh": {
+      "valor": 49.2,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kWh"
+    },
+    "bateria_bruta_kwh": {
+      "valor": 54.2,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kWh"
+    },
+    "quimica": {
+      "valor": "NMC",
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "voltaje": {
+      "valor": 400,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "V"
+    },
+    "carga_dc_max_kw": {
+      "valor": 95,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kW"
+    },
+    "carga_ac_max_kw": {
+      "valor": 11,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kW"
+    },
+    "t_10_80_min": {
+      "valor": 29,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "min"
+    },
+    "conector_dc": {
+      "valor": "CCS2",
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "bomba_calor": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "potencia_cv": {
+      "valor": 218,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "CV"
+    },
+    "potencia_kw": {
+      "valor": 160,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kW"
+    },
+    "par_nm": {
+      "valor": 330,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "Nm"
+    },
+    "traccion": {
+      "valor": "FWD",
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "n_motores": {
+      "valor": 1,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "aceleracion_0_100_s": {
+      "valor": 7.1,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "s"
+    },
+    "velocidad_max_kmh": {
+      "valor": 170,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "km/h"
+    },
+    "autonomia_wltp_km": {
+      "valor": 405,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "km"
+    },
+    "consumo_wltp_kwh100km": {
+      "valor": 14.7,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kWh/100km"
+    },
+    "largo_mm": {
+      "valor": 4079,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "ancho_mm": {
+      "valor": 1754,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "alto_mm": {
+      "valor": 1514,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "batalla_mm": {
+      "valor": 2570,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "diametro_giro_m": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "m"
+    },
+    "cx": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "maletero_l": {
+      "valor": 300,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "L"
+    },
+    "frunk_l": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "L"
+    },
+    "capacidad_remolque_kg": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kg"
+    },
+    "peso_kg": {
+      "valor": 1785,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kg"
+    },
+    "pvp": {
+      "valor": 35055,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "€"
+    },
+    "pvp_fecha": {
+      "valor": "2026-04",
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "garantia_bateria": {
+      "valor": "8 años / 160.000 km",
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "plan_auto_elegible": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    }
+  },
+  "meta": {
+    "fecha_actualizacion": null,
+    "estado": "pendiente",
+    "notas_my": null
+  }
+}

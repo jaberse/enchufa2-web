@@ -1,0 +1,200 @@
+{
+  "id": "cupra-born-58-kwh",
+  "slug": "cupra-born-58-kwh",
+  "marca": "Cupra",
+  "modelo": "Born",
+  "variante": "58 kWh",
+  "nombre_completo": "Cupra Born 58 kWh",
+  "segmento": "Compacto",
+  "imagen": "/comparador/cupra-born-58-kwh.webp",
+  "specs": {
+    "bateria_neta_kwh": {
+      "valor": 58,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kWh"
+    },
+    "bateria_bruta_kwh": {
+      "valor": 62,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kWh"
+    },
+    "quimica": {
+      "valor": "NMC",
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "voltaje": {
+      "valor": 400,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "V"
+    },
+    "carga_dc_max_kw": {
+      "valor": 120,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kW"
+    },
+    "carga_ac_max_kw": {
+      "valor": 11,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kW"
+    },
+    "t_10_80_min": {
+      "valor": 35,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "min"
+    },
+    "conector_dc": {
+      "valor": "CCS2",
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "bomba_calor": {
+      "valor": "Sí",
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "potencia_cv": {
+      "valor": 204,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "CV"
+    },
+    "potencia_kw": {
+      "valor": 150,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kW"
+    },
+    "par_nm": {
+      "valor": 310,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "Nm"
+    },
+    "traccion": {
+      "valor": "RWD",
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "n_motores": {
+      "valor": 1,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "aceleracion_0_100_s": {
+      "valor": 7,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "s"
+    },
+    "velocidad_max_kmh": {
+      "valor": 160,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "km/h"
+    },
+    "autonomia_wltp_km": {
+      "valor": 424,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "km"
+    },
+    "consumo_wltp_kwh100km": {
+      "valor": 15.5,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kWh/100km"
+    },
+    "largo_mm": {
+      "valor": 4322,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "ancho_mm": {
+      "valor": 1809,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "alto_mm": {
+      "valor": 1537,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "batalla_mm": {
+      "valor": 2767,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "diametro_giro_m": {
+      "valor": 10.2,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "m"
+    },
+    "cx": {
+      "valor": 0.267,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "maletero_l": {
+      "valor": 385,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "L"
+    },
+    "frunk_l": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "L"
+    },
+    "capacidad_remolque_kg": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kg"
+    },
+    "peso_kg": {
+      "valor": 1820,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kg"
+    },
+    "pvp": {
+      "valor": 36820,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "€"
+    },
+    "pvp_fecha": {
+      "valor": "2026-03",
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "garantia_bateria": {
+      "valor": "8 años / 160.000 km",
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "plan_auto_elegible": {
+      "valor": "Sí",
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    }
+  },
+  "meta": {
+    "fecha_actualizacion": null,
+    "estado": "pendiente",
+    "notas_my": null
+  }
+}
