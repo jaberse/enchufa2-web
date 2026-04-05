@@ -14,29 +14,34 @@
       "verificado": false
     },
     "carroceria": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false
+      "valor": "SUV urbano",
+      "fuente_tipo": "base_datos",
+      "fuente_fecha": "2026-04-05",
+      "verificado": true
     },
     "estado_comercial": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false
+      "valor": "a la venta",
+      "fuente_tipo": "base_datos",
+      "fuente_fecha": "2026-04-05",
+      "verificado": true
     },
     "pais_fabricacion": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false
+      "valor": "Polonia (Tychy)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-05",
+      "verificado": true
     },
     "plataforma": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false
+      "valor": "e-CMP2 (Stellantis)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-05",
+      "verificado": true
     },
     "fecha_lanzamiento_es": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false
+      "valor": "2023",
+      "fuente_tipo": "prensa/fabricante",
+      "fuente_fecha": "2026-04-05",
+      "verificado": true
     },
     "bateria_neta_kwh": {
       "valor": 50.8,
@@ -532,7 +537,7 @@
     }
   },
   "meta": {
-    "fecha_actualizacion": null,
+    "fecha_actualizacion": "2026-04-05",
     "estado": "pendiente",
     "notas_my": null
   }

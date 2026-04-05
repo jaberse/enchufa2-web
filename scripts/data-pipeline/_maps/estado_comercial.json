@@ -1,0 +1,190 @@
+{
+  "fuente_tipo": "base_datos",
+  "fuente_nombre": "enchufa2 (disponibilidad España)",
+  "verificado": true,
+  "valores": {
+    "audi-q4-e-tron-45": {
+      "valor": "a la venta"
+    },
+    "audi-q6-e-tron-performance": {
+      "valor": "a la venta"
+    },
+    "bmw-i4-edrive40": {
+      "valor": "a la venta"
+    },
+    "bmw-i5-edrive40": {
+      "valor": "a la venta"
+    },
+    "bmw-ix1-xdrive30": {
+      "valor": "a la venta"
+    },
+    "bmw-ix2-xdrive30": {
+      "valor": "a la venta"
+    },
+    "byd-atto-3-comfort": {
+      "valor": "a la venta"
+    },
+    "byd-dolphin-60kwh": {
+      "valor": "a la venta"
+    },
+    "byd-dolphin-surf-comfort": {
+      "valor": "a la venta"
+    },
+    "byd-seal-awd-excellence": {
+      "valor": "a la venta"
+    },
+    "byd-seal-u-87-design": {
+      "valor": "a la venta"
+    },
+    "citroen-e-c3-you": {
+      "valor": "a la venta"
+    },
+    "cupra-born-58-kwh": {
+      "valor": "a la venta"
+    },
+    "cupra-tavascan-vz": {
+      "valor": "a la venta"
+    },
+    "dacia-spring-essential": {
+      "valor": "a la venta"
+    },
+    "fiat-500e-la-prima": {
+      "valor": "a la venta"
+    },
+    "ford-explorer-ev-standard-range-rwd": {
+      "valor": "a la venta"
+    },
+    "ford-puma-gen-e": {
+      "valor": "a la venta"
+    },
+    "hyundai-inster-long-range": {
+      "valor": "a la venta"
+    },
+    "hyundai-ioniq-5-long-range-awd": {
+      "valor": "a la venta"
+    },
+    "hyundai-ioniq-5-long-range-rwd": {
+      "valor": "a la venta"
+    },
+    "hyundai-ioniq-6-long-range-rwd": {
+      "valor": "a la venta"
+    },
+    "hyundai-kona-electric-65-kwh": {
+      "valor": "a la venta"
+    },
+    "jeep-avenger-electric": {
+      "valor": "a la venta"
+    },
+    "kia-ev3-long-range": {
+      "valor": "a la venta"
+    },
+    "kia-ev6-gt": {
+      "valor": "a la venta"
+    },
+    "kia-ev6-long-range-rwd": {
+      "valor": "a la venta"
+    },
+    "mercedes-eqa-250+": {
+      "valor": "a la venta"
+    },
+    "mercedes-eqb-250-plus": {
+      "valor": "a la venta"
+    },
+    "mg-4-standard-range": {
+      "valor": "a la venta"
+    },
+    "mg-s5-64kwh": {
+      "valor": "a la venta"
+    },
+    "mini-aceman-se": {
+      "valor": "a la venta"
+    },
+    "mini-cooper-se-e": {
+      "valor": "a la venta"
+    },
+    "nissan-ariya-87kwh": {
+      "valor": "a la venta"
+    },
+    "opel-corsa-electric-54kwh": {
+      "valor": "a la venta"
+    },
+    "opel-mokka-e-gs": {
+      "valor": "a la venta"
+    },
+    "peugeot-e-2008-allure": {
+      "valor": "a la venta"
+    },
+    "peugeot-e-208-allure": {
+      "valor": "a la venta"
+    },
+    "polestar-2-long-range-single-motor": {
+      "valor": "a la venta"
+    },
+    "polestar-4-long-range-single-motor": {
+      "valor": "a la venta"
+    },
+    "renault-5-e-tech-comfort-range": {
+      "valor": "a la venta"
+    },
+    "renault-megane-e-tech-ev60": {
+      "valor": "a la venta"
+    },
+    "renault-scenic-e-tech-87kwh": {
+      "valor": "a la venta"
+    },
+    "skoda-elroq-60": {
+      "valor": "a la venta"
+    },
+    "skoda-elroq-85": {
+      "valor": "a la venta"
+    },
+    "skoda-enyaq-85": {
+      "valor": "a la venta"
+    },
+    "smart-1-proplus": {
+      "valor": "a la venta"
+    },
+    "smart-3-proplus": {
+      "valor": "a la venta"
+    },
+    "tesla-model-3-long-range-awd-highland": {
+      "valor": "a la venta"
+    },
+    "tesla-model-3-rwd-highland": {
+      "valor": "a la venta"
+    },
+    "tesla-model-y-awd-long-range": {
+      "valor": "a la venta"
+    },
+    "tesla-model-y-rwd-long-range": {
+      "valor": "a la venta"
+    },
+    "toyota-bz4x-fwd": {
+      "valor": "a la venta"
+    },
+    "volkswagen-id-buzz-pro": {
+      "valor": "a la venta"
+    },
+    "volkswagen-id3-pro-s": {
+      "valor": "a la venta"
+    },
+    "volkswagen-id4-gtx": {
+      "valor": "a la venta"
+    },
+    "volkswagen-id4-pro-performance": {
+      "valor": "a la venta"
+    },
+    "volkswagen-id7-pro-s": {
+      "valor": "a la venta"
+    },
+    "volvo-ex30-single-motor-extended-range": {
+      "valor": "a la venta"
+    },
+    "volvo-ex30-single-motor": {
+      "valor": "a la venta"
+    },
+    "volvo-ex40-recharge-single-motor": {
+      "valor": "a la venta"
+    }
+  }
+}

@@ -6,6 +6,8 @@
     "dev": "astro dev",
     "data:migrate": "node scripts/data-pipeline/migrate.mjs",
     "data:upgrade": "node scripts/data-pipeline/upgrade.mjs",
+    "data:audit": "node scripts/data-pipeline/audit.mjs",
+    "data:set": "node scripts/data-pipeline/set-field.mjs",
     "data:build": "node scripts/data-pipeline/build.mjs",
     "build": "npm run data:build && astro build",
     "preview": "astro preview"
