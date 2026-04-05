@@ -14,6 +14,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { FIELD_ORDER } from './fields.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '../..');
@@ -62,22 +63,14 @@ function flattenRich(rich, idMap, nextIdRef) {
 }
 
 function orderFlat(flat) {
-  // Orden de campos estable y legible (similar al actual)
-  const order = [
-    'id', 'slug', 'marca', 'modelo', 'variante', 'nombre_completo', 'tipo',
-    'pvp', 'potencia_kw', 'potencia_cv', 'par_nm', 'traccion', 'voltaje',
-    'bateria_bruta_kwh', 'bateria_neta_kwh', 'quimica',
-    'autonomia_wltp_km', 'consumo_wltp_kwh100km',
-    'carga_dc_max_kw', 't_10_80_min', 'carga_ac_max_kw',
-    'aceleracion_0_100_s', 'velocidad_max_kmh',
-    'largo_mm', 'ancho_mm', 'alto_mm', 'peso_kg', 'maletero_l',
-    'cx', 'bomba_calor', 'foto', 'garantia_bateria', 'frunk_l',
-    'capacidad_remolque_kg', 'batalla_mm', 'n_motores', 'conector_dc',
-    'plan_auto_elegible', 'diametro_giro_m', 'pvp_fecha',
+  // Identidad primero, luego foto, luego todos los campos del registro en orden
+  const identityOrder = [
+    'id', 'slug', 'marca', 'modelo', 'variante', 'nombre_completo', 'tipo', 'foto',
   ];
   const ordered = {};
-  for (const k of order) if (k in flat) ordered[k] = flat[k];
-  // campos extras al final
+  for (const k of identityOrder) if (k in flat) ordered[k] = flat[k];
+  for (const k of FIELD_ORDER) if (k in flat) ordered[k] = flat[k];
+  // Cualquier campo no previsto va al final
   for (const k of Object.keys(flat)) if (!(k in ordered)) ordered[k] = flat[k];
   return ordered;
 }

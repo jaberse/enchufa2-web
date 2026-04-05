@@ -100,14 +100,41 @@ motor distinto, facelift), se crea **archivo nuevo** con sufijo de MY:
 
 No se actualiza retroactivamente el archivo anterior. Queda como referencia histórica.
 
+## Esquema de campos
+
+El contrato de qué datos rastreamos vive en
+[`scripts/data-pipeline/fields.mjs`](../scripts/data-pipeline/fields.mjs).
+Hay **94 campos** repartidos en **11 grupos**:
+
+| Grupo             | Qué contiene                                           |
+|-------------------|--------------------------------------------------------|
+| Identidad         | MY, carrocería, plataforma, país fabricación           |
+| Batería           | kWh neto/bruto, química, fabricante celda, refrigeración |
+| Carga             | DC máx/media, 10–80 %, AC, V2L/V2H/V2G, preconditioning |
+| Autonomía y consumo | WLTP combinado/urbano, consumo real estimado         |
+| Prestaciones      | kW/CV/Nm, tracción, 0–100, 80–120, velocidad máx       |
+| Dimensiones       | Largo/ancho/alto, batalla, vías, Cx, peso, MMA         |
+| Habitabilidad     | Plazas, maletero, frunk, carga útil, remolque          |
+| Seguridad y ADAS  | Euro NCAP (5 subcategorías), nivel ADAS, sistemas      |
+| Fiabilidad        | Índice enchufa2 + fuentes (JD Power, ADAC, What Car)   |
+| Economía          | PVP, Plan Auto, MOVES, garantías (vehículo y batería), SOH mínimo, mantenimiento |
+| Tecnología        | Pantalla, OTA, CarPlay/AA, cámaras, confort            |
+
+El registro es la fuente única. Añadir un campo =
+editar `fields.mjs` y ejecutar `npm run data:upgrade`.
+
 ## Scripts
 
 ```bash
-# Regenerar archivos individuales desde el comparador.json actual
-# (solo uso inicial o para añadir coches masivamente. No sobrescribe existentes.)
+# (Solo uso inicial) Generar archivos individuales desde el comparador.json
+# plano actual. NO sobrescribe archivos existentes.
 npm run data:migrate
 
-# Construir el comparador.json plano desde los archivos individuales
+# Añadir campos nuevos del registro a archivos existentes (no destructivo).
+# Ejecuta esto después de editar fields.mjs para propagar cambios.
+npm run data:upgrade
+
+# Construir el comparador.json plano desde los archivos individuales.
 npm run data:build
 
 # Build completo de la web (incluye data:build)
