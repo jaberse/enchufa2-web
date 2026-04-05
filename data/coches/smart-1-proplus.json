@@ -8,49 +8,19 @@
   "segmento": "SUV",
   "imagen": "/comparador/smart-1-proplus.webp",
   "specs": {
-    "model_year": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false
-    },
     "carroceria": {
       "valor": "SUV urbano",
       "fuente_tipo": "base_datos",
       "fuente_fecha": "2026-04-05",
       "verificado": true
     },
-    "estado_comercial": {
-      "valor": "a la venta",
-      "fuente_tipo": "base_datos",
-      "fuente_fecha": "2026-04-05",
-      "verificado": true
-    },
-    "pais_fabricacion": {
-      "valor": "China (Xi'an)",
-      "fuente_tipo": "fabricante",
-      "fuente_fecha": "2026-04-05",
-      "verificado": true
-    },
-    "plataforma": {
-      "valor": "SEA (Geely)",
-      "fuente_tipo": "fabricante",
-      "fuente_fecha": "2026-04-05",
-      "verificado": true
-    },
-    "fecha_lanzamiento_es": {
-      "valor": "2023",
-      "fuente_tipo": "prensa/fabricante",
-      "fuente_fecha": "2026-04-05",
-      "verificado": true
+    "traccion": {
+      "valor": "RWD",
+      "fuente_tipo": "pendiente",
+      "verificado": false
     },
     "bateria_neta_kwh": {
       "valor": 62,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "kWh"
-    },
-    "bateria_bruta_kwh": {
-      "valor": 66,
       "fuente_tipo": "pendiente",
       "verificado": false,
       "unidad": "kWh"
@@ -59,6 +29,171 @@
       "valor": "NMC",
       "fuente_tipo": "pendiente",
       "verificado": false
+    },
+    "garantia_bateria_anos": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "años"
+    },
+    "garantia_bateria_km": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "km"
+    },
+    "soh_minimo_garantizado_pct": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "%"
+    },
+    "autonomia_wltp_km": {
+      "valor": 420,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "km"
+    },
+    "autonomia_real_estimada_km": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "km"
+    },
+    "consumo_wltp_kwh100km": {
+      "valor": 17.4,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kWh/100km"
+    },
+    "carga_ac_max_kw": {
+      "valor": 22,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kW"
+    },
+    "carga_dc_max_kw": {
+      "valor": 150,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kW"
+    },
+    "carga_dc_media_10_80_kw": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kW"
+    },
+    "t_10_80_min": {
+      "valor": 30,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "min"
+    },
+    "potencia_cv": {
+      "valor": 272,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "CV"
+    },
+    "aceleracion_0_100_s": {
+      "valor": 6.7,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "s"
+    },
+    "largo_mm": {
+      "valor": 4270,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "ancho_mm": {
+      "valor": 1822,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "alto_mm": {
+      "valor": 1636,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "batalla_mm": {
+      "valor": 2750,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "plazas": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "maletero_l": {
+      "valor": 323,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "L"
+    },
+    "peso_kg": {
+      "valor": 1863,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kg"
+    },
+    "pvp": {
+      "valor": 39500,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "€"
+    },
+    "moves_aplicable": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "pvp_post_moves_eur": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "€"
+    },
+    "fecha_lanzamiento_es": {
+      "valor": "2023",
+      "fuente_tipo": "prensa/fabricante",
+      "fuente_fecha": "2026-04-05",
+      "verificado": false
+    },
+    "estado_comercial": {
+      "valor": "a la venta",
+      "fuente_tipo": "base_datos",
+      "fuente_fecha": "2026-04-05",
+      "verificado": true
+    },
+    "model_year": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "pais_fabricacion": {
+      "valor": "China (Xi'an)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-05",
+      "verificado": false
+    },
+    "plataforma": {
+      "valor": "SEA (Geely)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-05",
+      "verificado": false
+    },
+    "bateria_bruta_kwh": {
+      "valor": 66,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kWh"
     },
     "fabricante_celda": {
       "valor": null,
@@ -81,35 +216,11 @@
       "fuente_tipo": "pendiente",
       "verificado": false
     },
-    "carga_dc_max_kw": {
-      "valor": 150,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "kW"
-    },
-    "carga_dc_media_10_80_kw": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "kW"
-    },
-    "t_10_80_min": {
-      "valor": 30,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "min"
-    },
     "t_para_300km_min": {
       "valor": null,
       "fuente_tipo": "pendiente",
       "verificado": false,
       "unidad": "min"
-    },
-    "carga_ac_max_kw": {
-      "valor": 22,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "kW"
     },
     "t_carga_completa_ac_h": {
       "valor": null,
@@ -153,35 +264,17 @@
       "fuente_tipo": "pendiente",
       "verificado": false
     },
-    "autonomia_wltp_km": {
-      "valor": 420,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "km"
-    },
     "autonomia_wltp_urbana_km": {
       "valor": null,
       "fuente_tipo": "pendiente",
       "verificado": false,
       "unidad": "km"
     },
-    "consumo_wltp_kwh100km": {
-      "valor": 17.4,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "kWh/100km"
-    },
     "consumo_wltp_ciudad_kwh100km": {
       "valor": null,
       "fuente_tipo": "pendiente",
       "verificado": false,
       "unidad": "kWh/100km"
-    },
-    "autonomia_real_estimada_km": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "km"
     },
     "consumo_real_estimado_kwh100km": {
       "valor": null,
@@ -195,33 +288,16 @@
       "verificado": false,
       "unidad": "kW"
     },
-    "potencia_cv": {
-      "valor": 272,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "CV"
-    },
     "par_nm": {
       "valor": 343,
       "fuente_tipo": "pendiente",
       "verificado": false,
       "unidad": "Nm"
     },
-    "traccion": {
-      "valor": "RWD",
-      "fuente_tipo": "pendiente",
-      "verificado": false
-    },
     "n_motores": {
       "valor": 1,
       "fuente_tipo": "pendiente",
       "verificado": false
-    },
-    "aceleracion_0_100_s": {
-      "valor": 6.7,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "s"
     },
     "aceleracion_80_120_s": {
       "valor": null,
@@ -234,30 +310,6 @@
       "fuente_tipo": "pendiente",
       "verificado": false,
       "unidad": "km/h"
-    },
-    "largo_mm": {
-      "valor": 4270,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "mm"
-    },
-    "ancho_mm": {
-      "valor": 1822,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "mm"
-    },
-    "alto_mm": {
-      "valor": 1636,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "mm"
-    },
-    "batalla_mm": {
-      "valor": 2750,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "mm"
     },
     "voladizo_delantero_mm": {
       "valor": null,
@@ -294,28 +346,11 @@
       "fuente_tipo": "pendiente",
       "verificado": false
     },
-    "peso_kg": {
-      "valor": 1863,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "kg"
-    },
     "mma_kg": {
       "valor": null,
       "fuente_tipo": "pendiente",
       "verificado": false,
       "unidad": "kg"
-    },
-    "plazas": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false
-    },
-    "maletero_l": {
-      "valor": 323,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "L"
     },
     "maletero_abatido_l": {
       "valor": null,
@@ -410,12 +445,6 @@
       "fuente_tipo": "pendiente",
       "verificado": false
     },
-    "pvp": {
-      "valor": 39500,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "€"
-    },
     "pvp_fecha": {
       "valor": "2026-04",
       "fuente_tipo": "pendiente",
@@ -432,11 +461,6 @@
       "fuente_tipo": "pendiente",
       "verificado": false
     },
-    "moves_aplicable": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false
-    },
     "garantia_vehiculo_anos": {
       "valor": null,
       "fuente_tipo": "pendiente",
@@ -449,28 +473,10 @@
       "verificado": false,
       "unidad": "km"
     },
-    "garantia_bateria_anos": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "años"
-    },
-    "garantia_bateria_km": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "km"
-    },
     "garantia_bateria": {
       "valor": "8 años / 200.000 km",
       "fuente_tipo": "pendiente",
       "verificado": false
-    },
-    "soh_minimo_garantizado_pct": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "%"
     },
     "mantenimiento_intervalo_anos": {
       "valor": null,

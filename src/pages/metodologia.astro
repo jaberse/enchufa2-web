@@ -1,0 +1,273 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<Layout
+  title="Metodología — enchufa2"
+  description="Cómo recopilamos, verificamos y mantenemos los datos del comparador de coches eléctricos de enchufa2."
+>
+  <Header />
+
+  <main class="metodologia">
+    <article>
+      <header class="hdr">
+        <p class="eyebrow">Metodología</p>
+        <h1>Cómo trabajamos los datos</h1>
+        <p class="deck">
+          Este documento explica qué fuentes usamos, qué significa
+          <em>verificado</em> en enchufa2, cuándo creamos una ficha nueva
+          y qué cosas deliberadamente no tratamos de trazar.
+        </p>
+        <p class="meta">Última actualización: abril 2026</p>
+      </header>
+
+      <section>
+        <h2>01 — Scope</h2>
+        <p>
+          El comparador cubre 31 campos por variante comercial: identidad,
+          batería, autonomía y consumo, carga, prestaciones, dimensiones,
+          economía en España, y meta-datos. Son los datos que un comprador
+          real usa para decidir. Cualquier otra especificación técnica
+          (chasis, ADAS detallado, equipamiento) está fuera del scope
+          actual y puede añadirse en el futuro si lo justifica el uso.
+        </p>
+      </section>
+
+      <section>
+        <h2>02 — Fuentes y jerarquía</h2>
+        <p>
+          Para cada dato registramos el tipo de fuente, el enlace al
+          documento original y la fecha de captura. Priorizamos en este
+          orden:
+        </p>
+        <ol>
+          <li><strong>Fabricante</strong> — web oficial España, ficha técnica descargable o configurador.</li>
+          <li><strong>Homologación</strong> — ciclo WLTP publicado por el fabricante o por la DGT.</li>
+          <li><strong>Test independiente</strong> — revistas técnicas (km77, Auto Motor Sport), bases de datos especializadas (EV-Database, P3 Charging Index).</li>
+          <li><strong>Cálculo propio</strong> — cuando derivamos un dato (ej. precio post-ayudas = PVP − MOVES III), lo marcamos explícitamente.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>03 — Verificación</h2>
+        <p>
+          Un dato está <strong>verificado</strong> cuando cumple todas estas
+          condiciones:
+        </p>
+        <ul>
+          <li>Tiene fuente con URL accesible.</li>
+          <li>La URL se consultó en una fecha concreta (que registramos).</li>
+          <li>Si es un <em>campo héroe</em> (los cinco del apartado 04), está
+              contrastado con al menos dos fuentes independientes.</li>
+        </ul>
+        <p>
+          Las únicas excepciones que marcamos verificadas sin URL son
+          <strong>carrocería</strong> y <strong>estado comercial</strong>,
+          porque son clasificaciones propias de enchufa2, no datos
+          importados.
+        </p>
+      </section>
+
+      <section>
+        <h2>04 — Campos héroe</h2>
+        <p>
+          Estos cinco datos son los que diferencian a un coche eléctrico
+          en el uso real, y exigen contrastar siempre al menos dos fuentes:
+        </p>
+        <ul>
+          <li>Autonomía real estimada a 120 km/h</li>
+          <li>Consumo WLTP</li>
+          <li>Potencia de carga DC pico</li>
+          <li>Tiempo de carga 10–80%</li>
+          <li>SoH mínimo garantizado por el fabricante</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>05 — Cuándo creamos ficha nueva</h2>
+        <p>
+          Creamos una fila nueva en el comparador cuando cambia al menos
+          uno de estos tres elementos fundamentales respecto a la variante
+          anterior:
+        </p>
+        <ul>
+          <li>Batería (capacidad neta, química o proveedor de celda declarado)</li>
+          <li>Motor (potencia, número de motores o tracción)</li>
+          <li>Plataforma (cambio estructural, no solo refresh estético)</li>
+        </ul>
+        <p>
+          Solo <strong>actualizamos la ficha existente</strong> si cambia
+          el precio, el equipamiento sin tocar mecánica, o se corrige un
+          dato por nueva información de fuente.
+        </p>
+        <p>
+          Cuando una variante queda sustituida (ej: Tesla Model 3 Highland
+          sustituye al anterior Model 3), la ficha vieja se conserva con
+          su estado comercial marcado como <em>sustituido por</em>, y sigue
+          visible en el comparador. No borramos historia. Por defecto
+          mostramos todas las filas; el filtro <em>"Solo a la venta
+          actualmente"</em> permite al usuario restringir la vista si
+          prefiere.
+        </p>
+      </section>
+
+      <section>
+        <h2>06 — Qué no trazamos</h2>
+        <p>
+          Hay información pública pero inestable que hemos decidido no
+          perseguir para mantener el rigor del resto:
+        </p>
+        <ul>
+          <li>
+            <strong>Proveedor de celda por lote de fabricación.</strong>
+            Un mismo modelo puede llevar celdas de distintos fabricantes
+            según fábrica y mes. Ningún medio del sector traza esto de
+            forma pública. Usamos el dato declarado por el fabricante
+            cuando existe, y lo tratamos como referencia, no como
+            garantía por unidad.
+          </li>
+          <li>
+            <strong>Cambios silenciosos de hardware entre facelifts.</strong>
+            Actualizamos la ficha cuando el fabricante comunica el
+            cambio. Si hay un cambio no anunciado (ej. nuevo inversor),
+            lo reflejamos cuando tenemos confirmación verificable.
+          </li>
+          <li>
+            <strong>Configuraciones de equipamiento.</strong> El comparador
+            trata la variante técnica, no el paquete de opciones.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>07 — Mantenimiento</h2>
+        <p>
+          Cada fila tiene una fecha de última actualización. Revisamos
+          todas las fichas al menos cada seis meses y actualizamos las
+          que hayan cambiado en fuente. Los campos de precio y ayudas
+          (MOVES III) los revisamos con mayor frecuencia por ser los
+          más volátiles.
+        </p>
+        <p>
+          Si detectas un dato incorrecto, escríbenos: el error y la
+          fuente correcta nos ayudan a mejorar el comparador para
+          todos.
+        </p>
+      </section>
+
+      <footer class="foot">
+        <p>
+          enchufa2 no acepta pagos ni patrocinios de fabricantes para
+          incluir o modificar datos. El comparador se mantiene por
+          independencia editorial.
+        </p>
+      </footer>
+    </article>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .metodologia {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 6vw, 3rem);
+    font-family: var(--font-sans);
+    color: var(--gray-600);
+    line-height: 1.7;
+  }
+
+  .hdr {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  .eyebrow {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gray-400);
+    margin: 0 0 0.75rem 0;
+  }
+
+  .hdr h1 {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--black);
+    margin: 0 0 1.25rem 0;
+  }
+
+  .deck {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--gray-600);
+    margin: 0 0 1rem 0;
+  }
+
+  .meta {
+    font-size: 0.8rem;
+    color: var(--gray-400);
+    margin: 0;
+  }
+
+  section {
+    margin: 2.75rem 0;
+  }
+
+  section h2 {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 1.25rem;
+    color: var(--black);
+    letter-spacing: -0.01em;
+    margin: 0 0 1rem 0;
+  }
+
+  section p {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+  }
+
+  section ul, section ol {
+    margin: 0 0 1rem 0;
+    padding-left: 1.25rem;
+  }
+
+  section li {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+
+  section strong {
+    color: var(--black);
+    font-weight: 500;
+  }
+
+  section em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--black);
+  }
+
+  .foot {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-100);
+    font-size: 0.85rem;
+    color: var(--gray-400);
+  }
+
+  .foot p {
+    margin: 0;
+  }
+</style>
