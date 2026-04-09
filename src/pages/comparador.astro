@@ -2720,12 +2720,10 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     min-width: 160px;
     max-height: 260px;
     overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
+    scrollbar-width: none;          /* Firefox: ocultar scrollbar */
+    -ms-overflow-style: none;       /* Edge legacy */
   }
-  .cat-popover::-webkit-scrollbar { width: 4px; }
-  .cat-popover::-webkit-scrollbar-track { background: transparent; }
-  .cat-popover::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .cat-popover::-webkit-scrollbar { display: none; }  /* Chrome/Safari/Edge */
   [data-theme="dark"] .cat-popover {
     box-shadow: 0 12px 32px rgba(0,0,0,0.4);
   }
