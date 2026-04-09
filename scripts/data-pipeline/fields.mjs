@@ -69,10 +69,14 @@ export const FIELD_REGISTRY = {
   maletero_l:                   { group: 'dimensiones', unit: 'L',  kind: 'number', difficulty: 'facil', source: 'fabricante' },
   peso_kg:                      { group: 'dimensiones', unit: 'kg', kind: 'number', difficulty: 'facil', source: 'homologacion' },
 
-  // ─── Economía España (3) ───────────────────────────────────────────────
-  pvp:                          { group: 'economia', unit: '€', kind: 'number', difficulty: 'facil', source: 'fabricante' },
-  moves_aplicable:              { group: 'economia', unit: null, kind: 'bool',  difficulty: 'media', source: 'MITECO' },
-  pvp_post_moves_eur:           { group: 'economia', unit: '€', kind: 'number', difficulty: 'media', source: 'calculo_propio (pvp − ayudas)' },
+  // ─── Economía España (7) ───────────────────────────────────────────────
+  pvp:                          { group: 'economia', unit: '€',  kind: 'number', difficulty: 'facil', source: 'fabricante' },
+  pais_ensamblaje:              { group: 'economia', unit: null,  kind: 'text',   difficulty: 'media', source: 'investigacion_web (VIN/fabricante)' },
+  bateria_ensamblaje_ue:        { group: 'economia', unit: null,  kind: 'bool',   difficulty: 'media', source: 'investigacion_web (fabricante/prensa)' },
+  plan_auto_elegible:           { group: 'economia', unit: null,  kind: 'text',   difficulty: 'facil', source: 'calculado (fórmula EEE Plan Auto+ 2026)' },
+  ayuda_plan_auto_eur:          { group: 'economia', unit: '€',  kind: 'number', difficulty: 'facil', source: 'calculado (fórmula EEE Plan Auto+ 2026)' },
+  pvp_con_plan_auto_eur:        { group: 'economia', unit: '€',  kind: 'number', difficulty: 'facil', source: 'calculado (pvp − ayuda)' },
+  moves_aplicable:              { group: 'economia', unit: null,  kind: 'bool',   difficulty: 'media', source: 'MITECO (programa cerrado)' },
 
   // ─── Meta (2) ──────────────────────────────────────────────────────────
   fecha_lanzamiento_es:         { group: 'meta', unit: null, kind: 'text', difficulty: 'media', source: 'prensa/fabricante' },

@@ -452,14 +452,17 @@
     },
     "pvp_con_plan_auto_eur": {
       "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "fuente_tipo": "calculado",
+      "fuente_fecha": "2026-04-09",
+      "verificado": true,
       "unidad": "€"
     },
     "plan_auto_elegible": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false
+      "valor": "No",
+      "fuente_tipo": "calculado",
+      "fuente_fecha": "2026-04-09",
+      "verificado": true,
+      "notas": "PVP sin IVA > 45.000€"
     },
     "garantia_vehiculo_anos": {
       "valor": null,
@@ -540,6 +543,27 @@
       "valor": null,
       "fuente_tipo": "pendiente",
       "verificado": false
+    },
+    "pais_ensamblaje": {
+      "valor": "Alemania",
+      "ciudad": "Ratisbona",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-09",
+      "verificado": true,
+      "notas": "Regensburg, bat. Regensburg"
+    },
+    "bateria_ensamblaje_ue": {
+      "valor": true,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-09",
+      "verificado": true
+    },
+    "ayuda_plan_auto_eur": {
+      "valor": 0,
+      "fuente_tipo": "calculado",
+      "fuente_fecha": "2026-04-09",
+      "verificado": true,
+      "unidad": "€"
     }
   },
   "meta": {

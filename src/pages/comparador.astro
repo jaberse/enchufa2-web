@@ -12,6 +12,7 @@ const tracciones = [...new Set(modelos.map(m => m.traccion).filter(Boolean))].so
 const quimicas = [...new Set(modelos.map(m => m.quimica).filter(Boolean))].sort();
 const voltajes = [...new Set(modelos.map(m => m.voltaje).filter(Boolean))].sort((a,b) => a - b);
 const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].sort();
+const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(Boolean))].sort();
 ---
 
 <Layout
@@ -154,6 +155,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
             la web oficial del fabricante para el precio vigente.
             Última actualización: abril 2026.
           </p>
+          <p class="meth-label" style="margin-top: .8rem;">Sobre las ayudas Plan Auto+ 2026</p>
+          <p>
+            Las ayudas mostradas corresponden a la <strong>variante concreta listada</strong> de cada modelo
+            y se calculan según la fórmula EEE (Eléctrico + Económico + Europeo) del programa
+            Plan Auto+ 2026 para particulares (categoría M1). El importe puede variar entre variantes
+            del mismo modelo si difieren en precio, país de ensamblaje u origen de la batería.
+            Verifica siempre la ayuda aplicable a tu configuración concreta en el punto de venta.
+            Datos de ensamblaje basados en fuentes de fabricante y registros de homologación a fecha de abril 2026.
+          </p>
         </div>
 
       </div>
@@ -169,46 +179,69 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     traccionesData: tracciones,
     quimicasData: quimicas,
     voltajesData: voltajes,
-    bombaOptsData: bombaOpts
+    bombaOptsData: bombaOpts,
+    planAutoOptsData: planAutoOpts
   }}>
     // ═══════════════════════════════════════════════════════
-    // FIELD DEFINITIONS
+    // FIELD DEFINITIONS (organized by category)
     // ═══════════════════════════════════════════════════════
+    const FIELD_GROUPS = [
+      { id: 'precio',       label: 'Precio y garantía',      icon: '💰' },
+      { id: 'autonomia',    label: 'Autonomía y eficiencia',  icon: '⚡' },
+      { id: 'bateria',      label: 'Batería y carga',         icon: '🔋' },
+      { id: 'rendimiento',  label: 'Rendimiento',             icon: '🏎️' },
+      { id: 'dimensiones',  label: 'Dimensiones y espacio',   icon: '📐' },
+    ];
+
     const FIELDS = [
-      { id:'autonomia',     label:'Autonomía',      shortLabel:'Auton.',  unit:'km',        key:'autonomia_wltp_km',       dflt:false, sortAsc:false, filterType:'min' },
-      { id:'potencia_cv',   label:'Potencia',        shortLabel:'Pot.',    unit:'CV',        key:'potencia_cv',             dflt:true,  sortAsc:false, filterType:'min' },
-      { id:'potencia_kw',   label:'Potencia (kW)',   shortLabel:'Pot.kW',  unit:'kW',        key:'potencia_kw',             dflt:false, sortAsc:false, filterType:'min' },
-      { id:'par',           label:'Par motor',       shortLabel:'Par',     unit:'Nm',        key:'par_nm',                  dflt:false, sortAsc:false, filterType:'min' },
-      { id:'carga_dc',      label:'Carga DC',        shortLabel:'DC',      unit:'kW',        key:'carga_dc_max_kw',         dflt:true,  sortAsc:false, filterType:'min' },
-      { id:'carga_ac',      label:'Carga AC',        shortLabel:'AC',      unit:'kW',        key:'carga_ac_max_kw',         dflt:false, sortAsc:false, filterType:'min' },
-      { id:'t_10_80',       label:'T 10→80%',        shortLabel:'10→80',   unit:'min',       key:'t_10_80_min',             dflt:false, sortAsc:true,  filterType:'max' },
-      { id:'bateria_neta',  label:'Batería neta',    shortLabel:'Bat.',    unit:'kWh',       key:'bateria_neta_kwh',        dflt:true,  sortAsc:false, filterType:'min', dec:1 },
-      { id:'bateria_bruta', label:'Batería bruta',   shortLabel:'Bat.br',  unit:'kWh',       key:'bateria_bruta_kwh',       dflt:false, sortAsc:false, filterType:'min' },
-      { id:'maletero',      label:'Maletero',        shortLabel:'Malet.',  unit:'L',         key:'maletero_l',              dflt:true,  sortAsc:false, filterType:'min' },
-      { id:'aceleracion',   label:'0-100',           shortLabel:'0-100',   unit:'s',         key:'aceleracion_0_100_s',     dflt:true,  sortAsc:true,  filterType:'max', dec:1 },
-      { id:'vel_max',       label:'Vel. máx',        shortLabel:'Vmáx',    unit:'km/h',      key:'velocidad_max_kmh',       dflt:false, sortAsc:false, filterType:'min' },
-      { id:'consumo',       label:'Consumo',         shortLabel:'Cons.',   unit:'kWh/100',   key:'consumo_wltp_kwh100km',   dflt:true,  sortAsc:true,  filterType:'max', dec:1 },
-      { id:'peso',          label:'Peso',            shortLabel:'Peso',    unit:'kg',        key:'peso_kg',                 dflt:true,  sortAsc:true,  filterType:'max' },
-      { id:'pvp',           label:'PVP',             shortLabel:'PVP',     unit:'€',         key:'pvp',                     dflt:true,  sortAsc:true,  filterType:'max', fmt:'eur' },
-      { id:'cx',            label:'Cx',              shortLabel:'Cx',      unit:'',          key:'cx',                      dflt:false, sortAsc:true,  filterType:'max', dec:3 },
-      { id:'largo',         label:'Largo',           shortLabel:'Largo',   unit:'mm',        key:'largo_mm',                dflt:false, sortAsc:false, filterType:'min' },
-      { id:'ancho',         label:'Ancho',           shortLabel:'Ancho',   unit:'mm',        key:'ancho_mm',                dflt:false, sortAsc:false, filterType:'min' },
-      { id:'alto',          label:'Alto',            shortLabel:'Alto',    unit:'mm',        key:'alto_mm',                 dflt:false, sortAsc:false, filterType:'min' },
-      { id:'batalla',       label:'Batalla',         shortLabel:'Bat.mm',  unit:'mm',        key:'batalla_mm',              dflt:false, sortAsc:false, filterType:'min' },
-      { id:'diametro_giro', label:'Diám. giro',      shortLabel:'D.giro',  unit:'m',         key:'diametro_giro_m',         dflt:false, sortAsc:true,  filterType:'max', dec:1 },
-      { id:'frunk',         label:'Frunk',           shortLabel:'Frunk',   unit:'L',         key:'frunk_l',                 dflt:false, sortAsc:false, filterType:'min' },
-      { id:'remolque',      label:'Remolque',        shortLabel:'Remolq.', unit:'kg',        key:'capacidad_remolque_kg',   dflt:false, sortAsc:false, filterType:'min' },
-      { id:'garantia_anos', label:'Garantía años',   shortLabel:'Gar.años', unit:'años',     key:'garantia_bateria',        dflt:false, sortAsc:false, filterType:'min', derive: (m) => { const s = m.garantia_bateria; if (!s) return null; const x = String(s).match(/(\d+)\s*año/i); return x ? parseInt(x[1], 10) : null; } },
-      { id:'garantia_km',   label:'Garantía km',     shortLabel:'Gar.km',  unit:'km',        key:'garantia_bateria',        dflt:false, sortAsc:false, filterType:'min', derive: (m) => { const s = m.garantia_bateria; if (!s) return null; const x = String(s).match(/([\d.]+)\s*km/i); return x ? parseInt(x[1].replace(/\./g, ''), 10) : null; }, fmt:'mmDot' },
+      // ── Precio y garantía ──
+      { id:'pvp',           label:'PVP',             shortLabel:'PVP',     unit:'€',         key:'pvp',                     dflt:true,  sortAsc:true,  filterType:'max', fmt:'eur',  group:'precio' },
+      { id:'ayuda_auto',    label:'Ayuda Auto+',     shortLabel:'Auto+',   unit:'€',         key:'ayuda_plan_auto_eur',     dflt:false, sortAsc:false, filterType:'min', fmt:'eur',  group:'precio' },
+      { id:'pvp_efectivo',  label:'PVP efectivo',    shortLabel:'PVP ef.', unit:'€',         key:'pvp_con_plan_auto_eur',   dflt:false, sortAsc:true,  filterType:'max', fmt:'eur',  group:'precio' },
+      { id:'garantia_anos', label:'Garantía años',   shortLabel:'Gar.años', unit:'años',     key:'garantia_bateria',        dflt:false, sortAsc:false, filterType:'min', group:'precio', derive: (m) => { const s = m.garantia_bateria; if (!s) return null; const x = String(s).match(/(\d+)\s*año/i); return x ? parseInt(x[1], 10) : null; } },
+      { id:'garantia_km',   label:'Garantía km',     shortLabel:'Gar.km',  unit:'km',        key:'garantia_bateria',        dflt:false, sortAsc:false, filterType:'min', group:'precio', derive: (m) => { const s = m.garantia_bateria; if (!s) return null; const x = String(s).match(/([\d.]+)\s*km/i); return x ? parseInt(x[1].replace(/\./g, ''), 10) : null; }, fmt:'mmDot' },
+      // ── Autonomía y eficiencia ──
+      { id:'autonomia',     label:'Autonomía',       shortLabel:'Auton.',  unit:'km',        key:'autonomia_wltp_km',       dflt:false, sortAsc:false, filterType:'min', group:'autonomia' },
+      { id:'consumo',       label:'Consumo',         shortLabel:'Cons.',   unit:'kWh/100',   key:'consumo_wltp_kwh100km',   dflt:true,  sortAsc:true,  filterType:'max', dec:1,      group:'autonomia' },
+      { id:'cx',            label:'Cx',              shortLabel:'Cx',      unit:'',          key:'cx',                      dflt:false, sortAsc:true,  filterType:'max', dec:3,      group:'autonomia' },
+      // ── Batería y carga ──
+      { id:'bateria_neta',  label:'Batería neta',    shortLabel:'Bat.',    unit:'kWh',       key:'bateria_neta_kwh',        dflt:true,  sortAsc:false, filterType:'min', dec:1,      group:'bateria' },
+      { id:'bateria_bruta', label:'Batería bruta',   shortLabel:'Bat.br',  unit:'kWh',       key:'bateria_bruta_kwh',       dflt:false, sortAsc:false, filterType:'min',             group:'bateria' },
+      { id:'carga_dc',      label:'Carga DC',        shortLabel:'DC',      unit:'kW',        key:'carga_dc_max_kw',         dflt:true,  sortAsc:false, filterType:'min',             group:'bateria' },
+      { id:'carga_ac',      label:'Carga AC',        shortLabel:'AC',      unit:'kW',        key:'carga_ac_max_kw',         dflt:false, sortAsc:false, filterType:'min',             group:'bateria' },
+      { id:'t_10_80',       label:'T 10→80%',        shortLabel:'10→80',   unit:'min',       key:'t_10_80_min',             dflt:false, sortAsc:true,  filterType:'max',             group:'bateria' },
+      // ── Rendimiento ──
+      { id:'potencia_cv',   label:'Potencia',        shortLabel:'Pot.',    unit:'CV',        key:'potencia_cv',             dflt:true,  sortAsc:false, filterType:'min',             group:'rendimiento' },
+      { id:'potencia_kw',   label:'Potencia (kW)',   shortLabel:'Pot.kW',  unit:'kW',        key:'potencia_kw',             dflt:false, sortAsc:false, filterType:'min',             group:'rendimiento' },
+      { id:'par',           label:'Par motor',       shortLabel:'Par',     unit:'Nm',        key:'par_nm',                  dflt:false, sortAsc:false, filterType:'min',             group:'rendimiento' },
+      { id:'aceleracion',   label:'0-100',           shortLabel:'0-100',   unit:'s',         key:'aceleracion_0_100_s',     dflt:true,  sortAsc:true,  filterType:'max', dec:1,      group:'rendimiento' },
+      { id:'vel_max',       label:'Vel. máx',        shortLabel:'Vmáx',    unit:'km/h',      key:'velocidad_max_kmh',       dflt:false, sortAsc:false, filterType:'min',             group:'rendimiento' },
+      // ── Dimensiones y espacio ──
+      { id:'peso',          label:'Peso',            shortLabel:'Peso',    unit:'kg',        key:'peso_kg',                 dflt:true,  sortAsc:true,  filterType:'max',             group:'dimensiones' },
+      { id:'maletero',      label:'Maletero',        shortLabel:'Malet.',  unit:'L',         key:'maletero_l',              dflt:true,  sortAsc:false, filterType:'min',             group:'dimensiones' },
+      { id:'frunk',         label:'Frunk',           shortLabel:'Frunk',   unit:'L',         key:'frunk_l',                 dflt:false, sortAsc:false, filterType:'min',             group:'dimensiones' },
+      { id:'remolque',      label:'Remolque',        shortLabel:'Remolq.', unit:'kg',        key:'capacidad_remolque_kg',   dflt:false, sortAsc:false, filterType:'min',             group:'dimensiones' },
+      { id:'largo',         label:'Largo',           shortLabel:'Largo',   unit:'mm',        key:'largo_mm',                dflt:false, sortAsc:false, filterType:'min',             group:'dimensiones' },
+      { id:'ancho',         label:'Ancho',           shortLabel:'Ancho',   unit:'mm',        key:'ancho_mm',                dflt:false, sortAsc:false, filterType:'min',             group:'dimensiones' },
+      { id:'alto',          label:'Alto',            shortLabel:'Alto',    unit:'mm',        key:'alto_mm',                 dflt:false, sortAsc:false, filterType:'min',             group:'dimensiones' },
+      { id:'batalla',       label:'Batalla',         shortLabel:'Bat.mm',  unit:'mm',        key:'batalla_mm',              dflt:false, sortAsc:false, filterType:'min',             group:'dimensiones' },
+      { id:'diametro_giro', label:'Diám. giro',      shortLabel:'D.giro',  unit:'m',         key:'diametro_giro_m',         dflt:false, sortAsc:true,  filterType:'max', dec:1,      group:'dimensiones' },
+    ];
+
+    const CAT_GROUPS = [
+      { label: 'Vehículo', cats: ['marca','tipo','traccion'] },
+      { label: 'Batería',  cats: ['quimica','voltaje','bomba'] },
+      { label: 'Ayudas',   cats: ['plan_auto'] },
     ];
 
     const CATS = [
-      { id:'tipo',     label:'Tipo',       key:'tipo',         options: tiposData },
-      { id:'traccion', label:'Tracción',    key:'traccion',     options: traccionesData },
-      { id:'marca',    label:'Marca',       key:'marca',        options: marcasData },
-      { id:'quimica',  label:'Química',     key:'quimica',      options: quimicasData },
-      { id:'voltaje',  label:'Voltaje',     key:'voltaje',      options: voltajesData, suffix:' V' },
-      { id:'bomba',    label:'B. calor',    key:'bomba_calor',  options: bombaOptsData },
+      { id:'marca',      label:'Marca',       key:'marca',              options: marcasData },
+      { id:'tipo',       label:'Tipo',         key:'tipo',              options: tiposData },
+      { id:'traccion',   label:'Tracción',     key:'traccion',          options: traccionesData },
+      { id:'quimica',    label:'Química',      key:'quimica',           options: quimicasData },
+      { id:'voltaje',    label:'Voltaje',     key:'voltaje',           options: voltajesData, suffix:' V' },
+      { id:'bomba',      label:'B. calor',    key:'bomba_calor',       options: bombaOptsData },
+      { id:'plan_auto',  label:'Plan Auto+',  key:'plan_auto_elegible', options: planAutoOptsData },
     ];
 
     const DEFAULT_IDS = FIELDS.filter(f => f.dflt).map(f => f.id);
@@ -315,6 +348,54 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       if (m.quimica === 'NMC') html += '<span class="' + s + ' badge-nmc">NMC</span>';
       if (m.quimica === 'NCA') html += '<span class="' + s + ' badge-nca">NCA</span>';
       if (m.voltaje === 800)   html += '<span class="' + s + ' badge-800v">800V</span>';
+      // Plan Auto+ badge
+      if (m.plan_auto_elegible && m.ayuda_plan_auto_eur != null) {
+        const elegible = m.plan_auto_elegible;
+        const cls = elegible === 'Sí' ? 'badge-auto-si' : elegible === 'Parcial' ? 'badge-auto-parcial' : 'badge-auto-no';
+        const ayudaTxt = m.ayuda_plan_auto_eur > 0
+          ? '−' + Number(m.ayuda_plan_auto_eur).toLocaleString('es-ES') + ' €'
+          : 'No aplica';
+        html += '<span class="' + s + ' ' + cls + '">Auto+ ' + ayudaTxt + '</span>';
+      }
+      return html;
+    }
+
+    // Build Plan Auto+ subsidy desglose tooltip content
+    function buildDesgloseHtml(m) {
+      if (!m.plan_auto_elegible || m.ayuda_plan_auto_eur == null) return '';
+      const pvpSinIva = m.pvp ? Math.round(m.pvp / 1.21) : null;
+      const esEU = m.pais_ensamblaje ? ['Alemania','Francia','España','Eslovaquia','Chequia','Hungría','Bélgica','Países Bajos','Italia','Suecia','Polonia','Rumanía','Eslovenia','Portugal','Austria','Finlandia'].some(p => m.pais_ensamblaje.includes(p)) : false;
+      const batUE = m.bateria_ensamblaje_ue === true;
+
+      // Desglose EEE
+      const tramos = [];
+      tramos.push({ label: 'Eléctrico (BEV)', valor: 2250 });
+      if (pvpSinIva && pvpSinIva <= 35000) {
+        tramos.push({ label: 'Económico (≤35k)', valor: 1125 });
+      } else if (pvpSinIva && pvpSinIva <= 45000) {
+        tramos.push({ label: 'Económico (35-45k)', valor: 675 });
+      } else {
+        tramos.push({ label: 'Económico (>45k)', valor: 0 });
+      }
+      if (esEU) tramos.push({ label: 'Ensamblaje UE', valor: 675 });
+      else tramos.push({ label: 'Ensamblaje no UE', valor: 0 });
+      if (batUE) tramos.push({ label: 'Batería UE', valor: 450 });
+      else tramos.push({ label: 'Batería no UE', valor: 0 });
+
+      let html = '<div class="desglose-tooltip">';
+      html += '<div class="desglose-title">Desglose Plan Auto+ 2026</div>';
+      html += '<div class="desglose-subtitle">' + m.nombre_completo + '</div>';
+      tramos.forEach(t => {
+        const valStr = t.valor > 0 ? '+' + t.valor.toLocaleString('es-ES') + ' €' : '—';
+        const activeClass = t.valor > 0 ? ' desglose-active' : '';
+        html += '<div class="desglose-row' + activeClass + '"><span>' + t.label + '</span><span>' + valStr + '</span></div>';
+      });
+      html += '<div class="desglose-total"><span>Total ayuda</span><span>' + Number(m.ayuda_plan_auto_eur).toLocaleString('es-ES') + ' €</span></div>';
+      if (m.pvp && m.pvp_con_plan_auto_eur) {
+        html += '<div class="desglose-pvp"><span>PVP efectivo</span><span>' + Number(m.pvp_con_plan_auto_eur).toLocaleString('es-ES') + ' €</span></div>';
+      }
+      html += '<div class="desglose-note">Particular, M1, fórmula EEE. Variante específica.</div>';
+      html += '</div>';
       return html;
     }
 
@@ -336,6 +417,10 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
       if (openPopover && !e.target.closest('.cat-chip')) {
         openPopover = null;
         renderPanel();
+      }
+      // Close desglose popovers on outside click
+      if (!e.target.closest('.ev-card-subsidy')) {
+        document.querySelectorAll('.desglose-popover').forEach(p => { p.style.display = 'none'; });
       }
     });
 
@@ -544,88 +629,125 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     // RENDER PANEL (unified grid: locked cats + toggleable fields)
     // ═══════════════════════════════════════════════════════
     function renderPanel() {
-      // ── Category chips (render into panelCats row) ──
+      // ── Category chips (render into panelCats row, grouped by CAT_GROUPS) ──
       panelCats.innerHTML = '';
-      CATS.forEach(c => {
-        const vals = catVals[c.id] || [];
-        const hasF = vals.length > 0;
-        const isOpen = openPopover === c.id;
-
-        const chip = document.createElement('div');
-        chip.className = 'cat-chip' + (hasF ? ' is-filtering' : '');
-
-        const btn = document.createElement('button');
-        btn.className = 'cat-chip-btn';
-        btn.type = 'button';
-
-        let valueText;
-        if (hasF) {
-          valueText = vals.length === 1 ? vals[0] + (c.suffix || '') : vals.join(', ') + (c.suffix || '');
-        } else {
-          valueText = 'Todos';
-        }
-        const rightEl = hasF
-          ? '<span class="cat-chip-badge">' + vals.length + '</span>'
-          : '<span class="cat-chip-caret"><svg width="7" height="4" viewBox="0 0 7 4"><path d="M.5.5l3 3 3-3" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg></span>';
-        btn.innerHTML = '<div class="cat-chip-top"><span class="cat-chip-label">' + c.label + '</span>' + rightEl + '</div><span class="cat-chip-value">' + valueText + '</span>';
-
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          openPopover = isOpen ? null : c.id;
-          renderPanel();
+      CAT_GROUPS.forEach((g, gi) => {
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'cat-group';
+        const groupLabel = document.createElement('span');
+        groupLabel.className = 'cat-group-label';
+        groupLabel.textContent = g.label;
+        groupDiv.appendChild(groupLabel);
+        g.cats.forEach(catId => {
+          const c = CATS.find(x => x.id === catId);
+          if (!c) return;
+          const chip = buildCatChip(c);
+          groupDiv.appendChild(chip);
         });
-        chip.appendChild(btn);
-
-        if (isOpen) {
-          const pop = document.createElement('div');
-          pop.className = 'cat-popover';
-          let html = '<div class="pop-options">';
-          c.options.forEach(o => {
-            const sel = vals.includes(String(o));
-            html += '<button class="pop-option' + (sel ? ' pop-option-sel' : '') + '" data-val="' + o + '">' + (sel ? '\u2713 ' : '') + o + (c.suffix || '') + '</button>';
-          });
-          html += '</div>';
-          if (hasF) html += '<button class="pop-clear">Limpiar</button>';
-          pop.innerHTML = html;
-          pop.addEventListener('mousedown', e => e.stopPropagation());
-          chip.appendChild(pop);
-
-          requestAnimationFrame(() => {
-            pop.querySelectorAll('.pop-option').forEach(optBtn => {
-              optBtn.addEventListener('click', () => {
-                const clicked = String(optBtn.dataset.val);
-                const cur = catVals[c.id] || [];
-                if (cur.includes(clicked)) {
-                  catVals[c.id] = cur.filter(v => v !== clicked);
-                } else {
-                  catVals[c.id] = [...cur, clicked];
-                }
-                btnReset.style.display = hasAnyFilter() ? '' : 'none';
-                renderPanel();
-                update();
-              });
-            });
-            const clrBtn = pop.querySelector('.pop-clear');
-            if (clrBtn) {
-              clrBtn.addEventListener('click', () => {
-                catVals[c.id] = [];
-                openPopover = null;
-                btnReset.style.display = hasAnyFilter() ? '' : 'none';
-                renderPanel();
-                update();
-              });
-            }
-          });
+        panelCats.appendChild(groupDiv);
+        if (gi < CAT_GROUPS.length - 1) {
+          const sep = document.createElement('span');
+          sep.className = 'cat-group-sep';
+          panelCats.appendChild(sep);
         }
-
-        panelCats.appendChild(chip);
       });
 
-      // ── Numeric chips (render into panel-grid) ──
+      // ── Numeric chips (render into panel-grid, grouped by FIELD_GROUPS) ──
       const container = panelGrid;
       container.innerHTML = '';
+      FIELD_GROUPS.forEach(fg => {
+        const groupFields = FIELDS.filter(f => f.group === fg.id);
+        if (!groupFields.length) return;
+        const activeCount = groupFields.filter(f => selectedFields.includes(f.id)).length;
+        const header = document.createElement('div');
+        header.className = 'field-group-header';
+        header.innerHTML = '<span class="field-group-icon">' + fg.icon + '</span><span class="field-group-label">' + fg.label + '</span>' + (activeCount > 0 ? '<span class="field-group-badge">' + activeCount + '</span>' : '');
+        container.appendChild(header);
+        groupFields.forEach(f => {
+          container.appendChild(buildFieldChip(f));
+        });
+      });
 
-      FIELDS.forEach(f => {
+      // ── Applied filters strip ──
+      renderAppliedStrip();
+    }
+
+    function buildCatChip(c) {
+      CATS.find(x => x.id === c.id); // ensure c is valid
+      const vals = catVals[c.id] || [];
+      const hasF = vals.length > 0;
+      const isOpen = openPopover === c.id;
+
+      const chip = document.createElement('div');
+      chip.className = 'cat-chip' + (hasF ? ' is-filtering' : '');
+      CATS.forEach(_ => {}); // keep ref
+      // Build button
+      const btn = document.createElement('button');
+      btn.className = 'cat-chip-btn';
+      btn.type = 'button';
+      let valueText;
+      if (hasF) {
+        valueText = vals.length === 1 ? vals[0] + (c.suffix || '') : vals.join(', ') + (c.suffix || '');
+      } else {
+        valueText = 'Todos';
+      }
+      const rightEl = hasF
+        ? '<span class="cat-chip-badge">' + vals.length + '</span>'
+        : '<span class="cat-chip-caret"><svg width="7" height="4" viewBox="0 0 7 4"><path d="M.5.5l3 3 3-3" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg></span>';
+      btn.innerHTML = '<div class="cat-chip-top"><span class="cat-chip-label">' + c.label + '</span>' + rightEl + '</div><span class="cat-chip-value">' + valueText + '</span>';
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openPopover = isOpen ? null : c.id;
+        renderPanel();
+      });
+      chip.appendChild(btn);
+
+      if (isOpen) {
+        const pop = document.createElement('div');
+        pop.className = 'cat-popover';
+        let html = '<div class="pop-options">';
+        c.options.forEach(o => {
+          const sel = vals.includes(String(o));
+          html += '<button class="pop-option' + (sel ? ' pop-option-sel' : '') + '" data-val="' + o + '">' + (sel ? '\u2713 ' : '') + o + (c.suffix || '') + '</button>';
+        });
+        html += '</div>';
+        if (hasF) html += '<button class="pop-clear">Limpiar</button>';
+        pop.innerHTML = html;
+        pop.addEventListener('mousedown', e => e.stopPropagation());
+        chip.appendChild(pop);
+
+        requestAnimationFrame(() => {
+          pop.querySelectorAll('.pop-option').forEach(optBtn => {
+            optBtn.addEventListener('click', () => {
+              const clicked = String(optBtn.dataset.val);
+              const cur = catVals[c.id] || [];
+              if (cur.includes(clicked)) {
+                catVals[c.id] = cur.filter(v => v !== clicked);
+              } else {
+                catVals[c.id] = [...cur, clicked];
+              }
+              btnReset.style.display = hasAnyFilter() ? '' : 'none';
+              renderPanel();
+              update();
+            });
+          });
+          const clrBtn = pop.querySelector('.pop-clear');
+          if (clrBtn) {
+            clrBtn.addEventListener('click', () => {
+              catVals[c.id] = [];
+              openPopover = null;
+              btnReset.style.display = hasAnyFilter() ? '' : 'none';
+              renderPanel();
+              update();
+            });
+          }
+        });
+      }
+
+      return chip;
+    }
+
+    function buildFieldChip(f) {
         const isActive = selectedFields.includes(f.id);
         const range = filterRanges[f.id];
         const isFiltering = rangeIsActive(range);
@@ -635,7 +757,6 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         item.setAttribute('role', 'button');
         item.setAttribute('tabindex', '0');
         item.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-        // Whole-chip click toggles column visibility (inner controls use stopPropagation)
         const toggleColumn = () => {
           if (isActive) {
             selectedFields = selectedFields.filter(x => x !== f.id);
@@ -652,15 +773,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
           if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleColumn(); }
         });
 
-        // Head row: label + contextual action (× when filtering, sort otherwise)
         const head = document.createElement('div');
         head.className = 'field-chip-head';
-
         const label = document.createElement('span');
         label.className = 'field-label';
         label.textContent = f.label;
 
-        // Contextual action
         let actionBtn;
         if (isFiltering) {
           actionBtn = document.createElement('button');
@@ -704,17 +822,12 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         head.appendChild(actionBtn);
         item.appendChild(head);
 
-        // Advanced expanded block: histograma + dual range slider
         if (advancedMode && f.filterType) {
           const advBlock = buildAdvancedFilter(f);
           if (advBlock) item.appendChild(advBlock);
         }
 
-        container.appendChild(item);
-      });
-
-      // ── Applied filters strip ──
-      renderAppliedStrip();
+        return item;
     }
 
     function renderAppliedStrip() {
@@ -891,6 +1004,35 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         detailsHtml += '<div class="' + cls + '"><span>' + f.label + '</span><span>' + display + (isBest ? ' <em class="best-mark" title="Mejor valor del grupo">★</em>' : '') + '</span></div>';
       });
 
+      // Plan Auto+ subsidy summary row
+      let subsidyHtml = '';
+      if (m.ayuda_plan_auto_eur != null && m.ayuda_plan_auto_eur > 0 && m.pvp) {
+        const ayuda = Number(m.ayuda_plan_auto_eur).toLocaleString('es-ES');
+        const pvpEf = m.pvp_con_plan_auto_eur ? Number(m.pvp_con_plan_auto_eur).toLocaleString('es-ES') : null;
+        subsidyHtml =
+          '<div class="ev-card-subsidy">' +
+            '<div class="subsidy-line">' +
+              '<span class="subsidy-label">PVP con Auto+</span>' +
+              '<span class="subsidy-value">' + (pvpEf ? pvpEf + '\u00a0€' : '') + '</span>' +
+            '</div>' +
+            '<div class="subsidy-savings">' +
+              '<span>Ayuda: −' + ayuda + '\u00a0€</span>' +
+              '<button class="desglose-btn" data-model-id="' + modelId(m) + '" title="Ver desglose" onclick="event.stopPropagation()">ⓘ</button>' +
+            '</div>' +
+            '<div class="desglose-popover" id="desglose-' + modelId(m) + '" style="display:none">' +
+              buildDesgloseHtml(m) +
+            '</div>' +
+          '</div>';
+      } else if (m.plan_auto_elegible === 'No') {
+        subsidyHtml =
+          '<div class="ev-card-subsidy ev-card-subsidy-no">' +
+            '<div class="subsidy-line">' +
+              '<span class="subsidy-label">Plan Auto+</span>' +
+              '<span class="subsidy-value subsidy-na">No aplica (>45k sin IVA)</span>' +
+            '</div>' +
+          '</div>';
+      }
+
       card.innerHTML =
         '<div class="ev-card-photo">' +
           (isPicked ? '<div class="pick-badge">✓</div>' : '') +
@@ -909,8 +1051,22 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
             '</div>' +
           '</div>' +
           '<div class="ev-badges">' + makeBadgesHtml(m) + '</div>' +
+          subsidyHtml +
           (detailsHtml ? '<div class="ev-card-details">' + detailsHtml + '</div>' : '') +
         '</div>';
+
+      // Attach desglose toggle event
+      const desgloseBtn = card.querySelector('.desglose-btn');
+      if (desgloseBtn) {
+        desgloseBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const popover = card.querySelector('.desglose-popover');
+          if (popover) {
+            popover.style.display = popover.style.display === 'none' ? 'block' : 'none';
+          }
+        });
+      }
+
       return card;
     }
 
@@ -950,11 +1106,15 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
         { label:'Peso',                 key:'peso_kg',             unit:'kg',  dir:'min', dec:0, fmt:'mmDot' },
       ]},
       { num:'04', name:'Economía', rows:[
-        { label:'PVP',                  key:'pvp',                 fmt:'eur',  dir:'min' },
-        { label:'Garantía batería (años)', key:'garantia_bateria', unit:'años', dir:'max', dec:0, derive:(m)=>{ const s=m.garantia_bateria; if(!s) return null; const x=String(s).match(/(\d+)\s*año/i); return x?parseInt(x[1],10):null; } },
-        { label:'Garantía batería (km)',   key:'garantia_bateria', unit:'km',  dir:'max', dec:0, fmt:'mmDot', derive:(m)=>{ const s=m.garantia_bateria; if(!s) return null; const x=String(s).match(/([\d.]+)\s*km/i); return x?parseInt(x[1].replace(/\./g,''),10):null; } },
-        { label:'Garantía vehículo',    key:'garantia_vehiculo',   isText:true, placeholder:'por verificar' },
-        { label:'Plan Auto+ 2026',      key:'plan_auto_2026',      isText:true, placeholder:'por calcular' },
+        { label:'PVP',                     key:'pvp',                   fmt:'eur',  dir:'min' },
+        { label:'Ayuda Plan Auto+',        key:'ayuda_plan_auto_eur',   fmt:'eur',  dir:'max' },
+        { label:'PVP con Plan Auto+',      key:'pvp_con_plan_auto_eur', fmt:'eur',  dir:'min' },
+        { label:'Elegibilidad Auto+',      key:'plan_auto_elegible',    isText:true },
+        { label:'Ensamblaje',              key:'pais_ensamblaje',       isText:true },
+        { label:'Batería UE',              key:'bateria_ensamblaje_ue', isText:true, derive:(m)=>{ const v=m.bateria_ensamblaje_ue; return v===true?'Sí':v===false?'No':null; } },
+        { label:'Garantía batería (años)', key:'garantia_bateria',      unit:'años', dir:'max', dec:0, derive:(m)=>{ const s=m.garantia_bateria; if(!s) return null; const x=String(s).match(/(\d+)\s*año/i); return x?parseInt(x[1],10):null; } },
+        { label:'Garantía batería (km)',   key:'garantia_bateria',      unit:'km',  dir:'max', dec:0, fmt:'mmDot', derive:(m)=>{ const s=m.garantia_bateria; if(!s) return null; const x=String(s).match(/([\d.]+)\s*km/i); return x?parseInt(x[1].replace(/\./g,''),10):null; } },
+        { label:'Garantía vehículo',       key:'garantia_vehiculo',     isText:true, placeholder:'por verificar' },
       ]},
     ];
 
@@ -2374,6 +2534,59 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
   .field-adv-sep { color: var(--text-muted); margin: 0 0.2rem; }
 
 
+  /* ── Category sub-groups ────────── */
+  .cat-group {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+  }
+  .cat-group-label {
+    font-size: 0.58rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-right: 0.1rem;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .cat-group-sep {
+    width: 1px;
+    height: 28px;
+    background: var(--border);
+    margin: 0 0.3rem;
+    flex-shrink: 0;
+  }
+
+  /* ── Field group headers ────────── */
+  .field-group-header {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0 0.15rem;
+    user-select: none;
+  }
+  .field-group-header:first-child { padding-top: 0; }
+  .field-group-icon { font-size: 0.78rem; line-height: 1; }
+  .field-group-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+  .field-group-badge {
+    font-size: 0.56rem;
+    font-weight: 600;
+    background: var(--yellow);
+    color: var(--black);
+    border-radius: 10px;
+    padding: 0.05rem 0.4rem;
+    line-height: 1.4;
+  }
+
   /* ── Category chips (separate row above numeric grid) ────────── */
   .cat-chip {
     position: relative;
@@ -3189,6 +3402,191 @@ const bombaOpts = [...new Set(modelos.map(m => m.bomba_calor).filter(Boolean))].
     border: 1px solid var(--badge-800v-border);
     color: var(--badge-800v-text);
     font-weight: 600;
+  }
+
+  /* Plan Auto+ badges */
+  .badge-auto-si {
+    background: rgba(34,139,34,.12);
+    border: 1px solid rgba(34,139,34,.35);
+    color: #1a7a1a;
+    font-weight: 600;
+  }
+  [data-theme="dark"] .badge-auto-si {
+    background: rgba(34,197,94,.15);
+    border-color: rgba(34,197,94,.4);
+    color: #4ade80;
+  }
+  .badge-auto-parcial {
+    background: rgba(217,119,6,.10);
+    border: 1px solid rgba(217,119,6,.30);
+    color: #b45309;
+    font-weight: 600;
+  }
+  [data-theme="dark"] .badge-auto-parcial {
+    background: rgba(245,158,11,.15);
+    border-color: rgba(245,158,11,.35);
+    color: #fbbf24;
+  }
+  .badge-auto-no {
+    background: rgba(120,120,120,.08);
+    border: 1px solid rgba(120,120,120,.25);
+    color: #888;
+    font-weight: 500;
+  }
+  [data-theme="dark"] .badge-auto-no {
+    background: rgba(120,120,120,.15);
+    border-color: rgba(120,120,120,.3);
+    color: #999;
+  }
+
+  /* Subsidy summary row in card */
+  .ev-card-subsidy {
+    margin-top: .55rem;
+    padding: .5rem .6rem;
+    background: rgba(34,139,34,.05);
+    border: 1px solid rgba(34,139,34,.15);
+    border-radius: 6px;
+    position: relative;
+  }
+  .ev-card-subsidy-no {
+    background: rgba(120,120,120,.04);
+    border-color: rgba(120,120,120,.12);
+  }
+  [data-theme="dark"] .ev-card-subsidy {
+    background: rgba(34,197,94,.06);
+    border-color: rgba(34,197,94,.18);
+  }
+  [data-theme="dark"] .ev-card-subsidy-no {
+    background: rgba(120,120,120,.08);
+    border-color: rgba(120,120,120,.15);
+  }
+  .subsidy-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .subsidy-label {
+    font-size: .62rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  .subsidy-value {
+    font-size: .82rem;
+    font-weight: 600;
+    color: #1a7a1a;
+    font-variant-numeric: tabular-nums;
+  }
+  [data-theme="dark"] .subsidy-value { color: #4ade80; }
+  .subsidy-na {
+    font-size: .68rem;
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+  .subsidy-savings {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: .2rem;
+  }
+  .subsidy-savings span {
+    font-size: .6rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
+  .desglose-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: .75rem;
+    color: var(--text-muted);
+    padding: 0 .2rem;
+    line-height: 1;
+    opacity: .7;
+    transition: opacity .15s;
+  }
+  .desglose-btn:hover { opacity: 1; color: var(--yellow); }
+
+  /* Desglose tooltip popover */
+  .desglose-popover {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    right: 0;
+    z-index: 50;
+    min-width: 240px;
+    max-width: 280px;
+  }
+  .desglose-tooltip {
+    background: var(--surface, #fff);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .7rem .8rem;
+    box-shadow: 0 6px 24px rgba(0,0,0,.12);
+    font-family: var(--font-sans);
+  }
+  [data-theme="dark"] .desglose-tooltip {
+    background: #1a1a1a;
+    box-shadow: 0 6px 24px rgba(0,0,0,.4);
+  }
+  .desglose-title {
+    font-size: .65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--text);
+    margin-bottom: .15rem;
+  }
+  .desglose-subtitle {
+    font-size: .6rem;
+    color: var(--text-muted);
+    margin-bottom: .5rem;
+    padding-bottom: .4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .desglose-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: .62rem;
+    padding: .2rem 0;
+    color: var(--text-muted);
+  }
+  .desglose-row.desglose-active {
+    color: var(--text);
+  }
+  .desglose-row.desglose-active span:last-child {
+    font-weight: 500;
+    color: #1a7a1a;
+  }
+  [data-theme="dark"] .desglose-row.desglose-active span:last-child { color: #4ade80; }
+  .desglose-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: .68rem;
+    font-weight: 600;
+    padding-top: .35rem;
+    margin-top: .3rem;
+    border-top: 1px solid var(--border);
+    color: var(--text);
+  }
+  .desglose-total span:last-child { color: #1a7a1a; }
+  [data-theme="dark"] .desglose-total span:last-child { color: #4ade80; }
+  .desglose-pvp {
+    display: flex;
+    justify-content: space-between;
+    font-size: .65rem;
+    font-weight: 500;
+    padding-top: .2rem;
+    color: var(--text);
+  }
+  .desglose-note {
+    font-size: .52rem;
+    color: var(--text-muted);
+    margin-top: .4rem;
+    padding-top: .3rem;
+    border-top: 1px solid var(--border);
+    line-height: 1.4;
+    font-style: italic;
   }
 
   /* Detail rows — clean, readable */
