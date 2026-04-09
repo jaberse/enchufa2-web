@@ -840,10 +840,10 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
           actionBtn.title = 'Ordenar por ' + f.label;
           if (isSorted) {
             actionBtn.innerHTML = tableSortAsc
-              ? '<svg width="8" height="6" viewBox="0 0 8 6"><path d="M4 0L8 6H0z" fill="currentColor"/></svg>'
-              : '<svg width="8" height="6" viewBox="0 0 8 6"><path d="M4 6L0 0h8z" fill="currentColor"/></svg>';
+              ? '<svg width="10" height="8" viewBox="0 0 10 8"><path d="M5 0L10 8H0z" fill="currentColor"/></svg>'
+              : '<svg width="10" height="8" viewBox="0 0 10 8"><path d="M5 8L0 0h10z" fill="currentColor"/></svg>';
           } else {
-            actionBtn.innerHTML = '<svg width="8" height="10" viewBox="0 0 8 10"><path d="M4 0L7 3H1z" fill="currentColor"/><path d="M4 10L1 7h6z" fill="currentColor"/></svg>';
+            actionBtn.innerHTML = '<svg width="10" height="12" viewBox="0 0 10 12"><path d="M5 0L9 4H1z" fill="currentColor"/><path d="M5 12L1 8h8z" fill="currentColor"/></svg>';
           }
           actionBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -2375,29 +2375,43 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 16px;
-    height: 16px;
+    width: 28px;
+    height: 28px;
     background: none;
-    border: none;
+    border: 1px solid transparent;
     color: var(--text-muted);
     cursor: pointer;
     padding: 0;
     flex-shrink: 0;
-    border-radius: 3px;
-    transition: color 0.15s, background 0.15s, opacity 0.15s;
+    border-radius: 6px;
+    transition: color 0.15s, background 0.15s, opacity 0.15s, border-color 0.15s;
+    margin: -4px -2px -4px 0;
   }
   .field-action svg { display: block; }
-  .field-action-sort { opacity: 0; }
-  .field-item:hover .field-action-sort { opacity: 0.55; }
-  .field-action-sort:hover { opacity: 1 !important; color: var(--text); }
-  .field-action-sort.sort-active { opacity: 1 !important; color: var(--yellow); }
+  .field-action-sort { opacity: 0.35; }
+  .field-item.active .field-action-sort { opacity: 0.5; }
+  .field-item:hover .field-action-sort { opacity: 0.65; }
+  .field-action-sort:hover {
+    opacity: 1 !important;
+    color: var(--text);
+    background: rgba(0,0,0,0.05);
+    border-color: var(--border);
+  }
+  [data-theme="dark"] .field-action-sort:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }
+  .field-action-sort.sort-active {
+    opacity: 1 !important;
+    color: var(--yellow);
+    background: rgba(245,197,24,.08);
+    border-color: rgba(245,197,24,.25);
+  }
   .field-action-clear { opacity: 0.7; }
   .field-action-clear:hover {
     opacity: 1;
     color: var(--text);
     background: rgba(0,0,0,0.05);
+    border-color: var(--border);
   }
-  [data-theme="dark"] .field-action-clear:hover { background: rgba(255,255,255,0.08); }
+  [data-theme="dark"] .field-action-clear:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }
 
   /* Filter row: pills Min/Max + input + unit */
   .field-chip-filter {
