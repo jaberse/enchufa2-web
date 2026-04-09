@@ -705,7 +705,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
       const isOpen = openPopover === c.id;
 
       const chip = document.createElement('div');
-      chip.className = 'cat-chip' + (hasF ? ' is-filtering' : '');
+      chip.className = 'cat-chip' + (hasF ? ' is-filtering' : '') + (isOpen ? ' is-open' : '');
       CATS.forEach(_ => {}); // keep ref
       // Build button
       const btn = document.createElement('button');
@@ -2699,6 +2699,11 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     margin-left: 1px;
     transition: transform 0.15s;
   }
+  .cat-chip.is-open .cat-chip-caret { transform: rotate(180deg); }
+  .cat-chip.is-open .cat-chip-btn {
+    box-shadow: 0 0 0 2px rgba(245,197,24,.15);
+    border-color: var(--yellow);
+  }
   .cat-chip-value { display: none; } /* Hidden in pill layout — badge shows count */
 
   /* Category popover */
@@ -2713,9 +2718,14 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     box-shadow: 0 12px 32px rgba(0,0,0,0.12);
     z-index: 200;
     min-width: 160px;
-    max-height: 240px;
+    max-height: 260px;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
   }
+  .cat-popover::-webkit-scrollbar { width: 4px; }
+  .cat-popover::-webkit-scrollbar-track { background: transparent; }
+  .cat-popover::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
   [data-theme="dark"] .cat-popover {
     box-shadow: 0 12px 32px rgba(0,0,0,0.4);
   }
