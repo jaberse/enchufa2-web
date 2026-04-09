@@ -77,8 +77,10 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
           <div class="panel-cats-bar">
             <div class="panel-cats-row" id="panel-cats"></div>
             <button class="panel-customize-btn" id="panel-customize-btn" type="button">
-              <svg width="13" height="13" viewBox="0 0 13 13" aria-hidden="true"><path d="M2.5 3.5h8M4.5 6.5h4M5.5 9.5h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/></svg>
-              <span class="customize-label">Personalizar</span>
+              <svg class="customize-icon" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="4" cy="3.5" r="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="5.5" y1="3.5" x2="13" y2="3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="1" y1="3.5" x2="2.5" y2="3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="10" cy="7" r="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="1" y1="7" x2="8.5" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="11.5" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="5.5" cy="10.5" r="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="7" y1="10.5" x2="13" y2="10.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="1" y1="10.5" x2="4" y2="10.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              <span class="customize-label">Datos y vista</span>
+              <span class="customize-badge" id="customize-badge"></span>
+              <svg class="customize-caret" width="8" height="5" viewBox="0 0 8 5" aria-hidden="true"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
             </button>
           </div>
 
@@ -666,8 +668,12 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
       const container = panelGrid;
       container.innerHTML = '';
       const totalActive = selectedFields.length;
+      const totalFields = FIELDS.length;
       const colsCount = document.getElementById('panel-cols-count');
       if (colsCount) colsCount.textContent = totalActive + ' activas';
+      // Update customize badge
+      const badge = document.getElementById('customize-badge');
+      if (badge) badge.textContent = totalActive + '/' + totalFields;
 
       FIELD_GROUPS.forEach(fg => {
         const groupFields = FIELDS.filter(f => f.group === fg.id);
@@ -2159,42 +2165,74 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     flex-wrap: wrap;
   }
 
-  /* Customize button (right side of pills row) */
+  /* Customize button (right side of pills row) — prominent */
   .panel-customize-btn {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     margin-left: auto;
-    height: 30px;
-    padding: 0 12px;
-    border-radius: 15px;
-    border: 1px dashed var(--border);
-    background: transparent;
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
     cursor: pointer;
     font-family: var(--font-sans);
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     font-weight: 500;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     transition: all 0.15s;
     white-space: nowrap;
     flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   }
   .panel-customize-btn:hover {
-    border-color: var(--yellow);
-    border-style: solid;
+    border-color: var(--text-muted);
     color: var(--text);
-    background: rgba(245,197,24,.04);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   }
   .panel-customize-btn.active {
-    border-style: solid;
     border-color: var(--yellow);
     color: var(--text);
+    background: rgba(245,197,24,.06);
+    box-shadow: 0 0 0 2px rgba(245,197,24,.12);
+  }
+  [data-theme="dark"] .panel-customize-btn {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.12);
+    color: #bbb;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  [data-theme="dark"] .panel-customize-btn:hover { color: #eee; border-color: rgba(255,255,255,0.25); }
+  [data-theme="dark"] .panel-customize-btn.active {
+    color: var(--yellow);
+    border-color: var(--yellow);
     background: rgba(245,197,24,.08);
   }
-  [data-theme="dark"] .panel-customize-btn { color: #999; border-color: #555; }
-  [data-theme="dark"] .panel-customize-btn:hover,
-  [data-theme="dark"] .panel-customize-btn.active { color: var(--yellow); border-color: var(--yellow); background: rgba(245,197,24,.08); }
+  .customize-icon { flex-shrink: 0; }
   .customize-label { }
+  .customize-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: var(--yellow);
+    color: var(--black);
+    font-size: 0.5rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .customize-badge:empty { display: none; }
+  .customize-caret {
+    color: var(--text-muted);
+    opacity: 0.5;
+    transition: transform 0.15s;
+    flex-shrink: 0;
+  }
+  .panel-customize-btn.active .customize-caret { transform: rotate(180deg); }
 
   /* ── Collapsible drawer ── */
   .panel-customize-drawer {
