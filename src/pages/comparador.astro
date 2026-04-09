@@ -69,24 +69,36 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
           </div>
         </div>
 
-        <!-- Block 3: Fields grid (fixed layout, all fields visible) -->
+        <!-- Block 3: Filter panel — compact accordion layout -->
         <div class="comp-fields-panel">
-          <div class="panel-section-label">Categorías</div>
-          <div class="panel-cats-row" id="panel-cats"></div>
-          <div class="panel-section-label panel-section-label-num">
-            <span>Campos numéricos</span>
-            <span class="panel-section-hint">Click activa columna · expande para filtrar</span>
-            <button class="panel-advanced-btn" id="panel-advanced-btn" type="button" aria-pressed="false">
-              <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 3h10M3 6h6M5 9h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>
-              Filtros avanzados
-            </button>
-            <button class="panel-select-all-btn" id="panel-select-all-btn" type="button">Seleccionar todos</button>
+          <!-- Row 1: Category pills (horizontal, scrollable) -->
+          <div class="panel-cats-bar">
+            <span class="panel-bar-label">Filtros</span>
+            <div class="panel-cats-row" id="panel-cats"></div>
           </div>
-          <div class="panel-grid" id="panel-grid"></div>
+
+          <!-- Divider -->
+          <div class="panel-divider-line"></div>
+
+          <!-- Row 2: Column accordion -->
+          <div class="panel-cols-bar">
+            <div class="panel-cols-header">
+              <span class="panel-bar-label">Columnas</span>
+              <span class="panel-cols-count" id="panel-cols-count"></span>
+              <button class="panel-advanced-btn" id="panel-advanced-btn" type="button" aria-pressed="false">
+                <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 3h10M3 6h6M5 9h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>
+                Filtros avanzados
+              </button>
+              <button class="panel-select-all-btn" id="panel-select-all-btn" type="button">Seleccionar todos</button>
+            </div>
+            <div class="panel-grid" id="panel-grid"></div>
+          </div>
+
+          <!-- Applied filters strip -->
           <div class="panel-applied" id="panel-applied" style="display:none;">
-            <span class="panel-applied-label">Filtrando</span>
+            <span class="panel-applied-label">Filtros activos</span>
             <div class="panel-applied-chips" id="panel-applied-chips"></div>
-            <button class="reset-btn" id="btn-reset" type="button">Limpiar</button>
+            <button class="reset-btn" id="btn-reset" type="button">Limpiar todo</button>
           </div>
         </div>
 
@@ -250,6 +262,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     let catVals = {};      // { catId: ['val1','val2',...] }
     let openPopover = null; // id of currently open popover
     let advancedMode = false; // histograma + dual slider expandido
+    let expandedFieldGroup = null; // id of currently expanded field group accordion
     let allFieldsOn = false; // track select-all state
     let pickedIds = new Set();  // IDs of models picked for comparison
     let compareMode = false;    // true = show only picked models
@@ -629,43 +642,54 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     // RENDER PANEL (unified grid: locked cats + toggleable fields)
     // ═══════════════════════════════════════════════════════
     function renderPanel() {
-      // ── Category chips (render into panelCats row, grouped by CAT_GROUPS) ──
+      // ── Category pills (horizontal row) ──
       panelCats.innerHTML = '';
-      CAT_GROUPS.forEach((g, gi) => {
-        const groupDiv = document.createElement('div');
-        groupDiv.className = 'cat-group';
-        const groupLabel = document.createElement('span');
-        groupLabel.className = 'cat-group-label';
-        groupLabel.textContent = g.label;
-        groupDiv.appendChild(groupLabel);
-        g.cats.forEach(catId => {
-          const c = CATS.find(x => x.id === catId);
-          if (!c) return;
-          const chip = buildCatChip(c);
-          groupDiv.appendChild(chip);
-        });
-        panelCats.appendChild(groupDiv);
-        if (gi < CAT_GROUPS.length - 1) {
-          const sep = document.createElement('span');
-          sep.className = 'cat-group-sep';
-          panelCats.appendChild(sep);
-        }
+      CATS.forEach(c => {
+        panelCats.appendChild(buildCatChip(c));
       });
 
-      // ── Numeric chips (render into panel-grid, grouped by FIELD_GROUPS) ──
+      // ── Field groups accordion ──
       const container = panelGrid;
       container.innerHTML = '';
+      const totalActive = selectedFields.length;
+      const colsCount = document.getElementById('panel-cols-count');
+      if (colsCount) colsCount.textContent = totalActive + ' activas';
+
       FIELD_GROUPS.forEach(fg => {
         const groupFields = FIELDS.filter(f => f.group === fg.id);
         if (!groupFields.length) return;
         const activeCount = groupFields.filter(f => selectedFields.includes(f.id)).length;
-        const header = document.createElement('div');
-        header.className = 'field-group-header';
-        header.innerHTML = '<span class="field-group-icon">' + fg.icon + '</span><span class="field-group-label">' + fg.label + '</span>' + (activeCount > 0 ? '<span class="field-group-badge">' + activeCount + '</span>' : '');
-        container.appendChild(header);
-        groupFields.forEach(f => {
-          container.appendChild(buildFieldChip(f));
+        const isExpanded = expandedFieldGroup === fg.id;
+
+        // Accordion header row (always visible)
+        const row = document.createElement('div');
+        row.className = 'fg-accordion-row' + (isExpanded ? ' fg-expanded' : '');
+
+        const headerBtn = document.createElement('button');
+        headerBtn.className = 'fg-accordion-btn';
+        headerBtn.type = 'button';
+        const countCls = activeCount > 0 ? 'fg-count fg-count-active' : 'fg-count';
+        headerBtn.innerHTML =
+          '<span class="fg-name">' + fg.label + '</span>' +
+          '<span class="' + countCls + '">' + activeCount + '/' + groupFields.length + '</span>' +
+          '<svg class="fg-caret" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>';
+        headerBtn.addEventListener('click', () => {
+          expandedFieldGroup = isExpanded ? null : fg.id;
+          renderPanel();
         });
+        row.appendChild(headerBtn);
+
+        // Expandable chips area
+        if (isExpanded) {
+          const chips = document.createElement('div');
+          chips.className = 'fg-chips';
+          groupFields.forEach(f => {
+            chips.appendChild(buildFieldChip(f));
+          });
+          row.appendChild(chips);
+        }
+
+        container.appendChild(row);
       });
 
       // ── Applied filters strip ──
@@ -2094,43 +2118,66 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
   }
 
   /* ══════════════════════════════════════════
-     FIELDS PANEL — fixed grid of all fields
+     FIELDS PANEL — compact accordion layout
      ══════════════════════════════════════════ */
   .comp-fields-panel {
     background: var(--panel-bg);
     border: 1px solid var(--panel-border);
     border-top: none;
-    padding: 0.85rem clamp(1.5rem, 3vw, 2.5rem);
-    overflow: hidden;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+    padding: 0;
+    overflow: visible;
   }
-  [data-theme="dark"] .comp-fields-panel {
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
-  }
-  /* Section labels inside panel */
-  .panel-section-label {
-    font-size: 0.6rem;
+
+  /* ── Shared bar label ── */
+  .panel-bar-label {
+    font-size: 0.58rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-secondary);
-    padding-bottom: 0.4rem;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  /* ── Row 1: Category pills ── */
+  .panel-cats-bar {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 6px;
+    padding: 10px clamp(1rem, 3vw, 2rem);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
-  .panel-section-label-num {
-    padding-top: 0.75rem;
-    margin-top: 0.5rem;
-    border-top: 1px solid var(--border);
+  .panel-cats-bar::-webkit-scrollbar { display: none; }
+  .panel-cats-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: nowrap;
   }
-  .panel-section-hint {
-    font-size: 0.62rem;
-    font-weight: 400;
-    text-transform: none;
-    letter-spacing: 0;
+
+  .panel-divider-line {
+    height: 1px;
+    background: var(--border);
+    margin: 0 clamp(1rem, 3vw, 2rem);
+  }
+
+  /* ── Row 2: Columns accordion ── */
+  .panel-cols-bar {
+    padding: 8px clamp(1rem, 3vw, 2rem) 10px;
+  }
+  .panel-cols-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .panel-cols-count {
+    font-size: 0.52rem;
     color: var(--text-muted);
-    opacity: 0.75;
+    font-weight: 400;
   }
   .panel-advanced-btn {
     margin-left: auto;
@@ -2138,13 +2185,13 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     align-items: center;
     gap: 0.3rem;
     font-family: var(--font-sans);
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     font-weight: 500;
     color: var(--text-secondary);
     background: none;
     border: 1px dashed var(--text-muted);
     border-radius: 4px;
-    padding: 0.2rem 0.5rem;
+    padding: 0.18rem 0.45rem;
     cursor: pointer;
     transition: all 0.15s;
     letter-spacing: 0.02em;
@@ -2167,13 +2214,13 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
   .panel-advanced-btn + .panel-select-all-btn { margin-left: 0.4rem; }
   .panel-select-all-btn {
     font-family: var(--font-sans);
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     font-weight: 500;
     color: var(--text-secondary);
     background: none;
     border: 1px dashed var(--text-muted);
     border-radius: 4px;
-    padding: 0.2rem 0.5rem;
+    padding: 0.18rem 0.45rem;
     cursor: pointer;
     transition: all 0.15s;
     letter-spacing: 0.02em;
@@ -2188,63 +2235,44 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
   }
   [data-theme="dark"] .panel-select-all-btn:hover { color: var(--yellow); }
 
-  /* Categories row */
-  .panel-cats-row {
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 0.4rem;
-  }
-  @media (max-width: 1100px) { .panel-cats-row { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-  @media (max-width: 500px)  { .panel-cats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-
+  /* Accordion grid — single column of rows */
   .panel-grid {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 0.4rem;
-  }
-  @media (max-width: 1100px) { .panel-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-  @media (max-width: 800px)  { .panel-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-  @media (max-width: 500px)  { .panel-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-
-  .panel-divider {
-    grid-column: 1 / -1;
-    height: 1px;
-    background: var(--panel-border);
-    margin: 0.25rem 0;
-  }
-
-  /* ── Numeric chip (clicable whole-chip + pills Min/Max) ────────── */
-  .field-item {
-    position: relative;
-    padding: 0.4rem 0.6rem;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: transparent;
-    transition: opacity 0.15s, background 0.15s, border-color 0.15s, box-shadow 0.15s;
-    min-height: 34px;
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 2px;
+  }
+
+  /* ── Numeric chip (compact pill inside accordion) ────────── */
+  .field-item {
+    position: relative;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: all 0.12s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
     cursor: pointer;
     user-select: none;
-    opacity: 0.72;
+    height: 28px;
+    align-items: center;
+    justify-content: center;
   }
-  .field-item.advanced { min-height: auto; padding-bottom: 0.5rem; }
-  [data-theme="dark"] .field-item { border-color: rgba(255,255,255,0.08); }
-  .field-item:hover { opacity: 1; border-color: var(--gray-300, #C0BFB9); }
+  .field-item.advanced { height: auto; padding-bottom: 0.45rem; }
+  [data-theme="dark"] .field-item { border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); }
+  .field-item:hover { border-color: var(--gray-300, #C0BFB9); }
   [data-theme="dark"] .field-item:hover { border-color: rgba(255,255,255,0.2); }
   .field-item:focus-visible { outline: 2px solid var(--yellow); outline-offset: 1px; }
   .field-item.active {
-    opacity: 1;
-    background: var(--surface);
-    border-color: var(--black);
+    border-color: rgba(245,197,24,.4);
+    background: rgba(245,197,24,.08);
   }
   [data-theme="dark"] .field-item.active {
-    background: rgba(255,255,255,0.07);
-    border-color: rgba(255,255,255,0.35);
+    background: rgba(245,197,24,.10);
+    border-color: rgba(245,197,24,.35);
   }
   .field-item.is-filtering {
-    opacity: 1;
     border-color: var(--yellow);
     box-shadow: 0 0 0 1px var(--yellow);
     background: #FFFDF3;
@@ -2262,38 +2290,41 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     gap: 0.45rem;
   }
 
-  /* Status dot — visible only when active/filtering */
+  /* Status dot — yellow dot for active items */
   .field-chip-head::before {
     content: '';
-    width: 7px;
-    height: 7px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
-    background: var(--gray-300, #C0BFB9);
+    background: transparent;
     flex-shrink: 0;
-    transition: background 0.15s, transform 0.15s;
+    transition: background 0.15s;
+    position: absolute;
+    top: -1px;
+    right: -1px;
   }
   .field-item.active .field-chip-head::before {
-    background: var(--black);
+    background: var(--yellow);
   }
   .field-item.is-filtering .field-chip-head::before {
     background: var(--yellow);
-    box-shadow: 0 0 0 2px rgba(245,197,24,0.18);
   }
 
   /* Field label */
   .field-label {
     font-family: var(--font-sans);
-    font-size: 0.73rem;
-    font-weight: 500;
-    color: var(--text);
+    font-size: 0.62rem;
+    font-weight: 400;
+    color: var(--text-secondary);
     line-height: 1.25;
     flex: 1;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    letter-spacing: 0.01em;
   }
-  .field-item:not(.active):not(.is-filtering) .field-label { color: var(--text-secondary); font-weight: 400; }
+  .field-item.active .field-label { color: var(--text); font-weight: 500; }
   .field-item.is-filtering .field-label { color: var(--text); font-weight: 600; }
 
   /* Contextual action button (× when filtering, sort arrows otherwise) */
@@ -2534,145 +2565,144 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
   .field-adv-sep { color: var(--text-muted); margin: 0 0.2rem; }
 
 
-  /* ── Category sub-groups ────────── */
-  .cat-group {
+  /* ── Accordion rows (field groups) ────────── */
+  .fg-accordion-row {
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .fg-accordion-row.fg-expanded {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin-bottom: 2px;
+  }
+  .fg-accordion-btn {
     display: flex;
+    width: 100%;
     align-items: center;
-    gap: 0.35rem;
-    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px 8px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: background 0.1s;
   }
-  .cat-group-label {
-    font-size: 0.58rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+  .fg-accordion-btn:hover { background: var(--surface); }
+  .fg-expanded .fg-accordion-btn { background: transparent; }
+  .fg-name {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--text);
+    flex: 1;
+    text-align: left;
+  }
+  .fg-count {
+    font-size: 0.55rem;
     color: var(--text-muted);
-    margin-right: 0.1rem;
-    white-space: nowrap;
-    user-select: none;
+    background: var(--surface);
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-weight: 500;
+    border: 1px solid transparent;
   }
-  .cat-group-sep {
-    width: 1px;
-    height: 28px;
-    background: var(--border);
-    margin: 0 0.3rem;
+  .fg-count-active {
+    color: var(--text);
+    background: rgba(245,197,24,.10);
+    border-color: rgba(245,197,24,.35);
+  }
+  .fg-caret {
+    color: var(--text-muted);
+    transition: transform 0.15s;
     flex-shrink: 0;
   }
-
-  /* ── Field group headers ────────── */
-  .field-group-header {
-    grid-column: 1 / -1;
+  .fg-expanded .fg-caret { transform: rotate(180deg); }
+  .fg-chips {
     display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.35rem 0 0.15rem;
-    user-select: none;
-  }
-  .field-group-header:first-child { padding-top: 0; }
-  .field-group-icon { font-size: 0.78rem; line-height: 1; }
-  .field-group-label {
-    font-size: 0.62rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-muted);
-  }
-  .field-group-badge {
-    font-size: 0.56rem;
-    font-weight: 600;
-    background: var(--yellow);
-    color: var(--black);
-    border-radius: 10px;
-    padding: 0.05rem 0.4rem;
-    line-height: 1.4;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 4px 8px 10px;
   }
 
-  /* ── Category chips (separate row above numeric grid) ────────── */
+  /* ── Category pill chips (horizontal row) ────────── */
   .cat-chip {
     position: relative;
-    min-height: 56px;
-    display: flex;
+    flex-shrink: 0;
   }
   .cat-chip-btn {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.2rem;
-    padding: 0.45rem 0.6rem;
-    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 30px;
+    padding: 0 10px;
+    border-radius: 15px;
     border: 1px solid var(--border);
     background: var(--surface);
     cursor: pointer;
-    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
     font-family: var(--font-sans);
-    text-align: left;
-    width: 100%;
+    font-size: 0.65rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    transition: all 0.15s ease;
+    white-space: nowrap;
   }
-  [data-theme="dark"] .cat-chip-btn { background: rgba(255,255,255,0.035); }
+  [data-theme="dark"] .cat-chip-btn { background: rgba(255,255,255,0.04); }
   .cat-chip-btn:hover { border-color: var(--text-muted); }
   .cat-chip.is-filtering .cat-chip-btn {
     border-color: var(--yellow);
-    box-shadow: 0 0 0 1px var(--yellow);
-    background: #FFFDF3;
+    background: rgba(245,197,24,.08);
+    font-weight: 600;
+    color: var(--text);
   }
   [data-theme="dark"] .cat-chip.is-filtering .cat-chip-btn {
-    background: rgba(245, 197, 24, 0.08);
+    background: rgba(245,197,24,.10);
   }
   .cat-chip-top {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 0.4rem;
+    gap: 4px;
   }
   .cat-chip-label {
-    font-size: 0.6rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 500;
-    color: var(--text-muted);
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
   }
   .cat-chip-badge {
     background: var(--yellow);
     color: var(--black);
-    font-size: 0.58rem;
-    font-weight: 600;
-    padding: 0.05rem 0.38rem;
-    border-radius: 8px;
+    font-size: 0.5rem;
+    font-weight: 700;
     min-width: 16px;
-    text-align: center;
-    line-height: 1.25;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    line-height: 1;
   }
   .cat-chip-caret {
     display: inline-flex;
     color: var(--text-muted);
     opacity: 0.5;
+    margin-left: 1px;
+    transition: transform 0.15s;
   }
-  .cat-chip-value {
-    font-size: 0.74rem;
-    color: var(--text-muted);
-    font-weight: 400;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .cat-chip.is-filtering .cat-chip-value {
-    color: var(--text);
-    font-weight: 500;
-  }
+  .cat-chip-value { display: none; } /* Hidden in pill layout — badge shows count */
 
   /* Category popover */
   .cat-popover {
     position: absolute;
-    top: calc(100% + 4px);
+    top: calc(100% + 6px);
     left: 0;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 0.5rem 0.6rem;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    padding: 4px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.12);
     z-index: 200;
     min-width: 160px;
+    max-height: 240px;
+    overflow-y: auto;
   }
 
   /* ── Applied filters strip ────────── */
@@ -2681,17 +2711,17 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     flex-wrap: wrap;
     align-items: center;
     gap: 0.4rem;
-    padding: 0.75rem 0 0;
-    margin-top: 0.85rem;
+    padding: 7px clamp(1rem, 3vw, 2rem);
     border-top: 1px solid var(--border);
+    background: var(--surface);
   }
   .panel-applied-label {
-    font-size: 0.6rem;
-    color: var(--text-secondary);
+    font-size: 0.55rem;
+    color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 600;
-    margin-right: 0.3rem;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    margin-right: 0.2rem;
   }
   .panel-applied-chips {
     display: flex;
@@ -4351,14 +4381,12 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
   }
   @media (max-width: 850px) {
     .fichas-grid { grid-template-columns: repeat(2, 1fr); }
-    .panel-grid { grid-template-columns: repeat(4, 1fr); }
   }
   @media (max-width: 640px) {
     .comp-topbar {
       flex-wrap: wrap;
       gap: .5rem;
     }
-    .panel-grid { grid-template-columns: repeat(2, 1fr); }
     .fichas-grid { grid-template-columns: 1fr 1fr; gap: .8rem; }
     .ev-card-body { padding: .75rem .85rem .85rem; }
     .ev-modelo { font-size: .82rem; }
