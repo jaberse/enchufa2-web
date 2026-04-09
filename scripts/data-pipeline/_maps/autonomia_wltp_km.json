@@ -1,0 +1,338 @@
+{
+  "fuente_tipo": "base_datos",
+  "fuente_fecha": "2026-04-05",
+  "verificado": true,
+  "valores": {
+    "audi-q4-e-tron-45": {
+      "valor": 526,
+      "fuente_url": "https://ev-database.org/car/2014/Audi-Q4-e-tron-45-quattro",
+      "fuente_nombre": "EV-Database"
+    },
+    "audi-q6-e-tron-performance": {
+      "valor": 661,
+      "fuente_url": "https://ev-database.org/car/2215/Audi-Q6-SUV-e-tron-performance",
+      "fuente_nombre": "EV-Database"
+    },
+    "bmw-i4-edrive40": {
+      "valor": 600,
+      "fuente_url": "https://ev-database.org/car/2199/BMW-i4-eDrive40",
+      "fuente_nombre": "EV-Database"
+    },
+    "bmw-i5-edrive40": {
+      "valor": 582,
+      "fuente_url": "https://ev-database.org/car/1906/BMW-i5-eDrive40-Sedan",
+      "fuente_nombre": "EV-Database"
+    },
+    "bmw-ix1-xdrive30": {
+      "valor": 440,
+      "fuente_url": "https://ev-database.org/car/1701/BMW-iX1-xDrive30",
+      "fuente_nombre": "EV-Database"
+    },
+    "bmw-ix2-xdrive30": {
+      "valor": 449,
+      "fuente_url": "https://ev-database.org/car/2040/BMW-iX2-xDrive30",
+      "fuente_nombre": "EV-Database"
+    },
+    "byd-atto-3-comfort": {
+      "valor": 420,
+      "fuente_url": "https://ev-database.org/car/3192/BYD-ATTO-3",
+      "fuente_nombre": "EV-Database"
+    },
+    "byd-dolphin-60kwh": {
+      "valor": 427,
+      "fuente_url": "https://ev-database.org/car/1919/BYD-DOLPHIN-604-kWh",
+      "fuente_nombre": "EV-Database"
+    },
+    "byd-dolphin-surf-comfort": {
+      "valor": 310,
+      "fuente_url": "https://ev-database.org/car/3195/BYD-DOLPHIN-SURF-432-kWh-Comfort",
+      "fuente_nombre": "EV-Database"
+    },
+    "byd-seal-awd-excellence": {
+      "valor": 520,
+      "fuente_url": "https://ev-database.org/car/2002/BYD-SEAL-825-kWh-AWD-Excellence",
+      "fuente_nombre": "EV-Database"
+    },
+    "byd-seal-u-87-design": {
+      "valor": 500,
+      "fuente_url": "https://ev-database.org/car/2067/BYD-SEAL-U-87-kWh-Design",
+      "fuente_nombre": "EV-Database"
+    },
+    "citroen-e-c3-you": {
+      "valor": 327,
+      "fuente_url": "https://ev-database.org/car/2039/Citroen-e-C3-Standard-Range-44-kWh",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 320, verificado en EV-Database como 327 km WLTP"
+    },
+    "cupra-born-58-kwh": {
+      "valor": 420,
+      "fuente_url": "https://ev-database.org/car/1517/CUPRA-Born-170-kW---58-kWh",
+      "fuente_nombre": "EV-Database"
+    },
+    "cupra-tavascan-vz": {
+      "valor": 521,
+      "fuente_url": "https://ev-database.org/car/1972/CUPRA-Tavascan-VZ",
+      "fuente_nombre": "EV-Database"
+    },
+    "dacia-spring-essential": {
+      "valor": 230,
+      "fuente_url": "https://ev-database.org/car/2126/Dacia-Spring-Electric-45",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 225, verificado en EV-Database como 230 km WLTP"
+    },
+    "fiat-500e-la-prima": {
+      "valor": 333,
+      "fuente_url": "https://ev-database.org/car/1285/Fiat-500e-Hatchback-42-kWh",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 320, verificado en EV-Database como 333 km WLTP"
+    },
+    "ford-explorer-ev-standard-range-rwd": {
+      "valor": 380,
+      "fuente_url": "https://ev-database.org/car/2167/Ford-Explorer-Standard-Range-RWD",
+      "fuente_nombre": "EV-Database"
+    },
+    "ford-puma-gen-e": {
+      "valor": 376,
+      "fuente_url": "https://ev-database.org/car/3073/Ford-Puma-Gen-E",
+      "fuente_nombre": "EV-Database"
+    },
+    "hyundai-inster-long-range": {
+      "valor": 370,
+      "fuente_url": "https://ev-database.org/car/2231/Hyundai-INSTER-Long-Range",
+      "fuente_nombre": "EV-Database"
+    },
+    "hyundai-ioniq-5-long-range-awd": {
+      "valor": 481,
+      "fuente_url": "https://ev-database.org/car/1663/Hyundai-IONIQ-5-Long-Range-AWD",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 516, verificado en EV-Database como 481 km WLTP"
+    },
+    "hyundai-ioniq-5-long-range-rwd": {
+      "valor": 614,
+      "fuente_url": "https://ev-database.org/car/1718/Hyundai-IONIQ-6-Long-Range-2WD",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 570, verificado en EV-Database como 614 km WLTP (nota: datos del IONIQ 6)"
+    },
+    "hyundai-ioniq-6-long-range-rwd": {
+      "valor": 614,
+      "fuente_url": "https://ev-database.org/car/1718/Hyundai-IONIQ-6-Long-Range-2WD",
+      "fuente_nombre": "EV-Database"
+    },
+    "hyundai-kona-electric-65-kwh": {
+      "valor": 514,
+      "fuente_url": "https://ev-database.org/car/1830/Hyundai-Kona-Electric-65-kWh",
+      "fuente_nombre": "EV-Database"
+    },
+    "jeep-avenger-electric": {
+      "valor": 404,
+      "fuente_url": "https://ev-database.org/car/1816/Jeep-Avenger-Electric",
+      "fuente_nombre": "EV-Database"
+    },
+    "kia-ev3-long-range": {
+      "valor": 605,
+      "fuente_url": "https://ev-database.org/car/2212/Kia-EV3-Long-Range",
+      "fuente_nombre": "EV-Database"
+    },
+    "kia-ev6-gt": {
+      "valor": 424,
+      "fuente_url": "https://ev-database.org/car/1471/Kia-EV6-GT",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 450, verificado en EV-Database como 424 km WLTP"
+    },
+    "kia-ev6-long-range-rwd": {
+      "valor": 528,
+      "fuente_url": "https://ev-database.org/car/1481/Kia-EV6-Long-Range-2WD",
+      "fuente_nombre": "EV-Database"
+    },
+    "mercedes-eqa-250+": {
+      "valor": 531,
+      "fuente_url": "https://ev-database.org/car/1698/Mercedes-Benz-EQA-250plus",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 559, verificado en EV-Database como 531 km WLTP"
+    },
+    "mercedes-eqb-250-plus": {
+      "valor": 536,
+      "fuente_url": "https://ev-database.org/car/1988/Mercedes-Benz-EQB-250plus",
+      "fuente_nombre": "EV-Database"
+    },
+    "mg-4-standard-range": {
+      "valor": 353,
+      "fuente_url": "https://ev-database.org/car/1707/MG-MG4-Electric-51-kWh",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 350, verificado en EV-Database como 353 km WLTP"
+    },
+    "mg-s5-64kwh": {
+      "valor": 480,
+      "fuente_url": "https://ev-database.org/car/3147/MG-MGS5-EV-64-kWh",
+      "fuente_nombre": "EV-Database"
+    },
+    "mini-aceman-se": {
+      "valor": 310,
+      "fuente_url": "https://ev-database.org/car/2190/Mini-Aceman-E",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 405, verificado en EV-Database como 310 km WLTP"
+    },
+    "mini-cooper-se-e": {
+      "valor": 402,
+      "fuente_url": "https://ev-database.org/car/1998/Mini-Cooper-SE",
+      "fuente_nombre": "EV-Database"
+    },
+    "nissan-ariya-87kwh": {
+      "valor": 536,
+      "fuente_url": "https://ev-database.org/car/1302/Nissan-Ariya-87kWh",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 533, verificado en EV-Database como 536 km WLTP"
+    },
+    "opel-corsa-electric-54kwh": {
+      "valor": 354,
+      "fuente_url": "https://ev-database.org/car/1941/Opel-Corsa-Electric-50-kWh",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 423, verificado en EV-Database. Datos del modelo 50 kWh, no 54 kWh específico encontrado"
+    },
+    "opel-mokka-e-gs": {
+      "valor": 403,
+      "fuente_url": "https://ev-database.org/car/3051/Opel-Mokka-Electric",
+      "fuente_nombre": "EV-Database"
+    },
+    "peugeot-e-2008-allure": {
+      "valor": 345,
+      "fuente_url": "https://ev-database.org/car/1946/Peugeot-e-2008-50-kWh",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 406, verificado en EV-Database como 345 km WLTP"
+    },
+    "peugeot-e-208-allure": {
+      "valor": 409,
+      "fuente_url": "https://ev-database.org/car/1949/Peugeot-e-208-51-kWh",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 433, verificado en EV-Database como 409 km WLTP"
+    },
+    "polestar-2-long-range-single-motor": {
+      "valor": 659,
+      "fuente_url": "https://ev-database.org/car/2226/Polestar-2-Long-Range-Single-Motor",
+      "fuente_nombre": "EV-Database"
+    },
+    "polestar-4-long-range-single-motor": {
+      "valor": 620,
+      "fuente_url": "https://ev-database.org/car/1841/Polestar-4-Long-Range-Single-Motor",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 610, verificado en EV-Database como 620 km WLTP"
+    },
+    "renault-5-e-tech-comfort-range": {
+      "valor": 269,
+      "fuente_url": "https://ev-database.org/car/2134/Renault-5-E-Tech-40kWh-120hp",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 410, verificado en EV-Database. WLTP no disponible directamente, usando dato de 1-Stop Range"
+    },
+    "renault-megane-e-tech-ev60": {
+      "valor": 470,
+      "fuente_url": "https://ev-database.org/car/1588/Renault-Megane-E-Tech-EV60-130hp",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 468, verificado en EV-Database como 470 km WLTP"
+    },
+    "renault-scenic-e-tech-87kwh": {
+      "valor": 480,
+      "fuente_url": "https://ev-database.org/car/2068/Renault-Scenic-E-Tech-EV60-170hp",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 625, verificado en EV-Database como 480 km WLTP"
+    },
+    "skoda-elroq-60": {
+      "valor": 429,
+      "fuente_url": "https://ev-database.org/car/3032/Skoda-Elroq-60",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 390, verificado en EV-Database como 429 km WLTP"
+    },
+    "skoda-elroq-85": {
+      "valor": 573,
+      "fuente_url": "https://ev-database.org/car/3033/Skoda-Elroq-85",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 575, verificado en EV-Database como 573 km WLTP"
+    },
+    "skoda-enyaq-85": {
+      "valor": 596,
+      "fuente_url": "https://ev-database.org/car/2020/Skoda-Enyaq-85",
+      "fuente_nombre": "EV-Database"
+    },
+    "smart-1-proplus": {
+      "valor": 420,
+      "fuente_url": "https://ev-database.org/car/1667/Smart-1-Proplus",
+      "fuente_nombre": "EV-Database"
+    },
+    "smart-3-proplus": {
+      "valor": 435,
+      "fuente_url": "https://ev-database.org/car/1999/Smart-3-Proplus",
+      "fuente_nombre": "EV-Database"
+    },
+    "tesla-model-3-long-range-awd-highland": {
+      "valor": 678,
+      "fuente_url": "https://ev-database.org/car/1992/Tesla-Model-3-Long-Range-AWD",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 660, verificado en EV-Database como 678 km WLTP"
+    },
+    "tesla-model-3-rwd-highland": {
+      "valor": 702,
+      "fuente_url": "https://ev-database.org/car/3034/Tesla-Model-3-Long-Range-RWD",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 534, verificado en EV-Database como 702 km WLTP para Long Range RWD"
+    },
+    "tesla-model-y-awd-long-range": {
+      "valor": 542,
+      "fuente_url": "https://ev-database.org/car/1619/Tesla-Model-Y-Long-Range-AWD",
+      "fuente_nombre": "EV-Database"
+    },
+    "tesla-model-y-rwd-long-range": {
+      "valor": 657,
+      "fuente_url": "https://ev-database.org/car/3417/Tesla-Model-Y-Long-Range-RWD",
+      "fuente_nombre": "EV-Database"
+    },
+    "toyota-bz4x-fwd": {
+      "valor": 516,
+      "fuente_url": "https://ev-database.org/car/1564/Toyota-bZ4X-FWD",
+      "fuente_nombre": "EV-Database"
+    },
+    "volkswagen-id-buzz-pro": {
+      "valor": 423,
+      "fuente_url": "https://ev-database.org/car/1651/Volkswagen-ID-Buzz-Pro",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 461, verificado en EV-Database como 423 km WLTP"
+    },
+    "volkswagen-id3-pro-s": {
+      "valor": 559,
+      "fuente_url": "https://ev-database.org/car/2210/Volkswagen-ID3-Pro-S",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 550, verificado en EV-Database como 559 km WLTP"
+    },
+    "volkswagen-id4-gtx": {
+      "valor": 518,
+      "fuente_url": "https://ev-database.org/car/2030/Volkswagen-ID4-GTX",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 494, verificado en EV-Database como 518 km WLTP"
+    },
+    "volkswagen-id4-pro-performance": {
+      "valor": 537,
+      "fuente_url": "https://ev-database.org/car/1314/Volkswagen-ID4-Pro-Performance",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 529, verificado en EV-Database como 537 km WLTP"
+    },
+    "volkswagen-id7-pro-s": {
+      "valor": 709,
+      "fuente_url": "https://ev-database.org/car/1840/Volkswagen-ID7-Pro-S",
+      "fuente_nombre": "EV-Database"
+    },
+    "volvo-ex30-single-motor-extended-range": {
+      "valor": 476,
+      "fuente_url": "https://ev-database.org/car/1910/Volvo-EX30-Single-Motor-ER",
+      "fuente_nombre": "EV-Database"
+    },
+    "volvo-ex30-single-motor": {
+      "valor": 337,
+      "fuente_url": "https://ev-database.org/car/1909/Volvo-EX30-Single-Motor",
+      "fuente_nombre": "EV-Database",
+      "nota": "Valor actual es 344, verificado en EV-Database como 337 km WLTP"
+    },
+    "volvo-ex40-recharge-single-motor": {
+      "valor": 479,
+      "fuente_url": "https://ev-database.org/car/2120/Volvo-EX40-Single-Motor",
+      "fuente_nombre": "EV-Database"
+    }
+  }
+}
