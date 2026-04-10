@@ -377,15 +377,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
       if (m.quimica === 'NMC') html += '<span class="' + s + ' badge-nmc">NMC</span>';
       if (m.quimica === 'NCA') html += '<span class="' + s + ' badge-nca">NCA</span>';
       if (m.voltaje === 800)   html += '<span class="' + s + ' badge-800v">800V</span>';
-      // Plan Auto+ badge
-      if (m.plan_auto_elegible && m.ayuda_plan_auto_eur != null) {
-        const elegible = m.plan_auto_elegible;
-        const cls = elegible === 'Sí' ? 'badge-auto-si' : elegible === 'Parcial' ? 'badge-auto-parcial' : 'badge-auto-no';
-        const ayudaTxt = m.ayuda_plan_auto_eur > 0
-          ? '−' + Number(m.ayuda_plan_auto_eur).toLocaleString('es-ES') + ' €'
-          : 'No aplica';
-        html += '<span class="' + s + ' ' + cls + '">Auto+ ' + ayudaTxt + '</span>';
-      }
+      // Plan Auto+ info se muestra en el bloque ev-card-subsidy, no como badge
       return html;
     }
 
