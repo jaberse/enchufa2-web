@@ -149,8 +149,10 @@
     },
     "pvp": {
       "valor": 40495,
-      "fuente_tipo": "pendiente",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
       "verificado": false,
+      "fuente_detalle": "Múltiples fuentes web — Smart #3 Pro+",
       "unidad": "€"
     },
     "moves_aplicable": {
@@ -451,13 +453,14 @@
     },
     "pvp_fecha": {
       "valor": "2026-04",
-      "fuente_tipo": "pendiente",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
       "verificado": false
     },
     "pvp_con_plan_auto_eur": {
       "valor": 37120,
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-09",
+      "fuente_fecha": "2026-04-12",
       "verificado": true,
       "unidad": "€"
     },

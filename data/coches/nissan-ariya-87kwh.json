@@ -455,18 +455,17 @@
       "verificado": false
     },
     "pvp_con_plan_auto_eur": {
-      "valor": 46975,
+      "valor": null,
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-09",
+      "fuente_fecha": "2026-04-12",
       "verificado": true,
       "unidad": "€"
     },
     "plan_auto_elegible": {
-      "valor": "Parcial",
+      "valor": "No elegible",
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-09",
-      "verificado": true,
-      "notas": "Calculado con fórmula EEE: 2925€ (elec:2250 + econ:675 + ensam:0 + bat:0)"
+      "fuente_fecha": "2026-04-12",
+      "verificado": true
     },
     "garantia_vehiculo_anos": {
       "valor": 5,
@@ -569,9 +568,9 @@
       "verificado": true
     },
     "ayuda_plan_auto_eur": {
-      "valor": 2925,
+      "valor": 0,
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-09",
+      "fuente_fecha": "2026-04-12",
       "verificado": true,
       "unidad": "€"
     },

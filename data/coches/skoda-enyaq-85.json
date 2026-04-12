@@ -148,9 +148,11 @@
       "unidad": "kg"
     },
     "pvp": {
-      "valor": 47250,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "valor": 47350,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Quadis.es PVP tarifa — Enyaq 85 286 82kWh",
       "unidad": "€"
     },
     "moves_aplicable": {
@@ -450,23 +452,23 @@
       "verificado": false
     },
     "pvp_fecha": {
-      "valor": "2026-03",
-      "fuente_tipo": "pendiente",
-      "verificado": false
+      "valor": "2026-04",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true
     },
     "pvp_con_plan_auto_eur": {
-      "valor": 43200,
+      "valor": null,
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-09",
+      "fuente_fecha": "2026-04-12",
       "verificado": true,
       "unidad": "€"
     },
     "plan_auto_elegible": {
-      "valor": "Parcial",
+      "valor": "No elegible",
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-09",
-      "verificado": true,
-      "notas": "Calculado con fórmula EEE: 4050€ (elec:2250 + econ:675 + ensam:675 + bat:450)"
+      "fuente_fecha": "2026-04-12",
+      "verificado": true
     },
     "garantia_vehiculo_anos": {
       "valor": 2,
@@ -569,9 +571,9 @@
       "verificado": true
     },
     "ayuda_plan_auto_eur": {
-      "valor": 4050,
+      "valor": 0,
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-09",
+      "fuente_fecha": "2026-04-12",
       "verificado": true,
       "unidad": "€"
     },

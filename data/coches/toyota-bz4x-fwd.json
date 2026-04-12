@@ -148,9 +148,11 @@
       "unidad": "kg"
     },
     "pvp": {
-      "valor": 39375,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "valor": 39500,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Carnovo.com — Toyota bZ4X Advance 224CV FWD",
       "unidad": "€"
     },
     "moves_aplicable": {
@@ -451,13 +453,14 @@
     },
     "pvp_fecha": {
       "valor": "2026-04",
-      "fuente_tipo": "pendiente",
-      "verificado": false
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true
     },
     "pvp_con_plan_auto_eur": {
-      "valor": 36000,
+      "valor": 36125,
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-09",
+      "fuente_fecha": "2026-04-12",
       "verificado": true,
       "unidad": "€"
     },

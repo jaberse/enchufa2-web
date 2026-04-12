@@ -462,11 +462,10 @@
       "unidad": "€"
     },
     "plan_auto_elegible": {
-      "valor": "No",
+      "valor": "No elegible",
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-09",
-      "verificado": true,
-      "notas": "PVP sin IVA > 45.000€"
+      "fuente_fecha": "2026-04-12",
+      "verificado": true
     },
     "garantia_vehiculo_anos": {
       "valor": 2,

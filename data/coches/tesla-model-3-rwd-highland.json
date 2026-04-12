@@ -148,9 +148,11 @@
       "unidad": "kg"
     },
     "pvp": {
-      "valor": 38490,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "valor": 36990,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Tesla.com configurador ES 2026-04-12 — Model 3 Tracción trasera (Standard)",
       "unidad": "€"
     },
     "moves_aplicable": {
@@ -450,14 +452,15 @@
       "verificado": false
     },
     "pvp_fecha": {
-      "valor": "2026-03",
-      "fuente_tipo": "pendiente",
-      "verificado": false
+      "valor": "2026-04",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true
     },
     "pvp_con_plan_auto_eur": {
-      "valor": 35115,
+      "valor": 33615,
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-09",
+      "fuente_fecha": "2026-04-12",
       "verificado": true,
       "unidad": "€"
     },
