@@ -465,21 +465,43 @@
       "notas": "Calculado con fórmula EEE: 4500€ (elec:2250 + econ:1125 + ensam:675 + bat:450)"
     },
     "garantia_vehiculo_anos": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "valor": 5,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial Hyundai España",
       "unidad": "años"
     },
     "garantia_vehiculo_km": {
       "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Sin límite de km — Web oficial Hyundai España",
       "unidad": "km"
     },
     "garantia_bateria": {
       "valor": "8 años / 160.000 km",
-      "fuente_tipo": "pendiente",
-      "verificado": false
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial Hyundai España"
+    },
+    "garantia_bateria_anos": {
+      "valor": 8,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial Hyundai España",
+      "unidad": "años"
+    },
+    "garantia_bateria_km": {
+      "valor": 160000,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial Hyundai España",
+      "unidad": "km"
     },
     "mantenimiento_intervalo_anos": {
       "valor": null,
@@ -678,11 +700,11 @@
       "fuente_detalle": "Web oficial fabricante"
     },
     "garantia_bateria_pct": {
-      "valor": null,
+      "valor": 70,
       "fuente_tipo": "investigacion_web",
       "fuente_fecha": "2026-04-12",
       "verificado": true,
-      "fuente_detalle": "Web oficial fabricante"
+      "fuente_detalle": "Web oficial Hyundai España"
     },
     "garantia_bateria_estrellas": {
       "valor": 4,

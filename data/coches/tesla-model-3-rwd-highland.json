@@ -465,21 +465,43 @@
       "notas": "Calculado con fórmula EEE: 3375€ (elec:2250 + econ:1125 + ensam:0 + bat:0)"
     },
     "garantia_vehiculo_anos": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "valor": 4,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial Tesla España",
       "unidad": "años"
     },
     "garantia_vehiculo_km": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "valor": 80000,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial Tesla España",
       "unidad": "km"
     },
     "garantia_bateria": {
       "valor": "8 años / 160.000 km",
-      "fuente_tipo": "pendiente",
-      "verificado": false
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial Tesla España"
+    },
+    "garantia_bateria_anos": {
+      "valor": 8,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial Tesla España",
+      "unidad": "años"
+    },
+    "garantia_bateria_km": {
+      "valor": 160000,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial Tesla España",
+      "unidad": "km"
     },
     "mantenimiento_intervalo_anos": {
       "valor": null,

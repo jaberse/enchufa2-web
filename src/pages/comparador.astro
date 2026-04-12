@@ -479,7 +479,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
       if (m.fiabilidad_validadores) {
         html += '<div class="metric-validators">Validadores: ' + m.fiabilidad_validadores + '</div>';
       }
-      html += '<div class="metric-footer">Cómo calculamos → <a href="/comparador/metodologia" onclick="event.stopPropagation()">Metodología</a> · Revisión: ' + m.fiabilidad_revision + '</div>';
+      html += '<div class="metric-footer">Cómo calculamos → <a href="/metodologia" onclick="event.stopPropagation()">Metodología</a> · Revisión: ' + m.fiabilidad_revision + '</div>';
       html += '</div></div>';
       return html;
     }
@@ -492,12 +492,16 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
       // Vehículo
       html += '<div class="metric-source">';
       html += '<div class="metric-source-header"><span>Vehículo</span>' + renderStars(m.garantia_vehiculo_estrellas, 'sm') + '</div>';
-      html += '<div class="metric-source-data">' + m.garantia_vehiculo_anos + ' años' + (m.garantia_vehiculo_km ? ' / ' + Number(m.garantia_vehiculo_km).toLocaleString('es-ES') + ' km' : ' / sin límite km') + '</div>';
+      const vAnos = m.garantia_vehiculo_anos != null ? m.garantia_vehiculo_anos + ' años' : '—';
+      const vKm = m.garantia_vehiculo_km != null ? Number(m.garantia_vehiculo_km).toLocaleString('es-ES') + ' km' : 'sin límite km';
+      html += '<div class="metric-source-data">' + vAnos + ' / ' + vKm + '</div>';
       html += '</div>';
       // Batería
       html += '<div class="metric-source">';
       html += '<div class="metric-source-header"><span>Batería</span>' + renderStars(m.garantia_bateria_estrellas, 'sm') + '</div>';
-      html += '<div class="metric-source-data">' + m.garantia_bateria_anos + ' años / ' + Number(m.garantia_bateria_km).toLocaleString('es-ES') + ' km</div>';
+      const bAnos = m.garantia_bateria_anos != null ? m.garantia_bateria_anos + ' años' : '—';
+      const bKm = m.garantia_bateria_km != null ? Number(m.garantia_bateria_km).toLocaleString('es-ES') + ' km' : '—';
+      html += '<div class="metric-source-data">' + bAnos + ' / ' + bKm + '</div>';
       if (m.garantia_bateria_pct) html += '<div class="metric-source-detail">Mínimo garantizado: ' + m.garantia_bateria_pct + '% capacidad</div>';
       html += '</div>';
       html += '<div class="metric-footer">Fuente: web oficial fabricante · Revisión: ' + m.garantia_revision + '</div>';
