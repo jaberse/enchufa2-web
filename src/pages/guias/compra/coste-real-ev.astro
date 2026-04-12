@@ -1,0 +1,417 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+---
+
+<ArticleLayout
+  title="Cuánto cuesta realmente un coche eléctrico en España"
+  description="TCO completo con datos 2026: electricidad, seguro, mantenimiento, impuestos y depreciación. Tres comparativas reales EV vs gasolina."
+  readingTime="15 min de lectura"
+  publishDate="Abril 2026"
+  references="18 referencias"
+>
+
+  <!-- Subtítulo editorial -->
+  <p class="article-deck">El precio de compra es solo el 40-50 % de lo que cuesta un coche a lo largo de su vida. Un eléctrico puede ser más caro en el concesionario y mucho más barato en 5 años — o al revés, si no eliges bien la tarifa. En enchufa2 hemos desglosado los 6 costes reales con datos verificados de 2026 y tres comparativas modelo a modelo.</p>
+
+  <!-- Stats badges -->
+  <div class="article-stats">
+    <div class="stat">
+      <span class="stat-value">€2-3</span>
+      <span class="stat-label">Coste por 100 km cargando en casa con tarifa nocturna</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">€9,5-10</span>
+      <span class="stat-label">Coste por 100 km con gasolina SP95 a €1,55/L</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">€6.000-15.000</span>
+      <span class="stat-label">Ahorro TCO neto a 5 años según segmento</span>
+    </div>
+  </div>
+
+  <!-- TLDR -->
+  <div class="tldr">
+    <strong>Resumen rápido</strong>
+    <ul>
+      <li><strong>Energía:</strong> cargar un EV en casa cuesta €2-3 por cada 100 km — gasolina cuesta €9,5-10. La brecha es de 3× a 5× dependiendo de la tarifa.</li>
+      <li><strong>Mantenimiento:</strong> un EV necesita €150-400/año frente a €600-900/año de un gasolina. Sin aceite, menos frenos, menos piezas móviles.</li>
+      <li><strong>Impuestos:</strong> IEDMT al 0 %, IVTM bonificado hasta el 75 %, etiqueta CERO sin restricciones. Ahorro fiscal de €2.000-6.000 en 5 años.</li>
+      <li><strong>Subvenciones:</strong> Plan Auto+ 2024-2026 ofrece hasta €7.000 (€4.500 + €1.000 concesionario + achatarramiento). Algunas CCAA añaden más.</li>
+      <li><strong>TCO a 5 años:</strong> un Tesla Model 3 ahorra €13.115 frente a un BMW 320i. Un MG4 ahorra €14.900 frente a un VW Golf. Un Citroën ë-C3 ahorra €6.260 frente a un SEAT Ibiza.</li>
+    </ul>
+  </div>
+
+  <hr />
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <h2>01 — El error de mirar solo el precio de compra</h2>
+
+  <figure>
+    <img src="/guias/compra/coste-real-ev/card.webp" alt="Tablet con gráfico de comparación de gastos, calculadora, recibos y café sobre una mesa de madera" loading="lazy" />
+    <figcaption>El coste total de propiedad incluye mucho más que el precio de compra. Foto: nanobanana / enchufa2.</figcaption>
+  </figure>
+
+  <p>Cuando buscas coche, lo primero que ves es el precio de venta. Es un número grande, prominente, diseñado para que compares. Y en la mayoría de segmentos, el eléctrico pierde esa comparación. Un Tesla Model 3 cuesta unos €40.970 frente a los €39.900 de un BMW 320i. Un MG4 Standard parte de €26.700 frente a los €28.000 de un Volkswagen Golf 1.5 TSI.</p>
+
+  <p>Pero ese número solo representa entre el 40 y el 50 % de lo que realmente pagarás por tu coche en 5 años<sup>1</sup>. El resto — energía, mantenimiento, seguros, impuestos, depreciación — es invisible en el concesionario pero absolutamente determinante en tu bolsillo.</p>
+
+  <blockquote>
+    Según el ICCT, el coste total de propiedad de un eléctrico de segmento C en Europa es ya un 15-25 % inferior al de su equivalente de gasolina a 5 años y 15.000 km/año.
+    <small>— International Council on Clean Transportation, European Vehicle Market Statistics, 2024</small>
+  </blockquote>
+
+  <p>Este concepto se llama <strong>Coste Total de Propiedad</strong> (TCO) e incluye 6 componentes que vamos a analizar uno a uno: energía, mantenimiento, seguros, impuestos y tasas, depreciación, y financiación. Al final, compararemos tres pares de modelos reales para que puedas ver los números completos.</p>
+
+  <hr />
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <h2>02 — Los 6 costes reales de tener un coche</h2>
+
+  <h3>1. Energía: electricidad vs. gasolina</h3>
+
+  <p>La diferencia más brutal y la más fácil de calcular. Usamos consumos reales de campo, no los oficiales WLTP (que subestiman el consumo real en un 15-20 % según Geotab<sup>2</sup>).</p>
+
+  <div class="component-table">
+    <div class="comp-row"><span class="comp-name">EV real</span><span class="comp-desc">16-17 kWh / 100 km en conducción mixta (Geotab, media de +6.000 vehículos)</span></div>
+    <div class="comp-row"><span class="comp-name">Gasolina</span><span class="comp-desc">6,5 L / 100 km real (Spritmonitor, media >100.000 registros)</span></div>
+    <div class="comp-row"><span class="comp-name">SP95</span><span class="comp-desc">€1,55 / L (EU Oil Bulletin, media España, abril 2026)</span></div>
+    <div class="comp-row"><span class="comp-name">PVPC valle</span><span class="comp-desc">€0,08-0,10 / kWh (franjas 00h-08h, REE datos abril 2026)</span></div>
+    <div class="comp-row"><span class="comp-name">Tarifa EV</span><span class="comp-desc">€0,05-0,07 / kWh (Iberdrola Plan Vehículo Eléctrico, Octopus Intelligent)</span></div>
+    <div class="comp-row"><span class="comp-name">Carga rápida</span><span class="comp-desc">€0,39-0,65 / kWh (Iberdrola, Endesa X, Tesla Supercharger, Ionity)</span></div>
+  </div>
+
+  <p><strong>Coste anual a 15.000 km</strong> (media española según DGT):</p>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span>Escenario</span><span class="ct-lfp">Eléctrico</span><span class="ct-nmc">Gasolina</span>
+    </div>
+    <div class="ct-row"><span>Casa — tarifa EV (€0,05/kWh)</span><span><strong>€120</strong></span><span>—</span></div>
+    <div class="ct-row"><span>Casa — PVPC valle (€0,09/kWh)</span><span><strong>€216</strong></span><span>—</span></div>
+    <div class="ct-row"><span>Casa — tarifa fija (€0,15/kWh)</span><span><strong>€360</strong></span><span>—</span></div>
+    <div class="ct-row"><span>Mixto (80 % casa + 20 % rápida)</span><span><strong>€437</strong></span><span>—</span></div>
+    <div class="ct-row"><span>100 % carga rápida pública</span><span><strong>€960</strong></span><span>—</span></div>
+    <div class="ct-row"><span>Gasolina SP95 a €1,55/L</span><span>—</span><span><strong>€1.511</strong></span></div>
+  </div>
+
+  <p>El cálculo es directo: 15.000 km × 16 kWh/100 km = 2.400 kWh. A €0,05/kWh con tarifa EV de Iberdrola, son €120 al año. Para gasolina: 15.000 km × 6,5 L/100 km = 975 L × €1,55 = €1.509.</p>
+
+  <p>La diferencia oscila entre <strong>€551 y €1.391 al año</strong> a favor del eléctrico, dependiendo de cómo cargues. Solo si cargas exclusivamente en carga rápida pública (algo que ningún propietario habitual hace) la ventaja se reduce significativamente.</p>
+
+  <figure>
+    <img src="/guias/compra/coste-real-ev/grafico_coste_100km.svg" alt="Gráfico comparativo del coste por 100 km según tipo de carga: desde €0,80 con tarifa EV hasta €10,08 con gasolina" loading="lazy" />
+    <figcaption>Coste por 100 km según tipo de carga. La gasolina cuesta entre 4× y 12× más que la electricidad en casa. Fuente: cálculos enchufa2 con datos REE y EU Oil Bulletin, abril 2026.</figcaption>
+  </figure>
+
+  <h3>2. Mantenimiento</h3>
+
+  <p>Un motor eléctrico tiene unas 20 piezas móviles. Un motor de combustión tiene más de 2.000<sup>3</sup>. Eso se traduce directamente en menos cosas que se rompen, menos revisiones y facturas más bajas.</p>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span>Concepto</span><span class="ct-lfp">EV / año</span><span class="ct-nmc">Gasolina / año</span>
+    </div>
+    <div class="ct-row"><span>Revisión anual</span><span>€100-150</span><span>€200-350</span></div>
+    <div class="ct-row"><span>Aceite + filtros</span><span>€0</span><span>€120-180</span></div>
+    <div class="ct-row"><span>Frenos (pastillas)</span><span>€0-50</span><span>€100-200</span></div>
+    <div class="ct-row"><span>Neumáticos</span><span>€250-400</span><span>€200-350</span></div>
+    <div class="ct-row"><span>Refrigerante / otros</span><span>€0-50</span><span>€50-100</span></div>
+    <div class="ct-row"><span><strong>Total anual</strong></span><span><strong>€350-650</strong></span><span><strong>€670-1.180</strong></span></div>
+  </div>
+
+  <p>Los frenos merecen mención especial: un EV usa frenado regenerativo para el 80-90 % de las deceleraciones cotidianas. Según el ADAC alemán, las pastillas de un eléctrico duran entre 150.000 y 200.000 km frente a 60.000-80.000 en un gasolina<sup>4</sup>.</p>
+
+  <p>Los neumáticos, en cambio, se desgastan un 15-25 % más rápido en un EV por el mayor peso y el par instantáneo<sup>5</sup>. No es un coste enorme, pero es real y hay que contabilizarlo.</p>
+
+  <p><strong>Ahorro en mantenimiento a 5 años:</strong> €1.600-2.650.</p>
+
+  <h3>3. Seguros</h3>
+
+  <p>Históricamente, asegurar un EV era un 10-20 % más caro. En 2026, la brecha se ha reducido significativamente gracias a que las aseguradoras tienen más datos de siniestralidad<sup>6</sup>.</p>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span>Segmento</span><span class="ct-lfp">EV todo riesgo</span><span class="ct-nmc">Gasolina todo riesgo</span>
+    </div>
+    <div class="ct-row"><span>Urbano (ë-C3 / Ibiza)</span><span>€450-550</span><span>€400-500</span></div>
+    <div class="ct-row"><span>Compacto (MG4 / Golf)</span><span>€550-700</span><span>€500-650</span></div>
+    <div class="ct-row"><span>Premium (Model 3 / 320i)</span><span>€700-950</span><span>€650-850</span></div>
+  </div>
+
+  <p>La diferencia típica en 2026 es de €50-100 al año en contra del EV, principalmente porque la reparación de baterías tras siniestro sigue siendo cara. A 5 años, esto representa €250-500 de sobrecoste — significativamente menor que el ahorro en energía y mantenimiento.</p>
+
+  <h3>4. Impuestos y tasas</h3>
+
+  <p>Aquí el eléctrico gana por goleada gracias a la fiscalidad favorable en España<sup>7</sup>:</p>
+
+  <p><strong>IEDMT (Impuesto de Matriculación):</strong> Los EVs pagan 0 % porque emiten 0 g/km de CO₂. Un gasolina paga entre el 4,75 % y el 14,75 % sobre el precio de venta según sus emisiones. Para un coche de €30.000, esto puede suponer entre €1.425 y €4.425 de diferencia.</p>
+
+  <p><strong>IVTM (Impuesto de Circulación):</strong> Más de 600 municipios españoles bonifican el IVTM para vehículos eléctricos, con descuentos del 50-75 % sobre la cuota<sup>8</sup>. En Madrid capital, la bonificación es del 75 %. Un Golf paga ~€130/año de IVTM en Madrid; un MG4 pagaría ~€33.</p>
+
+  <p><strong>ITV:</strong> El coste es similar (€40-51 dependiendo de la comunidad), pero la tasa de rechazo de los EVs es significativamente inferior por la ausencia de emisiones y la menor complejidad mecánica.</p>
+
+  <p><strong>Peajes y ZBE:</strong> La etiqueta CERO permite acceso sin restricciones a las Zonas de Bajas Emisiones (Madrid Central, ZBE Barcelona, etc.) y aparcamiento regulado gratuito o con descuento en muchas ciudades.</p>
+
+  <p><strong>Ahorro fiscal estimado a 5 años:</strong> €2.000-6.000 dependiendo del precio del vehículo y del municipio.</p>
+
+  <h3>5. Depreciación</h3>
+
+  <p>La depreciación es el coste oculto más grande de cualquier coche y el más difícil de predecir para los eléctricos porque el mercado está evolucionando rápidamente<sup>9</sup>.</p>
+
+  <p>Según datos de Autovista Group (referencia del sector para valores residuales en Europa), en 2025-2026 un EV retiene aproximadamente el 55-62 % de su valor a los 3 años, frente al 58-65 % de un gasolina equivalente<sup>10</sup>. La brecha se ha reducido mucho respecto a 2022-2023 cuando los EVs se depreciaban hasta un 20 % más que los ICE.</p>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span>Modelo</span><span class="ct-lfp">Valor residual 3 años</span><span class="ct-nmc">Valor residual 3 años</span>
+    </div>
+    <div class="ct-row"><span>Tesla Model 3 / BMW 320i</span><span>60-63 %</span><span>62-65 %</span></div>
+    <div class="ct-row"><span>MG4 / VW Golf</span><span>52-56 %</span><span>58-62 %</span></div>
+    <div class="ct-row"><span>Citroën ë-C3 / SEAT Ibiza</span><span>55-58 %</span><span>60-63 %</span></div>
+  </div>
+
+  <p>Un factor que mejora la depreciación del EV: la prohibición de venta de coches nuevos de combustión en la UE a partir de 2035 aumentará progresivamente la demanda de EVs usados<sup>11</sup>.</p>
+
+  <h3>6. Financiación</h3>
+
+  <p>En abril de 2026, los tipos TAE para compra financiada de vehículos oscilan entre el 6 y el 9 % para la mayoría de compradores<sup>12</sup>. Algunas marcas ofrecen financiación bonificada para EVs (Tesla ofrece desde el 4,99 % TAE, Hyundai desde el 5,49 %).</p>
+
+  <p>Si financias €30.000 a 5 años al 7 % TAE, pagarás unos €5.600 en intereses. Si el EV que te gusta tiene financiación bonificada al 5 %, pagarás €3.970 — un ahorro de €1.630 en intereses. No es un ahorro intrínseco del EV, pero sí una ventaja comercial que muchas marcas ofrecen ahora.</p>
+
+  <hr />
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <h2>03 — Tres comparativas TCO completas</h2>
+
+  <p>Dejemos la teoría. Estas son tres comparativas modelo a modelo con datos reales de abril 2026. Todos los cálculos usan: 15.000 km/año, 5 años de propiedad, carga mixta (80 % casa PVPC valle + 20 % rápida pública), seguro todo riesgo, y precios de venta con descuentos habituales de concesionario.</p>
+
+  <h3>Premium: Tesla Model 3 vs. BMW 320i</h3>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span>Concepto (5 años)</span><span class="ct-lfp">Tesla Model 3</span><span class="ct-nmc">BMW 320i</span>
+    </div>
+    <div class="ct-row"><span>Precio de compra</span><span>€40.970</span><span>€39.900</span></div>
+    <div class="ct-row"><span>IEDMT</span><span>€0</span><span>€1.895</span></div>
+    <div class="ct-row"><span>Subvención Plan Auto+</span><span>-€4.500</span><span>€0</span></div>
+    <div class="ct-row"><span>Energía (5 años)</span><span>€2.040</span><span>€7.545</span></div>
+    <div class="ct-row"><span>Mantenimiento (5 años)</span><span>€2.000</span><span>€4.250</span></div>
+    <div class="ct-row"><span>Seguro (5 años)</span><span>€4.125</span><span>€3.750</span></div>
+    <div class="ct-row"><span>IVTM (5 años, Madrid)</span><span>€250</span><span>€650</span></div>
+    <div class="ct-row"><span>ITV (2 inspecciones)</span><span>€80</span><span>€90</span></div>
+    <div class="ct-row"><span>Depreciación estimada</span><span>-€15.970</span><span>-€14.960</span></div>
+    <div class="ct-row"><span><strong>TCO total 5 años</strong></span><span><strong>€44.965</strong></span><span><strong>€58.080</strong></span></div>
+    <div class="ct-row"><span><strong>Coste mensual equivalente</strong></span><span><strong>€749</strong></span><span><strong>€968</strong></span></div>
+  </div>
+
+  <p><strong>Ahorro del Tesla Model 3: €13.115 en 5 años</strong> (€219/mes). La subvención Plan Auto+ y la brutal diferencia de energía compensan con creces el precio de compra similar y la ligera mayor depreciación.</p>
+
+  <figure>
+    <img src="/guias/compra/coste-real-ev/grafico_coste_mensual.svg" alt="Gráfico de barras horizontales comparando el coste mensual total de EV vs gasolina en tres segmentos" loading="lazy" />
+    <figcaption>Coste mensual equivalente (TCO a 5 años) por segmento. El eléctrico es más barato en todos los casos. Fuente: cálculos enchufa2 con datos de mercado abril 2026.</figcaption>
+  </figure>
+
+  <h3>Compacto: MG4 Standard vs. Volkswagen Golf 1.5 TSI</h3>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span>Concepto (5 años)</span><span class="ct-lfp">MG4 Standard</span><span class="ct-nmc">VW Golf 1.5 TSI</span>
+    </div>
+    <div class="ct-row"><span>Precio de compra</span><span>€26.700</span><span>€28.000</span></div>
+    <div class="ct-row"><span>IEDMT</span><span>€0</span><span>€1.330</span></div>
+    <div class="ct-row"><span>Subvención Plan Auto+</span><span>-€4.500</span><span>€0</span></div>
+    <div class="ct-row"><span>Energía (5 años)</span><span>€2.040</span><span>€7.545</span></div>
+    <div class="ct-row"><span>Mantenimiento (5 años)</span><span>€1.750</span><span>€3.850</span></div>
+    <div class="ct-row"><span>Seguro (5 años)</span><span>€3.125</span><span>€2.875</span></div>
+    <div class="ct-row"><span>IVTM (5 años, Madrid)</span><span>€175</span><span>€580</span></div>
+    <div class="ct-row"><span>ITV (2 inspecciones)</span><span>€80</span><span>€90</span></div>
+    <div class="ct-row"><span>Depreciación estimada</span><span>-€12.015</span><span>-€10.640</span></div>
+    <div class="ct-row"><span><strong>TCO total 5 años</strong></span><span><strong>€29.370</strong></span><span><strong>€44.270</strong></span></div>
+    <div class="ct-row"><span><strong>Coste mensual equivalente</strong></span><span><strong>€490</strong></span><span><strong>€738</strong></span></div>
+  </div>
+
+  <p><strong>Ahorro del MG4: €14.900 en 5 años</strong> (€248/mes). El segmento compacto es donde el EV gana más claramente: el precio de compra es similar o inferior (el MG4 es más barato que el Golf), y los ahorros operativos se acumulan sin pausa.</p>
+
+  <figure>
+    <img src="/guias/compra/coste-real-ev/grafico_tco_acumulado.svg" alt="Gráfico de líneas mostrando TCO acumulado del MG4 vs Golf a 5 años, con área de ahorro de €14.275" loading="lazy" />
+    <figcaption>TCO acumulado del MG4 (EV) vs Volkswagen Golf (gasolina) a 5 años. El área amarilla representa el ahorro acumulado: €14.275. Fuente: cálculos enchufa2.</figcaption>
+  </figure>
+
+  <h3>Urbano: Citroën ë-C3 vs. SEAT Ibiza 1.0 TSI</h3>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span>Concepto (5 años)</span><span class="ct-lfp">Citroën ë-C3</span><span class="ct-nmc">SEAT Ibiza 1.0 TSI</span>
+    </div>
+    <div class="ct-row"><span>Precio de compra</span><span>€23.300</span><span>€17.900</span></div>
+    <div class="ct-row"><span>IEDMT</span><span>€0</span><span>€850</span></div>
+    <div class="ct-row"><span>Subvención Plan Auto+</span><span>-€4.500</span><span>€0</span></div>
+    <div class="ct-row"><span>Energía (5 años)</span><span>€1.800</span><span>€6.200</span></div>
+    <div class="ct-row"><span>Mantenimiento (5 años)</span><span>€1.500</span><span>€3.350</span></div>
+    <div class="ct-row"><span>Seguro (5 años)</span><span>€2.500</span><span>€2.250</span></div>
+    <div class="ct-row"><span>IVTM (5 años, Madrid)</span><span>€125</span><span>€425</span></div>
+    <div class="ct-row"><span>ITV (2 inspecciones)</span><span>€80</span><span>€90</span></div>
+    <div class="ct-row"><span>Depreciación estimada</span><span>-€10.260</span><span>-€7.160</span></div>
+    <div class="ct-row"><span><strong>TCO total 5 años</strong></span><span><strong>€24.805</strong></span><span><strong>€31.065</strong></span></div>
+    <div class="ct-row"><span><strong>Coste mensual equivalente</strong></span><span><strong>€413</strong></span><span><strong>€518</strong></span></div>
+  </div>
+
+  <p><strong>Ahorro del ë-C3: €6.260 en 5 años</strong> (€104/mes). El segmento urbano es donde el resultado es más ajustado: el Ibiza es significativamente más barato de compra (€5.400 menos), lo que reduce la ventaja del EV. Aun así, la subvención Plan Auto+ y los ahorros operativos inclinan la balanza.</p>
+
+  <blockquote>
+    Sin la subvención Plan Auto+, el ë-C3 quedaría muy cerca del Ibiza en TCO a 5 años. En segmentos urbanos, las ayudas son decisivas para que el eléctrico sea competitivo en coste total.
+    <small>— Cálculos enchufa2 con datos de mercado abril 2026</small>
+  </blockquote>
+
+  <hr />
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <h2>04 — El efecto tarifa: cómo tu contrato eléctrico cambia el TCO un 15-30 %</h2>
+
+  <p>Uno de los factores más subestimados del coste de un EV es la tarifa eléctrica. La diferencia entre la mejor y la peor opción puede suponer €1.200-2.400 al año — más que el ahorro en mantenimiento.</p>
+
+  <h3>Comparativa de tarifas para carga doméstica (abril 2026)</h3>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span>Tarifa</span><span class="ct-lfp">Precio nocturno</span><span class="ct-nmc">Coste anual (15.000 km)</span>
+    </div>
+    <div class="ct-row"><span>Iberdrola Plan Vehículo Eléctrico</span><span>€0,05/kWh</span><span><strong>€120</strong></span></div>
+    <div class="ct-row"><span>Octopus Intelligent Go</span><span>€0,068/kWh</span><span><strong>€163</strong></span></div>
+    <div class="ct-row"><span>Naturgy Plan EV</span><span>€0,072/kWh</span><span><strong>€173</strong></span></div>
+    <div class="ct-row"><span>PVPC (franja valle)</span><span>€0,08-0,10/kWh</span><span><strong>€216</strong></span></div>
+    <div class="ct-row"><span>Tarifa fija genérica</span><span>€0,15/kWh</span><span><strong>€360</strong></span></div>
+    <div class="ct-row"><span>Tarifa fija sin optimizar</span><span>€0,20/kWh</span><span><strong>€480</strong></span></div>
+  </div>
+
+  <p>La diferencia entre Iberdrola Plan EV (€120/año) y una tarifa fija estándar (€480/año) es de <strong>€360 al año</strong>. A 5 años, eso son €1.800 — dinero que se pierde simplemente por no cambiar de contrato.</p>
+
+  <h3>¿Qué tarifa te conviene?</h3>
+
+  <p><strong>Si tienes garaje con wallbox</strong> (la situación ideal): contrata una tarifa EV específica. Iberdrola, Octopus o Naturgy ofrecen precios nocturnos de €0,05-0,07/kWh con la condición de que programes la carga entre las 00:00 y las 07:00. El wallbox se programa una vez y se olvida.</p>
+
+  <p><strong>Si cargas con enchufe doméstico</strong> (Schuko, 2,3 kW): necesitas al menos 8-10 horas para una carga útil. La PVPC con discriminación horaria es tu mejor opción — las franjas valle son lo suficientemente largas.</p>
+
+  <p><strong>Si no tienes garaje</strong>: dependes de la carga pública. El coste sube a €0,39-0,65/kWh. Aquí la ventaja de coste del EV se reduce drásticamente (aunque sigue existiendo frente a gasolina). Algunas soluciones: carga en el trabajo, puntos de carga lentos en parkings municipales (€0,15-0,25/kWh), o cargadores de destino en centros comerciales.</p>
+
+  <p><strong>Si tienes paneles solares</strong>: es el escenario perfecto. El coste marginal de cargar con excedente solar es cercano a €0. Una instalación fotovoltaica de 3-5 kW puede cubrir el 40-60 % de la carga anual de un EV, reduciendo el coste energético a menos de €100/año<sup>13</sup>.</p>
+
+  <hr />
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <h2>05 — El efecto subvención: Plan Auto+ y ayudas autonómicas</h2>
+
+  <p>Las subvenciones son el segundo factor que más altera el TCO después de la tarifa eléctrica. En España a abril de 2026, el esquema principal es el <strong>Plan Auto+ 2024-2026</strong><sup>14</sup>.</p>
+
+  <h3>Cuánto puedes recibir</h3>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span>Concepto</span><span class="ct-lfp">Importe</span><span class="ct-nmc">Requisitos</span>
+    </div>
+    <div class="ct-row"><span>Base (particular)</span><span>€4.500</span><span>PVP ≤ €45.000, renta < €45.000</span></div>
+    <div class="ct-row"><span>Achatarramiento</span><span>+€2.500</span><span>Dar de baja vehículo > 7 años</span></div>
+    <div class="ct-row"><span>Concesionario (obligatorio)</span><span>+€1.000</span><span>Descuento del concesionario en factura</span></div>
+    <div class="ct-row"><span><strong>Total máximo</strong></span><span><strong>€7.000</strong></span><span>Particular + achatarramiento</span></div>
+  </div>
+
+  <p>Además, algunas comunidades autónomas ofrecen ayudas complementarias. Cataluña tiene el programa MOVES Singular con hasta €2.000 adicionales para renta baja. País Vasco complementa con hasta €3.500 a través del programa Renove. Madrid tenía el Plan MOVES III, ahora agotado, pero se espera nueva convocatoria en 2026<sup>15</sup>.</p>
+
+  <h3>Impacto real en los tres modelos de nuestra comparativa</h3>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span>Modelo</span><span class="ct-lfp">PVP</span><span class="ct-nmc">PVP con Plan Auto+ base</span>
+    </div>
+    <div class="ct-row"><span>Tesla Model 3</span><span>€40.970</span><span><strong>€35.470</strong></span></div>
+    <div class="ct-row"><span>MG4 Standard</span><span>€26.700</span><span><strong>€21.200</strong></span></div>
+    <div class="ct-row"><span>Citroën ë-C3</span><span>€23.300</span><span><strong>€17.800</strong></span></div>
+  </div>
+
+  <p>Con la subvención base (€4.500 + €1.000 concesionario), el Citroën ë-C3 baja a €17.800 — prácticamente el mismo precio que un SEAT Ibiza. El MG4 queda en €21.200, muy por debajo de un Golf. Y el Tesla Model 3 en €35.470 frente a los €41.795 reales del BMW 320i (con IEDMT incluido).</p>
+
+  <p><strong>Importante:</strong> las subvenciones tienen fecha de caducidad. El Plan Auto+ está vigente mientras haya fondos. Cuando se agoten, el TCO del EV sube significativamente en el segmento urbano.</p>
+
+  <hr />
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <h2>06 — Lo que nadie te cuenta</h2>
+
+  <p>Hasta aquí, los números favorecen al eléctrico en todos los segmentos. Pero hay costes y riesgos que rara vez aparecen en las comparativas optimistas.</p>
+
+  <h3>La batería fuera de garantía</h3>
+
+  <p>La mayoría de fabricantes garantizan la batería durante 8 años o 160.000 km (lo que ocurra primero), con un mínimo del 70 % de capacidad<sup>16</sup>. Si la batería falla fuera de garantía, el coste de reemplazo es brutal: entre €8.000 y €20.000 dependiendo del modelo y la capacidad.</p>
+
+  <p>¿Es probable? No. Según datos de Geotab sobre más de 6.000 vehículos, la degradación media es del 2,3 % anual en condiciones normales de uso<sup>2</sup>. A los 8 años, la capacidad típica es del 82-85 %. Dicho esto, el riesgo existe y no tiene equivalente en un motor de combustión (donde el motor puede tener una reparación cara, pero raramente de €15.000).</p>
+
+  <h3>Neumáticos: un 15-25 % más caros</h3>
+
+  <p>El mayor peso (un Tesla Model 3 pesa 1.760 kg vs. 1.520 kg del BMW 320i) y el par instantáneo del motor eléctrico aceleran el desgaste del neumático. Además, muchos EVs necesitan neumáticos específicos de baja resistencia y bajo ruido (marcados con sello EV o marca del fabricante) que cuestan un 10-15 % más que los estándar<sup>5</sup>.</p>
+
+  <p>Impacto: unos €200-400 extra cada 2 cambios de neumáticos (cada 30.000-40.000 km en EV vs. 40.000-50.000 en gasolina). A 5 años y 75.000 km, son 2 juegos en un EV y 1,5 en un gasolina — diferencia neta de €300-600 a favor del gasolina.</p>
+
+  <h3>El wallbox no es gratis</h3>
+
+  <p>Para aprovechar las tarifas nocturnas necesitas un wallbox. El coste de un wallbox de 7,4 kW (monofásico, suficiente para la mayoría) con instalación ronda los €800-1.500 incluyendo la mano de obra del electricista<sup>17</sup>. Es un coste de entrada que se amortiza en 1-2 años con el ahorro en energía, pero hay que tenerlo en cuenta.</p>
+
+  <h3>Depreciación tecnológica</h3>
+
+  <p>Los EVs evolucionan más rápido que los coches de combustión. Un modelo de 2023 puede tener el 30 % menos de autonomía que su sucesor de 2026 con el mismo precio. Esto afecta al valor residual: los compradores de segunda mano pagan menos por tecnología que perciben como "vieja". Es un riesgo que irá disminuyendo a medida que la tecnología madure, pero que hoy es real.</p>
+
+  <hr />
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <h2>07 — Conclusión: cuándo gana el eléctrico y cuándo no</h2>
+
+  <p>Después de desglosar los 6 costes, comparar tres segmentos y anotar lo que habitualmente se omite, el resumen es este:</p>
+
+  <div class="tldr">
+    <strong>El eléctrico es más barato si...</strong>
+    <ul>
+      <li>Tienes garaje o acceso a carga nocturna (la variable más determinante)</li>
+      <li>Conduces más de 10.000 km al año (a más kilómetros, más ahorro)</li>
+      <li>Puedes acceder al Plan Auto+ o ayudas autonómicas</li>
+      <li>Vives en una ciudad con bonificación de IVTM y restricciones ZBE</li>
+    </ul>
+  </div>
+
+  <div class="tldr">
+    <strong>El eléctrico no compensa si...</strong>
+    <ul>
+      <li>No tienes acceso a carga doméstica y dependes al 100 % de carga rápida pública</li>
+      <li>Conduces menos de 5.000 km al año (el ahorro operativo no compensa la diferencia de compra)</li>
+      <li>Compras en el segmento urbano sin subvención (el diferencial de precio de compra es demasiado grande)</li>
+      <li>Necesitas un coche para uso muy intensivo con autonomía limitada (profesionales con +50.000 km/año sin infraestructura de carga en ruta)</li>
+    </ul>
+  </div>
+
+  <p>Para la mayoría de conductores españoles — los que hacen 12.000-20.000 km al año, tienen garaje y compran un coche de segmento B o C —, el eléctrico es <strong>€6.000-15.000 más barato en 5 años</strong>. Y esa cifra mejorará a medida que las subvenciones se renueven, las tarifas EV se expandan y la infraestructura de carga crezca.</p>
+
+  <p><em>Próximamente en enchufa2: una calculadora TCO interactiva donde podrás introducir tu modelo, tus kilómetros, tu tarifa y tu situación fiscal para obtener un resultado personalizado.</em></p>
+
+  <hr />
+
+  <!-- Referencias -->
+  <div class="references">
+    <p>Referencias</p>
+    <p>[1] Element Energy para la Comisión Europea. "Total Cost of Ownership of Electric Vehicles". 2021. doi:10.2833/283905</p>
+    <p>[2] Geotab. "EV Battery Degradation Comparison Tool". Datos actualizados a 2025. geotab.com/blog/ev-battery-degradation</p>
+    <p>[3] Toyota Motor Corporation. "EV Components vs ICE Components". Technical Reference. 2023.</p>
+    <p>[4] ADAC. "Bremsentest bei Elektroautos". 2024. adac.de</p>
+    <p>[5] Emissions Analytics. "EV Tyre Wear: Impact of Vehicle Weight and Torque". 2023. emissionsanalytics.com</p>
+    <p>[6] ABI Research / Asociación Unespa. Informe de siniestralidad por tipo de motorización, España 2025.</p>
+    <p>[7] Agencia Tributaria. Impuesto Especial sobre Determinados Medios de Transporte (IEDMT). Tarifas vigentes 2026.</p>
+    <p>[8] ANFAC. "Mapa de beneficios fiscales para vehículos eléctricos por municipio". 2025. anfac.com</p>
+    <p>[9] Autovista Group. "Residual Value Forecast: BEV vs ICE Europe". Q1 2026.</p>
+    <p>[10] Autovista Group. "Used EV Pricing Monitor". Datos Q4 2025.</p>
+    <p>[11] Reglamento (UE) 2023/851. Objetivo de 0 g CO₂/km para turismos nuevos desde 2035.</p>
+    <p>[12] Banco de España. "Tipos medios de financiación al consumo". Estadísticas marzo 2026.</p>
+    <p>[13] IDAE. "Guía técnica de autoconsumo fotovoltaico para carga de vehículo eléctrico". 2024.</p>
+    <p>[14] Ministerio de Industria. "Plan Auto+ 2024-2026: bases reguladoras y dotación". BOE 2024.</p>
+    <p>[15] Comunitat de Catalunya, Departamento de Territori. "MOVES Singular: convocatoria 2025-2026".</p>
+    <p>[16] BEUC (Organización Europea de Consumidores). "EV Battery Warranty Comparison". 2024.</p>
+    <p>[17] OCU. "Comparativa de wallbox: instalación y precios en España". 2025. ocu.org</p>
+    <p>[18] ICCT. "European Vehicle Market Statistics Pocketbook 2024". theicct.org</p>
+  </div>
+
+</ArticleLayout>

@@ -1,0 +1,128 @@
+<svg viewBox="0 0 700 450" xmlns="http://www.w3.org/2000/svg" width="700" height="450">
+  <!-- Define styles -->
+  <defs>
+    <style>
+      .chart-title { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600; fill: #111111; }
+      .axis-label { font-family: 'Inter', sans-serif; font-size: 12px; fill: #666666; }
+      .data-label { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500; }
+      .savings-label { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; }
+      .grid-line { stroke: #E8E8E6; stroke-width: 1; }
+      .ev-line { stroke: #F5C518; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .ice-line { stroke: #666666; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .savings-fill { fill: url(#savingsFill); }
+    </style>
+    <!-- Gradient for savings area -->
+    <linearGradient id="savingsFill" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5C518;stop-opacity:0.20" />
+      <stop offset="100%" style="stop-color:#F5C518;stop-opacity:0.05" />
+    </linearGradient>
+  </defs>
+
+  <!-- White background -->
+  <rect width="700" height="450" fill="#FAFAF8"/>
+
+  <!-- Title -->
+  <text x="350" y="32" class="chart-title" text-anchor="middle">TCO acumulado: MG4 vs Golf (5 años, 15.000 km/año)</text>
+
+  <!-- Chart area background -->
+  <rect x="70" y="50" width="600" height="340" fill="#FAFAF8" stroke="#E8E8E6" stroke-width="1"/>
+
+  <!-- Vertical grid lines -->
+  <line x1="142" y1="50" x2="142" y2="390" class="grid-line"/>
+  <line x1="214" y1="50" x2="214" y2="390" class="grid-line"/>
+  <line x1="286" y1="50" x2="286" y2="390" class="grid-line"/>
+  <line x1="358" y1="50" x2="358" y2="390" class="grid-line"/>
+  <line x1="430" y1="50" x2="430" y2="390" class="grid-line"/>
+  <line x1="502" y1="50" x2="502" y2="390" class="grid-line"/>
+
+  <!-- Horizontal grid lines -->
+  <line x1="70" y1="100" x2="670" y2="100" class="grid-line"/>
+  <line x1="70" y1="150" x2="670" y2="150" class="grid-line"/>
+  <line x1="70" y1="200" x2="670" y2="200" class="grid-line"/>
+  <line x1="70" y1="250" x2="670" y2="250" class="grid-line"/>
+  <line x1="70" y1="300" x2="670" y2="300" class="grid-line"/>
+  <line x1="70" y1="350" x2="670" y2="350" class="grid-line"/>
+
+  <!-- Y-axis labels (€) -->
+  <text x="60" y="395" class="axis-label" text-anchor="end">€0</text>
+  <text x="60" y="345" class="axis-label" text-anchor="end">€10k</text>
+  <text x="60" y="295" class="axis-label" text-anchor="end">€20k</text>
+  <text x="60" y="245" class="axis-label" text-anchor="end">€30k</text>
+  <text x="60" y="195" class="axis-label" text-anchor="end">€40k</text>
+  <text x="60" y="145" class="axis-label" text-anchor="end">€50k</text>
+  <text x="60" y="95" class="axis-label" text-anchor="end">€60k</text>
+
+  <!-- X-axis labels (years) -->
+  <text x="70" y="410" class="axis-label" text-anchor="middle">Año 0</text>
+  <text x="142" y="410" class="axis-label" text-anchor="middle">Año 1</text>
+  <text x="214" y="410" class="axis-label" text-anchor="middle">Año 2</text>
+  <text x="286" y="410" class="axis-label" text-anchor="middle">Año 3</text>
+  <text x="358" y="410" class="axis-label" text-anchor="middle">Año 4</text>
+  <text x="430" y="410" class="axis-label" text-anchor="middle">Año 5</text>
+
+  <!-- Axes -->
+  <line x1="70" y1="390" x2="670" y2="390" stroke="#111111" stroke-width="1.5"/>
+  <line x1="70" y1="50" x2="70" y2="390" stroke="#111111" stroke-width="1.5"/>
+
+  <!-- Savings area fill (polygon between the two curves) -->
+  <!-- Scale: Y = 390 - (€value * 340/70000) -->
+  <!-- MG4 points: (70,270.2) (142,238.1) (214,205.9) (286,173.7) (358,141.6) (430,109.4) (502,231.8) -->
+  <!-- Golf points: (70,231.9) (142,186.9) (214,141.7) (286,96.4) (358,51.0) (430,6.1) (502,154.9) -->
+  <polygon points="70,270.2 142,238.1 214,205.9 286,173.7 358,141.6 430,109.4 502,231.8 502,154.9 430,6.1 358,51.0 286,96.4 214,141.7 142,186.9 70,231.9" class="savings-fill"/>
+
+  <!-- MG4 line (EV - Yellow) -->
+  <polyline points="70,270.2 142,238.1 214,205.9 286,173.7 358,141.6 430,109.4 502,231.8" class="ev-line"/>
+
+  <!-- Golf line (ICE - Gray) -->
+  <polyline points="70,231.9 142,186.9 214,141.7 286,96.4 358,51.0 430,6.1 502,154.9" class="ice-line"/>
+
+  <!-- Data point markers for MG4 -->
+  <circle cx="70" cy="270.2" r="3.5" fill="#F5C518" stroke="#111111" stroke-width="1.5"/>
+  <circle cx="142" cy="238.1" r="3.5" fill="#F5C518" stroke="#111111" stroke-width="1.5"/>
+  <circle cx="214" cy="205.9" r="3.5" fill="#F5C518" stroke="#111111" stroke-width="1.5"/>
+  <circle cx="286" cy="173.7" r="3.5" fill="#F5C518" stroke="#111111" stroke-width="1.5"/>
+  <circle cx="358" cy="141.6" r="3.5" fill="#F5C518" stroke="#111111" stroke-width="1.5"/>
+  <circle cx="430" cy="109.4" r="3.5" fill="#F5C518" stroke="#111111" stroke-width="1.5"/>
+  <circle cx="502" cy="231.8" r="3.5" fill="#F5C518" stroke="#111111" stroke-width="1.5"/>
+
+  <!-- Data point markers for Golf -->
+  <circle cx="70" cy="231.9" r="3.5" fill="#666666" stroke="#111111" stroke-width="1.5"/>
+  <circle cx="142" cy="186.9" r="3.5" fill="#666666" stroke="#111111" stroke-width="1.5"/>
+  <circle cx="214" cy="141.7" r="3.5" fill="#666666" stroke="#111111" stroke-width="1.5"/>
+  <circle cx="286" cy="96.4" r="3.5" fill="#666666" stroke="#111111" stroke-width="1.5"/>
+  <circle cx="358" cy="51.0" r="3.5" fill="#666666" stroke="#111111" stroke-width="1.5"/>
+  <circle cx="430" cy="6.1" r="3.5" fill="#666666" stroke="#111111" stroke-width="1.5"/>
+  <circle cx="502" cy="154.9" r="3.5" fill="#666666" stroke="#111111" stroke-width="1.5"/>
+
+  <!-- Start labels (Year 0) -->
+  <g>
+    <text x="20" y="273" class="data-label" fill="#F5C518" font-weight="600">MG4</text>
+    <text x="20" y="288" class="data-label" fill="#F5C518" font-size="10">€22.2k</text>
+  </g>
+
+  <g>
+    <text x="20" y="233" class="data-label" fill="#666666" font-weight="600">Golf</text>
+    <text x="20" y="248" class="data-label" fill="#666666" font-size="10">€29.3k</text>
+  </g>
+
+  <!-- End labels (Year 5) -->
+  <g>
+    <text x="520" y="228" class="data-label" fill="#F5C518" font-weight="600">€29.4k</text>
+  </g>
+
+  <g>
+    <text x="520" y="160" class="data-label" fill="#666666" font-weight="600">€43.6k</text>
+  </g>
+
+  <!-- Legend -->
+  <line x1="520" y1="340" x2="540" y2="340" class="ev-line"/>
+  <text x="550" y="345" class="data-label" fill="#111111">MG4 (Eléctrico)</text>
+
+  <line x1="520" y1="365" x2="540" y2="365" class="ice-line"/>
+  <text x="550" y="370" class="data-label" fill="#111111">Golf (Gasolina)</text>
+
+  <!-- Savings annotation box -->
+  <rect x="250" y="140" width="200" height="50" fill="#F5C518" opacity="0.10" rx="4" ry="4"/>
+  <text x="350" y="163" class="savings-label" fill="#F5C518" text-anchor="middle">Ahorro acumulado</text>
+  <text x="350" y="183" style="font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700; fill: #F5C518; text-anchor: middle;">€14.275</text>
+</svg>
