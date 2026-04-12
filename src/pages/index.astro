@@ -6,97 +6,82 @@ import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
 /*
-  Guía data structure with 5 categories and guides
+  Guía data — 4 clusters + pillar pages (v3 structure)
 */
 const categories = [
   {
-    id: 'me-compensa',
+    id: 'compra',
     num: '01',
-    label: 'Precio y rentabilidad',
+    label: 'Compra y rentabilidad',
     question: '¿Me <em>compensa</em>?',
     photo: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1600&q=80&auto=format',
     barrierpct: '28%',
     barrierdesc: 'de los españoles descarta el eléctrico por precio',
     barriersource: 'Deloitte EV Consumer Survey 2025',
     sidebarbio: 'Demostramos con números reales cuándo compensa y cuándo no. TCO completo, subvenciones actualizadas, comparativas sin trampa.',
+    pillar: { label: 'Pillar page', title: '¿Merece la pena un coche eléctrico en 2026?', href: '/guias/compra/' },
     guides: [
-      { num: '1.1', tag: 'Comparativa', title: 'Eléctrico, híbrido o gasolina: comparativa honesta', time: '~12 min', photo: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80&auto=format' },
-      { num: '1.2', tag: 'Guía de costes', title: 'Cuánto cuesta realmente un EV en España', time: '~10 min', photo: 'https://images.unsplash.com/photo-1580519542220-4ab36369d114?w=400&q=80&auto=format' },
-      { num: '1.3', tag: 'Actualizado 2026', title: 'Subvenciones y ventajas fiscales completas', time: '~10 min', photo: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80&auto=format' },
-      { num: '1.4', tag: 'Guía', title: 'Comprar EV de segunda mano sin riesgos', time: '~8 min', photo: 'https://images.unsplash.com/photo-1583121274602-3e2722c03d57?w=400&q=80&auto=format' },
-      { num: '1.5', tag: 'Guía', title: 'Qué modelo elegir según tu perfil de uso', time: '~9 min', photo: 'https://images.unsplash.com/photo-1494905998402-395d579af36f?w=400&q=80&auto=format' },
+      { num: '1.1', tag: 'Guía de costes', title: 'Cuánto cuesta realmente un EV en España', time: '~15 min', href: '/guias/compra/coste-real-ev/', photo: '/guias/compra/coste-real-ev/card.webp' },
+      { num: '1.2', tag: 'Actualizado 2026', title: 'Subvenciones y ventajas fiscales: Plan Auto+ y más', time: '~10 min', photo: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80&auto=format' },
+      { num: '1.3', tag: 'Comparativa', title: 'Eléctrico, híbrido o gasolina: comparativa honesta', time: '~12 min', photo: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80&auto=format' },
+      { num: '1.4', tag: 'Datos OCU', title: 'Garantías, fiabilidad y marcas: datos reales', time: '~9 min', photo: 'https://images.unsplash.com/photo-1494905998402-395d579af36f?w=400&q=80&auto=format' },
+      { num: '1.5', tag: 'Guía', title: 'Comprar EV de segunda mano sin riesgos', time: '~8 min', photo: 'https://images.unsplash.com/photo-1583121274602-3e2722c03d57?w=400&q=80&auto=format' },
     ],
   },
   {
-    id: 'como-cargo',
+    id: 'carga',
     num: '02',
-    label: 'Infraestructura de carga',
+    label: 'Carga',
     question: '¿Cómo <em>cargo</em>?',
     photo: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1600&q=80&auto=format',
-    barrierpct: '23%',
-    barrierdesc: 'no compra por miedo a la infraestructura o no saber cómo cargar',
+    barrierpct: '58%',
+    barrierdesc: 'de propietarios potenciales no tiene acceso a carga en casa',
     barriersource: 'ANFAC Observatorio EV 2025',
-    sidebarbio: 'Desde instalar un wallbox hasta usar las redes públicas de forma inteligente. Todo para cargar sin estrés.',
+    sidebarbio: 'Desde instalar un wallbox hasta usar las redes públicas de forma inteligente. Todo para cargar sin estrés y al mejor precio.',
+    pillar: { label: 'Pillar page', title: 'Cómo cargar un coche eléctrico: guía completa', href: '/guias/carga/' },
     guides: [
-      { num: '2.1', tag: 'Guía completa', title: 'Cómo cargar en casa: todo lo que necesitas saber', time: '~11 min', photo: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=400&q=80&auto=format' },
-      { num: '2.2', tag: 'Instalación', title: 'Wallbox: cuál comprar y cómo instalarlo', time: '~10 min', photo: 'https://images.unsplash.com/photo-1558618047-3c8d698fa7b9?w=400&q=80&auto=format' },
-      { num: '2.3', tag: 'Publicado', title: 'Carga rápida en España: la guía técnica', time: '~12 min', photo: 'https://images.unsplash.com/photo-1621905251189-8ac98e2e60c6?w=400&q=80&auto=format' },
-      { num: '2.4', tag: 'Comparativa', title: 'Redes públicas: Iberdrola, Repsol, Tesla, Ionity', time: '~9 min', photo: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&q=80&auto=format' },
-      { num: '2.5', tag: 'Publicado', title: 'Tarifa eléctrica óptima para cargar en casa', time: '~11 min', photo: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80&auto=format' },
+      { num: '2.1', tag: 'Gap máximo', title: 'Instalar cargador en casa o comunidad', time: '~11 min', photo: 'https://images.unsplash.com/photo-1558618047-3c8d698fa7b9?w=400&q=80&auto=format' },
+      { num: '2.2', tag: 'Comparativa', title: 'Tarifas eléctricas para cargar en casa', time: '~10 min', photo: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80&auto=format' },
+      { num: '2.3', tag: 'Técnica', title: 'Carga rápida en España: redes y precios', time: '~12 min', photo: 'https://images.unsplash.com/photo-1621905251189-8ac98e2e60c6?w=400&q=80&auto=format' },
+      { num: '2.4', tag: 'Guía visual', title: 'Conectores y estándares: Type 2, CCS, CHAdeMO', time: '~8 min', photo: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&q=80&auto=format' },
     ],
   },
   {
-    id: 'puedo-viajar',
+    id: 'autonomia',
     num: '03',
-    label: 'Autonomía y viajes largos',
+    label: 'Autonomía y viajes',
     question: '¿Puedo <em>viajar</em>?',
     photo: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1600&q=80&auto=format',
     barrierpct: '26%',
     barrierdesc: 'tiene ansiedad por autonomía y miedo a quedarse tirado en ruta',
     barriersource: 'McKinsey EV Index 2024',
-    sidebarbio: 'Con planificación básica, viajar en EV es más fácil de lo que parece. Desmontamos el mayor mito del eléctrico con datos reales.',
+    sidebarbio: 'Con planificación básica, viajar en EV es más fácil de lo que parece. Desmontamos el mayor mito del eléctrico con datos reales de rutas por España.',
+    pillar: { label: 'Pillar page', title: 'Autonomía real y viajes largos en eléctrico', href: '/guias/autonomia/' },
     guides: [
-      { num: '3.1', tag: 'Guía práctica', title: 'Planificar un viaje largo en eléctrico por España', time: '~10 min', photo: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&q=80&auto=format' },
-      { num: '3.2', tag: 'Técnica', title: 'Autonomía real vs oficial WLTP: por qué difieren', time: '~8 min', photo: 'https://images.unsplash.com/photo-1502877338535-766f1a90c9e7?w=400&q=80&auto=format' },
-      { num: '3.3', tag: 'Conducción', title: 'Conducción eficiente: técnicas para más km por carga', time: '~9 min', photo: 'https://images.unsplash.com/photo-1494783367193-149034c05e8f?w=400&q=80&auto=format' },
-      { num: '3.4', tag: 'Emergencias', title: 'Qué hacer si te quedas sin batería en ruta', time: '~6 min', photo: 'https://images.unsplash.com/photo-1507136566006-cfc505b114fc?w=400&q=80&auto=format' },
-      { num: '3.5', tag: 'Apps', title: 'Apps y herramientas para planificar la carga en viaje', time: '~7 min', photo: 'https://images.unsplash.com/photo-1512054502976-b16e09600a39?w=400&q=80&auto=format' },
+      { num: '3.1', tag: 'Técnica', title: 'Autonomía real vs oficial WLTP: por qué difieren', time: '~8 min', photo: 'https://images.unsplash.com/photo-1502877338535-766f1a90c9e7?w=400&q=80&auto=format' },
+      { num: '3.2', tag: 'Guía práctica', title: 'Planificar viajes largos en eléctrico por España', time: '~10 min', photo: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&q=80&auto=format' },
+      { num: '3.3', tag: 'Internacional', title: 'Viajar al extranjero en eléctrico', time: '~9 min', photo: 'https://images.unsplash.com/photo-1494783367193-149034c05e8f?w=400&q=80&auto=format' },
+      { num: '3.4', tag: 'Conducción', title: 'Conducción eficiente: más km por carga', time: '~9 min', photo: 'https://images.unsplash.com/photo-1507136566006-cfc505b114fc?w=400&q=80&auto=format' },
     ],
   },
   {
-    id: 'como-funciona',
+    id: 'tecnologia',
     num: '04',
-    label: 'Tecnología y fundamentos',
-    question: '¿Cómo <em>funciona</em>?',
+    label: 'Tecnología y mantenimiento',
+    question: '¿Cómo <em>funciona</em> y se <em>cuida</em>?',
     photo: 'https://images.unsplash.com/photo-1562408590-e32931084e23?w=1600&q=80&auto=format',
     barrierpct: '15%',
     barrierdesc: 'rechaza el eléctrico por no entender ni confiar en la tecnología',
     barriersource: 'Deloitte EV Consumer Survey 2025',
-    sidebarbio: 'NMC vs LFP, conectores, V2G, gestión térmica. Rigor técnico en lenguaje humano: explicamos sin simplificar en exceso.',
+    sidebarbio: 'NMC vs LFP, frenada regenerativa, mantenimiento real, neumáticos. Rigor técnico en lenguaje humano: explicamos sin simplificar.',
+    pillar: { label: 'Pillar page', title: 'Cómo funciona y se cuida un coche eléctrico', href: '/guias/tecnologia/' },
     guides: [
-      { num: '4.1', tag: 'Publicado', title: 'NMC vs LFP: qué batería tiene tu coche y qué implica', time: '~14 min', photo: 'https://images.unsplash.com/photo-1562408590-e32931084e23?w=400&q=80&auto=format' },
-      { num: '4.2', tag: 'Técnica', title: 'Cómo funciona la carga: AC, DC y protocolos', time: '~10 min', photo: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=400&q=80&auto=format' },
-      { num: '4.3', tag: 'Guía', title: 'Conectores y estándares: Type 2, CCS, CHAdeMO', time: '~8 min', photo: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&q=80&auto=format' },
-      { num: '4.4', tag: 'Explicación', title: 'El motor eléctrico: cómo funciona de verdad', time: '~9 min', photo: 'https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=400&q=80&auto=format' },
-      { num: '4.5', tag: 'Futuro', title: 'V2G y carga bidireccional: el EV como batería del hogar', time: '~11 min', photo: 'https://images.unsplash.com/photo-1558002016-8f4f3e4ba5e4?w=400&q=80&auto=format' },
-    ],
-  },
-  {
-    id: 'como-cuido',
-    num: '05',
-    label: 'Mantenimiento y cuidado',
-    question: '¿Cómo lo <em>cuido</em>?',
-    photo: 'https://images.unsplash.com/photo-1767990495521-95cceb571125?w=1600&q=80&auto=format',
-    barrierpct: '6×',
-    barrierdesc: 'menos piezas móviles que un motor de combustión, pero no todo es igual',
-    barriersource: 'US DOE Office of Energy Efficiency',
-    sidebarbio: 'El EV requiere menos mantenimiento, pero diferente. Batería, neumáticos, frenos y software tienen sus propias reglas.',
-    guides: [
-      { num: '5.1', tag: 'Publicado', title: 'Mantenimiento real de un EV vs combustión', time: '~11 min', photo: 'https://images.unsplash.com/photo-1767990495521-95cceb571125?w=400&q=80&auto=format' },
-      { num: '5.2', tag: 'Publicado', title: 'Neumáticos para eléctrico: por qué importan más', time: '~10 min', photo: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&q=80&auto=format' },
-      { num: '5.3', tag: 'Técnica', title: 'Degradación de batería: qué esperar a 5 y 10 años', time: '~10 min', photo: 'https://images.unsplash.com/photo-1562408590-e32931084e23?w=400&q=80&auto=format' },
-      { num: '5.4', tag: 'Guía', title: 'Actualizar el software OTA: qué cambia y cómo funciona', time: '~7 min', photo: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=80&auto=format' },
-      { num: '5.5', tag: 'Estacional', title: 'Preparar tu EV para el invierno', time: '~8 min', photo: 'https://images.unsplash.com/photo-1516715094483-75da50515394?w=400&q=80&auto=format' },
+      { num: '4.1', tag: 'Insignia', title: 'Baterías EV: guía científica completa', time: '~14 min', photo: 'https://images.unsplash.com/photo-1562408590-e32931084e23?w=400&q=80&auto=format' },
+      { num: '4.2', tag: 'Publicado', title: 'Mantenimiento real de un EV vs combustión', time: '~11 min', photo: 'https://images.unsplash.com/photo-1767990495521-95cceb571125?w=400&q=80&auto=format' },
+      { num: '4.3', tag: 'Publicado', title: 'Neumáticos para eléctrico: por qué importan más', time: '~10 min', photo: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&q=80&auto=format' },
+      { num: '4.4', tag: 'Técnica', title: 'Frenada regenerativa: cómo funciona de verdad', time: '~8 min', photo: 'https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=400&q=80&auto=format' },
+      { num: '4.5', tag: 'Mitos', title: 'Seguridad EV: mitos desmontados con datos', time: '~9 min', photo: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=400&q=80&auto=format' },
+      { num: '4.6', tag: 'Guía', title: 'ITV, revisiones y talleres para eléctricos', time: '~7 min', photo: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=80&auto=format' },
     ],
   },
 ];
@@ -130,12 +115,12 @@ const totalGuides = categories.reduce((sum, cat) => sum + cat.guides.length, 0);
         <div class="guias-intro-card reveal">
           <div class="guias-intro-text">
             <h1>Todo lo que necesitas saber<br>sobre tu <em>eléctrico</em></h1>
-            <p>{totalGuides} guías organizadas por las 5 dudas reales que frenan a los conductores. Basadas en datos, con fuentes citadas, sin rodeos.</p>
+            <p>{totalGuides} guías organizadas por las 4 grandes dudas que frenan a los conductores. Basadas en datos, con fuentes citadas, sin rodeos.</p>
           </div>
           <div class="guias-pills">
+            <span class="guias-pill"><strong>4</strong>&nbsp;pillar pages</span>
             <span class="guias-pill"><strong>{totalGuides}</strong>&nbsp;guías</span>
-            <span class="guias-pill"><strong>141</strong>&nbsp;preguntas</span>
-            <span class="guias-pill"><strong>47</strong>&nbsp;fuentes</span>
+            <span class="guias-pill"><strong>1</strong>&nbsp;glosario</span>
           </div>
         </div>
       </div>
@@ -161,11 +146,17 @@ const totalGuides = categories.reduce((sum, cat) => sum + cat.guides.length, 0);
                   <div class="cat-barrier-desc">{cat.barrierdesc}<small>{cat.barriersource}</small></div>
                 </div>
                 <p class="cat-sidebar-text">{cat.sidebarbio}</p>
+                {cat.pillar && (
+                  <div class="pillar-cta">
+                    <div class="pillar-label">{cat.pillar.label}</div>
+                    <a href={cat.pillar.href}>{cat.pillar.title} →</a>
+                  </div>
+                )}
               </div>
               <div class="cat-guides">
                 <div class="guide-list">
                   {cat.guides.map((guide) => (
-                    <a href="#" class="guide-card" style={`--card-photo: url('${guide.photo}')`}>
+                    <a href={guide.href || '#'} class="guide-card" style={`--card-photo: url('${guide.photo}')`}>
                       <span class="guide-num">{guide.num}</span>
                       <span class="guide-tag">{guide.tag}</span>
                       <h3 class="guide-title">{guide.title}</h3>
@@ -178,7 +169,7 @@ const totalGuides = categories.reduce((sum, cat) => sum + cat.guides.length, 0);
                 </div>
               </div>
             </div>
-            <div class="cat-see-all"><a href={`/guias/${cat.id}`}>Ver las {cat.guides.length} guías →</a></div>
+            <div class="cat-see-all"><a href={cat.pillar?.href || `/guias/${cat.id}`}>Ver las {cat.guides.length} guías + pillar page →</a></div>
           </div>
         ))}
       </div><!-- /cat-blocks -->
@@ -564,6 +555,35 @@ const totalGuides = categories.reduce((sum, cat) => sum + cat.guides.length, 0);
     font-weight: 300;
   }
 
+  /* Pillar CTA in sidebar */
+  .pillar-cta {
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .pillar-label {
+    font-size: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--yellow);
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+  }
+
+  .pillar-cta a {
+    font-size: 0.78rem;
+    color: #F0EFEB;
+    font-weight: 300;
+    line-height: 1.4;
+    transition: color 0.2s;
+    display: block;
+  }
+
+  .pillar-cta a:hover {
+    color: var(--yellow);
+  }
+
   .cat-guides {
     padding: 1.25rem clamp(1rem, 2.5vw, 1.75rem);
   }
@@ -904,34 +924,4 @@ const totalGuides = categories.reduce((sum, cat) => sum + cat.guides.length, 0);
       }
     }, { passive: true });
 
-    // Subtle parallax on hero band
-    const heroBand = document.querySelector('.hero-band');
-    if (heroBand) {
-      const heroImages = heroBand.querySelectorAll('img');
-      window.addEventListener('scroll', () => {
-        const rect = heroBand.getBoundingClientRect();
-        if (rect.bottom < 0 || rect.top > window.innerHeight) return;
-        const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
-        const offset = (progress - 0.5) * 24;
-        heroImages.forEach((img) => {
-          img.style.transform = `translateY(${offset}px) scale(1.04)`;
-        });
-      }, { passive: true });
-    }
-  })();
-</script>
-
-<style>
-  /* Scroll progress bar */
-  .scroll-progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 2px;
-    width: 0;
-    background: var(--yellow);
-    z-index: 300;
-    box-shadow: 0 0 8px rgba(245, 197, 24, 0.4);
-    transition: width 0.1s linear;
-  }
-</style>
+    // Subtle parallax on h
