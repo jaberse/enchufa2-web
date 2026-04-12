@@ -1130,17 +1130,19 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
       const activeFields = FIELDS.filter(f => selectedFields.includes(f.id));
       const showBest = compareMode && pickedIds.size >= 2;
 
-      // All fields as clean detail rows — skip isStars fields (shown as badges instead)
+      // All fields as clean detail rows
       let detailsHtml = '';
       activeFields.forEach(f => {
-        if (f.isStars) return; // fiabilidad/garantía shown as clickable badges above
         const val = getFieldVal(m, f);
         let display = fmtField(val, f);
-        if (f.unit && !f.fmt && !f.isText && val != null) display += '\u00a0' + f.unit;
+        if (f.unit && !f.fmt && !f.isText && !f.isStars && val != null) display += '\u00a0' + f.unit;
         const isPrice = f.id === 'pvp';
         const isBest = showBest && val != null && bestValues[f.id] != null && val === bestValues[f.id];
+        // For star fields, add ⓘ button to open desglose
+        const metricType = f.id === 'fiab_stars' ? 'fiab' : f.id === 'gar_stars' ? 'gar' : null;
+        const infoBtn = (metricType && val != null) ? ' <button type="button" class="detail-info-btn" data-metric="' + metricType + '" data-slug="' + m.slug + '" title="Ver desglose" onclick="event.stopPropagation()">ⓘ</button>' : '';
         const cls = 'ev-detail' + (isPrice ? ' ev-detail-price' : '') + (isBest ? ' ev-detail-best' : '');
-        detailsHtml += '<div class="' + cls + '"><span>' + f.label + '</span><span>' + display + (isBest ? ' <em class="best-mark" title="Mejor valor del grupo">★</em>' : '') + '</span></div>';
+        detailsHtml += '<div class="' + cls + '"><span>' + f.label + '</span><span>' + display + infoBtn + (isBest ? ' <em class="best-mark" title="Mejor valor del grupo">★</em>' : '') + '</span></div>';
       });
 
       // Plan Auto+ subsidy summary row
@@ -1190,7 +1192,6 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
             '</div>' +
           '</div>' +
           '<div class="ev-badges">' + makeBadgesHtml(m) + '</div>' +
-          (renderMetricBadges(m) ? '<div class="ev-metrics">' + renderMetricBadges(m) + '</div>' : '') +
           '<div class="metric-popover" id="metric-pop-fiab-' + m.slug + '" style="display:none">' + buildFiabilidadTooltip(m) + '</div>' +
           '<div class="metric-popover" id="metric-pop-gar-' + m.slug + '" style="display:none">' + buildGarantiaTooltip(m) + '</div>' +
           subsidyHtml +
@@ -1209,12 +1210,12 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
         });
       }
 
-      // Attach metric badge toggle events
-      card.querySelectorAll('.metric-badge').forEach(badge => {
-        badge.addEventListener('click', (e) => {
+      // Attach metric info button toggle events (ⓘ in detail rows)
+      card.querySelectorAll('.detail-info-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
           e.stopPropagation();
-          const metric = badge.dataset.metric;
-          const slug = badge.dataset.slug;
+          const metric = btn.dataset.metric;
+          const slug = btn.dataset.slug;
           const popId = 'metric-pop-' + metric + '-' + slug;
           // Close any other open metric popovers in this card
           card.querySelectorAll('.metric-popover').forEach(p => {
@@ -3954,6 +3955,21 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     transition: opacity .15s;
   }
   .desglose-btn:hover { opacity: 1; color: var(--yellow); }
+
+  /* Detail info button (ⓘ in fiabilidad/garantía rows) */
+  .detail-info-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: .7rem;
+    color: var(--text-muted);
+    padding: 0 .15rem;
+    line-height: 1;
+    opacity: .65;
+    transition: opacity .15s, color .15s;
+    vertical-align: middle;
+  }
+  .detail-info-btn:hover { opacity: 1; color: var(--yellow); }
 
   /* Desglose tooltip popover */
   .desglose-popover {
