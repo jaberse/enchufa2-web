@@ -1,336 +1,416 @@
-# Metodología — Índice de fiabilidad enchufa2
+# Metodología — Métricas de fiabilidad y garantía enchufa2
 
-> Documento interno de trabajo. Define cómo producimos, agregamos y mostramos los datos de fiabilidad en el comparador. Está pensado para ser nuestra regla de decisión ante casos dudosos, no para ser publicado tal cual — aunque una versión resumida vivirá en `/comparador/metodologia-fiabilidad`.
+> Documento interno de trabajo. Define cómo producimos, agregamos y mostramos los datos de fiabilidad y garantía en el comparador. Está pensado para ser nuestra regla de decisión ante casos dudosos, no para ser publicado tal cual — aunque una versión resumida vivirá en `/comparador/metodologia`.
 
-**Versión:** 0.1 (borrador) · **Fecha:** 2026-04-10 · **Responsable:** Javi Bernal
+**Versión:** 0.3 (validado tras piloto) · **Fecha:** 2026-04-12 · **Responsable:** Javi Bernal
 
 ---
 
 ## 1. Objetivo
 
-Responder con rigor y honestidad a una pregunta que los portales de EV en español no responden bien: *"¿qué tal envejece este coche y cuánto me va a costar tenerlo?"*.
+Responder con rigor y transparencia a dos preguntas que los portales de EV en español no responden bien:
 
-Para ello, el comparador va a mostrar dos dimensiones independientes junto a cada modelo:
+1. *"¿Es este coche fiable según datos independientes?"*
+2. *"¿Qué garantía me ofrece el fabricante?"*
 
-1. **Fiabilidad reportada** — qué dicen los informes independientes sobre la frecuencia y gravedad de las incidencias conocidas en ese modelo.
-2. **Condiciones de propiedad** — qué compromisos objetivos ofrece el fabricante y qué sabemos del envejecimiento del coche: garantía del vehículo, garantía de la batería, degradación documentada, coste de mantenimiento programado.
+El comparador muestra **dos métricas independientes** junto a cada modelo:
 
-La distinción es clave porque una dimensión (la primera) depende de que el coche lleve años en la calle, y la otra (la segunda) se puede rellenar desde el día del lanzamiento. Separarlas nos permite **no dejar en blanco a los modelos nuevos**.
+- **Fiabilidad** — qué dicen los informes técnicos independientes sobre incidencias reales de ese modelo.
+- **Garantía** — qué compromisos objetivos ofrece el fabricante sobre el vehículo y la batería.
+
+La separación es clave: un coche puede ser muy fiable pero tener garantía corta, o viceversa. Mezclarlas sería engañar al usuario.
 
 ## 2. Principios innegociables
 
 Estos principios mandan sobre cualquier decisión posterior. Si una propuesta los incumple, se descarta.
 
-- **Solo datos públicos y verificables.** Todo dato tiene una fuente citable por URL o referencia bibliográfica. No usamos datos anecdóticos, foros, redes sociales ni rumores.
+- **Solo fuentes públicas y gratuitas.** Todo dato tiene una URL citable accesible sin suscripción. No usamos datos de pago, anecdóticos, foros, redes sociales ni rumores.
 - **Cada dato lleva su fuente, fecha y tipo.** Aplica la misma estructura de la biblia de datos: `{ valor, fuente_tipo, fuente_nombre, fuente_url, fuente_fecha, verificado }`.
-- **La ausencia de dato es información.** Nunca se deja un campo vacío, gris ni en blanco. Si no hay datos, se muestra explícitamente *"Datos insuficientes"* con el motivo al hacer hover.
-- **Dos dimensiones, no un score único.** Un único número de 1 a 5 colapsa información incompatible y crea falsa precisión. Siempre separamos "fiabilidad reportada" de "condiciones de propiedad".
-- **Modelo, no marca.** Si solo hay dato a nivel marca, no se muestra en el comparador. Los datos de marca pueden aparecer en una guía editorial, nunca en la ficha del modelo.
-- **Metodología abierta.** Cualquier usuario que haga click en un indicador puede ver de dónde sale el dato, qué fuente se usó y cómo se convirtió en color/nota. Sin cajas negras.
-- **Estabilidad temporal.** La metodología no cambia en secreto. Si actualizamos los umbrales, dejamos un changelog fechado.
+- **La ausencia de dato es información.** Si no hay datos, se muestra explícitamente *"Sin datos"* con el motivo al expandir. Nunca se rellena ni se asume.
+- **Modelo, no marca.** Si solo hay dato a nivel marca, no se muestra en la ficha del modelo. Los datos de marca pueden aparecer en guías editoriales, nunca en el comparador.
+- **Transparencia total.** Cada estrella es trazable: el usuario puede expandir para ver exactamente qué fuentes se usaron, qué dato aportó cada una, y cómo se calculó la nota. Sin cajas negras.
+- **Metodología abierta.** Si actualizamos los umbrales o las fuentes, dejamos un changelog fechado. Cualquier cambio se publica.
 
-## 3. Las dos dimensiones en detalle
+## 3. Métrica 1 — Fiabilidad (★)
 
-### 3.1 Fiabilidad reportada
+### 3.1 Qué mide
 
-**Qué mide:** la frecuencia y gravedad de incidencias registradas en informes independientes de organizaciones de consumidores, entidades de inspección técnica y publicaciones especializadas.
+La frecuencia y gravedad de defectos e incidencias registradas en informes independientes de inspección técnica y asistencia en carretera. Es una foto retrospectiva basada en datos agregados de cientos de miles de vehículos.
 
-**Qué NO mide:** tu experiencia personal, la del foro, la del vídeo de YouTube, ni predicciones de fiabilidad futura. Es una foto retrospectiva basada en datos agregados.
+**Qué NO mide:** experiencia personal, foros, YouTube, ni predicciones de fiabilidad futura.
 
-**Estados visuales:**
+### 3.2 Fuentes (solo gratuitas)
 
-| Estado | Símbolo | Significado |
-|---|---|---|
-| **Buena** | ● verde | Datos disponibles y consistentes, sin incidencias significativas por encima del promedio del segmento |
-| **Aceptable** | ● amarillo | Datos disponibles pero con incidencias reportadas al nivel del segmento o ligeramente por encima |
-| **Problemática** | ● rojo | Datos disponibles con incidencias significativamente por encima del segmento en al menos una fuente principal |
-| **Datos insuficientes** | ○ | Modelo con menos de 2 años en el mercado, o sin cobertura suficiente en las fuentes de referencia |
+Usamos dos fuentes canónicas complementarias. No son sustitutas — miden cosas distintas:
 
-**Regla de convivencia con "datos insuficientes":** un modelo nuevo no es ni bueno ni malo — es desconocido. No puede aparecer en verde por defecto ni en amarillo por precaución. Aparece en `○ Datos insuficientes` con la fecha de lanzamiento visible al hacer hover: *"Modelo lanzado en septiembre 2024 — primer informe esperado en 2026"*.
-
-### 3.2 Condiciones de propiedad
-
-**Qué mide:** compromisos objetivos del fabricante y datos de envejecimiento publicados. Todo rellenable desde el día del lanzamiento comercial.
-
-**Componentes:**
-
-- **Garantía del vehículo** — años y kilómetros, fuente: web oficial del fabricante español.
-- **Garantía de la batería** — años, kilómetros, y umbral mínimo de capacidad garantizado (ej: "70% a 8 años/160.000 km"). Fuente: web oficial.
-- **Degradación documentada** — cuando existe, dato de Geotab, EV Database o estudios con muestra ≥50 coches. Si no existe, se omite (no se extrapola).
-- **Coste de mantenimiento programado** — si el fabricante publica listas de precios o contratos de mantenimiento, se usa. Si no, se omite.
-
-**Estados visuales (basados en los 2-4 componentes disponibles):**
-
-| Estado | Símbolo | Regla |
-|---|---|---|
-| **Favorable** | ● verde | Garantía vehículo ≥ 5 años AND garantía batería ≥ 8 años/160.000 km AND (degradación < 2% anual documentada OR degradación desconocida) |
-| **Estándar** | ● amarillo | Cumple al menos 1 de las dos condiciones de garantía pero no las dos, O degradación documentada entre 2-3% anual |
-| **Restrictivo** | ● rojo | Garantía vehículo < 5 años Y garantía batería < 8 años/160.000 km, O degradación documentada > 3% anual |
-| **Datos insuficientes** | ○ | El fabricante no publica datos claros de garantía (caso raro, prácticamente no aplicable) |
-
-**Por qué esos umbrales:** 5 años de garantía del vehículo es lo que ofrecen Hyundai/Kia/MG y se ha convertido en el nuevo estándar esperado por el mercado español. 8 años / 160.000 km es el mínimo legal europeo para la batería — quien lo cumple es "estándar", quien lo supera es "favorable". Estos umbrales se revisan anualmente.
-
-## 4. Jerarquía de fuentes
-
-### 4.1 Fiabilidad reportada — fuentes y prioridad
-
-Usamos un sistema de **fuente canónica + validadores**. No promediamos metodologías incompatibles.
-
-| Prioridad | Fuente | Alcance | Método | Notas |
+| Fuente | Qué mide | Método | Acceso | Frecuencia |
 |---|---|---|---|---|
-| 1 | **OCU (España)** | España | Encuesta a socios, informe anual "Fiabilidad de coches" | Canónica para España. Idioma y mercado correctos. Muestra variable por modelo. |
-| 2 | **TÜV Report** | Alemania | % de defectos en ITV alemana, informe anual | Objetivo y masivo. Mide coches de 2-3 años (primera ITV en Alemania). |
-| 3 | **ADAC Pannenstatistik** | Alemania | Averías atendidas por asistencia ADAC por cada 1.000 coches | Muy sensible a fallos graves. Cubre coches de 3-12 años. |
-| 4 | **What Car? Reliability Survey** | Reino Unido | Encuesta a propietarios, informe anual | Buena cobertura de modelos europeos. |
-| 5 | **Consumer Reports** | EEUU | Encuesta a suscriptores | Útil solo para modelos que también se venden en EEUU. Distinta percepción cultural de "problema". |
+| **TÜV Report** | Defectos detectados en inspección técnica (ITV alemana) | % de vehículos con defectos significativos, por modelo y clase de edad | Público y gratuito (tuev-verband.de) | Anual (enero) |
+| **ADAC Pannenstatistik** | Averías en carretera que requieren asistencia | Índice de averías por cada 1.000 vehículos, por modelo | Público y gratuito (presse.adac.de) | Anual (marzo-abril) |
 
-**Regla de agregación:** para cada modelo, buscamos la **fuente de mayor prioridad disponible**. Esa es la **canónica**. Las fuentes de prioridad inferior se usan como **validadores**:
+**Por qué estas dos y no otras:**
+- TÜV mide defectos mecánicos objetivos (suspensiones, frenos, iluminación) detectados en inspección profesional. Un coche puede tener defectos y seguir funcionando.
+- ADAC mide averías graves que dejan el coche parado. Un coche puede ser "defectuoso" en TÜV pero jamás dejarte tirado (exactamente lo que pasa con Model Y).
+- Juntas cubren todo el espectro: defectos latentes + fallos graves.
 
-- Si la canónica y al menos 1 validador **coinciden** en el estado → **confianza alta**.
-- Si la canónica existe pero no hay validadores → **confianza media**.
-- Si la canónica y los validadores **discrepan en más de un nivel** (ej: canónica verde, validador rojo) → se adopta el estado más conservador (el peor) + una nota explícita *"Discrepancia entre fuentes — ver detalle"*.
+**Validadores secundarios (cuando hay dato público disponible):**
 
-**Nunca se promedian puntuaciones numéricas entre fuentes.** Cada fuente tiene su escala y su metodología; sumarlas es equivocado matemáticamente.
-
-### 4.2 Condiciones de propiedad — fuentes
-
-- **Garantía vehículo y batería:** web oficial del fabricante español. Se captura URL y fecha de consulta. Se revisa anualmente.
-- **Degradación documentada:** por orden de preferencia:
-  1. Geotab EV Battery Degradation Study (muestra masiva, actualizado anualmente)
-  2. EV Database (Bjørn Nyland y equipo, datos de largo recorrido)
-  3. Estudios académicos con DOI y muestra ≥50 coches
-- **Coste de mantenimiento:** web oficial del fabricante o precio medio de contrato de mantenimiento en red oficial.
-
-## 5. Casos especiales y reglas de excepción
-
-**5.1 Modelo con menos de 2 años en el mercado español.**
-Fiabilidad reportada → *"Datos insuficientes"*. Condiciones de propiedad → se rellenan normalmente. Tooltip: *"Modelo lanzado en [fecha]. Primer informe de fiabilidad esperado hacia [fecha+2 años]"*.
-
-**5.2 Datos disponibles solo a nivel marca.**
-No se usan en la columna del modelo. El comparador muestra *"Datos insuficientes"*. El dato de marca puede aparecer en la guía 1.5 *Garantías, fiabilidad y marcas* con su contexto y limitaciones.
-
-**5.3 Restyling / facelift.**
-Dos casos:
-- **Actualización menor** (misma plataforma, mismo tren motriz, cambios estéticos o software): se hereda el dato de la generación anterior con etiqueta *"Dato heredado de generación anterior"*.
-- **Generación nueva** (plataforma distinta, tren motriz rediseñado, batería diferente): se trata como modelo nuevo. *"Datos insuficientes"* hasta que tenga 2 años en el mercado.
-
-Criterio de arbitraje: si el fabricante anuncia "nueva generación" y cambia la denominación interna de la plataforma, es generación nueva. Si solo es "model year X + facelift", es actualización menor.
-
-**5.4 Discrepancia entre fuentes principales.**
-Si OCU marca verde y TÜV marca rojo (o equivalente), se adopta el estado más conservador (rojo) y se añade una nota: *"OCU 2026 reporta satisfacción alta, pero TÜV 2025 detecta X% de defectos en primera ITV. Ver metodología."*. Esta honestidad es precisamente lo que nos diferencia.
-
-**5.5 Modelo con múltiples variantes (ej: Tesla Model Y RWD vs Long Range vs Performance).**
-Los informes casi nunca desagregan por variante. Se aplica el dato al modelo base y se marca en las variantes como *"Heredado del modelo"* si no hay datos específicos. Si una variante tiene una diferencia técnica relevante (ej: batería LFP vs NMC), se nota en el tooltip.
-
-**5.6 Modelo discontinuado.**
-Se mantiene en la base de datos con los últimos datos disponibles y una marca *"Discontinuado en [año]"*. Útil para mercado de ocasión.
-
-## 6. Nivel de confianza
-
-Además del color del estado, cada indicador muestra un nivel de confianza:
-
-| Nivel | Cuándo | Visual |
+| Fuente | Alcance | Notas |
 |---|---|---|
-| **Alta** | Canónica + ≥1 validador coincidiendo | Indicador sólido |
-| **Media** | Solo canónica disponible, o validadores con discrepancias menores | Indicador con borde discontinuo |
-| **N/A** | Datos insuficientes | Círculo vacío |
+| Consumer Reports (dato publicado en prensa) | EE.UU. | Solo modelos que también se venden allí. Útil como contraste cultural. |
+| OCU (nota de prensa anual) | España | Datos de marca + modelos destacados publicados en prensa generalista. No el informe completo (es de pago). |
+| What Car? Reliability Survey | Reino Unido | Cuando hay dato en artículo gratuito. |
 
-El nivel de confianza aparece en el tooltip al hacer hover: *"Confianza: Alta — OCU 2026 + TÜV 2025 + ADAC 2025 coinciden"*.
+Los validadores no participan en el cálculo de estrellas — solo se mencionan en el tooltip para dar contexto.
 
-## 7. Ciclo de actualización
+### 3.3 Cálculo de estrellas
 
-- **Mensual:** monitorizamos si salen informes nuevos (OCU, TÜV, ADAC, What Car? suelen publicar una vez al año; JD Power trimestralmente).
-- **Anual (febrero-marzo):** revisión completa de los datos tras salir OCU España y TÜV Report alemán.
-- **Al lanzar un modelo nuevo en España:** se añade al comparador en las primeras 2 semanas con Condiciones de propiedad rellenas y Fiabilidad reportada en *"Datos insuficientes"*.
-- **Cuando un modelo cumple 2 años en el mercado español:** primera revisión de Fiabilidad reportada — se busca cobertura en las fuentes y se rellena si existe.
+Cada fuente canónica aporta una puntuación de 1 a 5. La nota final es la **media aritmética** de las fuentes disponibles, redondeada al medio punto más cercano.
 
-Cada actualización queda registrada en el `changelog` del archivo de metodología y en los metadatos del dato en `data/coches/`.
+**TÜV Report — tasa de defectos (clase 2-3 años):**
 
-## 8. Ejemplos trabajados
+| Tasa de defectos | Estrellas | Lectura |
+|---|---|---|
+| ≤ 3 % | ★★★★★ | Excelente — muy por debajo de la media |
+| 3,1 – 5 % | ★★★★☆ | Bueno — por debajo de la media |
+| 5,1 – 8 % | ★★★☆☆ | Normal — en la media |
+| 8,1 – 12 % | ★★☆☆☆ | Por debajo de la media |
+| > 12 % | ★☆☆☆☆ | Problemático — muy por encima |
 
-Estos son los 5 modelos del piloto inicial con un análisis hipotético de cómo se rellenaría la metodología. Los datos concretos se verificarán al implementar el piloto; aquí se ilustra **cómo aplicamos las reglas**.
+**ADAC Pannenstatistik — índice de averías por 1.000 vehículos:**
 
-### 8.1 Tesla Model 3 (Highland, 2023→)
+| Índice averías | Estrellas | Lectura |
+|---|---|---|
+| ≤ 1,0 | ★★★★★ | Excelente — apenas averías |
+| 1,1 – 3,0 | ★★★★☆ | Bueno |
+| 3,1 – 5,0 | ★★★☆☆ | Normal |
+| 5,1 – 8,0 | ★★☆☆☆ | Por debajo de la media |
+| > 8,0 | ★☆☆☆☆ | Problemático |
 
-- **Fiabilidad reportada:**
-  - Canónica: OCU 2026 — [pendiente consulta específica]
-  - Validador 1: What Car? Reliability Survey 2025
-  - Validador 2: Consumer Reports 2025
-  - Estado: **● amarillo** (hipotético — Tesla históricamente tiene buena fiabilidad mecánica pero problemas de calidad de ensamblaje y software)
-  - Confianza: Alta
-  - Nota: *"Fiabilidad mecánica buena; incidencias reportadas frecuentes en calidad de acabados y software (OTA)."*
+**Nota:** los umbrales están calibrados con los datos del TÜV Report 2026 (media general ~5-6 % para 2-3 años) y ADAC 2025 (media EVs 3,8). Se revisan anualmente cuando salen los nuevos informes.
 
-- **Condiciones de propiedad:**
-  - Garantía vehículo: 4 años / 80.000 km → NO cumple ≥5 años
-  - Garantía batería: 8 años / 192.000 km → cumple
-  - Degradación documentada (Geotab, estudio 2024): ~1.8% anual → cumple <2%
-  - Estado: **● amarillo** (cumple 2 de 3 condiciones favorables)
+**Ejemplo — Tesla Model Y:**
+- TÜV 2026: 17,3 % → ★☆☆☆☆ (1)
+- ADAC 2025: 0,9 → ★★★★★ (5)
+- Media: (1 + 5) / 2 = 3,0 → **★★★☆☆**
 
-### 8.2 Hyundai Kona Eléctrico (segunda generación, 2023→)
+### 3.4 Cuando falta una fuente
 
-- **Fiabilidad reportada:**
-  - Canónica: OCU 2026
-  - Validador 1: TÜV Report 2025 (primera generación disponible; segunda generación, datos insuficientes)
-  - Estado: **● verde** (hipotético — Hyundai/Kia históricamente excelente en OCU y TÜV)
-  - Confianza: Media (datos solo sobre primera generación como proxy → ver regla 5.3; probablemente acabaría en *"Datos insuficientes"* hasta 2025-2026)
+- Si solo hay TÜV pero no ADAC (o viceversa): la nota se basa en la fuente disponible, sin promediar. Se indica en el tooltip: *"Basado únicamente en TÜV Report [año]"*.
+- Si el dato disponible es de un informe anterior (no el más reciente): se usa igualmente pero se marca con *"Dato de [año]"* en el tooltip para que el usuario sepa la antigüedad.
+- Si no hay ninguna de las dos: se muestra **"Sin datos"** con el motivo: *"Modelo sin cobertura en TÜV ni ADAC. Primer informe esperado hacia [fecha]"*.
+- Nunca se rellena con datos de validadores. Los validadores son contexto, no input.
 
-- **Condiciones de propiedad:**
-  - Garantía vehículo: 5 años / sin límite km → cumple
-  - Garantía batería: 8 años / 160.000 km → cumple
-  - Degradación documentada: pendiente
-  - Estado: **● verde**
+### 3.5 Cuando ADAC da calificación cualitativa sin cifra exacta
 
-### 8.3 Renault Zoe (2019-2024, última generación antes de descontinuar)
+ADAC no siempre publica el índice numérico para todos los modelos. Cuando solo hay calificación cualitativa, se mapea así:
 
-- **Fiabilidad reportada:**
-  - Canónica: OCU 2025 (previa a discontinuación)
-  - Validadores: TÜV 2024, ADAC Pannenstatistik 2024
-  - Estado: **● amarillo o rojo** (hipotético — la Zoe ha tenido problemas documentados en gestión térmica de batería y carga DC)
-  - Confianza: Alta
-  - Marca adicional: *"Discontinuado en 2024"*
+| Calificación ADAC | Estrellas equivalentes |
+|---|---|
+| "sehr niedrig" (muy bajo) | ★★★★★ |
+| "niedrig" (bajo) | ★★★★☆ |
+| "durchschnittlich" (medio) | ★★★☆☆ |
+| "hoch" (alto) | ★★☆☆☆ |
+| "sehr hoch" (muy alto) | ★☆☆☆☆ |
 
-- **Condiciones de propiedad:**
-  - Garantía batería al momento de venta: 8 años / 160.000 km → cumple
-  - Degradación documentada: Geotab reporta degradación mayor que el promedio del segmento → no cumple umbral
-  - Estado: **● amarillo**
+Se indica en el tooltip: *"Dato cualitativo de ADAC (sin cifra exacta publicada)"*.
 
-### 8.4 Nissan Leaf (segunda generación, 2018-2025)
+### 3.6 Discrepancias entre fuentes canónicas
 
-- **Fiabilidad reportada:**
-  - Canónica: OCU 2026
-  - Validadores: TÜV 2025, ADAC 2025, What Car? 2025
-  - Estado: **● amarillo** (hipotético — fiabilidad mecánica buena, pero problema conocido con sistema CHAdeMO y degradación de batería sin refrigeración activa)
-  - Confianza: Alta
-  - Nota destacada: *"La falta de refrigeración activa de la batería está documentada como causa de degradación acelerada en climas cálidos."*
+Cuando TÜV y ADAC difieren en ≥ 3 estrellas (como Model Y: 1 vs 5), se añade una **nota editorial obligatoria** en el tooltip que explica la discrepancia. La media aritmética ya captura el matiz numéricamente; la nota explica el porqué en lenguaje humano.
 
-- **Condiciones de propiedad:**
-  - Garantía vehículo: 3 años / 100.000 km → NO cumple
-  - Garantía batería: 8 años / 160.000 km → cumple
-  - Degradación: documentada y por encima del promedio en climas cálidos → no cumple
-  - Estado: **● rojo**
+**Ejemplo Model Y:**
+> TÜV detecta un 17,3 % de defectos en inspección (suspensiones, iluminación, frenos) — el peor de 110 modelos. Sin embargo, ADAC reporta apenas 0,9 averías/1.000 en carretera. Interpretación: defectos mecánicos latentes que no inmovilizan el coche pero que aparecen en ITV.
 
-### 8.5 Tesla Model Y (RWD Long Range, 2022→)
+## 4. Métrica 2 — Garantía (★)
 
-- **Fiabilidad reportada:**
-  - Canónica: OCU 2026
-  - Validadores: What Car? 2025, Consumer Reports 2025
-  - Estado: **● amarillo** (hipotético — similar al Model 3, calidad variable de ensamblaje)
-  - Confianza: Alta
+### 4.1 Qué mide
 
-- **Condiciones de propiedad:**
-  - Garantía vehículo: 4 años / 80.000 km → NO cumple
-  - Garantía batería: 8 años / 192.000 km → cumple
-  - Degradación documentada: ~1.8% anual → cumple
-  - Estado: **● amarillo**
+Los compromisos objetivos que el fabricante ofrece por escrito. Son datos de hoy, no retrospectivos — se pueden rellenar desde el día del lanzamiento.
 
-> **Importante:** estos 5 ejemplos son ilustrativos del método, no afirmaciones actuales de enchufa2. La verificación de los datos reales es la primera tarea del piloto.
+### 4.2 Fuente
 
-## 9. Piloto
+Una sola: **la web oficial del fabricante en España.** Se captura URL y fecha de consulta. Se revisa anualmente o cuando el fabricante anuncia cambios.
 
-**Objetivo:** validar que la metodología produce salidas defendibles, que la UI del comparador comunica bien la información, y que el trabajo de recolección de datos es sostenible en el tiempo.
+No usamos fuentes secundarias para garantías. Si la web del fabricante no lo publica claramente, se marca como *"Sin datos — no publicado en web oficial"*.
 
-**Modelos del piloto (5):**
-1. Tesla Model 3 (Highland)
-2. Tesla Model Y (RWD Long Range)
-3. Hyundai Kona Eléctrico (primera generación, por tener más datos históricos)
-4. Renault Zoe (discontinuado, alta cobertura de fuentes)
-5. Nissan Leaf (segunda generación)
+### 4.3 Componentes y cálculo de estrellas
 
-**Criterios de selección:** los cinco llevan ≥2 años en el mercado, tienen cobertura en OCU, TÜV y al menos un validador más. Son suficientemente distintos entre sí para testear los estados verde/amarillo/rojo.
+Dos inputs, media aritmética:
 
-**Criterios de éxito:**
-- Los 5 tienen datos verificados en Fiabilidad reportada (no *"Datos insuficientes"*).
-- Las Condiciones de propiedad están rellenas al 100% en los 5.
-- La discrepancia entre fuentes aparece al menos en 1 modelo (para validar la regla 5.4).
-- Al mostrar los 5 en el comparador, un usuario nuevo entiende qué significa cada color sin leer la página de metodología (test con Javi+Jose u otro usuario).
+**Input A: Garantía del vehículo**
 
-**Criterios de fracaso (cuando replantear):**
-- Más del 30% de los campos acaban en *"Datos insuficientes"* entre los 5 modelos del piloto.
-- Dos o más casos en los que la metodología no sabe qué hacer (excepción no contemplada).
-- La UI genera confusión entre "fiabilidad reportada" y "condiciones de propiedad" en el test con usuario.
+| Años | Estrellas |
+|---|---|
+| ≥ 7 | ★★★★★ |
+| 5 – 6 | ★★★★☆ |
+| 4 | ★★★☆☆ |
+| 3 | ★★☆☆☆ |
+| ≤ 2 | ★☆☆☆☆ |
 
-Si el piloto pasa, escalamos a los siguientes 10 modelos con mayor cobertura de fuentes y, progresivamente, al resto del comparador.
+**Input B: Garantía de batería**
 
-## 10. Estructura de datos
+| Condición | Estrellas |
+|---|---|
+| ≥ 10 años o ≥ 200.000 km | ★★★★★ |
+| 8 años y ≥ 160.000 km | ★★★★☆ |
+| 8 años y < 160.000 km | ★★★☆☆ |
+| 5–7 años | ★★☆☆☆ |
+| < 5 años | ★☆☆☆☆ |
 
-Los datos se añaden al grupo `fiabilidad` existente en `data/coches/<slug>.json`. Propuesta de esquema:
+**Ejemplo — Tesla Model Y:**
+- Vehículo: 4 años / 80.000 km → ★★★☆☆ (3)
+- Batería: 8 años / 160.000 km / 70 % → ★★★★☆ (4)
+- Media: (3 + 4) / 2 = 3,5 → **★★★½☆**
+
+**Ejemplo — Hyundai Kona Eléctrico:**
+- Vehículo: 5 años / sin límite km → ★★★★☆ (4)
+- Batería: 8 años / 160.000 km → ★★★★☆ (4)
+- Media: (4 + 4) / 2 = 4,0 → **★★★★☆**
+
+### 4.4 Datos adicionales (no puntúan, sí se muestran)
+
+Se incluyen en el tooltip como información complementaria sin contribuir a la nota:
+- Umbral mínimo de capacidad garantizado (ej: 70 %)
+- Kilometraje de garantía del vehículo (si aplica)
+- Existencia de extensión de garantía (ej: Tesla suscripción 2026)
+- Garantías condicionales (ej: Nissan+ extiende a 7 años si se mantiene en taller oficial)
+
+### 4.5 Garantías condicionales
+
+Algunos fabricantes ofrecen extensiones de garantía condicionadas (mantenimiento en red oficial, suscripciones, etc.). Para el comparador se usa siempre la **garantía de fábrica incondicional** como base para las estrellas. La extensión condicional se muestra en el tooltip como dato adicional: *"Extensible a [X] años con [programa] (condicionado a mantenimiento en taller oficial)"*.
+
+### 4.6 Cuando falta un dato
+
+- Si falta garantía de batería (muy raro): se calcula solo con vehículo.
+- Si falta garantía de vehículo (raro): se calcula solo con batería.
+- Si no hay ninguno: *"Sin datos"*.
+
+## 5. Presentación en el comparador
+
+### 5.1 En las tarjetas (modo fichas)
+
+Dos badges compactos junto a los ya existentes:
+
+```
+★★★ Fiabilidad    ★★★½ Garantía
+```
+
+Las estrellas se muestran con relleno parcial (media estrella posible). Color: amarillo (#F5C518) sobre fondo oscuro, coherente con la marca.
+
+### 5.2 En el modo listado
+
+Dos columnas nuevas, filtrables y ordenables como cualquier otra.
+
+### 5.3 Tooltip / panel expandible (transparencia)
+
+Al hacer clic en cualquiera de las dos métricas, se abre un panel que muestra:
+
+**Para Fiabilidad:**
+```
+★★★ Fiabilidad
+─────────────────────────────────
+TÜV Report 2026          ★☆☆☆☆
+  17,3 % defectos (2-3 años)
+  Peor de 110 modelos analizados
+  tuev-verband.de · Enero 2026
+
+ADAC Pannenstatistik 2025 ★★★★★
+  Índice 0,9 averías/1.000
+  presse.adac.de · Marzo 2025
+
+⚠️ Discrepancia notable entre fuentes:
+  TÜV detecta defectos en suspensiones,
+  iluminación y frenos que no inmovilizan
+  el coche pero aparecen en inspección.
+
+Validadores (no puntúan):
+  · Consumer Reports 2025: 81/100
+  · OCU 2026: 96 pts (nota de prensa)
+
+Cómo calculamos → [Metodología]
+Última revisión: abril 2026
+```
+
+**Para Garantía:**
+```
+★★★½ Garantía
+─────────────────────────────────
+Vehículo                  ★★★☆☆
+  4 años / 80.000 km
+
+Batería                   ★★★★☆
+  8 años / 160.000 km
+  Mínimo garantizado: 70 % capacidad
+
+Fuente: tesla.com/es · Abril 2026
+
+Cómo calculamos → [Metodología]
+```
+
+### 5.4 Estado "Sin datos"
+
+Cuando no hay información suficiente, se muestra `— Sin datos` (sin estrellas, sin color) con tooltip explicativo:
+- *"Modelo lanzado en [fecha]. Primer informe TÜV esperado hacia [fecha+2 años]."*
+- *"No incluido en TÜV ni ADAC. Si tienes información sobre este modelo, escríbenos."*
+
+## 6. Casos especiales
+
+### 6.1 Modelo con menos de 2 años en mercado
+Fiabilidad → *"Sin datos"*. Garantía → se rellena normalmente.
+
+### 6.2 Datos solo a nivel marca
+No se usan en el comparador. El dato de marca puede aparecer en guías.
+
+### 6.3 Restyling / facelift
+- **Actualización menor** (misma plataforma, mismo tren motriz): se hereda el dato con etiqueta *"Dato de generación anterior"*.
+- **Generación nueva** (plataforma distinta): se trata como modelo nuevo → *"Sin datos"* en fiabilidad.
+
+### 6.4 Múltiples variantes (ej: RWD vs Long Range vs Performance)
+Los informes no desagregan por variante. Se aplica al modelo base con marca *"Aplicado al modelo, no a variante específica"*.
+
+### 6.5 Modelo discontinuado
+Se mantiene con los últimos datos y marca *"Discontinuado en [año]"*. Útil para ocasión.
+
+### 6.6 Discrepancias entre TÜV y ADAC
+Si difieren ≥ 3 estrellas: nota editorial obligatoria en el tooltip (ver sección 3.6). La media sigue siendo la nota — la nota editorial explica el porqué.
+
+### 6.7 Datos de informe anterior (no el más reciente)
+Si un modelo no aparece en el TÜV/ADAC más reciente pero sí en uno anterior, se usa el dato disponible con marca *"Dato de [año]"* en el tooltip. Es preferible un dato algo antiguo a "Sin datos".
+
+## 7. Estructura de datos
+
+Los datos se añaden al JSON de cada modelo en `data/coches/<slug>.json`:
 
 ```json
 {
   "fiabilidad": {
-    "fiabilidad_reportada": {
-      "estado": "verde | amarillo | rojo | insuficiente",
-      "confianza": "alta | media | na",
-      "fuente_canonica": {
-        "nombre": "OCU",
-        "url": "...",
+    "estrellas": 3.0,
+    "fuentes": [
+      {
+        "nombre": "TÜV Report 2026",
+        "tipo": "canonica",
+        "url": "https://www.tuev-verband.de/...",
         "fecha": "2026-01",
-        "metrica_cruda": "8.2/10",
-        "muestra": 243
+        "metrica": "17.3% defectos",
+        "clase_edad": "2-3 años",
+        "estrellas": 1,
+        "detalle": "Peor de 110 modelos. Defectos: suspensiones eje (2.9%), iluminación (5.9%), frenos (2.8%)"
       },
-      "validadores": [
-        {
-          "nombre": "TÜV Report 2025",
-          "url": "...",
-          "fecha": "2025-06",
-          "metrica_cruda": "2.1% defectos en primera ITV",
-          "coincide_canonica": true
-        }
-      ],
-      "nota_editorial": "Fiabilidad mecánica buena; incidencias en calidad de acabados.",
-      "fecha_primera_venta_es": "2023-09",
-      "ultima_revision": "2026-04-10"
-    },
-    "condiciones_propiedad": {
-      "estado": "verde | amarillo | rojo",
-      "garantia_vehiculo_anos": 5,
-      "garantia_vehiculo_km": null,
-      "garantia_vehiculo_fuente_url": "...",
-      "garantia_bateria_anos": 8,
-      "garantia_bateria_km": 160000,
-      "garantia_bateria_umbral_capacidad": "70%",
-      "garantia_bateria_fuente_url": "...",
-      "degradacion_anual_pct": 1.8,
-      "degradacion_fuente": {
-        "nombre": "Geotab EV Battery Degradation Study 2024",
+      {
+        "nombre": "ADAC Pannenstatistik 2025",
+        "tipo": "canonica",
+        "url": "https://presse.adac.de/...",
+        "fecha": "2025-03",
+        "metrica": "0.9 averías/1000",
+        "estrellas": 5,
+        "detalle": "Primer año en estadística. Apenas averías en carretera."
+      }
+    ],
+    "validadores": [
+      {
+        "nombre": "Consumer Reports 2025",
+        "metrica": "81/100",
         "url": "..."
       },
-      "ultima_revision": "2026-04-10"
-    }
+      {
+        "nombre": "OCU 2026 (nota de prensa)",
+        "metrica": "96 pts categoría grandes eléctricos",
+        "url": "https://www.ocu.org/organizacion/prensa/..."
+      }
+    ],
+    "nota_editorial": "TÜV detecta defectos mecánicos latentes que no inmovilizan el coche pero aparecen en inspección técnica.",
+    "discrepancia": true,
+    "ultima_revision": "2026-04-12"
+  },
+  "garantia": {
+    "estrellas": 3.5,
+    "vehiculo": {
+      "anos": 4,
+      "km": 80000,
+      "estrellas": 3,
+      "fuente_url": "https://www.tesla.com/es/support/vehicle-warranty",
+      "fuente_fecha": "2026-04"
+    },
+    "bateria": {
+      "anos": 8,
+      "km": 160000,
+      "umbral_capacidad_pct": 70,
+      "estrellas": 4,
+      "fuente_url": "https://www.tesla.com/es/support/vehicle-warranty",
+      "fuente_fecha": "2026-04"
+    },
+    "extension_disponible": "Suscripción ~100$/mes (2026)",
+    "ultima_revision": "2026-04-12"
   }
 }
 ```
 
-Este esquema respeta la biblia de datos existente (metadatos de fuente en cada campo) y permite reconstruir los estados visuales automáticamente desde los datos crudos, lo que significa que si mañana cambiamos los umbrales, la UI se actualiza sola.
+El comparador calcula las estrellas totales automáticamente desde los datos crudos. Si mañana cambiamos los umbrales, la UI se actualiza sola.
 
-## 11. Qué NO hacemos (límites explícitos)
+## 8. Qué NO hacemos
 
-- **No agregamos datos de marca al modelo.** *"Tesla es fiable"* no se convierte en *"el Model Y es fiable"*.
-- **No extrapolamos entre generaciones.** Ver regla 5.3.
-- **No promediamos metodologías incompatibles.** PP100 + %defectos + satisfacción subjetiva no se puede sumar.
-- **No usamos foros, redes sociales, reviews individuales o vídeos de YouTube como fuente de fiabilidad.**
+- **No agregamos datos de marca al modelo.**
+- **No extrapolamos entre generaciones.**
+- **No promediamos metodologías incompatibles.** TÜV y ADAC se promedian porque ambas producen una escala de 1-5 propia; no mezclamos sus métricas crudas.
+- **No usamos foros, redes sociales, reviews ni YouTube.**
 - **No publicamos datos sin URL citable y fecha.**
-- **No ocultamos la incertidumbre.** Preferimos *"Datos insuficientes"* explícito a un verde de relleno.
-- **No mostramos un score único de 1 a 5.** Siempre las dos dimensiones separadas.
-- **No actualizamos la metodología sin dejar changelog.** Cualquier cambio en umbrales, fuentes o reglas tiene fecha y motivo.
+- **No ocultamos la incertidumbre.** Preferimos *"Sin datos"* a estrellas inventadas.
+- **No usamos fuentes de pago.** Todo dato debe ser verificable por cualquier lector sin suscripción.
+- **No actualizamos la metodología sin changelog.**
 
-## 12. Integración con el resto del proyecto
+## 9. Ciclo de actualización
 
-**En el comparador:**
-- Dos nuevas columnas en el modo listado: "Fiabilidad reportada" y "Condiciones de propiedad".
-- Dos nuevos pills de filtro: "Fiabilidad" y "Garantía".
-- En las tarjetas del modo fichas: dos badges pequeños con el color del estado.
-- Cada indicador abre un popover con: estado, confianza, fuentes citadas, nota editorial, enlace a la metodología.
+- **Anual (enero-marzo):** revisión completa tras publicarse TÜV Report (enero) y ADAC Pannenstatistik (marzo-abril). Se actualizan umbrales si la media del sector ha cambiado significativamente.
+- **Al lanzar modelo nuevo en España:** se añade al comparador con Garantía rellena y Fiabilidad en *"Sin datos"*.
+- **Cuando un modelo cumple 2 años:** primera búsqueda de datos de fiabilidad.
+- **Cuando un fabricante cambia garantías:** se actualiza Garantía inmediatamente.
 
-**En las guías:**
-- La guía 1.5 *"Garantías, fiabilidad y marcas"* (basada en OCU 85.590 conductores) es la explicación larga de esta metodología en lenguaje accesible. Cita este documento como referencia técnica.
-- Otras guías (ej: *"Qué coche eléctrico comprar si buscas durabilidad"*) pueden enlazar al comparador filtrado por `Fiabilidad: verde`.
+Cada actualización queda registrada en el changelog de este documento y en `ultima_revision` de cada modelo.
 
-**En la página de metodología pública:**
-- `/comparador/metodologia-fiabilidad` es una versión resumida y editada de este documento para el usuario final. Incluye qué fuentes usamos, por qué cada una, cómo construimos los estados y cómo se puede verificar cada dato.
+## 10. Piloto
+
+**Objetivo:** validar que la metodología produce salidas defendibles, que los tooltips comunican bien la información, y que el trabajo de recolección es sostenible.
+
+**Modelos del piloto (5):**
+1. Tesla Model Y
+2. Tesla Model 3
+3. Hyundai Kona Eléctrico
+4. Renault Zoe (discontinuado)
+5. Nissan Leaf
+
+**Criterios de éxito:**
+- Los 5 tienen al menos una fuente canónica en Fiabilidad (no *"Sin datos"* en todos).
+- Las Garantías están rellenas al 100%.
+- La discrepancia TÜV/ADAC aparece al menos en 1 modelo (validar regla 6.6 y el tooltip).
+- Un usuario nuevo entiende qué significa cada nota sin leer la metodología completa.
+
+**Criterios de fracaso:**
+- Más del 30% de los campos en *"Sin datos"* entre los 5.
+- Casos no contemplados por la metodología.
+- El tooltip confunde más que aclara.
+
+Si el piloto pasa, escalamos progresivamente al resto del comparador.
+
+**Resultado del piloto (2026-04-12):** APROBADO. Los 5 modelos tienen datos, las estrellas discriminan (rango 3,0–4,0), las discrepancias generan contenido editorial valioso, 0 % de campos "Sin datos". Documento completo en `docs/fiabilidad-piloto-datos.md`.
 
 ---
 
 ## Changelog
 
-- **2026-04-10 — v0.1:** borrador inicial. Propone dos dimensiones (Fiabilidad reportada + Condiciones de propiedad), jerarquía de fuentes con OCU canónica para España, reglas de casos especiales, estructura de datos JSON, y plan piloto con 5 modelos. Pendiente de validación con Javi.
+- **2026-04-10 — v0.1:** borrador inicial. Dos dimensiones (fiabilidad reportada + condiciones de propiedad), semáforo verde/amarillo/rojo, OCU como fuente canónica, degradación como métrica.
+- **2026-04-12 — v0.2:** reescritura mayor tras validación con Javi. Cambios:
+  - Dos métricas separadas (Fiabilidad + Garantía) en lugar de dos dimensiones combinadas.
+  - Escala de 5 estrellas en lugar de semáforo de colores — más granularidad, menos estigma.
+  - Degradación de batería eliminada como métrica (depende de variables del usuario, no del coche).
+  - Solo fuentes gratuitas: TÜV + ADAC como canónicas, OCU degradada a validador (informe completo es de pago).
+  - Umbrales concretos para cada input con tablas de mapeo.
+  - Diseño del tooltip/panel expandible para transparencia total.
+  - Ejemplos calculados con datos reales del piloto Model Y.
+- **2026-04-12 — v0.3:** decisiones del piloto incorporadas. Cambios:
+  - Regla 3.5: mapeo de calificaciones cualitativas ADAC a estrellas (cuando no hay cifra exacta).
+  - Regla 3.4: datos de informes anteriores se usan con marca de antigüedad.
+  - Regla 4.5: garantías condicionales (ej: Nissan+) no puntúan — se usa garantía base incondicional, extensión en tooltip.
+  - Regla 6.7: datos de informe anterior permitidos con etiqueta "Dato de [año]".
+  - Model 3 batería 192k km → 4 estrellas (no llega al umbral de ≥200k para 5★).
+  - Resultado del piloto documentado: APROBADO.

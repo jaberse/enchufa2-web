@@ -207,6 +207,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
       { id: 'bateria',      label: 'Batería y carga',         icon: '🔋' },
       { id: 'rendimiento',  label: 'Rendimiento',             icon: '🏎️' },
       { id: 'dimensiones',  label: 'Dimensiones y espacio',   icon: '📐' },
+      { id: 'fiabilidad',   label: 'Fiabilidad y garantía',   icon: '🛡️' },
     ];
 
     const FIELDS = [
@@ -242,6 +243,9 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
       { id:'alto',          label:'Alto',            shortLabel:'Alto',    unit:'mm',        key:'alto_mm',                 dflt:false, sortAsc:false, filterType:'min',             group:'dimensiones' },
       { id:'batalla',       label:'Batalla',         shortLabel:'Bat.mm',  unit:'mm',        key:'batalla_mm',              dflt:false, sortAsc:false, filterType:'min',             group:'dimensiones' },
       { id:'diametro_giro', label:'Diám. giro',      shortLabel:'D.giro',  unit:'m',         key:'diametro_giro_m',         dflt:false, sortAsc:true,  filterType:'max', dec:1,      group:'dimensiones' },
+      // ── Fiabilidad y garantía ──
+      { id:'fiab_stars',    label:'Fiabilidad',      shortLabel:'Fiab.',   unit:'★',         key:'fiabilidad_estrellas',     dflt:false, sortAsc:false, filterType:'min', dec:1,      group:'fiabilidad', isStars:true },
+      { id:'gar_stars',     label:'Garantía',        shortLabel:'Gar.',    unit:'★',         key:'garantia_estrellas',       dflt:false, sortAsc:false, filterType:'min', dec:1,      group:'fiabilidad', isStars:true },
     ];
 
     const CAT_GROUPS = [
@@ -348,6 +352,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     // ═══════════════════════════════════════════════════════
     function fmtField(val, field) {
       if (val === null || val === undefined) return '\u2014';
+      if (field.isStars) return renderStars(val, 'sm');
       if (field.fmt === 'eur') return val.toLocaleString('es-ES') + '\u00a0\u20ac';
       if (field.isText) return val;
       if (field.dec !== undefined) return val.toFixed(field.dec);
@@ -422,6 +427,101 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
 
     function photoSrc(m) {
       return m.foto ? '/comparador/' + m.slug + '.png?v=11' : '/comparador/placeholder.svg';
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // FIABILIDAD & GARANTÍA — render helpers
+    // ═══════════════════════════════════════════════════════
+
+    function renderStars(val, size) {
+      if (val == null) return '<span class="stars-na">Sin datos</span>';
+      const sz = size || '';
+      const full = Math.floor(val);
+      const half = (val % 1) >= 0.25 && (val % 1) < 0.75 ? 1 : 0;
+      const adjustedFull = (val % 1) >= 0.75 ? full + 1 : full;
+      const empty = 5 - adjustedFull - half;
+      let html = '<span class="stars' + (sz ? ' stars-' + sz : '') + '" data-rating="' + val + '">';
+      for (let i = 0; i < adjustedFull; i++) html += '<span class="star star-full">★</span>';
+      for (let i = 0; i < half; i++) html += '<span class="star star-half">⯪</span>';
+      for (let i = 0; i < empty; i++) html += '<span class="star star-empty">☆</span>';
+      html += '</span>';
+      return html;
+    }
+
+    function buildFiabilidadTooltip(m) {
+      if (m.fiabilidad_estrellas == null) return '';
+      let html = '<div class="metric-tooltip">';
+      html += '<div class="metric-tooltip-header">' + renderStars(m.fiabilidad_estrellas) + ' <strong>Fiabilidad</strong></div>';
+      html += '<div class="metric-tooltip-body">';
+      // TÜV
+      if (m.fiabilidad_tuv_pct != null) {
+        html += '<div class="metric-source">';
+        html += '<div class="metric-source-header"><span>TÜV Report ' + m.fiabilidad_tuv_año + '</span>' + renderStars(m.fiabilidad_tuv_estrellas, 'sm') + '</div>';
+        html += '<div class="metric-source-data">' + m.fiabilidad_tuv_pct.toLocaleString('es-ES') + ' % defectos (' + m.fiabilidad_tuv_clase + ')</div>';
+        if (m.fiabilidad_tuv_detalle) html += '<div class="metric-source-detail">' + m.fiabilidad_tuv_detalle + '</div>';
+        html += '<div class="metric-source-link">tuev-verband.de · ' + m.fiabilidad_tuv_año + '</div>';
+        html += '</div>';
+      }
+      // ADAC
+      if (m.fiabilidad_adac_idx != null) {
+        html += '<div class="metric-source">';
+        html += '<div class="metric-source-header"><span>ADAC Pannenstatistik ' + m.fiabilidad_adac_año + '</span>' + renderStars(m.fiabilidad_adac_estrellas, 'sm') + '</div>';
+        html += '<div class="metric-source-data">Índice ' + m.fiabilidad_adac_idx.toLocaleString('es-ES') + ' averías/1.000</div>';
+        if (m.fiabilidad_adac_detalle) html += '<div class="metric-source-detail">' + m.fiabilidad_adac_detalle + '</div>';
+        html += '<div class="metric-source-link">presse.adac.de · ' + m.fiabilidad_adac_año + '</div>';
+        html += '</div>';
+      }
+      // Discrepancy note
+      if (m.fiabilidad_discrepancia && m.fiabilidad_nota) {
+        html += '<div class="metric-discrepancy">⚠️ ' + m.fiabilidad_nota + '</div>';
+      }
+      // Validators
+      if (m.fiabilidad_validadores) {
+        html += '<div class="metric-validators">Validadores: ' + m.fiabilidad_validadores + '</div>';
+      }
+      html += '<div class="metric-footer">Cómo calculamos → <a href="/comparador/metodologia" onclick="event.stopPropagation()">Metodología</a> · Revisión: ' + m.fiabilidad_revision + '</div>';
+      html += '</div></div>';
+      return html;
+    }
+
+    function buildGarantiaTooltip(m) {
+      if (m.garantia_estrellas == null) return '';
+      let html = '<div class="metric-tooltip">';
+      html += '<div class="metric-tooltip-header">' + renderStars(m.garantia_estrellas) + ' <strong>Garantía</strong></div>';
+      html += '<div class="metric-tooltip-body">';
+      // Vehículo
+      html += '<div class="metric-source">';
+      html += '<div class="metric-source-header"><span>Vehículo</span>' + renderStars(m.garantia_vehiculo_estrellas, 'sm') + '</div>';
+      html += '<div class="metric-source-data">' + m.garantia_vehiculo_anos + ' años' + (m.garantia_vehiculo_km ? ' / ' + Number(m.garantia_vehiculo_km).toLocaleString('es-ES') + ' km' : ' / sin límite km') + '</div>';
+      html += '</div>';
+      // Batería
+      html += '<div class="metric-source">';
+      html += '<div class="metric-source-header"><span>Batería</span>' + renderStars(m.garantia_bateria_estrellas, 'sm') + '</div>';
+      html += '<div class="metric-source-data">' + m.garantia_bateria_anos + ' años / ' + Number(m.garantia_bateria_km).toLocaleString('es-ES') + ' km</div>';
+      if (m.garantia_bateria_pct) html += '<div class="metric-source-detail">Mínimo garantizado: ' + m.garantia_bateria_pct + '% capacidad</div>';
+      html += '</div>';
+      html += '<div class="metric-footer">Fuente: web oficial fabricante · Revisión: ' + m.garantia_revision + '</div>';
+      html += '</div></div>';
+      return html;
+    }
+
+    function renderMetricBadges(m) {
+      let html = '';
+      // Fiabilidad
+      if (m.fiabilidad_estrellas != null) {
+        html += '<div class="metric-badge metric-badge-fiab" data-metric="fiab" data-slug="' + m.slug + '">';
+        html += '<span class="metric-badge-label">Fiabilidad</span>';
+        html += renderStars(m.fiabilidad_estrellas, 'sm');
+        html += '</div>';
+      }
+      // Garantía
+      if (m.garantia_estrellas != null) {
+        html += '<div class="metric-badge metric-badge-gar" data-metric="gar" data-slug="' + m.slug + '">';
+        html += '<span class="metric-badge-label">Garantía</span>';
+        html += renderStars(m.garantia_estrellas, 'sm');
+        html += '</div>';
+      }
+      return html;
     }
 
     function rangeIsActive(r) {
@@ -1087,6 +1187,9 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
             '</div>' +
           '</div>' +
           '<div class="ev-badges">' + makeBadgesHtml(m) + '</div>' +
+          (renderMetricBadges(m) ? '<div class="ev-metrics">' + renderMetricBadges(m) + '</div>' : '') +
+          '<div class="metric-popover" id="metric-pop-fiab-' + m.slug + '" style="display:none">' + buildFiabilidadTooltip(m) + '</div>' +
+          '<div class="metric-popover" id="metric-pop-gar-' + m.slug + '" style="display:none">' + buildGarantiaTooltip(m) + '</div>' +
           subsidyHtml +
           (detailsHtml ? '<div class="ev-card-details">' + detailsHtml + '</div>' : '') +
         '</div>';
@@ -1102,6 +1205,24 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
           }
         });
       }
+
+      // Attach metric badge toggle events
+      card.querySelectorAll('.metric-badge').forEach(badge => {
+        badge.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const metric = badge.dataset.metric;
+          const slug = badge.dataset.slug;
+          const popId = 'metric-pop-' + metric + '-' + slug;
+          // Close any other open metric popovers in this card
+          card.querySelectorAll('.metric-popover').forEach(p => {
+            if (p.id !== popId) p.style.display = 'none';
+          });
+          const pop = card.querySelector('#' + popId);
+          if (pop) {
+            pop.style.display = pop.style.display === 'none' ? 'block' : 'none';
+          }
+        });
+      });
 
       return card;
     }
@@ -3574,6 +3695,157 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     background: rgba(120,120,120,.15);
     border-color: rgba(120,120,120,.3);
     color: #999;
+  }
+
+  /* ── Fiabilidad & Garantía metrics ── */
+  .ev-metrics {
+    display: flex;
+    gap: .5rem;
+    margin-top: .45rem;
+  }
+  .metric-badge {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .3rem .55rem;
+    border-radius: 6px;
+    background: rgba(245,197,24,.06);
+    border: 1px solid rgba(245,197,24,.2);
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+    user-select: none;
+  }
+  .metric-badge:hover {
+    background: rgba(245,197,24,.12);
+    border-color: rgba(245,197,24,.35);
+  }
+  [data-theme="dark"] .metric-badge {
+    background: rgba(245,197,24,.08);
+    border-color: rgba(245,197,24,.2);
+  }
+  [data-theme="dark"] .metric-badge:hover {
+    background: rgba(245,197,24,.15);
+    border-color: rgba(245,197,24,.35);
+  }
+  .metric-badge-label {
+    font-size: .55rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    color: var(--text-muted);
+  }
+
+  /* Stars */
+  .stars { white-space: nowrap; line-height: 1; }
+  .star { font-style: normal; }
+  .star-full { color: #F5C518; }
+  .star-half { color: #F5C518; }
+  .star-empty { color: rgba(150,150,150,.35); }
+  .stars-sm .star { font-size: .7rem; }
+  .stars-na {
+    font-size: .6rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* Metric popover (expandable tooltip) */
+  .metric-popover {
+    margin-top: .4rem;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+  .metric-tooltip {
+    background: var(--bg-card, #fff);
+    border: 1px solid rgba(245,197,24,.25);
+    border-radius: 8px;
+    padding: .65rem .75rem;
+    font-size: .7rem;
+    line-height: 1.5;
+  }
+  [data-theme="dark"] .metric-tooltip {
+    background: #1a1a1a;
+    border-color: rgba(245,197,24,.2);
+  }
+  .metric-tooltip-header {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    margin-bottom: .5rem;
+    padding-bottom: .4rem;
+    border-bottom: 1px solid rgba(150,150,150,.15);
+  }
+  .metric-tooltip-header strong {
+    font-size: .75rem;
+  }
+  .metric-tooltip-body {
+    display: flex;
+    flex-direction: column;
+    gap: .45rem;
+  }
+  .metric-source {
+    padding: .35rem .45rem;
+    background: rgba(150,150,150,.04);
+    border-radius: 5px;
+    border: 1px solid rgba(150,150,150,.08);
+  }
+  [data-theme="dark"] .metric-source {
+    background: rgba(255,255,255,.03);
+    border-color: rgba(255,255,255,.06);
+  }
+  .metric-source-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: .65rem;
+    margin-bottom: .2rem;
+  }
+  .metric-source-data {
+    font-size: .7rem;
+    font-weight: 500;
+    color: var(--text-primary, #111);
+  }
+  .metric-source-detail {
+    font-size: .6rem;
+    color: var(--text-muted);
+    margin-top: .15rem;
+  }
+  .metric-source-link {
+    font-size: .55rem;
+    color: var(--text-muted);
+    margin-top: .2rem;
+    opacity: .7;
+  }
+  .metric-discrepancy {
+    padding: .35rem .45rem;
+    background: rgba(245,197,24,.08);
+    border: 1px solid rgba(245,197,24,.18);
+    border-radius: 5px;
+    font-size: .65rem;
+    line-height: 1.5;
+    color: var(--text-primary, #111);
+  }
+  [data-theme="dark"] .metric-discrepancy {
+    background: rgba(245,197,24,.06);
+    border-color: rgba(245,197,24,.15);
+  }
+  .metric-validators {
+    font-size: .6rem;
+    color: var(--text-muted);
+    padding-top: .2rem;
+  }
+  .metric-footer {
+    font-size: .55rem;
+    color: var(--text-muted);
+    padding-top: .35rem;
+    margin-top: .3rem;
+    border-top: 1px solid rgba(150,150,150,.1);
+  }
+  .metric-footer a {
+    color: #F5C518;
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 
   /* Subsidy summary row in card */
