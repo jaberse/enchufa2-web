@@ -81,6 +81,16 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Respect user motion preferences (WCAG 2.1) */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 body {
   font-family: var(--font-sans);
   font-weight: 300;
@@ -161,6 +171,12 @@ a { color: inherit; text-decoration: none; }
   overflow: hidden;
   clip: rect(0,0,0,0);
   white-space: nowrap;
+}
+
+/* Global keyboard focus indicator (WCAG 2.1) */
+*:focus-visible {
+  outline: 2px solid var(--yellow);
+  outline-offset: 2px;
 }
 
 /* ─────────────────────────────────────────────

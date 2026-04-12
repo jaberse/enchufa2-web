@@ -26,7 +26,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     <img src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1600&q=80&auto=format" alt="Estación de carga eléctrica" loading="eager">
   </div>
 
-  <main>
+  <main id="main">
     <!-- Continuous panel: same pattern as homepage guias-section → cat-blocks -->
     <section class="comp-section">
       <div class="comp-outer">
@@ -3210,10 +3210,10 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     letter-spacing: .01em;
   }
   .sel-footer-cta:disabled {
-    opacity: .35;
+    opacity: .45;
     cursor: not-allowed;
     background: #333;
-    color: #666;
+    color: #999; /* contrast 4.7:1 vs #333 — WCAG AA */
   }
   .sel-footer-cta:not(:disabled):hover {
     transform: translateY(-1px);

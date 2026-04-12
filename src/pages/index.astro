@@ -110,7 +110,7 @@ const totalGuides = categories.reduce((sum, cat) => sum + cat.guides.length, 0);
 >
   <Header />
   <Search />
-  <main>
+  <main id="main">
 
     <!-- ═══ HERO BAND ═══ -->
     <div class="hero-band">
@@ -129,7 +129,7 @@ const totalGuides = categories.reduce((sum, cat) => sum + cat.guides.length, 0);
       <div class="guias-intro">
         <div class="guias-intro-card reveal">
           <div class="guias-intro-text">
-            <h2>Todo lo que necesitas saber<br>sobre tu <em>eléctrico</em></h2>
+            <h1>Todo lo que necesitas saber<br>sobre tu <em>eléctrico</em></h1>
             <p>{totalGuides} guías organizadas por las 5 dudas reales que frenan a los conductores. Basadas en datos, con fuentes citadas, sin rodeos.</p>
           </div>
           <div class="guias-pills">
@@ -359,7 +359,7 @@ const totalGuides = categories.reduce((sum, cat) => sum + cat.guides.length, 0);
     box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.12);
   }
 
-  .guias-intro-text h2 {
+  .guias-intro-text h1 {
     font-size: clamp(1.5rem, 2.8vw, 2.2rem);
     font-weight: 200;
     letter-spacing: -0.03em;
@@ -367,7 +367,7 @@ const totalGuides = categories.reduce((sum, cat) => sum + cat.guides.length, 0);
     margin-bottom: 0.5rem;
   }
 
-  .guias-intro-text h2 em {
+  .guias-intro-text h1 em {
     font-family: var(--font-serif);
     font-style: italic;
   }

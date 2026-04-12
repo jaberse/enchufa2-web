@@ -3,6 +3,7 @@ const currentPath = Astro.url.pathname;
 const isHome = currentPath === '/' || currentPath === '';
 const isComparador = currentPath.startsWith('/comparador');
 ---
+<a href="#main" class="skip-link">Saltar al contenido</a>
 <header class="site-header" id="site-header">
 
   <div class="header-top hub-width">
@@ -62,6 +63,25 @@ const isComparador = currentPath.startsWith('/comparador');
 </header>
 
 <style>
+  /* Skip link — visible only on focus for keyboard nav */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    z-index: 999;
+    background: var(--yellow);
+    color: var(--black);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+  .skip-link:focus {
+    left: 1rem;
+    top: 0.5rem;
+  }
+
   .site-header {
     position: sticky;
     top: 0;
