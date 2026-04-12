@@ -147,6 +147,11 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     position: relative;
     z-index: 10;
   }
+  @media (max-width: 640px) {
+    .article-body :global(.article-stats) {
+      grid-template-columns: 1fr;
+    }
+  }
   .article-body :global(.stat) {
     background: var(--surface);
     border-radius: 8px;
@@ -302,13 +307,15 @@ const { title, description, readingTime, publishDate, references } = Astro.props
   .article-body :global(.comparison-table) {
     margin: 2rem 0;
     border-radius: 8px;
-    overflow: hidden;
+    overflow-x: auto;
     border: 1px solid var(--border);
     font-size: 0.875rem;
+    -webkit-overflow-scrolling: touch;
   }
   .article-body :global(.ct-row) {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    min-width: 500px;
     border-bottom: 1px solid var(--border);
   }
   .article-body :global(.ct-row:last-child) {
