@@ -187,26 +187,39 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     padding-block: clamp(3rem, 6vw, 5rem);
   }
 
-  /* Article content styles */
+  /* ─── H2: Major section headings — visual "event" ─── */
   .article-body :global(h2) {
     font-family: var(--font-sans);
-    font-weight: 200;
-    font-size: clamp(1.4rem, 2.8vw, 1.9rem);
-    letter-spacing: -0.02em;
+    font-weight: 300;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    letter-spacing: -0.025em;
     line-height: 1.15;
     color: var(--text);
-    margin-top: 3.5rem;
-    margin-bottom: 1.25rem;
+    margin-top: 4.5rem;
+    margin-bottom: 1.5rem;
+    padding-top: 2.5rem;
+    border-top: 3px solid var(--yellow);
+    position: relative;
+  }
+  /* First h2 after deck/stats/tldr doesn't need the top border */
+  .article-body :global(hr + h2) {
+    border-top: 3px solid var(--yellow);
+    margin-top: 0;
+    padding-top: 2.5rem;
   }
 
+  /* ─── H3: Subsection headings — clearly subordinate ─── */
   .article-body :global(h3) {
     font-family: var(--font-sans);
-    font-weight: 400;
-    font-size: 1.1rem;
-    letter-spacing: -0.01em;
-    color: var(--text);
-    margin-top: 2rem;
-    margin-bottom: 0.875rem;
+    font-weight: 500;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
   }
 
   .article-body :global(p) {
@@ -274,8 +287,9 @@ const { title, description, readingTime, publishDate, references } = Astro.props
 
   .article-body :global(hr) {
     border: none;
-    border-top: 1px solid var(--border);
-    margin-block: 2.5rem;
+    height: 0;
+    margin-block: 0;
+    /* HR is structural only — visual separation handled by h2 border-top */
   }
 
   /* ─── Component table ─── */
@@ -311,6 +325,7 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     border: 1px solid var(--border);
     font-size: 0.875rem;
     -webkit-overflow-scrolling: touch;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
   }
   .article-body :global(.ct-row) {
     display: grid;
@@ -359,15 +374,17 @@ const { title, description, readingTime, publishDate, references } = Astro.props
 
   /* ─── Blockquote ─── */
   .article-body :global(blockquote) {
-    border-left: 3px solid var(--yellow);
-    padding: 1.25rem 1.75rem;
-    margin: 2rem 0;
+    border-left: 4px solid var(--yellow);
+    padding: 1.5rem 2rem;
+    margin: 2.5rem 0;
     background: var(--surface-alt);
     border-radius: 0 6px 6px 0;
-    font-size: 0.95rem;
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
     line-height: 1.75;
     color: var(--text);
-    font-weight: 300;
+    font-weight: 400;
+    font-style: italic;
   }
   .article-body :global(blockquote small) {
     color: var(--text-muted);
@@ -376,15 +393,24 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     margin-top: 0.75rem;
   }
 
-  /* ─── Images ─── */
+  /* ─── Images & Charts ─── */
   .article-body :global(figure) {
     margin-block: 2.5rem;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    padding-bottom: 1rem;
   }
   .article-body :global(figure img) {
     width: 100%;
     height: auto;
-    border-radius: 8px;
+    border-radius: 6px;
     display: block;
+  }
+  /* SVG charts: light bg container is enough, no extra padding on img */
+  .article-body :global(figure img[src$=".svg"]) {
+    border-radius: 4px;
   }
   /* SVG charts need a light background in dark mode (hardcoded text colors) */
   :global([data-theme="dark"]) .article-body :global(figure img[src$=".svg"]) {
@@ -392,10 +418,12 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     padding: 0.5rem;
   }
   .article-body :global(figcaption) {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--text-muted);
-    margin-top: 0.75rem;
+    margin-top: 0.875rem;
     line-height: 1.5;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
   }
 
   /* ─── References ─── */
