@@ -564,6 +564,139 @@
       "fuente_fecha": "2026-04-09",
       "verificado": true,
       "unidad": "€"
+    },
+    "fiabilidad_estrellas": {
+      "valor": 3,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_tuv_pct": {
+      "valor": 17.3,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TUV Report 2026"
+    },
+    "fiabilidad_tuv_estrellas": {
+      "valor": 1,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TUV Report 2026"
+    },
+    "fiabilidad_tuv_año": {
+      "valor": 2026,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TUV Report 2026"
+    },
+    "fiabilidad_tuv_clase": {
+      "valor": "2-3 años",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TUV Report 2026"
+    },
+    "fiabilidad_tuv_detalle": {
+      "valor": "Peor de 110 modelos (datos agrupados Model 3/Y). Defectos: suspensiones, iluminación, frenos.",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TUV Report 2026"
+    },
+    "fiabilidad_adac_idx": {
+      "valor": 0.9,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_adac_estrellas": {
+      "valor": 5,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_adac_año": {
+      "valor": 2025,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_adac_detalle": {
+      "valor": "Apenas averías en carretera. Primer año en estadística.",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_discrepancia": {
+      "valor": true,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_nota": {
+      "valor": "Defectos mecánicos latentes (suspensiones, iluminación, frenos) que no inmovilizan el coche pero aparecen en inspección técnica.",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_validadores": {
+      "valor": "Consumer Reports 2025: 81/100 · OCU 2026: 96 pts",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_revision": {
+      "valor": "2026-04",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "garantia_estrellas": {
+      "valor": 3.5,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial fabricante"
+    },
+    "garantia_vehiculo_estrellas": {
+      "valor": 3,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial fabricante"
+    },
+    "garantia_bateria_pct": {
+      "valor": 70,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial fabricante"
+    },
+    "garantia_bateria_estrellas": {
+      "valor": 4,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial fabricante"
+    },
+    "garantia_revision": {
+      "valor": "2026-04",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial fabricante"
     }
   },
   "meta": {

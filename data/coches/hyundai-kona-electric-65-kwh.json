@@ -564,6 +564,139 @@
       "fuente_fecha": "2026-04-09",
       "verificado": true,
       "unidad": "€"
+    },
+    "fiabilidad_estrellas": {
+      "valor": 3.5,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_tuv_pct": {
+      "valor": 4.5,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TUV Report 2026"
+    },
+    "fiabilidad_tuv_estrellas": {
+      "valor": 4,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TUV Report 2026"
+    },
+    "fiabilidad_tuv_año": {
+      "valor": 2026,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TUV Report 2026"
+    },
+    "fiabilidad_tuv_clase": {
+      "valor": "2-3 años",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TUV Report 2026"
+    },
+    "fiabilidad_tuv_detalle": {
+      "valor": "Top 15 de 110 modelos. Defectos por debajo de la media en todas las categorías.",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TUV Report 2026"
+    },
+    "fiabilidad_adac_idx": {
+      "valor": 3.3,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_adac_estrellas": {
+      "valor": 3,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_adac_año": {
+      "valor": 2025,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_adac_detalle": {
+      "valor": "Nivel medio de averías. Batería 12V y electrónica como puntos débiles.",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_discrepancia": {
+      "valor": false,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_nota": {
+      "valor": null,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_validadores": {
+      "valor": "Consumer Reports 2025: 73/100",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_revision": {
+      "valor": "2026-04",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "garantia_estrellas": {
+      "valor": 4,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial fabricante"
+    },
+    "garantia_vehiculo_estrellas": {
+      "valor": 4,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial fabricante"
+    },
+    "garantia_bateria_pct": {
+      "valor": null,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial fabricante"
+    },
+    "garantia_bateria_estrellas": {
+      "valor": 4,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial fabricante"
+    },
+    "garantia_revision": {
+      "valor": "2026-04",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial fabricante"
     }
   },
   "meta": {
