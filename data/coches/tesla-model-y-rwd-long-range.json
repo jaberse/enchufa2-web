@@ -587,14 +587,14 @@
       "fuente_tipo": "investigacion_web",
       "fuente_fecha": "2026-04-12",
       "verificado": true,
-      "fuente_detalle": "TUV Report 2026"
+      "fuente_detalle": "TÜV Report 2026"
     },
     "fiabilidad_tuv_estrellas": {
       "valor": 1,
       "fuente_tipo": "investigacion_web",
       "fuente_fecha": "2026-04-12",
       "verificado": true,
-      "fuente_detalle": "TUV Report 2026"
+      "fuente_detalle": "TÜV Report 2026"
     },
     "fiabilidad_tuv_año": {
       "valor": 2026,
@@ -611,11 +611,11 @@
       "fuente_detalle": "TUV Report 2026"
     },
     "fiabilidad_tuv_detalle": {
-      "valor": "Peor de 110 modelos. Defectos: suspensiones eje (2,9%), iluminación (5,9%), frenos (2,8%)",
+      "valor": "Peor EV del TÜV Report 2026 (puesto 110 de 110). Suspensiones eje (2,9%), iluminación (5,9%), frenos (2,8%).",
       "fuente_tipo": "investigacion_web",
       "fuente_fecha": "2026-04-12",
       "verificado": true,
-      "fuente_detalle": "TUV Report 2026"
+      "fuente_detalle": "TÜV Report 2026"
     },
     "fiabilidad_adac_idx": {
       "valor": 0.9,
@@ -639,7 +639,7 @@
       "fuente_detalle": "ADAC Pannenstatistik 2025"
     },
     "fiabilidad_adac_detalle": {
-      "valor": "Apenas averías en carretera. Primer año en estadística.",
+      "valor": "Apenas averías en carretera pese a los defectos detectados en ITV.",
       "fuente_tipo": "investigacion_web",
       "fuente_fecha": "2026-04-12",
       "verificado": true,
@@ -653,7 +653,7 @@
       "fuente_detalle": "Metodologia enchufa2 v0.3"
     },
     "fiabilidad_nota": {
-      "valor": "Defectos mecánicos latentes (suspensiones, iluminación, frenos) que no inmovilizan el coche pero aparecen en inspección técnica.",
+      "valor": "Peor resultado en ITV de todos los EVs testados, pero paradójicamente casi sin averías en carretera. Los defectos son latentes (suspensiones, iluminación, frenos), no inmovilizan el coche.",
       "fuente_tipo": "investigacion_web",
       "fuente_fecha": "2026-04-12",
       "verificado": true,
