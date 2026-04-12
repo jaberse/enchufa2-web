@@ -10,7 +10,7 @@
   </defs>
 
   <!-- Title -->
-  <text x="20" y="25" class="chart-title">Coste mensual equivalente (TCO a 5 años)</text>
+  <text x="20" y="25" class="chart-title">Coste mensual equivalente (TCO base: 15.000 km/año, 5 años)</text>
 
   <!-- Legend (top right) -->
   <rect x="595" y="8" width="10" height="10" fill="#F5C518" rx="1"/>
@@ -19,38 +19,38 @@
   <rect x="595" y="22" width="10" height="10" fill="#666666" rx="1"/>
   <text x="610" y="30" class="legend-label">Gasolina</text>
 
-  <!-- Tesla Model 3 / BMW 320i -->
-  <text x="20" y="65" class="chart-label">Tesla Model 3 vs BMW 320i</text>
+  <!-- BMW i4 eDrive40 vs BMW 320i -->
+  <text x="20" y="65" class="chart-label">BMW i4 eDrive40 vs BMW 320i</text>
 
-  <!-- Tesla bar: €702/mes — 289px width -->
-  <rect x="180" y="75" width="289" height="14" fill="#F5C518" rx="2"/>
-  <text x="477" y="84" class="chart-value">€702</text>
+  <!-- i4 bar: €1.169/mes — 470px width (max) -->
+  <rect x="180" y="75" width="470" height="14" fill="#F5C518" rx="2"/>
+  <text x="658" y="84" class="chart-value">€1.169</text>
 
-  <!-- BMW bar: €1.143/mes — 470px width (max) -->
-  <rect x="180" y="93" width="470" height="14" fill="#666666" rx="2"/>
-  <text x="658" y="102" class="chart-value">€1.143</text>
+  <!-- 320i bar: €1.152/mes — 463px width -->
+  <rect x="180" y="93" width="463" height="14" fill="#666666" rx="2"/>
+  <text x="651" y="102" class="chart-value">€1.152</text>
 
-  <!-- MG4 / VW Golf -->
-  <text x="20" y="155" class="chart-label">MG4 Standard Range vs VW Golf</text>
+  <!-- VW ID.3 Pro S vs VW Golf 1.5 TSI -->
+  <text x="20" y="155" class="chart-label">VW ID.3 Pro S vs VW Golf 1.5 TSI</text>
 
-  <!-- MG4 bar: €580/mes — 238px width -->
-  <rect x="180" y="165" width="238" height="14" fill="#F5C518" rx="2"/>
-  <text x="426" y="174" class="chart-value">€580</text>
+  <!-- ID.3 bar: €726/mes — 292px width -->
+  <rect x="180" y="165" width="292" height="14" fill="#F5C518" rx="2"/>
+  <text x="480" y="174" class="chart-value">€726</text>
 
-  <!-- VW Golf bar: €724/mes — 298px width -->
-  <rect x="180" y="183" width="298" height="14" fill="#666666" rx="2"/>
-  <text x="486" y="192" class="chart-value">€724</text>
+  <!-- Golf bar: €682/mes — 274px width -->
+  <rect x="180" y="183" width="274" height="14" fill="#666666" rx="2"/>
+  <text x="462" y="192" class="chart-value">€682</text>
 
-  <!-- Citroën ë-C3 / SEAT Ibiza -->
-  <text x="20" y="245" class="chart-label">Citroën ë-C3 vs SEAT Ibiza</text>
+  <!-- Citroën ë-C3 vs Citroën C3 -->
+  <text x="20" y="245" class="chart-label">Citroën ë-C3 vs Citroën C3</text>
 
-  <!-- ë-C3 bar: €422/mes — 174px width -->
-  <rect x="180" y="255" width="174" height="14" fill="#F5C518" rx="2"/>
-  <text x="362" y="264" class="chart-value">€422</text>
+  <!-- ë-C3 bar: €428/mes — 172px width -->
+  <rect x="180" y="255" width="172" height="14" fill="#F5C518" rx="2"/>
+  <text x="360" y="264" class="chart-value">€428</text>
 
-  <!-- SEAT Ibiza bar: €526/mes — 216px width -->
-  <rect x="180" y="273" width="216" height="14" fill="#666666" rx="2"/>
-  <text x="404" y="282" class="chart-value">€526</text>
+  <!-- C3 bar: €478/mes — 192px width -->
+  <rect x="180" y="273" width="192" height="14" fill="#666666" rx="2"/>
+  <text x="380" y="282" class="chart-value">€478</text>
 
   <!-- Scale axis line -->
   <line x1="180" y1="305" x2="650" y2="305" stroke="#E0E0E0" stroke-width="1"/>
@@ -60,23 +60,23 @@
   <line x1="180" y1="302" x2="180" y2="308" stroke="#999999" stroke-width="1"/>
   <text x="180" y="320" class="chart-sublabel" text-anchor="middle">€0</text>
 
-  <!-- €250 at x=283 (180 + 470×250/1143) -->
-  <line x1="283" y1="302" x2="283" y2="308" stroke="#999999" stroke-width="1"/>
-  <text x="283" y="320" class="chart-sublabel" text-anchor="middle">€250</text>
+  <!-- €250 at x=281 (180 + 470×250/1169) -->
+  <line x1="281" y1="302" x2="281" y2="308" stroke="#999999" stroke-width="1"/>
+  <text x="281" y="320" class="chart-sublabel" text-anchor="middle">€250</text>
 
-  <!-- €500 at x=386 (180 + 470×500/1143) -->
-  <line x1="386" y1="302" x2="386" y2="308" stroke="#999999" stroke-width="1"/>
-  <text x="386" y="320" class="chart-sublabel" text-anchor="middle">€500</text>
+  <!-- €500 at x=381 (180 + 470×500/1169) -->
+  <line x1="381" y1="302" x2="381" y2="308" stroke="#999999" stroke-width="1"/>
+  <text x="381" y="320" class="chart-sublabel" text-anchor="middle">€500</text>
 
-  <!-- €750 at x=488 (180 + 470×750/1143) -->
-  <line x1="488" y1="302" x2="488" y2="308" stroke="#999999" stroke-width="1"/>
-  <text x="488" y="320" class="chart-sublabel" text-anchor="middle">€750</text>
+  <!-- €750 at x=482 (180 + 470×750/1169) -->
+  <line x1="482" y1="302" x2="482" y2="308" stroke="#999999" stroke-width="1"/>
+  <text x="482" y="320" class="chart-sublabel" text-anchor="middle">€750</text>
 
-  <!-- €1.143 at x=650 (max) -->
-  <line x1="650" y1="302" x2="650" y2="308" stroke="#999999" stroke-width="1"/>
-  <text x="650" y="320" class="chart-sublabel" text-anchor="middle">€1.143</text>
+  <!-- €1.000 at x=582 (180 + 470×1000/1169) -->
+  <line x1="582" y1="302" x2="582" y2="308" stroke="#999999" stroke-width="1"/>
+  <text x="582" y="320" class="chart-sublabel" text-anchor="middle">€1.000</text>
 
   <!-- Source attribution -->
-  <text x="20" y="335" class="chart-sublabel">Fuente: cálculos enchufa2, abril 2026</text>
+  <text x="20" y="335" class="chart-sublabel">Fuente: cálculos enchufa2, abril 2026 · Escenario base: 15.000 km/año, 5 años</text>
 
 </svg>

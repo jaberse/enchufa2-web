@@ -24,8 +24,8 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
       <span class="stat-label">Coste por 100 km con gasolina SP95 a €1,55/L</span>
     </div>
     <div class="stat">
-      <span class="stat-value">€6.000-26.000</span>
-      <span class="stat-label">Ahorro TCO neto a 5 años según segmento</span>
+      <span class="stat-value">Año 3-8</span>
+      <span class="stat-label">Punto de equilibrio EV según perfil de uso</span>
     </div>
   </div>
 
@@ -37,7 +37,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
       <li><strong>Mantenimiento:</strong> un EV necesita €350-650/año frente a €670-1.180/año de un gasolina (incluyendo neumáticos). Sin aceite, menos frenos, menos piezas móviles.</li>
       <li><strong>Impuestos:</strong> IEDMT al 0 %, IVTM bonificado hasta el 75 %, etiqueta CERO sin restricciones. Ahorro fiscal de €2.000-6.000 en 5 años.</li>
       <li><strong>Subvenciones:</strong> Plan Auto+ 2024-2026 ofrece €4.500 de ayuda base (+ €1.000 del concesionario). Con achatarramiento, hasta €7.000. Algunas CCAA añaden más.</li>
-      <li><strong>TCO a 5 años:</strong> un Tesla Model 3 ahorra €26.476 frente a un BMW 320i. Un MG4 ahorra €8.647 frente a un VW Golf. Un Citroën ë-C3 ahorra €6.284 frente a un SEAT Ibiza.</li>
+      <li><strong>TCO a 5 años (15.000 km/año):</strong> el Citroën ë-C3 ahorra €2.963 frente al C3 gasolina (mismo coche, distinto motor). El BMW i4 y el VW ID.3 quedan prácticamente empatados o por detrás de sus equivalentes gasolina — la clave es cuántos km haces y cuánto tiempo lo mantienes.</li>
     </ul>
   </div>
 
@@ -51,7 +51,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
     <figcaption>El coste total de propiedad incluye mucho más que el precio de compra. Foto: nanobanana / enchufa2.</figcaption>
   </figure>
 
-  <p>Cuando buscas coche, lo primero que ves es el precio de venta. Es un número grande, prominente, diseñado para que compares. Un Tesla Model 3 cuesta €36.990 frente a los €49.500 de un BMW 320i — sí, en 2026 la berlina eléctrica es más barata que la de gasolina en segmento premium. En segmento compacto, un MG4 parte de €30.990 frente a los €27.200 de un Volkswagen Golf 1.5 TSI.</p>
+  <p>Cuando buscas coche, lo primero que ves es el precio de venta. Es un número grande, prominente, diseñado para que compares. Un BMW i4 eDrive40 cuesta €59.900 frente a los €49.500 de un BMW 320i — mismo fabricante, mismo segmento, distinto motor. En segmento compacto, un Volkswagen ID.3 Pro S parte de €40.415 frente a los €27.945 de un Golf 1.5 TSI. En urbano, un Citroën ë-C3 cuesta €23.800 frente a los €16.240 del C3 gasolina — literalmente el mismo coche con distinto tren motriz.</p>
 
   <p>Pero ese número solo representa entre el 40 y el 50 % de lo que realmente pagarás por tu coche en 5 años<sup>1</sup>. El resto — energía, mantenimiento, seguros, impuestos, depreciación — es invisible en el concesionario pero absolutamente determinante en tu bolsillo.</p>
 
@@ -138,9 +138,9 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
     <div class="ct-row ct-header">
       <span>Segmento</span><span class="ct-lfp">EV todo riesgo</span><span class="ct-nmc">Gasolina todo riesgo</span>
     </div>
-    <div class="ct-row"><span>Urbano (ë-C3 / Ibiza)</span><span>€450-550</span><span>€400-500</span></div>
-    <div class="ct-row"><span>Compacto (MG4 / Golf)</span><span>€550-700</span><span>€500-650</span></div>
-    <div class="ct-row"><span>Premium (Model 3 / 320i)</span><span>€700-950</span><span>€650-850</span></div>
+    <div class="ct-row"><span>Urbano (ë-C3 / C3)</span><span>€450-550</span><span>€350-450</span></div>
+    <div class="ct-row"><span>Compacto (ID.3 / Golf)</span><span>€600-800</span><span>€500-650</span></div>
+    <div class="ct-row"><span>Premium (i4 / 320i)</span><span>€950-1.200</span><span>€800-1.050</span></div>
   </div>
 
   <p>La diferencia típica en 2026 es de €50-100 al año en contra del EV, principalmente porque la reparación de baterías tras siniestro sigue siendo cara. A 5 años, esto representa €250-500 de sobrecoste — significativamente menor que el ahorro en energía y mantenimiento.</p>
@@ -151,7 +151,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
 
   <p><strong>IEDMT (Impuesto de Matriculación):</strong> Los EVs pagan 0 % porque emiten 0 g/km de CO₂. Un gasolina paga entre el 4,75 % y el 14,75 % sobre el precio de venta según sus emisiones. Para un coche de €30.000, esto puede suponer entre €1.425 y €4.425 de diferencia.</p>
 
-  <p><strong>IVTM (Impuesto de Circulación):</strong> Más de 600 municipios españoles bonifican el IVTM para vehículos eléctricos, con descuentos del 50-75 % sobre la cuota<sup>8</sup>. En Madrid capital, la bonificación es del 75 %. Un Golf paga ~€130/año de IVTM en Madrid; un MG4 pagaría ~€33.</p>
+  <p><strong>IVTM (Impuesto de Circulación):</strong> Más de 600 municipios españoles bonifican el IVTM para vehículos eléctricos, con descuentos del 50-75 % sobre la cuota<sup>8</sup>. En Madrid capital, la bonificación es del 75 %. Un Golf paga ~€70/año de IVTM en Madrid; un ID.3 pagaría ~€30.</p>
 
   <p><strong>ITV:</strong> El coste es similar (€40-51 dependiendo de la comunidad), pero la tasa de rechazo de los EVs es significativamente inferior por la ausencia de emisiones y la menor complejidad mecánica.</p>
 
@@ -169,9 +169,9 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
     <div class="ct-row ct-header">
       <span>Modelo</span><span class="ct-lfp">EV — 3 años</span><span class="ct-nmc">Gasolina — 3 años</span>
     </div>
-    <div class="ct-row"><span>Tesla Model 3 / BMW 320i</span><span>60-63 %</span><span>62-65 %</span></div>
-    <div class="ct-row"><span>MG4 / VW Golf</span><span>52-56 %</span><span>58-62 %</span></div>
-    <div class="ct-row"><span>Citroën ë-C3 / SEAT Ibiza</span><span>55-58 %</span><span>60-63 %</span></div>
+    <div class="ct-row"><span>BMW i4 / BMW 320i</span><span>58-62 %</span><span>62-65 %</span></div>
+    <div class="ct-row"><span>VW ID.3 / VW Golf</span><span>52-56 %</span><span>58-62 %</span></div>
+    <div class="ct-row"><span>Citroën ë-C3 / Citroën C3</span><span>55-58 %</span><span>60-63 %</span></div>
   </div>
 
   <p>Un factor que mejora la depreciación del EV: la prohibición de venta de coches nuevos de combustión en la UE a partir de 2035 aumentará progresivamente la demanda de EVs usados<sup>11</sup>.</p>
@@ -185,90 +185,151 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
   <hr />
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <h2>03 — Tres comparativas TCO completas</h2>
+  <h2>03 — Tres comparativas TCO intra-marca</h2>
 
-  <p>Dejemos la teoría. Estas son tres comparativas modelo a modelo con datos reales de abril 2026. Todos los cálculos usan: 15.000 km/año, 5 años de propiedad, carga mixta (80 % casa PVPC valle + 20 % rápida pública), seguro todo riesgo, y precios de venta con descuentos habituales de concesionario.</p>
+  <p>Dejemos la teoría. Para que una comparativa TCO sea honesta, los dos coches deben ser equivalentes en todo salvo el motor. Por eso hemos elegido tres pares intra-marca: mismo fabricante, mismo segmento, diferente tren motriz. Así, la diferencia de coste refleja realmente el cambio de tecnología, no de marca o de acabados.</p>
 
-  <h3>Premium: Tesla Model 3 vs. BMW 320i</h3>
+  <p>El escenario base usa: 15.000 km/año, 5 años de propiedad, carga mixta (80 % casa PVPC valle + 20 % rápida pública → €0,186/kWh efectivo), gasolina SP95 a €1,55/L, seguro todo riesgo e IVTM con bonificación 75 % para EVs en Madrid.</p>
+
+  <h3>Premium: BMW i4 eDrive40 vs. BMW 320i</h3>
 
   <div class="comparison-table">
     <div class="ct-row ct-header">
-      <span>Concepto (5 años)</span><span class="ct-lfp">Tesla Model 3</span><span class="ct-nmc">BMW 320i</span>
+      <span>Concepto (5 años)</span><span class="ct-lfp">BMW i4 eDrive40</span><span class="ct-nmc">BMW 320i</span>
     </div>
-    <div class="ct-row"><span>Precio de compra</span><span>€36.990</span><span>€49.500</span></div>
+    <div class="ct-row"><span>Precio de compra</span><span>€59.900</span><span>€49.500</span></div>
     <div class="ct-row"><span>IEDMT</span><span>€0</span><span>€2.351</span></div>
-    <div class="ct-row"><span>Subvención Plan Auto+</span><span>-€3.375</span><span>€0</span></div>
-    <div class="ct-row"><span>Energía (5 años)</span><span>€2.040</span><span>€7.545</span></div>
-    <div class="ct-row"><span>Mantenimiento (5 años)</span><span>€2.000</span><span>€4.250</span></div>
-    <div class="ct-row"><span>Seguro (5 años)</span><span>€4.125</span><span>€4.200</span></div>
-    <div class="ct-row"><span>IVTM (5 años, Madrid)</span><span>€250</span><span>€650</span></div>
+    <div class="ct-row"><span>Subvención Plan Auto+</span><span>€0*</span><span>€0</span></div>
+    <div class="ct-row"><span>Energía (5 años)</span><span>€2.148</span><span>€7.556</span></div>
+    <div class="ct-row"><span>Mantenimiento (5 años)</span><span>€2.250</span><span>€4.250</span></div>
+    <div class="ct-row"><span>Seguro (5 años)</span><span>€5.500</span><span>€4.750</span></div>
+    <div class="ct-row"><span>IVTM (5 años, Madrid)</span><span>€280</span><span>€600</span></div>
     <div class="ct-row"><span>ITV (2 inspecciones)</span><span>€80</span><span>€90</span></div>
-    <div class="ct-row"><span><strong>TCO total 5 años</strong></span><span><strong>€42.110</strong></span><span><strong>€68.586</strong></span></div>
-    <div class="ct-row"><span><strong>Coste mensual equivalente</strong></span><span><strong>€702</strong></span><span><strong>€1.143</strong></span></div>
-    <div class="ct-row"><span><em>Depreciación estimada*</em></span><span><em>€14.430</em></span><span><em>€18.320</em></span></div>
+    <div class="ct-row"><span><strong>TCO total 5 años</strong></span><span><strong>€70.158</strong></span><span><strong>€69.097</strong></span></div>
+    <div class="ct-row"><span><strong>Coste mensual equivalente</strong></span><span><strong>€1.169</strong></span><span><strong>€1.152</strong></span></div>
   </div>
 
-  <p><small>*La depreciación (pérdida de valor estimada) no se incluye en el TCO porque es un coste recuperable al vender el coche. Se muestra como referencia. La subvención del Tesla es de €3.375 (no €4.500) porque se ensambla en China y su batería no es de fabricación europea.</small></p>
+  <p><small>*El BMW i4 eDrive40 supera los €45.000 de PVP, por lo que no es elegible para el Plan Auto+. Ambos coches compiten sin subvención.</small></p>
 
-  <p><strong>Ahorro del Tesla Model 3: €26.476 en 5 años</strong> (€441/mes). El Tesla parte de €12.510 menos que el BMW en precio de compra, y a eso suma el ahorro en energía, mantenimiento e impuestos. Incluso con la subvención reducida (ensamblaje en China), la ventaja es contundente en el segmento premium.</p>
+  <p><strong>Resultado: empate técnico.</strong> El 320i gana por €1.061 en este escenario. El i4 cuesta €10.400 más en el concesionario, pero recupera €5.408 en energía, €2.000 en mantenimiento y €2.671 en impuestos. No es suficiente para cerrar la brecha a 5 años y 15.000 km, pero a partir del año 6 el i4 empieza a ganar. En el segmento premium, sin subvención, el EV necesita paciencia.</p>
 
-  <h3>Compacto: MG4 Standard Range vs. Volkswagen Golf 1.5 TSI</h3>
+  <h3>Compacto: Volkswagen ID.3 Pro S vs. Volkswagen Golf 1.5 TSI</h3>
 
   <div class="comparison-table">
     <div class="ct-row ct-header">
-      <span>Concepto (5 años)</span><span class="ct-lfp">MG4 Standard Range</span><span class="ct-nmc">VW Golf 1.5 TSI</span>
+      <span>Concepto (5 años)</span><span class="ct-lfp">VW ID.3 Pro S</span><span class="ct-nmc">VW Golf 1.5 TSI</span>
     </div>
-    <div class="ct-row"><span>Precio de compra</span><span>€30.990</span><span>€27.200</span></div>
-    <div class="ct-row"><span>IEDMT</span><span>€0</span><span>€1.292</span></div>
-    <div class="ct-row"><span>Subvención Plan Auto+</span><span>-€3.375</span><span>€0</span></div>
-    <div class="ct-row"><span>Energía (5 años)</span><span>€2.040</span><span>€7.545</span></div>
-    <div class="ct-row"><span>Mantenimiento (5 años)</span><span>€1.750</span><span>€3.850</span></div>
-    <div class="ct-row"><span>Seguro (5 años)</span><span>€3.125</span><span>€2.875</span></div>
-    <div class="ct-row"><span>IVTM (5 años, Madrid)</span><span>€175</span><span>€580</span></div>
-    <div class="ct-row"><span>ITV (2 inspecciones)</span><span>€80</span><span>€90</span></div>
-    <div class="ct-row"><span><strong>TCO total 5 años</strong></span><span><strong>€34.785</strong></span><span><strong>€43.432</strong></span></div>
-    <div class="ct-row"><span><strong>Coste mensual equivalente</strong></span><span><strong>€580</strong></span><span><strong>€724</strong></span></div>
-    <div class="ct-row"><span><em>Depreciación estimada*</em></span><span><em>€13.950</em></span><span><em>€10.880</em></span></div>
-  </div>
-
-  <p><strong>Ahorro del MG4: €8.647 en 5 años</strong> (€144/mes). En segmento compacto, el MG4 es €3.790 más caro de compra que el Golf, pero los ahorros operativos (energía, mantenimiento e impuestos) compensan esa diferencia y generan un ahorro neto importante. La subvención reducida (ensamblaje en China) limita parte de la ventaja.</p>
-
-  <h3>Urbano: Citroën ë-C3 vs. SEAT Ibiza 1.0 TSI</h3>
-
-  <div class="comparison-table">
-    <div class="ct-row ct-header">
-      <span>Concepto (5 años)</span><span class="ct-lfp">Citroën ë-C3</span><span class="ct-nmc">SEAT Ibiza 1.0 TSI</span>
-    </div>
-    <div class="ct-row"><span>Precio de compra</span><span>€23.800</span><span>€18.400</span></div>
-    <div class="ct-row"><span>IEDMT</span><span>€0</span><span>€874</span></div>
+    <div class="ct-row"><span>Precio de compra</span><span>€40.415</span><span>€27.945</span></div>
+    <div class="ct-row"><span>IEDMT</span><span>€0</span><span>€0*</span></div>
     <div class="ct-row"><span>Subvención Plan Auto+</span><span>-€4.500</span><span>€0</span></div>
-    <div class="ct-row"><span>Energía (5 años)</span><span>€1.800</span><span>€6.200</span></div>
-    <div class="ct-row"><span>Mantenimiento (5 años)</span><span>€1.500</span><span>€3.350</span></div>
-    <div class="ct-row"><span>Seguro (5 años)</span><span>€2.500</span><span>€2.250</span></div>
-    <div class="ct-row"><span>IVTM (5 años, Madrid)</span><span>€125</span><span>€425</span></div>
+    <div class="ct-row"><span>Energía (5 años)</span><span>€2.162</span><span>€6.161</span></div>
+    <div class="ct-row"><span>Mantenimiento (5 años)</span><span>€1.750</span><span>€3.500</span></div>
+    <div class="ct-row"><span>Seguro (5 años)</span><span>€3.500</span><span>€2.875</span></div>
+    <div class="ct-row"><span>IVTM (5 años, Madrid)</span><span>€150</span><span>€350</span></div>
     <div class="ct-row"><span>ITV (2 inspecciones)</span><span>€80</span><span>€90</span></div>
-    <div class="ct-row"><span><strong>TCO total 5 años</strong></span><span><strong>€25.305</strong></span><span><strong>€31.589</strong></span></div>
-    <div class="ct-row"><span><strong>Coste mensual equivalente</strong></span><span><strong>€422</strong></span><span><strong>€526</strong></span></div>
-    <div class="ct-row"><span><em>Depreciación estimada*</em></span><span><em>€10.470</em></span><span><em>€7.360</em></span></div>
+    <div class="ct-row"><span><strong>TCO total 5 años</strong></span><span><strong>€43.557</strong></span><span><strong>€40.921</strong></span></div>
+    <div class="ct-row"><span><strong>Coste mensual equivalente</strong></span><span><strong>€726</strong></span><span><strong>€682</strong></span></div>
   </div>
 
-  <p><strong>Ahorro del ë-C3: €6.284 en 5 años</strong> (€105/mes). El segmento urbano es donde el resultado es más ajustado: el Ibiza es significativamente más barato de compra (€5.400 menos), lo que reduce la ventaja del EV. Aun así, la subvención Plan Auto+ completa (ensamblaje europeo) y los ahorros operativos inclinan la balanza.</p>
+  <p><small>*El Golf 1.5 TSI emite exactamente 120 g/km de CO₂ — justo en el umbral de 0 % IEDMT. Volkswagen ha optimizado el motor para evitar el impuesto de matriculación.</small></p>
+
+  <p><strong>Resultado: el Golf gana por €2.636.</strong> La brecha de precio de compra (€12.470) es demasiado grande para que los ahorros operativos del ID.3 la compensen en 5 años, incluso con la subvención completa de €4.500 (ensamblado en Zwickau, Alemania). Además, el Golf esquiva el IEDMT. A 15.000 km/año, el punto de equilibrio no llega hasta el año 8.</p>
+
+  <h3>Urbano: Citroën ë-C3 You vs. Citroën C3 You PureTech 100</h3>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span>Concepto (5 años)</span><span class="ct-lfp">Citroën ë-C3</span><span class="ct-nmc">Citroën C3</span>
+    </div>
+    <div class="ct-row"><span>Precio de compra</span><span>€23.800</span><span>€16.240</span></div>
+    <div class="ct-row"><span>IEDMT</span><span>€0</span><span>€771</span></div>
+    <div class="ct-row"><span>Subvención Plan Auto+</span><span>-€4.500</span><span>€0</span></div>
+    <div class="ct-row"><span>Energía (5 años)</span><span>€2.218</span><span>€6.510</span></div>
+    <div class="ct-row"><span>Mantenimiento (5 años)</span><span>€1.500</span><span>€2.750</span></div>
+    <div class="ct-row"><span>Seguro (5 años)</span><span>€2.500</span><span>€2.000</span></div>
+    <div class="ct-row"><span>IVTM (5 años, Madrid)</span><span>€100</span><span>€300</span></div>
+    <div class="ct-row"><span>ITV (2 inspecciones)</span><span>€80</span><span>€90</span></div>
+    <div class="ct-row"><span><strong>TCO total 5 años</strong></span><span><strong>€25.698</strong></span><span><strong>€28.661</strong></span></div>
+    <div class="ct-row"><span><strong>Coste mensual equivalente</strong></span><span><strong>€428</strong></span><span><strong>€478</strong></span></div>
+  </div>
+
+  <p><strong>Resultado: el ë-C3 ahorra €2.963 en 5 años</strong> (€49/mes). Es el único segmento donde el EV gana en el escenario base. La clave: mismo coche (plataforma CMP), subvención completa de €4.500 (ensamblado en Trnava, Eslovaquia — UE) y una brecha de precio contenida (€7.560 antes de ayudas). Sin la subvención, el C3 gasolina ganaría.</p>
 
   <blockquote>
-    Sin la subvención Plan Auto+, el ë-C3 quedaría muy cerca del Ibiza en TCO a 5 años. En segmentos urbanos, las ayudas son decisivas para que el eléctrico sea competitivo en coste total.
+    La comparativa intra-marca revela una verdad incómoda: a 5 años y 15.000 km, el eléctrico solo gana claramente en el segmento urbano con subvención completa. En premium y compacto, es un empate o pierde. Lo que cambia el resultado son los kilómetros, el tiempo y la tarifa.
     <small>— Cálculos enchufa2 con datos de mercado abril 2026</small>
   </blockquote>
 
-  <h3>Resumen visual de las tres comparativas</h3>
+  <h3>Pero el escenario base no es tu escenario</h3>
+
+  <p>15.000 km/año y 5 años es la media estadística. Pero tú no eres la media. Estos tres perfiles reales muestran cómo cambia el resultado al ajustar kilometraje, tiempo de propiedad y tipo de carga:</p>
+
+  <h3>Escenario A: Urbano con garaje — Citroën ë-C3 vs. C3</h3>
+  <p><strong>10.000 km/año · 7 años · 95 % carga casa con tarifa EV (€0,06/kWh)</strong></p>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span>Concepto (7 años)</span><span class="ct-lfp">ë-C3</span><span class="ct-nmc">C3 gasolina</span>
+    </div>
+    <div class="ct-row"><span>Coste inicial neto</span><span>€19.300</span><span>€17.011</span></div>
+    <div class="ct-row"><span>Energía</span><span>€885</span><span>€6.076</span></div>
+    <div class="ct-row"><span>Mant. + seguro + IVTM + ITV</span><span>€5.860</span><span>€7.205</span></div>
+    <div class="ct-row"><span><strong>TCO total 7 años</strong></span><span><strong>€26.045</strong></span><span><strong>€30.292</strong></span></div>
+  </div>
+
+  <p><strong>Ahorro del ë-C3: €4.247</strong> (€51/mes). Con tarifa EV nocturna, la electricidad cuesta €885 en 7 años frente a €6.076 de gasolina — una diferencia de 7×. Breakeven: año 3. Es el perfil ideal para el eléctrico.</p>
+
+  <h3>Escenario B: Comercial sin garaje — VW ID.3 vs. Golf</h3>
+  <p><strong>30.000 km/año · 5 años · 40 % casa PVPC + 60 % carga rápida pública (€0,318/kWh)</strong></p>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span>Concepto (5 años)</span><span class="ct-lfp">ID.3 Pro S</span><span class="ct-nmc">Golf 1.5 TSI</span>
+    </div>
+    <div class="ct-row"><span>Coste inicial neto</span><span>€35.915</span><span>€27.945</span></div>
+    <div class="ct-row"><span>Energía</span><span>€7.394</span><span>€12.322</span></div>
+    <div class="ct-row"><span>Mant. + seguro + IVTM + ITV</span><span>€5.480</span><span>€6.815</span></div>
+    <div class="ct-row"><span><strong>TCO total 5 años</strong></span><span><strong>€48.789</strong></span><span><strong>€47.082</strong></span></div>
+  </div>
+
+  <p><strong>El Golf gana por €1.706</strong> (€28/mes). La carga rápida a €0,45/kWh dispara el coste energético del ID.3, aunque sigue siendo menor que la gasolina (€7.394 vs €12.322). El problema es el precio de compra: €12.470 de diferencia son muchos km por recorrer. Si este perfil mantuviera el coche 7 años, el ID.3 empezaría a ganar.</p>
+
+  <h3>Escenario C: Profesional premium — BMW i4 vs. 320i</h3>
+  <p><strong>20.000 km/año · 10 años · 70 % casa PVPC + 30 % carga rápida (€0,219/kWh)</strong></p>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span>Concepto (10 años)</span><span class="ct-lfp">i4 eDrive40</span><span class="ct-nmc">320i</span>
+    </div>
+    <div class="ct-row"><span>Coste inicial neto</span><span>€59.900</span><span>€51.851</span></div>
+    <div class="ct-row"><span>Energía</span><span>€6.745</span><span>€20.150</span></div>
+    <div class="ct-row"><span>Mant. + seguro + IVTM + ITV</span><span>€16.340</span><span>€19.515</span></div>
+    <div class="ct-row"><span><strong>TCO total 10 años</strong></span><span><strong>€82.985</strong></span><span><strong>€91.516</strong></span></div>
+  </div>
+
+  <p><strong>Ahorro del i4: €8.531</strong> (€71/mes). Sin subvención, el i4 necesita hasta el año 5 para alcanzar al 320i. Pero a 10 años y 200.000 km, la diferencia en energía es demoledora: €13.405. Si conduces mucho y mantienes el coche, el EV premium compensa con creces.</p>
+
+  <h3>¿Cuándo compensa exactamente? Puntos de equilibrio</h3>
+
+  <div class="comparison-table">
+    <div class="ct-row ct-header">
+      <span>Par / km al año</span><span class="ct-lfp">10.000</span><span class="ct-lfp">15.000</span><span class="ct-lfp">20.000</span><span class="ct-lfp">30.000</span>
+    </div>
+    <div class="ct-row"><span>BMW i4 vs 320i</span><span>Año 8</span><span>Año 6</span><span>Año 5</span><span>Año 4</span></div>
+    <div class="ct-row"><span>VW ID.3 vs Golf</span><span>Año 10</span><span>Año 8</span><span>Año 6</span><span>Año 5</span></div>
+    <div class="ct-row"><span>Citroën ë-C3 vs C3</span><span>Año 4</span><span>Año 3</span><span>Año 2</span><span>Año 2</span></div>
+  </div>
+
+  <p>El patrón es claro: a más kilómetros y más años, más gana el eléctrico. Pero la velocidad a la que compensa depende enormemente de la brecha de precio de compra y de si hay subvención. El ë-C3 compensa en 2-4 años; el ID.3 necesita 5-10.</p>
 
   <figure>
-    <img src="/guias/compra/coste-real-ev/grafico_coste_mensual.svg" alt="Gráfico de barras horizontales comparando el coste mensual total de EV vs gasolina en tres segmentos" loading="lazy" />
-    <figcaption>Coste mensual equivalente (TCO a 5 años) por segmento. El eléctrico es más barato en todos los casos. Fuente: cálculos enchufa2 con datos de mercado abril 2026.</figcaption>
+    <img src="/guias/compra/coste-real-ev/grafico_coste_mensual.svg" alt="Gráfico de barras horizontales comparando el coste mensual TCO de EV vs gasolina en tres segmentos (escenario base 15.000 km, 5 años)" loading="lazy" />
+    <figcaption>Coste mensual equivalente (escenario base: 15.000 km/año, 5 años). En premium y compacto, el resultado está muy ajustado. Fuente: cálculos enchufa2 con datos de mercado abril 2026.</figcaption>
   </figure>
 
   <figure>
-    <img src="/guias/compra/coste-real-ev/grafico_tco_acumulado.svg" alt="Gráfico de líneas mostrando TCO acumulado del MG4 vs Golf a 5 años, con área de ahorro de €8.647" loading="lazy" />
-    <figcaption>TCO acumulado del MG4 (EV) vs Volkswagen Golf (gasolina) a 5 años. El área amarilla representa el ahorro acumulado: €8.647. Fuente: cálculos enchufa2.</figcaption>
+    <img src="/guias/compra/coste-real-ev/grafico_tco_acumulado.svg" alt="Gráfico de líneas mostrando TCO acumulado del ë-C3 vs C3 a 7 años con tarifa EV, con área de ahorro de €4.247" loading="lazy" />
+    <figcaption>TCO acumulado del ë-C3 (EV) vs Citroën C3 (gasolina) a 7 años con tarifa EV nocturna. El área amarilla representa el ahorro acumulado: €4.247. Fuente: cálculos enchufa2.</figcaption>
   </figure>
 
   <hr />
@@ -336,12 +397,14 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
     <div class="ct-row ct-header">
       <span>Modelo</span><span class="ct-lfp">PVP</span><span class="ct-nmc">PVP con Plan Auto+ base</span>
     </div>
-    <div class="ct-row"><span>Tesla Model 3</span><span>€36.990</span><span><strong>€33.615</strong></span></div>
-    <div class="ct-row"><span>MG4 Standard Range</span><span>€30.990</span><span><strong>€27.615</strong></span></div>
-    <div class="ct-row"><span>Citroën ë-C3</span><span>€23.800</span><span><strong>€18.300</strong></span></div>
+    <div class="ct-row"><span>BMW i4 eDrive40</span><span>€59.900</span><span><strong>No elegible*</strong></span></div>
+    <div class="ct-row"><span>VW ID.3 Pro S</span><span>€40.415</span><span><strong>€35.915</strong></span></div>
+    <div class="ct-row"><span>Citroën ë-C3</span><span>€23.800</span><span><strong>€19.300</strong></span></div>
   </div>
 
-  <p>El importe de la ayuda depende del origen del vehículo: los modelos ensamblados en la UE con batería europea (como el ë-C3) reciben los €4.500 completos; los fabricados fuera de la UE (Tesla, MG4) reciben €3.375. Con el descuento del concesionario (€1.000), el ë-C3 baja a €18.300 — prácticamente el mismo precio que un SEAT Ibiza. El MG4 queda en €27.615 y el Tesla Model 3 en €33.615 frente a los €51.851 reales del BMW 320i (con IEDMT incluido).</p>
+  <p><small>*El BMW i4 supera el umbral de €45.000 del Plan Auto+ y no es elegible para la subvención.</small></p>
+
+  <p>El importe de la ayuda depende del origen del vehículo: los modelos ensamblados en la UE con batería europea (como el ë-C3 y el ID.3) reciben los €4.500 completos. Con el descuento del concesionario (€1.000), el ë-C3 baja a €18.300 — solo €2.060 más que el C3 gasolina (€16.240). El ID.3 queda en €34.915, aún €6.970 por encima del Golf. En el segmento premium, el i4 no tiene acceso a ayudas, lo que hace el empate con el 320i aún más ajustado.</p>
 
   <p><strong>Importante:</strong> las subvenciones tienen fecha de caducidad. El Plan Auto+ está vigente mientras haya fondos. Cuando se agoten, el TCO del EV sube significativamente en el segmento urbano.</p>
 
@@ -360,7 +423,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
 
   <h3>Neumáticos: un 15-25 % más caros</h3>
 
-  <p>El mayor peso (un Tesla Model 3 pesa 1.760 kg vs. 1.520 kg del BMW 320i) y el par instantáneo del motor eléctrico aceleran el desgaste del neumático. Además, muchos EVs necesitan neumáticos específicos de baja resistencia y bajo ruido (marcados con sello EV o marca del fabricante) que cuestan un 10-15 % más que los estándar<sup>5</sup>.</p>
+  <p>El mayor peso (un BMW i4 pesa 2.125 kg vs. 1.520 kg del BMW 320i) y el par instantáneo del motor eléctrico aceleran el desgaste del neumático. Además, muchos EVs necesitan neumáticos específicos de baja resistencia y bajo ruido (marcados con sello EV o marca del fabricante) que cuestan un 10-15 % más que los estándar<sup>5</sup>.</p>
 
   <p>Impacto: unos €200-400 extra cada 2 cambios de neumáticos (cada 30.000-40.000 km en EV vs. 40.000-50.000 en gasolina). A 5 años y 75.000 km, son 2 juegos en un EV y 1,5 en un gasolina — diferencia neta de €300-600 a favor del gasolina.</p>
 
@@ -377,29 +440,29 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <h2>07 — Conclusión: cuándo gana el eléctrico y cuándo no</h2>
 
-  <p>Después de desglosar los 6 costes, comparar tres segmentos y anotar lo que habitualmente se omite, el resumen es este:</p>
+  <p>Después de desglosar los 6 costes, comparar tres pares intra-marca y simular perfiles reales de conductor, el resumen es más matizado de lo que muchos medios cuentan:</p>
 
   <div class="tldr">
-    <strong>El eléctrico es más barato si...</strong>
+    <strong>El eléctrico compensa antes si...</strong>
     <ul>
-      <li>Tienes garaje o acceso a carga nocturna (la variable más determinante)</li>
-      <li>Conduces más de 10.000 km al año (a más kilómetros, más ahorro)</li>
-      <li>Puedes acceder al Plan Auto+ o ayudas autonómicas</li>
-      <li>Vives en una ciudad con bonificación de IVTM y restricciones ZBE</li>
+      <li>Tienes garaje con wallbox y tarifa EV nocturna — reduce el coste energético a una fracción de la gasolina (hasta 7× menos)</li>
+      <li>Conduces más de 15.000 km al año y mantienes el coche más de 5 años — el ahorro operativo necesita tiempo y kilómetros para compensar el precio de compra</li>
+      <li>Compras un modelo con subvención completa (ensamblaje UE) — los €4.500-5.500 de ayuda son decisivos en los segmentos urbano y compacto</li>
+      <li>El EV que te interesa tiene un precio de compra cercano al de su equivalente gasolina — cuanto menor la brecha, antes llega el breakeven</li>
     </ul>
   </div>
 
   <div class="tldr">
-    <strong>El eléctrico no compensa si...</strong>
+    <strong>El eléctrico tarda más (o no compensa) si...</strong>
     <ul>
-      <li>No tienes acceso a carga doméstica y dependes al 100 % de carga rápida pública</li>
-      <li>Conduces menos de 5.000 km al año (el ahorro operativo no compensa la diferencia de compra)</li>
-      <li>Compras en el segmento urbano sin subvención (el diferencial de precio de compra es demasiado grande)</li>
-      <li>Necesitas un coche para uso muy intensivo con autonomía limitada (profesionales con +50.000 km/año sin infraestructura de carga en ruta)</li>
+      <li>Dependes mayoritariamente de carga rápida pública — a €0,45/kWh la ventaja de coste frente a gasolina se reduce drásticamente</li>
+      <li>Conduces menos de 10.000 km al año y cambias de coche cada 3-4 años — no hay tiempo suficiente para que los ahorros operativos trabajen</li>
+      <li>Compras un EV premium sin subvención (PVP > €45.000) — la brecha de precio es demasiado grande para 5 años</li>
+      <li>El equivalente gasolina tiene emisiones optimizadas (≤120 g/km, 0 % IEDMT) — elimina una de las ventajas fiscales del EV</li>
     </ul>
   </div>
 
-  <p>Para la mayoría de conductores españoles — los que hacen 12.000-20.000 km al año, tienen garaje y compran un coche de segmento B o C —, el eléctrico es <strong>€6.000-26.000 más barato en 5 años</strong>. Y esa cifra mejorará a medida que las subvenciones se renueven, las tarifas EV se expandan y la infraestructura de carga crezca.</p>
+  <p>No existe una respuesta universal. El Citroën ë-C3 compensa en 2-3 años para un conductor urbano con garaje. El BMW i4 necesita 5-6 años y muchos kilómetros para alcanzar al 320i. El VW ID.3 Pro S, con su brecha de precio de €12.470, es el caso más difícil. La variable más determinante no es el motor: es <strong>tu perfil de uso</strong> — cuántos kilómetros, durante cuánto tiempo, y a qué precio cargas.</p>
 
   <p><em>Próximamente en enchufa2: una calculadora TCO interactiva donde podrás introducir tu modelo, tus kilómetros, tu tarifa y tu situación fiscal para obtener un resultado personalizado.</em></p>
 
