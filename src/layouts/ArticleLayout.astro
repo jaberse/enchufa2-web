@@ -368,8 +368,14 @@ const { title, description, readingTime, publishDate, references } = Astro.props
   }
   .article-body :global(figure img) {
     width: 100%;
+    height: auto;
     border-radius: 8px;
     display: block;
+  }
+  /* SVG charts need a light background in dark mode (hardcoded text colors) */
+  :global([data-theme="dark"]) .article-body :global(figure img[src$=".svg"]) {
+    background: #FAFAF8;
+    padding: 0.5rem;
   }
   .article-body :global(figcaption) {
     font-size: 0.8rem;
@@ -456,25 +462,4 @@ const { title, description, readingTime, publishDate, references } = Astro.props
   .back-link svg {
     transition: transform 0.25s var(--ease-out-expo);
   }
-  .back-link:hover svg { transform: translateX(-3px); }
-
-  /* ─── Responsive ─── */
-  @media (max-width: 640px) {
-    .article-hero {
-      min-height: auto;
-    }
-    .article-title {
-      font-size: 1.75rem;
-    }
-    .article-body :global(.article-stats) {
-      grid-template-columns: 1fr;
-      margin-top: -1.5rem;
-    }
-    .article-body :global(.ct-row) {
-      grid-template-columns: 1fr;
-    }
-    .article-body :global(.ct-header > span:first-child) {
-      display: none;
-    }
-  }
-</style>
+  .back-link:hover svg { transform: translateX(-
