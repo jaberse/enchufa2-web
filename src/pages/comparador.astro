@@ -1273,12 +1273,24 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
         { label:'Garantía batería (km)',   key:'garantia_bateria',      unit:'km',  dir:'max', dec:0, fmt:'mmDot', derive:(m)=>{ const s=m.garantia_bateria; if(!s) return null; const x=String(s).match(/([\d.]+)\s*km/i); return x?parseInt(x[1].replace(/\./g,''),10):null; } },
         { label:'Garantía vehículo',       key:'garantia_vehiculo',     isText:true, placeholder:'por verificar' },
       ]},
+      { num:'05', name:'Fiabilidad y garantía', rows:[
+        { label:'Fiabilidad',              key:'fiabilidad_estrellas',          dir:'max', dec:1, isStars:true },
+        { label:'Garantía (valoración)',   key:'garantia_estrellas',            dir:'max', dec:1, isStars:true },
+        { label:'TÜV Report',             key:'fiabilidad_tuv_pct',            unit:'% defectos', dir:'min', dec:1 },
+        { label:'ADAC Pannenstatistik',    key:'fiabilidad_adac_idx',           unit:'averías/1k', dir:'min', dec:1 },
+        { label:'Garantía vehículo (años)',key:'garantia_vehiculo_anos',        unit:'años', dir:'max', dec:0 },
+        { label:'Garantía vehículo (km)',  key:'garantia_vehiculo_km',          unit:'km', dir:'max', dec:0, fmt:'mmDot' },
+        { label:'Garantía batería (%SoH)', key:'garantia_bateria_pct',          unit:'%', dir:'max', dec:0 },
+      ]},
     ];
 
     function formatCellVal(m, row) {
       const val = row.derive ? row.derive(m) : m[row.key];
       if (val == null || val === '') {
         return '<span class="cmp-placeholder">' + (row.placeholder || '—') + '</span>';
+      }
+      if (row.isStars) {
+        return renderStars(Number(val), 'sm');
       }
       if (row.isText) {
         return String(val) + (row.unit ? '\u00a0' + row.unit : '');
