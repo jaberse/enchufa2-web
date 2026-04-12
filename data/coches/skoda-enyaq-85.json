@@ -609,6 +609,104 @@
       "fuente_fecha": "2026-04-12",
       "verificado": true,
       "fuente_detalle": "Web oficial Škoda España"
+    },
+    "fiabilidad_estrellas": {
+      "valor": 3,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_tuv_pct": {
+      "valor": 9.1,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TÜV Report 2026"
+    },
+    "fiabilidad_tuv_estrellas": {
+      "valor": 2,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TÜV Report 2026"
+    },
+    "fiabilidad_tuv_año": {
+      "valor": 2026,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TÜV Report 2026"
+    },
+    "fiabilidad_tuv_clase": {
+      "valor": "2-3 años",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TÜV Report 2026"
+    },
+    "fiabilidad_tuv_detalle": {
+      "valor": "Por encima de la media EV. Problemas en ejes y dirección señalados.",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TÜV Report 2026"
+    },
+    "fiabilidad_adac_idx": {
+      "valor": 1.4,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_adac_estrellas": {
+      "valor": 4,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_adac_año": {
+      "valor": 2025,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_adac_detalle": {
+      "valor": "Buena fiabilidad operativa. Pocas averías en carretera.",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_discrepancia": {
+      "valor": true,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_nota": {
+      "valor": "Más defectos en ITV que sus primos VW ID.4/Audi Q4, pero fiable en uso diario.",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_validadores": {
+      "valor": null,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_revision": {
+      "valor": "2026-04",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
     }
   },
   "meta": {

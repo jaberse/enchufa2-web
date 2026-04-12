@@ -609,6 +609,76 @@
       "fuente_fecha": "2026-04-12",
       "verificado": true,
       "fuente_detalle": "Web oficial Fiat España"
+    },
+    "fiabilidad_estrellas": {
+      "valor": 4,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_tuv_pct": {
+      "valor": 4.2,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TÜV Report 2026"
+    },
+    "fiabilidad_tuv_estrellas": {
+      "valor": 4,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TÜV Report 2026"
+    },
+    "fiabilidad_tuv_año": {
+      "valor": 2026,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TÜV Report 2026"
+    },
+    "fiabilidad_tuv_clase": {
+      "valor": "2-3 años",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TÜV Report 2026"
+    },
+    "fiabilidad_tuv_detalle": {
+      "valor": "Líder de su segmento (mini). Pocos defectos destacables.",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TÜV Report 2026"
+    },
+    "fiabilidad_discrepancia": {
+      "valor": false,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_nota": {
+      "valor": null,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_validadores": {
+      "valor": null,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_revision": {
+      "valor": "2026-04",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
     }
   },
   "meta": {

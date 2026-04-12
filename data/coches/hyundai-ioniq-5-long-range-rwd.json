@@ -609,6 +609,104 @@
       "fuente_fecha": "2026-04-12",
       "verificado": true,
       "fuente_detalle": "Web oficial Hyundai España"
+    },
+    "fiabilidad_estrellas": {
+      "valor": 2.5,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_tuv_pct": {
+      "valor": 4.9,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TÜV Report 2026"
+    },
+    "fiabilidad_tuv_estrellas": {
+      "valor": 4,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TÜV Report 2026"
+    },
+    "fiabilidad_tuv_año": {
+      "valor": 2026,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TÜV Report 2026"
+    },
+    "fiabilidad_tuv_clase": {
+      "valor": "2-3 años",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TÜV Report 2026"
+    },
+    "fiabilidad_tuv_detalle": {
+      "valor": "Buen rendimiento en ITV alemana. Defectos por debajo de la media EV.",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "TÜV Report 2026"
+    },
+    "fiabilidad_adac_idx": {
+      "valor": 22.4,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_adac_estrellas": {
+      "valor": 1,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_adac_año": {
+      "valor": 2025,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_adac_detalle": {
+      "valor": "Altísima tasa de averías por fallo del ICCU (módulo integrado de carga). Recall de Hyundai en curso.",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "ADAC Pannenstatistik 2025"
+    },
+    "fiabilidad_discrepancia": {
+      "valor": true,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_nota": {
+      "valor": "Buen coche en ITV pero grave problema de ICCU que disparó averías en carretera. Hyundai ha emitido recall para reemplazar el módulo.",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_validadores": {
+      "valor": null,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
+    },
+    "fiabilidad_revision": {
+      "valor": "2026-04",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Metodologia enchufa2 v0.3"
     }
   },
   "meta": {
