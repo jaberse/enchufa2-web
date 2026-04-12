@@ -208,18 +208,17 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     padding-top: 2.5rem;
   }
 
-  /* ─── H3: Subsection headings — clearly subordinate ─── */
+  /* ─── H3: Subsection headings — subordinate but clearly a heading ─── */
   .article-body :global(h3) {
     font-family: var(--font-sans);
-    font-weight: 500;
-    font-size: 1rem;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: 0.01em;
+    color: var(--text);
     margin-top: 2.5rem;
     margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--border);
+    padding-left: 0.75rem;
+    border-left: 3px solid var(--yellow);
   }
 
   .article-body :global(p) {
