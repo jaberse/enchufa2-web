@@ -31,15 +31,19 @@
       "verificado": false
     },
     "garantia_bateria_anos": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "valor": 8,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial CUPRA España",
       "unidad": "años"
     },
     "garantia_bateria_km": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "valor": 160000,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial CUPRA España",
       "unidad": "km"
     },
     "soh_minimo_garantizado_pct": {
@@ -465,21 +469,27 @@
       "notas": "Calculado con fórmula EEE: 4500€ (elec:2250 + econ:1125 + ensam:675 + bat:450)"
     },
     "garantia_vehiculo_anos": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "valor": 2,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial CUPRA España",
       "unidad": "años"
     },
     "garantia_vehiculo_km": {
       "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial CUPRA España",
       "unidad": "km"
     },
     "garantia_bateria": {
       "valor": "8 años / 160.000 km",
-      "fuente_tipo": "pendiente",
-      "verificado": false
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial CUPRA España"
     },
     "mantenimiento_intervalo_anos": {
       "valor": null,
@@ -564,6 +574,41 @@
       "fuente_fecha": "2026-04-09",
       "verificado": true,
       "unidad": "€"
+    },
+    "garantia_estrellas": {
+      "valor": 3,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial CUPRA España"
+    },
+    "garantia_vehiculo_estrellas": {
+      "valor": 2,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial CUPRA España"
+    },
+    "garantia_bateria_estrellas": {
+      "valor": 4,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial CUPRA España"
+    },
+    "garantia_bateria_pct": {
+      "valor": 70,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial CUPRA España"
+    },
+    "garantia_revision": {
+      "valor": "2026-04",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-12",
+      "verificado": true,
+      "fuente_detalle": "Web oficial CUPRA España"
     }
   },
   "meta": {
