@@ -1,75 +1,88 @@
-<svg viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet">
+<svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet">
   <defs>
     <style>
-      .chart-title { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 18px; font-weight: 600; fill: #111111; }
-      .chart-label { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; fill: #111111; }
-      .chart-value { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; font-weight: 600; fill: #111111; }
-      .chart-sublabel { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; fill: #666666; }
+      .chart-title { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 16px; font-weight: 500; fill: #111111; }
+      .chart-label { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 13px; font-weight: 500; fill: #111111; }
+      .chart-value { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 12px; font-weight: 600; fill: #111111; }
+      .chart-sublabel { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 11px; fill: #666666; }
+      .legend-label { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 11px; fill: #111111; }
     </style>
   </defs>
 
   <!-- Title -->
-  <text x="20" y="30" class="chart-title">Coste mensual total (TCO a 5 años)</text>
+  <text x="20" y="25" class="chart-title">Coste mensual equivalente (TCO a 5 años)</text>
 
-  <!-- Legend -->
-  <rect x="20" y="42" width="12" height="12" fill="#F5C518" rx="1"/>
-  <text x="36" y="51" class="chart-sublabel">EV</text>
+  <!-- Legend (top right) -->
+  <rect x="595" y="8" width="10" height="10" fill="#F5C518" rx="1"/>
+  <text x="610" y="16" class="legend-label">EV</text>
 
-  <rect x="80" y="42" width="12" height="12" fill="#666666" rx="1"/>
-  <text x="96" y="51" class="chart-sublabel">Gasolina</text>
+  <rect x="595" y="22" width="10" height="10" fill="#666666" rx="1"/>
+  <text x="610" y="30" class="legend-label">Gasolina</text>
 
   <!-- Tesla Model 3 / BMW 320i -->
-  <text x="20" y="95" class="chart-label">Tesla Model 3</text>
-  <text x="20" y="111" class="chart-sublabel">vs BMW 320i</text>
+  <text x="20" y="65" class="chart-label">Tesla Model 3 vs BMW 320i</text>
 
-  <!-- Tesla bar -->
-  <rect x="200" y="82" width="405" height="16" fill="#F5C518" rx="2"/>
-  <text x="615" y="96" class="chart-value">€750</text>
+  <!-- Tesla bar: €749/mes
+       Scale: 968px max = 470px width
+       €749 × (470/968) = €364.5px width -->
+  <rect x="180" y="75" width="364" height="14" fill="#F5C518" rx="2"/>
+  <text x="552" y="84" class="chart-value">€749</text>
 
-  <!-- BMW bar -->
-  <rect x="200" y="105" width="522" height="16" fill="#666666" rx="2"/>
-  <text x="732" y="119" class="chart-value">€968</text>
+  <!-- BMW bar: €968/mes = 470px width -->
+  <rect x="180" y="93" width="470" height="14" fill="#666666" rx="2"/>
+  <text x="660" y="102" class="chart-value">€968</text>
 
   <!-- MG4 / VW Golf -->
-  <text x="20" y="170" class="chart-label">MG4</text>
-  <text x="20" y="186" class="chart-sublabel">vs VW Golf</text>
+  <text x="20" y="155" class="chart-label">MG4 Standard vs VW Golf</text>
 
-  <!-- MG4 bar -->
-  <rect x="200" y="157" width="263" height="16" fill="#F5C518" rx="2"/>
-  <text x="473" y="171" class="chart-value">€489</text>
+  <!-- MG4 bar: €490/mes
+       €490 × (470/968) = €238px width -->
+  <rect x="180" y="165" width="238" height="14" fill="#F5C518" rx="2"/>
+  <text x="426" y="174" class="chart-value">€490</text>
 
-  <!-- VW Golf bar -->
-  <rect x="200" y="180" width="392" height="16" fill="#666666" rx="2"/>
-  <text x="602" y="194" class="chart-value">€727</text>
+  <!-- VW Golf bar: €738/mes
+       €738 × (470/968) = €358px width -->
+  <rect x="180" y="183" width="358" height="14" fill="#666666" rx="2"/>
+  <text x="546" y="192" class="chart-value">€738</text>
 
-  <!-- ë-C3 / SEAT Ibiza -->
-  <text x="20" y="245" class="chart-label">ë-C3</text>
-  <text x="20" y="261" class="chart-sublabel">vs SEAT Ibiza</text>
+  <!-- Citroën ë-C3 / SEAT Ibiza -->
+  <text x="20" y="245" class="chart-label">Citroën ë-C3 vs SEAT Ibiza</text>
 
-  <!-- ë-C3 bar -->
-  <rect x="200" y="232" width="223" height="16" fill="#F5C518" rx="2"/>
-  <text x="433" y="246" class="chart-value">€413</text>
+  <!-- ë-C3 bar: €413/mes
+       €413 × (470/968) = €201px width -->
+  <rect x="180" y="255" width="201" height="14" fill="#F5C518" rx="2"/>
+  <text x="389" y="264" class="chart-value">€413</text>
 
-  <!-- SEAT Ibiza bar -->
-  <rect x="200" y="255" width="277" height="16" fill="#666666" rx="2"/>
-  <text x="487" y="269" class="chart-value">€514</text>
+  <!-- SEAT Ibiza bar: €518/mes
+       €518 × (470/968) = €252px width -->
+  <rect x="180" y="273" width="252" height="14" fill="#666666" rx="2"/>
+  <text x="440" y="282" class="chart-value">€518</text>
 
-  <!-- Axis line -->
-  <line x1="200" y1="285" x2="760" y2="285" stroke="#E0E0E0" stroke-width="1"/>
+  <!-- Scale axis line -->
+  <line x1="180" y1="305" x2="650" y2="305" stroke="#E0E0E0" stroke-width="1"/>
 
-  <!-- Scale labels -->
-  <text x="200" y="305" class="chart-sublabel" text-anchor="middle">€0</text>
-  <text x="360" y="305" class="chart-sublabel" text-anchor="middle">€300</text>
-  <text x="520" y="305" class="chart-sublabel" text-anchor="middle">€600</text>
-  <text x="680" y="305" class="chart-sublabel" text-anchor="middle">€900</text>
+  <!-- Scale tick marks and labels -->
+  <!-- €0 at x=180 -->
+  <line x1="180" y1="302" x2="180" y2="308" stroke="#999999" stroke-width="1"/>
+  <text x="180" y="320" class="chart-sublabel" text-anchor="middle">€0</text>
 
-  <!-- Small grid lines -->
-  <line x1="360" y1="80" x2="360" y2="280" stroke="#F5F5F5" stroke-width="1"/>
-  <line x1="520" y1="80" x2="520" y2="280" stroke="#F5F5F5" stroke-width="1"/>
-  <line x1="680" y1="80" x2="680" y2="280" stroke="#F5F5F5" stroke-width="1"/>
+  <!-- €250 at x=300.5 (180 + 470×250/968) -->
+  <line x1="301" y1="302" x2="301" y2="308" stroke="#999999" stroke-width="1"/>
+  <text x="301" y="320" class="chart-sublabel" text-anchor="middle">€250</text>
 
-  <!-- Footer note -->
-  <text x="20" y="340" class="chart-sublabel">Los costes incluyen amortización, combustible/electricidad, seguro, mantenimiento e impuestos</text>
-  <text x="20" y="355" class="chart-sublabel">Cálculo basado en 15.000 km/año durante 5 años</text>
+  <!-- €500 at x=422 (180 + 470×500/968) -->
+  <line x1="422" y1="302" x2="422" y2="308" stroke="#999999" stroke-width="1"/>
+  <text x="422" y="320" class="chart-sublabel" text-anchor="middle">€500</text>
+
+  <!-- €750 at x=544 (180 + 470×750/968) -->
+  <line x1="544" y1="302" x2="544" y2="308" stroke="#999999" stroke-width="1"/>
+  <text x="544" y="320" class="chart-sublabel" text-anchor="middle">€750</text>
+
+  <!-- €1000 at x=665 (180 + 470×1000/968) would overflow, so stop at €968 (x=650) -->
+  <line x1="650" y1="302" x2="650" y2="308" stroke="#999999" stroke-width="1"/>
+  <text x="650" y="320" class="chart-sublabel" text-anchor="middle">€968</text>
+
+  <!-- Source attribution -->
+  <text x="20" y="335" class="chart-sublabel">Fuente: cálculos enchufa2, abril 2026</text>
 
 </svg>

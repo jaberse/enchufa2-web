@@ -1,60 +1,65 @@
-<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <style>
-      text { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-      .title { font-size: 18px; font-weight: 600; fill: #111111; }
+      text { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .title { font-size: 16px; font-weight: 500; fill: #111111; }
       .label { font-size: 13px; fill: #111111; font-weight: 500; }
       .value { font-size: 12px; fill: #666666; font-weight: 500; }
+      .source { font-size: 11px; fill: #999999; font-weight: 400; }
     </style>
   </defs>
 
-  <!-- White background -->
-  <rect width="700" height="420" fill="#FAFAF8"/>
-
   <!-- Title -->
-  <text x="40" y="35" class="title">Coste por 100 km según tipo de carga</text>
+  <text x="40" y="28" class="title">Coste por 100 km según tipo de carga</text>
 
-  <!-- Horizontal grid lines -->
-  <line x1="280" y1="70" x2="680" y2="70" stroke="#E8E8E6" stroke-width="1"/>
-  <line x1="280" y1="110" x2="680" y2="110" stroke="#E8E8E6" stroke-width="1"/>
-  <line x1="280" y1="150" x2="680" y2="150" stroke="#E8E8E6" stroke-width="1"/>
-  <line x1="280" y1="190" x2="680" y2="190" stroke="#E8E8E6" stroke-width="1"/>
-  <line x1="280" y1="230" x2="680" y2="230" stroke="#E8E8E6" stroke-width="1"/>
-  <line x1="280" y1="270" x2="680" y2="270" stroke="#E8E8E6" stroke-width="1"/>
+  <!-- Subtle grid lines (every €2) -->
+  <line x1="280" y1="65" x2="660" y2="65" stroke="#F0F0F0" stroke-width="1"/>
+  <line x1="280" y1="105" x2="660" y2="105" stroke="#F0F0F0" stroke-width="1"/>
+  <line x1="280" y1="145" x2="660" y2="145" stroke="#F0F0F0" stroke-width="1"/>
+  <line x1="280" y1="185" x2="660" y2="185" stroke="#F0F0F0" stroke-width="1"/>
+  <line x1="280" y1="225" x2="660" y2="225" stroke="#F0F0F0" stroke-width="1"/>
+  <line x1="280" y1="265" x2="660" y2="265" stroke="#F0F0F0" stroke-width="1"/>
+  <line x1="280" y1="305" x2="660" y2="305" stroke="#F0F0F0" stroke-width="1"/>
 
-  <!-- Left border for bars -->
-  <line x1="280" y1="65" x2="280" y2="290" stroke="#E8E8E6" stroke-width="1"/>
+  <!-- Left axis line -->
+  <line x1="280" y1="50" x2="280" y2="315" stroke="#E0E0E0" stroke-width="1"/>
 
-  <!-- Data bars (max width = 390px for €10,08 baseline) -->
+  <!-- 1. Tarifa EV (€0,05/kWh): €0,80 -->
+  <!-- Bar width: 0.80/10.08 * 380 = 30px -->
+  <rect x="280" y="55" width="30" height="32" fill="#F5C518" rx="3"/>
+  <text x="40" y="76" class="label">Tarifa EV (€0,05/kWh)</text>
+  <text x="318" y="76" class="value">€0,80</text>
 
-  <!-- 1. EV — Tarifa EV (€0,05/kWh): €0,80 -->
-  <rect x="280" y="70" width="31" height="32" fill="#F5C518" rx="3"/>
-  <text x="40" y="91" class="label">EV — Tarifa EV (€0,05/kWh)</text>
-  <text x="320" y="91" class="value">€0,80</text>
+  <!-- 2. PVPC valle (€0,09/kWh): €1,44 -->
+  <!-- Bar width: 1.44/10.08 * 380 = 54px -->
+  <rect x="280" y="95" width="54" height="32" fill="#F5C518" rx="3"/>
+  <text x="40" y="116" class="label">PVPC valle (€0,09/kWh)</text>
+  <text x="342" y="116" class="value">€1,44</text>
 
-  <!-- 2. EV — PVPC valle (€0,09/kWh): €1,44 -->
-  <rect x="280" y="110" width="56" height="32" fill="#F5C518" rx="3"/>
-  <text x="40" y="131" class="label">EV — PVPC valle (€0,09/kWh)</text>
-  <text x="345" y="131" class="value">€1,44</text>
+  <!-- 3. Tarifa fija (€0,15/kWh): €2,40 -->
+  <!-- Bar width: 2.40/10.08 * 380 = 90px -->
+  <rect x="280" y="135" width="90" height="32" fill="#F5C518" rx="3"/>
+  <text x="40" y="156" class="label">Tarifa fija (€0,15/kWh)</text>
+  <text x="378" y="156" class="value">€2,40</text>
 
-  <!-- 3. EV — Tarifa fija (€0,15/kWh): €2,40 -->
-  <rect x="280" y="150" width="93" height="32" fill="#F5C518" rx="3"/>
-  <text x="40" y="171" class="label">EV — Tarifa fija (€0,15/kWh)</text>
-  <text x="382" y="171" class="value">€2,40</text>
+  <!-- 4. Carga mixta (80% casa + 20% rápida): €2,91 -->
+  <!-- Bar width: 2.91/10.08 * 380 = 110px -->
+  <rect x="280" y="175" width="110" height="32" fill="#F5C518" rx="3"/>
+  <text x="40" y="196" class="label">Carga mixta (80% casa + 20% rápida)</text>
+  <text x="398" y="196" class="value">€2,91</text>
 
-  <!-- 4. EV — Carga mixta (80/20): €2,72 -->
-  <rect x="280" y="190" width="105" height="32" fill="#F5C518" rx="3"/>
-  <text x="40" y="211" class="label">EV — Carga mixta (80/20)</text>
-  <text x="394" y="211" class="value">€2,72</text>
-
-  <!-- 5. EV — 100% carga rápida: €6,40 -->
-  <rect x="280" y="230" width="247" height="32" fill="#F5C518" rx="3"/>
-  <text x="40" y="251" class="label">EV — 100% carga rápida</text>
-  <text x="536" y="251" class="value">€6,40</text>
+  <!-- 5. 100% carga rápida: €6,40 -->
+  <!-- Bar width: 6.40/10.08 * 380 = 241px -->
+  <rect x="280" y="215" width="241" height="32" fill="#F5C518" rx="3"/>
+  <text x="40" y="236" class="label">100% carga rápida</text>
+  <text x="529" y="236" class="value">€6,40</text>
 
   <!-- 6. Gasolina SP95: €10,08 -->
-  <rect x="280" y="270" width="390" height="32" fill="#444444" rx="3"/>
-  <text x="40" y="291" class="label">Gasolina SP95</text>
-  <text x="679" y="291" class="value">€10,08</text>
+  <!-- Bar width: 10.08/10.08 * 380 = 380px -->
+  <rect x="280" y="255" width="380" height="32" fill="#444444" rx="3"/>
+  <text x="40" y="276" class="label">Gasolina SP95</text>
+  <text x="668" y="276" class="value">€10,08</text>
 
+  <!-- Source note -->
+  <text x="40" y="355" class="source">Fuente: cálculos enchufa2 con datos REE y EU Oil Bulletin, abril 2026</text>
 </svg>
