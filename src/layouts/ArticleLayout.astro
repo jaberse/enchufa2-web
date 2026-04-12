@@ -349,6 +349,13 @@ const { title, description, readingTime, publishDate, references } = Astro.props
   .article-body :global(.ct-row:not(.ct-header):nth-child(even)) {
     background: var(--surface-alt);
   }
+  /* Depreciation / informational last row (italic content) */
+  .article-body :global(.ct-row:last-child) em {
+    font-family: var(--font-sans);
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
 
   /* ─── Blockquote ─── */
   .article-body :global(blockquote) {
