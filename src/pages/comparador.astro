@@ -1140,6 +1140,10 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
         const val = getFieldVal(m, f);
         let display = fmtField(val, f);
         if (f.unit && !f.fmt && !f.isText && !f.isStars && val != null) display += '\u00a0' + f.unit;
+        // Pending message for fiabilidad when no data yet
+        if (f.id === 'fiab_stars' && val == null) {
+          display = '<span class="pending-data" title="Modelo demasiado reciente o sin datos en TÜV Report 2026 / ADAC 2025">Pendiente TÜV 2027</span>';
+        }
         const isPrice = f.id === 'pvp';
         const isBest = showBest && val != null && bestValues[f.id] != null && val === bestValues[f.id];
         // For star fields, add ⓘ button to open desglose
@@ -1299,6 +1303,9 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     function formatCellVal(m, row) {
       const val = row.derive ? row.derive(m) : m[row.key];
       if (val == null || val === '') {
+        if (row.key === 'fiabilidad_estrellas') {
+          return '<span class="pending-data" title="Modelo sin datos en TÜV Report 2026 / ADAC 2025">Pendiente TÜV 2027</span>';
+        }
         return '<span class="cmp-placeholder">' + (row.placeholder || '—') + '</span>';
       }
       if (row.isStars) {
@@ -3978,6 +3985,14 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     vertical-align: middle;
   }
   .detail-info-btn:hover { opacity: 1; color: var(--yellow); }
+
+  /* Pending data label */
+  .pending-data {
+    font-size: .7rem;
+    color: var(--text-muted, #999);
+    font-style: italic;
+    cursor: help;
+  }
 
   /* Desglose tooltip popover */
   .desglose-popover {
