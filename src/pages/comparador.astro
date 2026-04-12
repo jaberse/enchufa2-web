@@ -1192,8 +1192,6 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
             '</div>' +
           '</div>' +
           '<div class="ev-badges">' + makeBadgesHtml(m) + '</div>' +
-          '<div class="metric-popover" id="metric-pop-fiab-' + m.slug + '" style="display:none">' + buildFiabilidadTooltip(m) + '</div>' +
-          '<div class="metric-popover" id="metric-pop-gar-' + m.slug + '" style="display:none">' + buildGarantiaTooltip(m) + '</div>' +
           subsidyHtml +
           (detailsHtml ? '<div class="ev-card-details">' + detailsHtml + '</div>' : '') +
         '</div>';
@@ -1216,15 +1214,21 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
           e.stopPropagation();
           const metric = btn.dataset.metric;
           const slug = btn.dataset.slug;
-          const popId = 'metric-pop-' + metric + '-' + slug;
+          const row = btn.closest('.ev-detail');
           // Close any other open metric popovers in this card
-          card.querySelectorAll('.metric-popover').forEach(p => {
-            if (p.id !== popId) p.style.display = 'none';
-          });
-          const pop = card.querySelector('#' + popId);
-          if (pop) {
-            pop.style.display = pop.style.display === 'none' ? 'block' : 'none';
-          }
+          card.querySelectorAll('.metric-popover').forEach(p => p.remove());
+          // Check if this popover was already open (toggle off)
+          if (btn._popOpen) { btn._popOpen = false; return; }
+          // Reset all flags
+          card.querySelectorAll('.detail-info-btn').forEach(b => b._popOpen = false);
+          // Build and insert popover below the row
+          const content = metric === 'fiab' ? buildFiabilidadTooltip(m) : buildGarantiaTooltip(m);
+          if (!content) return;
+          const pop = document.createElement('div');
+          pop.className = 'metric-popover';
+          pop.innerHTML = content;
+          row.after(pop);
+          btn._popOpen = true;
         });
       });
 
@@ -3776,10 +3780,10 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
   /* Stars */
   .stars { white-space: nowrap; line-height: 1; letter-spacing: .03em; }
   .star { font-style: normal; display: inline-block; }
-  .star-full { color: #F5C518; }
-  .star-half { color: #F5C518; opacity: .5; }
-  .star-empty { color: #D4D4D4; }
-  [data-theme="dark"] .star-empty { color: #555; }
+  .star-full { color: #F5C518 !important; }
+  .star-half { color: #F5C518 !important; opacity: .5; }
+  .star-empty { color: #D4D4D4 !important; }
+  [data-theme="dark"] .star-empty { color: #555 !important; }
   .stars-sm .star { font-size: .8rem; }
   .stars-na {
     font-size: .6rem;
