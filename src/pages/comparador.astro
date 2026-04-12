@@ -442,8 +442,8 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
       const empty = 5 - adjustedFull - half;
       let html = '<span class="stars' + (sz ? ' stars-' + sz : '') + '" data-rating="' + val + '">';
       for (let i = 0; i < adjustedFull; i++) html += '<span class="star star-full">★</span>';
-      for (let i = 0; i < half; i++) html += '<span class="star star-half">⯪</span>';
-      for (let i = 0; i < empty; i++) html += '<span class="star star-empty">☆</span>';
+      for (let i = 0; i < half; i++) html += '<span class="star star-half">★</span>';
+      for (let i = 0; i < empty; i++) html += '<span class="star star-empty">★</span>';
       html += '</span>';
       return html;
     }
@@ -509,17 +509,19 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
       let html = '';
       // Fiabilidad
       if (m.fiabilidad_estrellas != null) {
-        html += '<div class="metric-badge metric-badge-fiab" data-metric="fiab" data-slug="' + m.slug + '">';
+        html += '<button type="button" class="metric-badge metric-badge-fiab" data-metric="fiab" data-slug="' + m.slug + '" title="Ver desglose de fiabilidad">';
         html += '<span class="metric-badge-label">Fiabilidad</span>';
         html += renderStars(m.fiabilidad_estrellas, 'sm');
-        html += '</div>';
+        html += '<svg class="metric-badge-info" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M8 7v4.5M8 4.5v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+        html += '</button>';
       }
       // Garantía
       if (m.garantia_estrellas != null) {
-        html += '<div class="metric-badge metric-badge-gar" data-metric="gar" data-slug="' + m.slug + '">';
+        html += '<button type="button" class="metric-badge metric-badge-gar" data-metric="gar" data-slug="' + m.slug + '" title="Ver desglose de garantía">';
         html += '<span class="metric-badge-label">Garantía</span>';
         html += renderStars(m.garantia_estrellas, 'sm');
-        html += '</div>';
+        html += '<svg class="metric-badge-info" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M8 7v4.5M8 4.5v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+        html += '</button>';
       }
       return html;
     }
@@ -3716,28 +3718,37 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     margin-top: .45rem;
   }
   .metric-badge {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: .35rem;
     padding: .3rem .55rem;
     border-radius: 6px;
     background: rgba(245,197,24,.06);
-    border: 1px solid rgba(245,197,24,.2);
+    border: 1px solid rgba(245,197,24,.25);
     cursor: pointer;
-    transition: background .15s, border-color .15s;
+    transition: background .2s, border-color .2s, box-shadow .2s;
     user-select: none;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
   }
-  .metric-badge:hover {
-    background: rgba(245,197,24,.12);
-    border-color: rgba(245,197,24,.35);
+  .metric-badge:hover, .metric-badge:focus-visible {
+    background: rgba(245,197,24,.15);
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 2px rgba(245,197,24,.15);
+  }
+  .metric-badge:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 1px;
   }
   [data-theme="dark"] .metric-badge {
     background: rgba(245,197,24,.08);
-    border-color: rgba(245,197,24,.2);
+    border-color: rgba(245,197,24,.25);
   }
-  [data-theme="dark"] .metric-badge:hover {
-    background: rgba(245,197,24,.15);
-    border-color: rgba(245,197,24,.35);
+  [data-theme="dark"] .metric-badge:hover, [data-theme="dark"] .metric-badge:focus-visible {
+    background: rgba(245,197,24,.18);
+    border-color: var(--yellow);
   }
   .metric-badge-label {
     font-size: .55rem;
@@ -3746,14 +3757,25 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     letter-spacing: .03em;
     color: var(--text-muted);
   }
+  .metric-badge-info {
+    width: 13px;
+    height: 13px;
+    color: var(--gray-400, #999);
+    flex-shrink: 0;
+    transition: color .2s;
+  }
+  .metric-badge:hover .metric-badge-info {
+    color: var(--yellow);
+  }
 
   /* Stars */
-  .stars { white-space: nowrap; line-height: 1; }
-  .star { font-style: normal; }
+  .stars { white-space: nowrap; line-height: 1; letter-spacing: .03em; }
+  .star { font-style: normal; display: inline-block; }
   .star-full { color: #F5C518; }
-  .star-half { color: #F5C518; }
-  .star-empty { color: rgba(150,150,150,.35); }
-  .stars-sm .star { font-size: .7rem; }
+  .star-half { color: #F5C518; opacity: .5; }
+  .star-empty { color: #D4D4D4; }
+  [data-theme="dark"] .star-empty { color: #555; }
+  .stars-sm .star { font-size: .8rem; }
   .stars-na {
     font-size: .6rem;
     color: var(--text-muted);
