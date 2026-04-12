@@ -52,43 +52,43 @@
   <line x1="80" y1="60" x2="80" y2="350" stroke="#111111" stroke-width="1.5"/>
 
   <!-- Shaded area between curves (light yellow fill) -->
-  <polygon points="80,221.24 192,212.92 304,204.60 416,196.29 528,187.97 640,179.65 640,93.43 528,111.16 416,128.29 304,145.42 192,162.55 80,179.69"
+  <polygon points="80,189.83 192,181.61 304,173.38 416,165.16 528,156.70 640,148.25 640,98.09 528,115.58 416,133.07 304,150.29 192,167.52 80,184.75"
            fill="#F5C518" opacity="0.12"/>
 
   <!-- MG4 line (EV - Yellow) -->
-  <polyline points="80,221.24 192,212.92 304,204.60 416,196.29 528,187.97 640,179.65" class="ev-line"/>
+  <polyline points="80,189.83 192,181.61 304,173.38 416,165.16 528,156.70 640,148.25" class="ev-line"/>
 
   <!-- Golf line (ICE - Gray) -->
-  <polyline points="80,179.69 192,162.55 304,145.42 416,128.29 528,111.16 640,93.43" class="ice-line"/>
+  <polyline points="80,184.75 192,167.52 304,150.29 416,133.07 528,115.58 640,98.09" class="ice-line"/>
 
   <!-- Data point markers for MG4 -->
-  <circle cx="80" cy="221.24" r="4" fill="#F5C518"/>
-  <circle cx="192" cy="212.92" r="4" fill="#F5C518"/>
-  <circle cx="304" cy="204.60" r="4" fill="#F5C518"/>
-  <circle cx="416" cy="196.29" r="4" fill="#F5C518"/>
-  <circle cx="528" cy="187.97" r="4" fill="#F5C518"/>
-  <circle cx="640" cy="179.65" r="4" fill="#F5C518"/>
+  <circle cx="80" cy="189.83" r="4" fill="#F5C518"/>
+  <circle cx="192" cy="181.61" r="4" fill="#F5C518"/>
+  <circle cx="304" cy="173.38" r="4" fill="#F5C518"/>
+  <circle cx="416" cy="165.16" r="4" fill="#F5C518"/>
+  <circle cx="528" cy="156.70" r="4" fill="#F5C518"/>
+  <circle cx="640" cy="148.25" r="4" fill="#F5C518"/>
 
   <!-- Data point markers for Golf -->
-  <circle cx="80" cy="179.69" r="4" fill="#666666"/>
-  <circle cx="192" cy="162.55" r="4" fill="#666666"/>
-  <circle cx="304" cy="145.42" r="4" fill="#666666"/>
-  <circle cx="416" cy="128.29" r="4" fill="#666666"/>
-  <circle cx="528" cy="111.16" r="4" fill="#666666"/>
-  <circle cx="640" cy="93.43" r="4" fill="#666666"/>
+  <circle cx="80" cy="184.75" r="4" fill="#666666"/>
+  <circle cx="192" cy="167.52" r="4" fill="#666666"/>
+  <circle cx="304" cy="150.29" r="4" fill="#666666"/>
+  <circle cx="416" cy="133.07" r="4" fill="#666666"/>
+  <circle cx="528" cy="115.58" r="4" fill="#666666"/>
+  <circle cx="640" cy="98.09" r="4" fill="#666666"/>
 
-  <!-- Start labels (Year 0) -->
-  <text x="85" y="236" class="data-label" fill="#F5C518" font-weight="600">MG4 €22,2k</text>
-  <text x="85" y="173" class="data-label" fill="#666666" font-weight="600">Golf €29,3k</text>
+  <!-- Start labels (Year 0) — stagger to avoid overlap since values are close -->
+  <text x="85" y="205" class="data-label" fill="#F5C518" font-weight="600">MG4 €27,6k</text>
+  <text x="85" y="178" class="data-label" fill="#666666" font-weight="600">Golf €28,5k</text>
 
   <!-- End labels (Year 5) -->
-  <text x="635" y="172" class="data-label" fill="#F5C518" font-weight="600" text-anchor="end">MG4 €29,4k</text>
-  <text x="635" y="86" class="data-label" fill="#666666" font-weight="600" text-anchor="end">Golf €44,3k</text>
+  <text x="635" y="143" class="data-label" fill="#F5C518" font-weight="600" text-anchor="end">MG4 €34,8k</text>
+  <text x="635" y="92" class="data-label" fill="#666666" font-weight="600" text-anchor="end">Golf €43,4k</text>
 
   <!-- Savings annotation box -->
   <rect x="280" y="250" width="140" height="60" fill="#F5C518" opacity="0.12" rx="4" ry="4"/>
   <text x="350" y="270" class="savings-label" fill="#F5C518" text-anchor="middle">Ahorro</text>
-  <text x="350" y="295" style="font-family: 'Inter', system-ui, sans-serif; font-size: 18px; font-weight: 700; fill: #F5C518; text-anchor: middle;">€14.900</text>
+  <text x="350" y="295" style="font-family: 'Inter', system-ui, sans-serif; font-size: 18px; font-weight: 700; fill: #F5C518; text-anchor: middle;">€8.647</text>
 
   <!-- Legend -->
   <line x1="270" y1="330" x2="290" y2="330" class="ev-line"/>

@@ -22,41 +22,35 @@
   <!-- Tesla Model 3 / BMW 320i -->
   <text x="20" y="65" class="chart-label">Tesla Model 3 vs BMW 320i</text>
 
-  <!-- Tesla bar: €749/mes
-       Scale: 968px max = 470px width
-       €749 × (470/968) = €364.5px width -->
-  <rect x="180" y="75" width="364" height="14" fill="#F5C518" rx="2"/>
-  <text x="552" y="84" class="chart-value">€749</text>
+  <!-- Tesla bar: €702/mes — 289px width -->
+  <rect x="180" y="75" width="289" height="14" fill="#F5C518" rx="2"/>
+  <text x="477" y="84" class="chart-value">€702</text>
 
-  <!-- BMW bar: €968/mes = 470px width -->
+  <!-- BMW bar: €1.143/mes — 470px width (max) -->
   <rect x="180" y="93" width="470" height="14" fill="#666666" rx="2"/>
-  <text x="660" y="102" class="chart-value">€968</text>
+  <text x="658" y="102" class="chart-value">€1.143</text>
 
   <!-- MG4 / VW Golf -->
-  <text x="20" y="155" class="chart-label">MG4 Standard vs VW Golf</text>
+  <text x="20" y="155" class="chart-label">MG4 Standard Range vs VW Golf</text>
 
-  <!-- MG4 bar: €490/mes
-       €490 × (470/968) = €238px width -->
+  <!-- MG4 bar: €580/mes — 238px width -->
   <rect x="180" y="165" width="238" height="14" fill="#F5C518" rx="2"/>
-  <text x="426" y="174" class="chart-value">€490</text>
+  <text x="426" y="174" class="chart-value">€580</text>
 
-  <!-- VW Golf bar: €738/mes
-       €738 × (470/968) = €358px width -->
-  <rect x="180" y="183" width="358" height="14" fill="#666666" rx="2"/>
-  <text x="546" y="192" class="chart-value">€738</text>
+  <!-- VW Golf bar: €724/mes — 298px width -->
+  <rect x="180" y="183" width="298" height="14" fill="#666666" rx="2"/>
+  <text x="486" y="192" class="chart-value">€724</text>
 
   <!-- Citroën ë-C3 / SEAT Ibiza -->
   <text x="20" y="245" class="chart-label">Citroën ë-C3 vs SEAT Ibiza</text>
 
-  <!-- ë-C3 bar: €413/mes
-       €413 × (470/968) = €201px width -->
-  <rect x="180" y="255" width="201" height="14" fill="#F5C518" rx="2"/>
-  <text x="389" y="264" class="chart-value">€413</text>
+  <!-- ë-C3 bar: €422/mes — 174px width -->
+  <rect x="180" y="255" width="174" height="14" fill="#F5C518" rx="2"/>
+  <text x="362" y="264" class="chart-value">€422</text>
 
-  <!-- SEAT Ibiza bar: €518/mes
-       €518 × (470/968) = €252px width -->
-  <rect x="180" y="273" width="252" height="14" fill="#666666" rx="2"/>
-  <text x="440" y="282" class="chart-value">€518</text>
+  <!-- SEAT Ibiza bar: €526/mes — 216px width -->
+  <rect x="180" y="273" width="216" height="14" fill="#666666" rx="2"/>
+  <text x="404" y="282" class="chart-value">€526</text>
 
   <!-- Scale axis line -->
   <line x1="180" y1="305" x2="650" y2="305" stroke="#E0E0E0" stroke-width="1"/>
@@ -66,21 +60,21 @@
   <line x1="180" y1="302" x2="180" y2="308" stroke="#999999" stroke-width="1"/>
   <text x="180" y="320" class="chart-sublabel" text-anchor="middle">€0</text>
 
-  <!-- €250 at x=300.5 (180 + 470×250/968) -->
-  <line x1="301" y1="302" x2="301" y2="308" stroke="#999999" stroke-width="1"/>
-  <text x="301" y="320" class="chart-sublabel" text-anchor="middle">€250</text>
+  <!-- €250 at x=283 (180 + 470×250/1143) -->
+  <line x1="283" y1="302" x2="283" y2="308" stroke="#999999" stroke-width="1"/>
+  <text x="283" y="320" class="chart-sublabel" text-anchor="middle">€250</text>
 
-  <!-- €500 at x=422 (180 + 470×500/968) -->
-  <line x1="422" y1="302" x2="422" y2="308" stroke="#999999" stroke-width="1"/>
-  <text x="422" y="320" class="chart-sublabel" text-anchor="middle">€500</text>
+  <!-- €500 at x=386 (180 + 470×500/1143) -->
+  <line x1="386" y1="302" x2="386" y2="308" stroke="#999999" stroke-width="1"/>
+  <text x="386" y="320" class="chart-sublabel" text-anchor="middle">€500</text>
 
-  <!-- €750 at x=544 (180 + 470×750/968) -->
-  <line x1="544" y1="302" x2="544" y2="308" stroke="#999999" stroke-width="1"/>
-  <text x="544" y="320" class="chart-sublabel" text-anchor="middle">€750</text>
+  <!-- €750 at x=488 (180 + 470×750/1143) -->
+  <line x1="488" y1="302" x2="488" y2="308" stroke="#999999" stroke-width="1"/>
+  <text x="488" y="320" class="chart-sublabel" text-anchor="middle">€750</text>
 
-  <!-- €1000 at x=665 (180 + 470×1000/968) would overflow, so stop at €968 (x=650) -->
+  <!-- €1.143 at x=650 (max) -->
   <line x1="650" y1="302" x2="650" y2="308" stroke="#999999" stroke-width="1"/>
-  <text x="650" y="320" class="chart-sublabel" text-anchor="middle">€968</text>
+  <text x="650" y="320" class="chart-sublabel" text-anchor="middle">€1.143</text>
 
   <!-- Source attribution -->
   <text x="20" y="335" class="chart-sublabel">Fuente: cálculos enchufa2, abril 2026</text>
