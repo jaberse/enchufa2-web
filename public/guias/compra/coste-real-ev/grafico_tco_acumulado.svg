@@ -78,12 +78,12 @@
   <circle cx="640" cy="93.43" r="4" fill="#666666"/>
 
   <!-- Start labels (Year 0) -->
-  <text x="15" y="218" class="data-label" fill="#F5C518" font-weight="600">MG4 €22,2k</text>
-  <text x="15" y="185" class="data-label" fill="#666666" font-weight="600">Golf €29,3k</text>
+  <text x="85" y="236" class="data-label" fill="#F5C518" font-weight="600">MG4 €22,2k</text>
+  <text x="85" y="173" class="data-label" fill="#666666" font-weight="600">Golf €29,3k</text>
 
   <!-- End labels (Year 5) -->
-  <text x="655" y="178" class="data-label" fill="#F5C518" font-weight="600" text-anchor="start">MG4 €29,4k</text>
-  <text x="655" y="100" class="data-label" fill="#666666" font-weight="600" text-anchor="start">Golf €44,3k</text>
+  <text x="635" y="172" class="data-label" fill="#F5C518" font-weight="600" text-anchor="end">MG4 €29,4k</text>
+  <text x="635" y="86" class="data-label" fill="#666666" font-weight="600" text-anchor="end">Golf €44,3k</text>
 
   <!-- Savings annotation box -->
   <rect x="280" y="250" width="140" height="60" fill="#F5C518" opacity="0.12" rx="4" ry="4"/>
