@@ -611,9 +611,66 @@
       "fuente_detalle": "Web oficial Citroën España"
     }
   },
+  "specs_tco": {
+    "depreciacion_y1_pct": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "fracción"
+    },
+    "depreciacion_y3_pct": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "fracción"
+    },
+    "depreciacion_y5_pct": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "fracción"
+    },
+    "depreciacion_y10_pct": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "fracción"
+    },
+    "mantenimiento_anual_eur": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "€/año"
+    },
+    "seguro_anual_eur": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "€/año",
+      "notas": "Perfil estándar enchufa2: titular 40 años, 15 años carnet, zona media, todo riesgo franquicia 500€"
+    },
+    "consumo_real_factor": {
+      "valor": 1.18,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2024-10-01",
+      "fuente_detalle": "ICCT Real-World Energy Consumption 2024 (factor estándar EV Europa)",
+      "verificado": true,
+      "unidad": "multiplicador"
+    },
+    "equivalente_ice": {
+      "tipo": "intra_marca",
+      "modelo_id": "citroen-c3-puretech-100",
+      "razon": "Mismo modelo en motorización gasolina, mismo segmento B utilitario",
+      "fuente_tipo": "decision_editorial",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true
+    }
+  },
   "meta": {
-    "fecha_actualizacion": "2026-04-05",
+    "fecha_actualizacion": "2026-04-15",
     "estado": "pendiente",
-    "notas_my": null
+    "notas_my": null,
+    "tco_scaffolded": true,
+    "tco_activo_en_calculadora": false
   }
 }

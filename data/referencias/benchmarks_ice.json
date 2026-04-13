@@ -1,0 +1,65 @@
+{
+  "_meta": {
+    "descripcion": "ICE de referencia por segmento para marcas sin gama ICE (Tesla, BYD, etc.). Usado por la calculadora TCO cuando `equivalente_ice.tipo === 'benchmark_segmento'`. Cada segmento propone 2-3 opciones curadas; la UI deja al usuario elegir entre ellas.",
+    "fuente_tipo": "decision_editorial",
+    "fuente_fecha": "2026-04-15",
+    "verificado": true,
+    "criterio_seleccion": "ICE más vendidos del segmento en España 2025 (datos ANFAC), con representación de marcas generalistas y premium donde aplique."
+  },
+  "segmentos": {
+    "A": {
+      "descripcion": "Utilitario pequeño (3,5-3,8m)",
+      "opciones": [
+        { "id": "hyundai-i10-mpi", "marca": "Hyundai", "modelo": "i10", "motor": "1.0 MPI 67 CV", "default": true },
+        { "id": "dacia-sandero-sce", "marca": "Dacia", "modelo": "Sandero", "motor": "SCe 65 CV", "default": false }
+      ]
+    },
+    "B": {
+      "descripcion": "Utilitario compacto (3,9-4,3m)",
+      "opciones": [
+        { "id": "dacia-sandero-tce", "marca": "Dacia", "modelo": "Sandero", "motor": "TCe 100 CV", "default": true },
+        { "id": "renault-clio-tce", "marca": "Renault", "modelo": "Clio", "motor": "TCe 90 CV", "default": false },
+        { "id": "volkswagen-polo-tsi", "marca": "Volkswagen", "modelo": "Polo", "motor": "1.0 TSI 95 CV", "default": false }
+      ]
+    },
+    "B-SUV": {
+      "descripcion": "SUV pequeño (4,0-4,4m)",
+      "opciones": [
+        { "id": "peugeot-2008-puretech", "marca": "Peugeot", "modelo": "2008", "motor": "PureTech 100 CV", "default": true },
+        { "id": "kia-stonic-tgdi", "marca": "Kia", "modelo": "Stonic", "motor": "1.0 T-GDi 100 CV", "default": false },
+        { "id": "toyota-yaris-cross-hev", "marca": "Toyota", "modelo": "Yaris Cross", "motor": "1.5 HEV 116 CV", "default": false }
+      ]
+    },
+    "C": {
+      "descripcion": "Compacto (4,3-4,7m)",
+      "opciones": [
+        { "id": "volkswagen-golf-tsi", "marca": "Volkswagen", "modelo": "Golf", "motor": "1.5 TSI 116 CV", "default": true },
+        { "id": "seat-leon-tsi", "marca": "Seat", "modelo": "León", "motor": "1.5 TSI 115 CV", "default": false }
+      ]
+    },
+    "C-SUV": {
+      "descripcion": "SUV compacto (4,4-4,7m)",
+      "opciones": [
+        { "id": "volkswagen-tiguan-tsi", "marca": "Volkswagen", "modelo": "Tiguan", "motor": "1.5 eTSI 150 CV", "default": true },
+        { "id": "toyota-rav4-hev", "marca": "Toyota", "modelo": "RAV4", "motor": "2.5 HEV 218 CV", "default": false },
+        { "id": "hyundai-tucson-hev", "marca": "Hyundai", "modelo": "Tucson", "motor": "1.6 T-GDi HEV 230 CV", "default": false }
+      ]
+    },
+    "D": {
+      "descripcion": "Berlina media premium (4,6-4,9m)",
+      "opciones": [
+        { "id": "bmw-320i-sedan", "marca": "BMW", "modelo": "320i", "motor": "2.0 TwinPower 184 CV", "default": true },
+        { "id": "mercedes-c200", "marca": "Mercedes", "modelo": "C 200", "motor": "1.5 EQ Boost 204 CV", "default": false },
+        { "id": "audi-a4-tfsi", "marca": "Audi", "modelo": "A4", "motor": "35 TFSI 150 CV", "default": false }
+      ]
+    },
+    "D-SUV": {
+      "descripcion": "SUV medio premium (4,7-4,9m)",
+      "opciones": [
+        { "id": "bmw-x3-xdrive20i", "marca": "BMW", "modelo": "X3", "motor": "xDrive 20i 208 CV", "default": true },
+        { "id": "audi-q5-tfsi", "marca": "Audi", "modelo": "Q5", "motor": "40 TFSI 204 CV", "default": false },
+        { "id": "mercedes-glc-200", "marca": "Mercedes", "modelo": "GLC 200", "motor": "2.0 EQ Boost 204 CV", "default": false }
+      ]
+    }
+  }
+}
