@@ -41,10 +41,24 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
     </ul>
   </div>
 
+  <!-- Índice -->
+  <nav class="article-toc" aria-label="Índice del artículo">
+    <strong>Índice</strong>
+    <ol>
+      <li><a href="#seccion-01">El error de mirar solo el precio de compra</a></li>
+      <li><a href="#seccion-02">Los 6 costes reales de tener un coche</a></li>
+      <li><a href="#seccion-03">Tres comparativas TCO intra-marca</a></li>
+      <li><a href="#seccion-04">El efecto tarifa eléctrica</a></li>
+      <li><a href="#seccion-05">El efecto subvención (Plan Auto+)</a></li>
+      <li><a href="#seccion-06">Costes ocultos y riesgos reales</a></li>
+      <li><a href="#seccion-07">Conclusión: cuándo gana el eléctrico</a></li>
+    </ol>
+  </nav>
+
   <hr />
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <h2>01 — El error de mirar solo el precio de compra</h2>
+  <h2 id="seccion-01">01 — El error de mirar solo el precio de compra</h2>
 
   <figure>
     <img src="/guias/compra/coste-real-ev/card.webp" alt="Tablet con gráfico de comparación de gastos, calculadora, recibos y café sobre una mesa de madera" loading="lazy" />
@@ -65,7 +79,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
   <hr />
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <h2>02 — Los 6 costes reales de tener un coche</h2>
+  <h2 id="seccion-02">02 — Los 6 costes reales de tener un coche</h2>
 
   <h3>Energía: electricidad vs. gasolina</h3>
 
@@ -185,7 +199,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
   <hr />
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <h2>03 — Tres comparativas TCO intra-marca</h2>
+  <h2 id="seccion-03">03 — Tres comparativas TCO intra-marca</h2>
 
   <p>Dejemos la teoría. Para que una comparativa TCO sea honesta, los dos coches deben ser equivalentes en todo salvo el motor. Por eso hemos elegido tres pares intra-marca: mismo fabricante, mismo segmento, diferente tren motriz. Así, la diferencia de coste refleja realmente el cambio de tecnología, no de marca o de acabados.</p>
 
@@ -271,9 +285,9 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
 
   <p>El escenario base (15.000 km/año, 5 años) es la media estadística, pero tú no eres la media. Lo que determina el resultado es cuántos kilómetros haces y cuánto tiempo mantienes el coche:</p>
 
-  <div class="comparison-table">
+  <div class="comparison-table ct-wide">
     <div class="ct-row ct-header">
-      <span>Par / km al año</span><span class="ct-lfp">10.000</span><span class="ct-lfp">15.000</span><span class="ct-lfp">20.000</span><span class="ct-lfp">30.000</span>
+      <span>Par comparado</span><span class="ct-lfp">10.000 km/año</span><span class="ct-lfp">15.000 km/año</span><span class="ct-lfp">20.000 km/año</span><span class="ct-lfp">30.000 km/año</span>
     </div>
     <div class="ct-row"><span>BMW i4 vs 320i</span><span>Año 8</span><span>Año 6</span><span>Año 5</span><span>Año 4</span></div>
     <div class="ct-row"><span>VW ID.3 vs Golf</span><span>Año 10</span><span>Año 8</span><span>Año 6</span><span>Año 5</span></div>
@@ -295,7 +309,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
   <hr />
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <h2>04 — El efecto tarifa: cómo tu contrato eléctrico cambia el TCO un 15-30 %</h2>
+  <h2 id="seccion-04">04 — El efecto tarifa: cómo tu contrato eléctrico cambia el TCO un 15-30 %</h2>
 
   <p>Uno de los factores más subestimados del coste de un EV es la tarifa eléctrica. La diferencia entre la mejor y la peor opción puede suponer €1.200-2.400 al año — más que el ahorro en mantenimiento.</p>
 
@@ -333,7 +347,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
   <hr />
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <h2>05 — El efecto subvención: Plan Auto+ y ayudas autonómicas</h2>
+  <h2 id="seccion-05">05 — El efecto subvención: Plan Auto+ y ayudas autonómicas</h2>
 
   <p>Las subvenciones son el segundo factor que más altera el TCO después de la tarifa eléctrica. En España a abril de 2026, el esquema principal es el <strong>Plan Auto+ 2024-2026</strong><sup>14</sup>.</p>
 
@@ -371,7 +385,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
   <hr />
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <h2>06 — Costes ocultos y riesgos reales del EV</h2>
+  <h2 id="seccion-06">06 — Costes ocultos y riesgos reales del EV</h2>
 
   <p>Las comparativas anteriores muestran que el EV no siempre gana — y eso es solo con los costes estándar. Hay gastos adicionales que rara vez aparecen en las comparativas y que conviene tener en cuenta.</p>
 
@@ -398,7 +412,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
   <hr />
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <h2>07 — Conclusión: cuándo gana el eléctrico y cuándo no</h2>
+  <h2 id="seccion-07">07 — Conclusión: cuándo gana el eléctrico y cuándo no</h2>
 
   <p>Después de desglosar los 6 costes, comparar tres pares intra-marca y simular perfiles reales de conductor, el resumen es más matizado de lo que muchos medios cuentan:</p>
 

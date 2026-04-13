@@ -200,6 +200,7 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     padding-top: 2.5rem;
     border-top: 3px solid var(--yellow);
     position: relative;
+    scroll-margin-top: 5rem;
   }
   /* First h2 after deck/stats/tldr doesn't need the top border */
   .article-body :global(hr + h2) {
@@ -271,6 +272,71 @@ const { title, description, readingTime, publishDate, references } = Astro.props
   }
   .article-body :global(.tldr li:last-child) { margin-bottom: 0; }
 
+  /* ─── Article TOC (table of contents) ─── */
+  .article-body :global(.article-toc) {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.5rem 1.75rem;
+    margin: 0 0 3rem;
+  }
+  .article-body :global(.article-toc > strong) {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+  .article-body :global(.article-toc ol) {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: toc;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 2rem;
+    row-gap: 0.5rem;
+  }
+  @media (max-width: 640px) {
+    .article-body :global(.article-toc ol) {
+      grid-template-columns: 1fr;
+    }
+  }
+  .article-body :global(.article-toc li) {
+    counter-increment: toc;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    font-weight: 300;
+    position: relative;
+    padding-left: 2.25rem;
+    margin-bottom: 0;
+  }
+  .article-body :global(.article-toc li::before) {
+    content: counter(toc, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--yellow);
+    letter-spacing: 0.05em;
+    padding-top: 0.15rem;
+  }
+  .article-body :global(.article-toc a) {
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .article-body :global(.article-toc a:hover) {
+    color: var(--text);
+    border-bottom-color: var(--yellow);
+  }
+
   .article-body :global(ul),
   .article-body :global(ol) {
     padding-left: 1.5rem;
@@ -331,6 +397,11 @@ const { title, description, readingTime, publishDate, references } = Astro.props
     grid-template-columns: 1fr 1fr 1fr;
     min-width: 500px;
     border-bottom: 1px solid var(--border);
+  }
+  /* Variant: 5-column wide table (e.g., breakeven matrix) */
+  .article-body :global(.comparison-table.ct-wide .ct-row) {
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    min-width: 640px;
   }
   .article-body :global(.ct-row:last-child) {
     border-bottom: none;

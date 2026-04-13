@@ -1,125 +1,116 @@
 <svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" width="700" height="420">
   <defs>
     <style>
-      .chart-title { font-family: 'Inter', system-ui, sans-serif; font-size: 16px; font-weight: 500; fill: #111111; }
+      .chart-title { font-family: 'Inter', system-ui, sans-serif; font-size: 15px; font-weight: 500; fill: #111111; }
       .axis-label { font-family: 'Inter', system-ui, sans-serif; font-size: 12px; fill: #666666; }
-      .data-label { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; font-weight: 500; fill: #111111; }
-      .savings-label { font-family: 'Inter', system-ui, sans-serif; font-size: 13px; font-weight: 600; }
+      .data-label { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; font-weight: 600; fill: #111111; }
+      .legend-label { font-family: 'Inter', system-ui, sans-serif; font-size: 12px; fill: #111111; }
+      .callout-label { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; font-weight: 500; fill: #111111; }
+      .callout-value { font-family: 'Inter', system-ui, sans-serif; font-size: 18px; font-weight: 700; fill: #111111; }
       .grid-line { stroke: #E8E8E6; stroke-width: 0.8; }
-      .ev-line { stroke: #F5C518; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-      .ice-line { stroke: #666666; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .ev-line { stroke: #F5C518; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .ice-line { stroke: #666666; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
     </style>
   </defs>
 
-  <!-- Title -->
-  <text x="350" y="28" class="chart-title" text-anchor="middle">TCO acumulado: Citroën ë-C3 vs C3 (escenario base, 5 años)</text>
-
   <!--
-    Data (base scenario: 15.000 km/año, carga mixta €0,186/kWh, SP95 €1,55/L):
-    ë-C3 initial: €19.300 (€23.800 - €4.500 subsidy)
-    ë-C3 annual operating: €1.279,6 (energy €443,6 + maint €300 + ins €500 + IVTM €20 + ITV €16)
-    C3 initial: €17.011 (€16.240 + €771 IEDMT)
-    C3 annual operating: €2.330 (energy €1.302 + maint €550 + ins €400 + IVTM €60 + ITV €18)
+    Chart data (base scenario: 15.000 km/año, carga mixta €0,186/kWh):
+    Year 0: ë-C3 €19.300 · C3 €17.011
+    Year 1: €20.580 · €19.341
+    Year 2: €21.860 · €21.671
+    Year 3: €23.139 · €24.001
+    Year 4: €24.419 · €26.331
+    Year 5: €25.699 · €28.661
+    Crossover: year ~2.18 at €22.090
+    Final savings: €2.963
 
-    Year 0: ë-C3 = €19.300 / C3 = €17.011
-    Year 1: €20.580 / €19.341
-    Year 2: €21.860 / €21.671
-    Year 3: €23.139 / €24.001
-    Year 4: €24.419 / €26.331
-    Year 5: €25.699 / €28.661
-
-    Crossover between year 2 and 3 (at ~2.82 years)
-    Savings at year 5: €2.962
-
-    Chart area: x=80..640 (560px for 5 years = 112px/year)
-    Y scale: €0..€30k. Chart y=60..350 (290px). px per €1k = 290/30 = 9.667
+    Chart area: x=85..640 (555px for 5 years = 111px/year)
+    Y scale: €15k..€30k over y=70..320 (250px / 15k = 16.667 px per €1k)
+    y(value_k) = 320 - (value_k - 15) * 16.667
   -->
 
-  <!-- Horizontal grid lines at €5k intervals (0 to 30k) -->
-  <line x1="80" y1="350" x2="640" y2="350" class="grid-line"/>
-  <line x1="80" y1="301.67" x2="640" y2="301.67" class="grid-line"/>
-  <line x1="80" y1="253.33" x2="640" y2="253.33" class="grid-line"/>
-  <line x1="80" y1="205" x2="640" y2="205" class="grid-line"/>
-  <line x1="80" y1="156.67" x2="640" y2="156.67" class="grid-line"/>
-  <line x1="80" y1="108.33" x2="640" y2="108.33" class="grid-line"/>
-  <line x1="80" y1="60" x2="640" y2="60" class="grid-line"/>
+  <!-- Title -->
+  <text x="85" y="30" class="chart-title">TCO acumulado: Citroën ë-C3 vs C3 gasolina</text>
+  <text x="85" y="48" class="axis-label">Escenario base: 15.000 km/año, carga mixta (80 % casa + 20 % rápida)</text>
+
+  <!-- Y-axis gridlines (€15k, €20k, €25k, €30k) -->
+  <line x1="85" y1="320" x2="640" y2="320" class="grid-line"/>
+  <line x1="85" y1="236.67" x2="640" y2="236.67" class="grid-line"/>
+  <line x1="85" y1="153.33" x2="640" y2="153.33" class="grid-line"/>
+  <line x1="85" y1="70" x2="640" y2="70" class="grid-line"/>
 
   <!-- Y-axis labels -->
-  <text x="72" y="356" class="axis-label" text-anchor="end">€0</text>
-  <text x="72" y="307" class="axis-label" text-anchor="end">€5k</text>
-  <text x="72" y="259" class="axis-label" text-anchor="end">€10k</text>
-  <text x="72" y="211" class="axis-label" text-anchor="end">€15k</text>
-  <text x="72" y="162" class="axis-label" text-anchor="end">€20k</text>
-  <text x="72" y="114" class="axis-label" text-anchor="end">€25k</text>
-  <text x="72" y="66" class="axis-label" text-anchor="end">€30k</text>
-
-  <!-- X-axis labels (years 0-5) -->
-  <text x="80" y="375" class="axis-label" text-anchor="middle">Año 0</text>
-  <text x="192" y="375" class="axis-label" text-anchor="middle">Año 1</text>
-  <text x="304" y="375" class="axis-label" text-anchor="middle">Año 2</text>
-  <text x="416" y="375" class="axis-label" text-anchor="middle">Año 3</text>
-  <text x="528" y="375" class="axis-label" text-anchor="middle">Año 4</text>
-  <text x="640" y="375" class="axis-label" text-anchor="middle">Año 5</text>
+  <text x="77" y="325" class="axis-label" text-anchor="end">€15k</text>
+  <text x="77" y="241" class="axis-label" text-anchor="end">€20k</text>
+  <text x="77" y="158" class="axis-label" text-anchor="end">€25k</text>
+  <text x="77" y="74" class="axis-label" text-anchor="end">€30k</text>
 
   <!-- Axes -->
-  <line x1="80" y1="350" x2="640" y2="350" stroke="#111111" stroke-width="1.5"/>
-  <line x1="80" y1="60" x2="80" y2="350" stroke="#111111" stroke-width="1.5"/>
+  <line x1="85" y1="70" x2="85" y2="320" stroke="#111111" stroke-width="1"/>
+  <line x1="85" y1="320" x2="640" y2="320" stroke="#111111" stroke-width="1"/>
 
-  <!--
-    Pixel positions (y = 350 - value_in_k * 9.667):
-    ë-C3: 19.3k→163.4  20.58k→151.0  21.86k→138.7  23.14k→126.3  24.42k→113.9  25.70k→101.6
-    C3:   17.01k→185.6  19.34k→163.0  21.67k→140.5  24.00k→118.0  26.33k→95.5   28.66k→73.0
-  -->
+  <!-- X-axis labels -->
+  <text x="85" y="340" class="axis-label" text-anchor="middle">Año 0</text>
+  <text x="196" y="340" class="axis-label" text-anchor="middle">Año 1</text>
+  <text x="307" y="340" class="axis-label" text-anchor="middle">Año 2</text>
+  <text x="418" y="340" class="axis-label" text-anchor="middle">Año 3</text>
+  <text x="529" y="340" class="axis-label" text-anchor="middle">Año 4</text>
+  <text x="640" y="340" class="axis-label" text-anchor="middle">Año 5</text>
 
-  <!-- Shaded area between curves (from crossover ~year 2.8 onwards) -->
-  <polygon points="397,128.0 416,126.3 528,113.9 640,101.6 640,73.0 528,95.5 416,118.0 397,121.3"
-           fill="#F5C518" opacity="0.15"/>
+  <!-- Savings area (between the two lines, from crossover ~year 2.18 to year 5) -->
+  <polygon
+    points="328,201.83 418,184.33 529,163 640,141.67 640,92.33 529,131.17 418,170 328,201.83"
+    fill="#F5C518" opacity="0.18"/>
 
-  <!-- ë-C3 line (EV - Yellow) -->
-  <polyline points="80,163.4 192,151.0 304,138.7 416,126.3 528,113.9 640,101.6" class="ev-line"/>
+  <!-- C3 line (ICE - gray, upper line after crossover) -->
+  <polyline points="85,286.5 196,247.67 307,208.83 418,170 529,131.17 640,92.33" class="ice-line"/>
 
-  <!-- C3 line (ICE - Gray) -->
-  <polyline points="80,185.6 192,163.0 304,140.5 416,118.0 528,95.5 640,73.0" class="ice-line"/>
+  <!-- ë-C3 line (EV - yellow, lower line after crossover) -->
+  <polyline points="85,248.33 196,227 307,205.67 418,184.33 529,163 640,141.67" class="ev-line"/>
 
-  <!-- Data point markers ë-C3 -->
-  <circle cx="80" cy="163.4" r="4" fill="#F5C518"/>
-  <circle cx="192" cy="151.0" r="4" fill="#F5C518"/>
-  <circle cx="304" cy="138.7" r="4" fill="#F5C518"/>
-  <circle cx="416" cy="126.3" r="4" fill="#F5C518"/>
-  <circle cx="528" cy="113.9" r="4" fill="#F5C518"/>
-  <circle cx="640" cy="101.6" r="4" fill="#F5C518"/>
+  <!-- Data points: C3 -->
+  <circle cx="85" cy="286.5" r="3.5" fill="#666666"/>
+  <circle cx="196" cy="247.67" r="3.5" fill="#666666"/>
+  <circle cx="307" cy="208.83" r="3.5" fill="#666666"/>
+  <circle cx="418" cy="170" r="3.5" fill="#666666"/>
+  <circle cx="529" cy="131.17" r="3.5" fill="#666666"/>
+  <circle cx="640" cy="92.33" r="3.5" fill="#666666"/>
 
-  <!-- Data point markers C3 -->
-  <circle cx="80" cy="185.6" r="4" fill="#666666"/>
-  <circle cx="192" cy="163.0" r="4" fill="#666666"/>
-  <circle cx="304" cy="140.5" r="4" fill="#666666"/>
-  <circle cx="416" cy="118.0" r="4" fill="#666666"/>
-  <circle cx="528" cy="95.5" r="4" fill="#666666"/>
-  <circle cx="640" cy="73.0" r="4" fill="#666666"/>
+  <!-- Data points: ë-C3 -->
+  <circle cx="85" cy="248.33" r="3.5" fill="#F5C518"/>
+  <circle cx="196" cy="227" r="3.5" fill="#F5C518"/>
+  <circle cx="307" cy="205.67" r="3.5" fill="#F5C518"/>
+  <circle cx="418" cy="184.33" r="3.5" fill="#F5C518"/>
+  <circle cx="529" cy="163" r="3.5" fill="#F5C518"/>
+  <circle cx="640" cy="141.67" r="3.5" fill="#F5C518"/>
 
-  <!-- Crossover annotation (~year 2.8) -->
-  <line x1="397" y1="122" x2="397" y2="135" stroke="#F5C518" stroke-width="1.5" stroke-dasharray="4,3"/>
-  <text x="397" y="145" class="axis-label" fill="#F5C518" text-anchor="middle" font-weight="600" font-size="10">Cruce ~año 3</text>
+  <!-- Start labels (year 0, left side) -->
+  <text x="95" y="252" class="data-label" fill="#B8860B">€19,3k</text>
+  <text x="95" y="290" class="data-label" fill="#666666">€17,0k</text>
 
-  <!-- Start labels -->
-  <text x="85" y="158" class="data-label" fill="#F5C518" font-weight="600">ë-C3 €19,3k</text>
-  <text x="85" y="198" class="data-label" fill="#666666" font-weight="600">C3 €17,0k</text>
+  <!-- End labels (year 5, right side with arrows away from data points) -->
+  <text x="630" y="136" class="data-label" fill="#B8860B" text-anchor="end">ë-C3 €25,7k</text>
+  <text x="630" y="86" class="data-label" fill="#666666" text-anchor="end">C3 €28,7k</text>
 
-  <!-- End labels -->
-  <text x="635" y="96" class="data-label" fill="#F5C518" font-weight="600" text-anchor="end">ë-C3 €25,7k</text>
-  <text x="635" y="67" class="data-label" fill="#666666" font-weight="600" text-anchor="end">C3 €28,7k</text>
+  <!-- Crossover annotation -->
+  <circle cx="328" cy="201.83" r="5" fill="none" stroke="#111111" stroke-width="1.5"/>
+  <line x1="328" y1="207" x2="328" y2="218" stroke="#111111" stroke-width="1" stroke-dasharray="2,2"/>
+  <text x="328" y="232" class="axis-label" fill="#111111" text-anchor="middle" font-weight="600" font-size="10.5">Cruce año 2-3</text>
 
-  <!-- Savings annotation -->
-  <rect x="465" y="215" width="140" height="60" fill="#F5C518" opacity="0.12" rx="4"/>
-  <text x="535" y="235" class="savings-label" fill="#F5C518" text-anchor="middle">Ahorro a 5 años</text>
-  <text x="535" y="260" style="font-family: 'Inter', system-ui, sans-serif; font-size: 18px; font-weight: 700; fill: #F5C518; text-anchor: middle;">€2.963</text>
+  <!-- Savings callout (inside savings area, year 4.3 position) -->
+  <text x="560" y="195" class="callout-value" fill="#111111" text-anchor="middle">€2.963</text>
+  <text x="560" y="213" class="callout-label" fill="#666666" text-anchor="middle">ahorro a 5 años</text>
 
-  <!-- Legend -->
-  <line x1="220" y1="330" x2="240" y2="330" class="ev-line"/>
-  <text x="245" y="334" class="data-label" fill="#111111">ë-C3 (Eléctrico)</text>
-  <line x1="420" y1="330" x2="440" y2="330" class="ice-line"/>
-  <text x="445" y="334" class="data-label" fill="#111111">C3 (Gasolina)</text>
+  <!-- Legend (below chart) -->
+  <g transform="translate(85, 368)">
+    <rect x="0" y="-8" width="16" height="3" fill="#F5C518" rx="1"/>
+    <text x="22" y="-4" class="legend-label">Citroën ë-C3 (eléctrico)</text>
+    <rect x="210" y="-8" width="16" height="3" fill="#666666" rx="1"/>
+    <text x="232" y="-4" class="legend-label">Citroën C3 (gasolina)</text>
+    <rect x="408" y="-11" width="12" height="9" fill="#F5C518" opacity="0.2" rx="1"/>
+    <text x="426" y="-4" class="legend-label">Área de ahorro</text>
+  </g>
 
   <!-- Source -->
-  <text x="350" y="410" class="axis-label" text-anchor="middle" font-size="10">Fuente: cálculos enchufa2, abril 2026 · Escenario base: 15.000 km/año, carga mixta (80 % casa + 20 % rápida)</text>
+  <text x="85" y="405" class="axis-label" font-size="10" fill="#999999">Fuente: cálculos enchufa2 · abril 2026 · PVP con subvención Plan Auto+ aplicada</text>
 </svg>
