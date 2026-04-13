@@ -1,0 +1,722 @@
+{
+  "id": "byd-atto-2-comfort",
+  "slug": "byd-atto-2-comfort",
+  "marca": "BYD",
+  "modelo": "Atto 2",
+  "variante": "Comfort",
+  "nombre_completo": "BYD Atto 2 Comfort",
+  "segmento": "SUV",
+  "imagen": "/comparador/byd-atto-2-comfort.webp",
+  "specs": {
+    "carroceria": {
+      "valor": "SUV urbano",
+      "fuente_tipo": "base_datos",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true
+    },
+    "traccion": {
+      "valor": "FWD",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "km77.com BYD Atto 2 2025",
+      "verificado": true
+    },
+    "bateria_neta_kwh": {
+      "valor": 64.8,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "km77.com BYD Atto 2 2025",
+      "verificado": true,
+      "unidad": "kWh"
+    },
+    "quimica": {
+      "valor": "LFP",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "BYD Blade Battery (LFP)",
+      "verificado": true
+    },
+    "garantia_bateria_anos": {
+      "valor": 8,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true,
+      "fuente_detalle": "Web oficial BYD España (política marca)",
+      "unidad": "años"
+    },
+    "garantia_bateria_km": {
+      "valor": 200000,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true,
+      "fuente_detalle": "Web oficial BYD España (política marca)",
+      "unidad": "km"
+    },
+    "soh_minimo_garantizado_pct": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "%"
+    },
+    "autonomia_wltp_km": {
+      "valor": 430,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "km77.com BYD Atto 2 2025",
+      "verificado": true,
+      "unidad": "km"
+    },
+    "autonomia_real_estimada_km": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "km"
+    },
+    "consumo_wltp_kwh100km": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kWh/100km",
+      "notas": "Pendiente de confirmar fuente oficial. Derivado matemático ~15,07 kWh/100km pero no publicado"
+    },
+    "carga_ac_max_kw": {
+      "valor": 11,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "km77.com BYD Atto 2 2025",
+      "verificado": true,
+      "unidad": "kW"
+    },
+    "carga_dc_max_kw": {
+      "valor": 155,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "km77.com BYD Atto 2 2025 (versión Comfort)",
+      "verificado": true,
+      "unidad": "kW"
+    },
+    "carga_dc_media_10_80_kw": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kW"
+    },
+    "t_10_80_min": {
+      "valor": 25,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "km77.com BYD Atto 2 2025 (versión Comfort)",
+      "verificado": true,
+      "unidad": "min"
+    },
+    "potencia_cv": {
+      "valor": 204,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "km77.com BYD Atto 2 2025",
+      "verificado": true,
+      "unidad": "CV"
+    },
+    "aceleracion_0_100_s": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "s"
+    },
+    "largo_mm": {
+      "valor": 4320,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "km77.com BYD Atto 2 2025 (rango 4.310-4.330)",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "ancho_mm": {
+      "valor": 1830,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "km77.com BYD Atto 2 2025",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "alto_mm": {
+      "valor": 1680,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "km77.com BYD Atto 2 2025",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "batalla_mm": {
+      "valor": 2620,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "km77.com BYD Atto 2 2025",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "plazas": {
+      "valor": 5,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true
+    },
+    "maletero_l": {
+      "valor": 425,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "km77.com BYD Atto 2 2025 (rango 400-450 según configuración)",
+      "verificado": true,
+      "unidad": "L"
+    },
+    "peso_kg": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kg"
+    },
+    "pvp": {
+      "valor": 31740,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "PVPR al contado BYD España Atto 2 Comfort",
+      "verificado": true,
+      "unidad": "€"
+    },
+    "moves_aplicable": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "pvp_post_moves_eur": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "€"
+    },
+    "fecha_lanzamiento_es": {
+      "valor": "2025",
+      "fuente_tipo": "prensa/fabricante",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true
+    },
+    "estado_comercial": {
+      "valor": "a la venta",
+      "fuente_tipo": "base_datos",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true
+    },
+    "model_year": {
+      "valor": 2025,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true
+    },
+    "pais_fabricacion": {
+      "valor": "Hungría (Szeged)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "Planta BYD Szeged (primera planta europea BYD), confirmado por km77.com",
+      "verificado": true
+    },
+    "plataforma": {
+      "valor": "e-Platform 3.0",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true
+    },
+    "bateria_bruta_kwh": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kWh"
+    },
+    "fabricante_celda": {
+      "valor": "BYD (Blade)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true
+    },
+    "formato_celda": {
+      "valor": "prismática",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "Formato estándar Blade Battery",
+      "verificado": true
+    },
+    "voltaje": {
+      "valor": 400,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "V"
+    },
+    "refrigeracion_bateria": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "t_para_300km_min": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "min"
+    },
+    "t_carga_completa_ac_h": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "h"
+    },
+    "conector_dc": {
+      "valor": "CCS2",
+      "fuente_tipo": "base_datos",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "Estándar Europa",
+      "verificado": true
+    },
+    "preconditioning_bateria": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "plug_and_charge": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "v2l_w": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "W"
+    },
+    "v2h": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "v2g": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "bomba_calor": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "autonomia_wltp_urbana_km": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "km"
+    },
+    "consumo_wltp_ciudad_kwh100km": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kWh/100km"
+    },
+    "consumo_real_estimado_kwh100km": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kWh/100km"
+    },
+    "potencia_kw": {
+      "valor": 150,
+      "fuente_tipo": "calculado",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "204 CV × 0,7355",
+      "verificado": true,
+      "unidad": "kW"
+    },
+    "par_nm": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "Nm"
+    },
+    "n_motores": {
+      "valor": 1,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-15",
+      "fuente_detalle": "Tracción delantera único motor",
+      "verificado": true
+    },
+    "aceleracion_80_120_s": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "s"
+    },
+    "velocidad_max_kmh": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "km/h"
+    },
+    "voladizo_delantero_mm": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "voladizo_trasero_mm": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "via_delantera_mm": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "via_trasera_mm": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "diametro_giro_m": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "m"
+    },
+    "cx": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "mma_kg": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kg"
+    },
+    "maletero_abatido_l": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "L"
+    },
+    "frunk_l": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "L"
+    },
+    "carga_util_kg": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kg"
+    },
+    "capacidad_remolque_kg": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "kg"
+    },
+    "enganche_remolque_opcional": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "euroncap_estrellas": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "euroncap_ano_test": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "euroncap_adult_occupant_pct": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "%"
+    },
+    "euroncap_child_occupant_pct": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "%"
+    },
+    "euroncap_vulnerable_users_pct": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "%"
+    },
+    "euroncap_safety_assist_pct": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "%"
+    },
+    "adas_nivel": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "adas_sistemas": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "indice_fiabilidad_enchufa2": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "fiabilidad_fuentes": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "fiabilidad_anos_datos": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "fiabilidad_nota_marca": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "pvp_fecha": {
+      "valor": "2026-04",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true
+    },
+    "pvp_con_plan_auto_eur": {
+      "valor": 27690,
+      "fuente_tipo": "calculado",
+      "fuente_fecha": "2026-04-15",
+      "verificado": false,
+      "unidad": "€",
+      "notas": "Calculado con fórmula EEE: 4050€ (elec:2250 + econ:1125 + ensam:675 + bat:0). Pendiente de verificar con normativa Plan Auto+ 2026 si el PVP 31.740€ cumple el criterio 'económico'"
+    },
+    "plan_auto_elegible": {
+      "valor": "Sí",
+      "fuente_tipo": "calculado",
+      "fuente_fecha": "2026-04-15",
+      "verificado": false,
+      "notas": "Calculado con fórmula EEE: 4050€ (elec:2250 + econ:1125 + ensam:675 + bat:0). Cambio respecto al Atto 3 (3375€): ensamblaje en Hungría da bonus UE"
+    },
+    "garantia_vehiculo_anos": {
+      "valor": 6,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true,
+      "fuente_detalle": "Web oficial BYD España (política marca)",
+      "unidad": "años"
+    },
+    "garantia_vehiculo_km": {
+      "valor": 150000,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true,
+      "fuente_detalle": "Web oficial BYD España (política marca)",
+      "unidad": "km"
+    },
+    "garantia_bateria": {
+      "valor": "8 años / 200.000 km",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true,
+      "fuente_detalle": "Web oficial BYD España (política marca)"
+    },
+    "mantenimiento_intervalo_anos": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "años"
+    },
+    "mantenimiento_intervalo_km": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "km"
+    },
+    "pantalla_central_pulgadas": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "\""
+    },
+    "ota_updates": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "carplay": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "android_auto": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "camara_360": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "head_up_display": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "climatizador": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "asientos_calefactados": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "asientos_ventilados": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "techo_panoramico": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false
+    },
+    "pais_ensamblaje": {
+      "valor": "Hungría",
+      "ciudad": "Szeged",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true,
+      "notas": "Primera planta europea de BYD. Atto 2 es de los primeros modelos ensamblados en la UE (no importado de China). Cambio relevante para Plan Auto+ vs Atto 3 (que sí es China)"
+    },
+    "bateria_ensamblaje_ue": {
+      "valor": false,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true,
+      "notas": "Blade Battery fabricada en China. Pendiente verificar si la futura planta BYD de baterías en Hungría ya suministra unidades 2026"
+    },
+    "ayuda_plan_auto_eur": {
+      "valor": 4050,
+      "fuente_tipo": "calculado",
+      "fuente_fecha": "2026-04-15",
+      "verificado": false,
+      "unidad": "€",
+      "notas": "Fórmula EEE: elec:2250 + econ:1125 + ensam:675 (UE) + bat:0 (China). Ensamblaje UE aporta bonus que Atto 3 no tiene"
+    },
+    "garantia_estrellas": {
+      "valor": 4,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true,
+      "fuente_detalle": "Web oficial BYD España"
+    },
+    "garantia_vehiculo_estrellas": {
+      "valor": 4,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true,
+      "fuente_detalle": "Web oficial BYD España"
+    },
+    "garantia_bateria_estrellas": {
+      "valor": 4.5,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true,
+      "fuente_detalle": "Web oficial BYD España"
+    },
+    "garantia_bateria_pct": {
+      "valor": 70,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true,
+      "fuente_detalle": "Web oficial BYD España"
+    },
+    "garantia_revision": {
+      "valor": "2026-04",
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true,
+      "fuente_detalle": "Web oficial BYD España"
+    }
+  },
+  "specs_tco": {
+    "depreciacion_y1_pct": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "fracción"
+    },
+    "depreciacion_y3_pct": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "fracción"
+    },
+    "depreciacion_y5_pct": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "fracción"
+    },
+    "depreciacion_y10_pct": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "fracción"
+    },
+    "mantenimiento_anual_eur": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "€/año"
+    },
+    "seguro_anual_eur": {
+      "valor": null,
+      "fuente_tipo": "pendiente",
+      "verificado": false,
+      "unidad": "€/año",
+      "notas": "Perfil estándar enchufa2: titular 40 años, 15 años carnet, zona media, todo riesgo franquicia 500€"
+    },
+    "consumo_real_factor": {
+      "valor": 1.18,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2024-10-01",
+      "fuente_detalle": "ICCT Real-World Energy Consumption 2024 (factor estándar EV Europa)",
+      "verificado": true,
+      "unidad": "multiplicador"
+    },
+    "equivalente_ice": {
+      "tipo": "benchmark_segmento",
+      "segmento": "B-SUV",
+      "modelo_id": "peugeot-2008-puretech",
+      "razon": "BYD no tiene gama ICE en España. Atto 2 compite en B-SUV urbano (4,32m, 425L maletero). Benchmark por defecto: Peugeot 2008 PureTech 100 CV (líder segmento). UI permite cambiar a Kia Stonic o Toyota Yaris Cross HEV",
+      "fuente_tipo": "decision_editorial",
+      "fuente_fecha": "2026-04-15",
+      "verificado": true
+    }
+  },
+  "meta": {
+    "fecha_actualizacion": "2026-04-15",
+    "estado": "pendiente",
+    "notas_my": "Modelo lanzado en España en 2025. Variante representada: Comfort (64,8 kWh, 430 km WLTP, 204 CV). Existe variante Active (45,1 kWh, 312 km, 177 CV) a 25.790€ que podría añadirse como variante separada en v2",
+    "tco_scaffolded": true,
+    "tco_activo_en_calculadora": false
+  }
+}
