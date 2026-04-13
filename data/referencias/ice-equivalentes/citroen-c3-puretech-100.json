@@ -257,53 +257,54 @@
     }
   },
   "specs_tco": {
-    "depreciacion_y1_pct": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "fracción",
-      "notas": "Investigar: OCU Compra Maestra / Ganvam / Autocasión"
-    },
     "depreciacion_y3_pct": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "valor": 0.32,
+      "fuente_tipo": "mercado_agregado",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "confianza": "media",
       "unidad": "fracción",
-      "notas": "Investigar: OCU Compra Maestra / Ganvam / Autocasión"
+      "fuente_detalle": "Coches.net abril 2026, n=8 anuncios C3 2023 (31-46k km). Mediana 11.820€ sobre PVP 17.426€ → retención 67.8%",
+      "notas": "Validado con BOE tablas Hacienda (≈61% retención). Gap mercado vs oficial: +6.8 pp a favor del vendedor. Muestra limitada."
     },
     "depreciacion_y5_pct": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
+      "valor": 0.45,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-13",
       "verificado": false,
+      "confianza": "baja",
       "unidad": "fracción",
-      "notas": "Investigar: OCU Compra Maestra / Ganvam / Autocasión"
-    },
-    "depreciacion_y10_pct": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "fracción"
+      "fuente_detalle": "Ajuste sobre curva estándar: y3=32% + 6%/año siguientes = ~44-46% a 5 años. Consistente con tendencia BOE Hacienda (61% a 5 años genérico) ajustada por fortaleza C3 en mercado usado.",
+      "notas": "Muestra Coches.net 2021 sesgada (km<esperado) daba 23% irreal. Sustituido por curva de depreciación sectorial ajustada hasta tener muestra ≥74k km representativa. Valor a revisar 2026-Q4."
     },
     "mantenimiento_anual_eur": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "valor": 350,
+      "fuente_tipo": "estimacion_sectorial",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "confianza": "alta",
       "unidad": "€/año",
-      "notas": "Pendiente: plan Citroën Essential Service / estimación servicio oficial Stellantis + correa distribución (elemento ICE específico, no EV)"
+      "fuente_detalle": "Revisión oficial cada 15.000 km = ~280€/año + correa distribución prorrateada (100k km / 400€) = ~70€/año",
+      "notas": "Base: datos Carwow España + talleres oficiales Stellantis abril 2026",
+      "mantenimiento_cobertura": "Revisión oficial anual (aceite, filtros, pastillas, inspección). Correa distribución a 100.000 km/6 años. Excluye neumáticos y extras."
     },
     "seguro_anual_eur": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "valor": 494,
+      "fuente_tipo": "comparador_agregado",
+      "fuente_fecha": "2025-05-01",
+      "verificado": true,
+      "confianza": "alta",
       "unidad": "€/año",
-      "notas": "Perfil estándar enchufa2: titular 40 años, 15 años carnet, zona media, todo riesgo franquicia 500€"
+      "fuente_detalle": "Rastreator mayo 2025 — prima media compacto gasolina todo riesgo perfil agregado (rango 242-500€)",
+      "notas": "Perfil estándar enchufa2 (40 años, 15 carnet, zona media, TR franquicia 500€). Valor en mediana-alta del rango por llevar motor 1.2T reciente. Pendiente: 3 cotizaciones específicas.",
+      "seguro_cotizaciones": []
     },
     "precio_combustible_eur_l": {
       "valor": null,
-      "fuente_tipo": "pendiente",
+      "fuente_tipo": "parametros_calculador",
       "verificado": false,
       "unidad": "€/L",
-      "notas": "Se tomará del archivo de parámetros del calculador (no específico del modelo)"
+      "notas": "Se tomará del archivo de parámetros del calculador (no específico del modelo). Referencia abril 2026: ~1.55 €/L gasolina 95."
     },
     "consumo_real_factor": {
       "valor": 1.10,
@@ -311,16 +312,21 @@
       "fuente_fecha": "2024-10-01",
       "fuente_detalle": "ICCT Real-World Fuel Consumption gap 2024 — gasolina moderna ~10% sobre WLTP",
       "verificado": true,
+      "confianza": "alta",
       "unidad": "multiplicador",
       "notas": "EV usa 1.18; ICE moderno tiene gap WLTP/real menor"
     }
   },
   "meta": {
     "fecha_actualizacion": "2026-04-13",
-    "estado": "ficha_completa_tco_pendiente",
+    "estado": "ficha_completa_tco_borrador",
     "notas_my": "MY 2026 en comercialización abril 2026. Precio base PVP 17.426€ (promoción 16.940€ no usada por ser puntual).",
     "proposito": "Referencia ICE 1:1 para Piloto 1 del Calculador TCO vs Citroën ë-C3 You. No se incluye en el comparador de EVs.",
     "tco_scaffolded": true,
-    "tco_activo_en_calculadora": false
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "alta-media",
+    "tco_revision_requerida": "Depreciación 5 años con muestra reducida y sesgada. Mantenimiento verificado con Carwow España/Stellantis. Seguro pendiente de 3 cotizaciones específicas (actualmente valor agregado Rastreator)."
   }
 }

@@ -297,6 +297,20 @@ Desde cualquier ficha de coche del comparador, botón "calcular TCO para este mo
 
 **D5 — Nombre público.** ✅ URL técnica `/calculadora-tco`. Título público "Calculadora de coste real". Subtítulo "TCO a 5 y 10 años para coches eléctricos en España".
 
+**D6 — Marcas sin ICE homólogo (Tesla, BYD).** ✅ Opción C híbrida: benchmark por segmento definido en `data/referencias/benchmarks_ice.json` como default, con dropdown que permite al usuario sustituirlo por cualquier otro modelo del catálogo. Tesla Model 3 → BMW 320i default. BYD Atto 2 → Peugeot 2008 PureTech default.
+
+**D7 — Fuente de depreciación (13 abril 2026).** ✅ **Ganvam como canónica** (tablas oficiales públicas de asociación de concesionarios) + **Coches.net como validación cruzada** (precios reales del mercado de segunda mano). Si el gap entre ambas supera 5 puntos porcentuales, se registra en `depreciacion_validacion_gap_pct` para auditoría.
+
+**D8 — Fuente de mantenimiento (13 abril 2026).** ✅ **Plan oficial de la marca** donde exista (Citroën Essential Service, BMW Service Inclusive, etc.), con nota explícita en `mantenimiento_cobertura` de qué cubre: revisiones, consumibles (filtros, pastillas), neumáticos, batería de arranque. Fallback: promedio de servicio oficial por km según tarifa publicada.
+
+**D9 — Fuente de seguro (13 abril 2026).** ✅ **Mediana de 3 cotizaciones** en Rastreator, Acierto y Línea Directa con el perfil estándar enchufa2:
+- Titular 40 años, 15 años de carnet
+- Zona de riesgo media (referencia: provincia con siniestralidad cercana a la mediana nacional)
+- Todo riesgo con franquicia 500€
+- Uso particular, 15.000 km/año, garaje privado, sin siniestros últimos 5 años
+
+Se registra la mediana en `seguro_anual_eur` y las 3 cotizaciones individuales en `seguro_cotizaciones` como array de `{ comparador, prima_eur, fecha }`.
+
 ---
 
 ## 11. Siguientes pasos

@@ -612,42 +612,47 @@
     }
   },
   "specs_tco": {
-    "depreciacion_y1_pct": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "fracción"
-    },
     "depreciacion_y3_pct": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
+      "valor": 0.50,
+      "fuente_tipo": "estimacion_proyectada",
+      "fuente_fecha": "2026-04-13",
       "verificado": false,
-      "unidad": "fracción"
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "OCU/MasqRenting 2024 — promedio depreciación EV 50% a 3 años. Análogo Peugeot e-208 Stellantis.",
+      "notas": "ë-C3 lanzado 4Q 2024: no hay unidades con 3+ años en mercado. Valor es proyección, NO dato histórico. Revisar en 2027 con primera cohorte real."
     },
     "depreciacion_y5_pct": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
+      "valor": 0.625,
+      "fuente_tipo": "estimacion_proyectada",
+      "fuente_fecha": "2026-04-13",
       "verificado": false,
-      "unidad": "fracción"
-    },
-    "depreciacion_y10_pct": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "fracción"
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Extrapolación OCU + dependencia estado batería (~2.5% degradación/año)",
+      "notas": "Proyección conservadora 60-65%. Rango alto por incertidumbre en mercado EV usado español."
     },
     "mantenimiento_anual_eur": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
+      "valor": 150,
+      "fuente_tipo": "estimacion_sectorial",
+      "fuente_fecha": "2026-04-13",
       "verificado": false,
-      "unidad": "€/año"
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Revisión oficial Citroën cada 30.000 km (~110€) + filtros aire/habitáculo + inspección",
+      "notas": "Tarifa Citroën Essential Service no publicada; estimación sectorial EV. Sin aceite ni correa. Pastillas duran el doble por regenerativo.",
+      "mantenimiento_cobertura": "Revisiones oficiales, filtros, inspección sistemas eléctricos. Excluye neumáticos y batería 12V."
     },
     "seguro_anual_eur": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
+      "valor": 313,
+      "fuente_tipo": "comparador_agregado",
+      "fuente_fecha": "2025-05-01",
+      "verificado": true,
+      "confianza": "media",
       "unidad": "€/año",
-      "notas": "Perfil estándar enchufa2: titular 40 años, 15 años carnet, zona media, todo riesgo franquicia 500€"
+      "fuente_detalle": "Rastreator mayo 2025 — prima media eléctrico todo riesgo perfil agregado",
+      "notas": "Perfil estándar enchufa2 (40 años, 15 carnet, zona media, TR franquicia 500€). Valor agregado de mercado EV, no cotización específica ë-C3. Pendiente: 3 cotizaciones específicas.",
+      "seguro_cotizaciones": []
     },
     "consumo_real_factor": {
       "valor": 1.18,
@@ -655,15 +660,17 @@
       "fuente_fecha": "2024-10-01",
       "fuente_detalle": "ICCT Real-World Energy Consumption 2024 (factor estándar EV Europa)",
       "verificado": true,
+      "confianza": "alta",
       "unidad": "multiplicador"
     },
     "equivalente_ice": {
       "tipo": "intra_marca",
       "modelo_id": "citroen-c3-puretech-100",
-      "razon": "Mismo modelo en motorización gasolina, mismo segmento B utilitario",
+      "razon": "Mismo modelo en motorización gasolina, mismo segmento B utilitario, misma planta (Trnava)",
       "fuente_tipo": "decision_editorial",
-      "fuente_fecha": "2026-04-15",
-      "verificado": true
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "confianza": "alta"
     }
   },
   "meta": {
@@ -671,6 +678,10 @@
     "estado": "pendiente",
     "notas_my": null,
     "tco_scaffolded": true,
-    "tco_activo_en_calculadora": false
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "media-baja",
+    "tco_revision_requerida": "Datos de depreciación del ë-C3 son proyecciones (confianza baja) hasta que el mercado de segunda mano madure en 2027. Mantenimiento pendiente de tarifa oficial Citroën. Seguro pendiente de cotización específica (actualmente agregado de mercado EV)."
   }
 }
