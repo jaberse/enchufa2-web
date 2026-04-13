@@ -67,7 +67,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <h2>02 — Los 6 costes reales de tener un coche</h2>
 
-  <h3>1. Energía: electricidad vs. gasolina</h3>
+  <h3>Energía: electricidad vs. gasolina</h3>
 
   <p>La diferencia más brutal y la más fácil de calcular. Usamos consumos reales de campo, no los oficiales WLTP (que subestiman el consumo real en un 15-20 % según Geotab<sup>2</sup>).</p>
 
@@ -103,7 +103,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
     <figcaption>Coste por 100 km según tipo de carga. La gasolina cuesta entre 4× y 12× más que la electricidad en casa. Fuente: cálculos enchufa2 con datos REE y EU Oil Bulletin, abril 2026.</figcaption>
   </figure>
 
-  <h3>2. Mantenimiento</h3>
+  <h3>Mantenimiento</h3>
 
   <figure>
     <img src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=960&q=80&auto=format" alt="Motor eléctrico de un vehículo eléctrico moderno, compacto y con pocas piezas móviles" loading="lazy" />
@@ -130,7 +130,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
 
   <p><strong>Ahorro en mantenimiento a 5 años:</strong> €1.600-2.650.</p>
 
-  <h3>3. Seguros</h3>
+  <h3>Seguros</h3>
 
   <p>Históricamente, asegurar un EV era un 10-20 % más caro. En 2026, la brecha se ha reducido significativamente gracias a que las aseguradoras tienen más datos de siniestralidad<sup>6</sup>.</p>
 
@@ -145,7 +145,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
 
   <p>La diferencia típica en 2026 es de €50-100 al año en contra del EV, principalmente porque la reparación de baterías tras siniestro sigue siendo cara. A 5 años, esto representa €250-500 de sobrecoste — significativamente menor que el ahorro en energía y mantenimiento.</p>
 
-  <h3>4. Impuestos y tasas</h3>
+  <h3>Impuestos y tasas</h3>
 
   <p>Aquí el eléctrico gana por goleada gracias a la fiscalidad favorable en España<sup>7</sup>:</p>
 
@@ -159,7 +159,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
 
   <p><strong>Ahorro fiscal estimado a 5 años:</strong> €2.000-6.000 dependiendo del precio del vehículo y del municipio.</p>
 
-  <h3>5. Depreciación</h3>
+  <h3>Depreciación</h3>
 
   <p>La depreciación es el coste oculto más grande de cualquier coche y el más difícil de predecir para los eléctricos porque el mercado está evolucionando rápidamente<sup>9</sup>.</p>
 
@@ -176,7 +176,7 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
 
   <p>Un factor que mejora la depreciación del EV: la prohibición de venta de coches nuevos de combustión en la UE a partir de 2035 aumentará progresivamente la demanda de EVs usados<sup>11</sup>.</p>
 
-  <h3>6. Financiación</h3>
+  <h3>Financiación</h3>
 
   <p>En abril de 2026, los tipos TAE para compra financiada de vehículos oscilan entre el 6 y el 9 % para la mayoría de compradores<sup>12</sup>. Algunas marcas ofrecen financiación bonificada para EVs (Tesla ofrece desde el 4,99 % TAE, Hyundai desde el 5,49 %).</p>
 
@@ -189,7 +189,14 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
 
   <p>Dejemos la teoría. Para que una comparativa TCO sea honesta, los dos coches deben ser equivalentes en todo salvo el motor. Por eso hemos elegido tres pares intra-marca: mismo fabricante, mismo segmento, diferente tren motriz. Así, la diferencia de coste refleja realmente el cambio de tecnología, no de marca o de acabados.</p>
 
-  <p>El escenario base usa: 15.000 km/año, 5 años de propiedad, carga mixta (80 % casa PVPC valle + 20 % rápida pública → €0,186/kWh efectivo), gasolina SP95 a €1,55/L, seguro todo riesgo e IVTM con bonificación 75 % para EVs en Madrid.</p>
+  <div class="component-table">
+    <div class="comp-row"><span class="comp-name">Kilometraje</span><span class="comp-desc">15.000 km/año × 5 años = 75.000 km</span></div>
+    <div class="comp-row"><span class="comp-name">Electricidad</span><span class="comp-desc">80 % casa PVPC valle (€0,09/kWh) + 20 % rápida pública (€0,57/kWh) → <strong>€0,186/kWh</strong> efectivo</span></div>
+    <div class="comp-row"><span class="comp-name">Gasolina</span><span class="comp-desc">SP95 a €1,55/L (EU Oil Bulletin, media España, abril 2026)</span></div>
+    <div class="comp-row"><span class="comp-name">Consumo EV</span><span class="comp-desc">i4: 15,4 kWh/100 km · ID.3: 15,5 kWh/100 km · ë-C3: 15,9 kWh/100 km (datos de campo, Geotab/Spritmonitor)</span></div>
+    <div class="comp-row"><span class="comp-name">Consumo gasolina</span><span class="comp-desc">320i: 6,5 L/100 km · Golf: 5,3 L/100 km · C3: 5,6 L/100 km (Spritmonitor, medias reales)</span></div>
+    <div class="comp-row"><span class="comp-name">Otros</span><span class="comp-desc">Seguro todo riesgo · IVTM Madrid (75 % bonificación EV) · ITV comunidad de Madrid</span></div>
+  </div>
 
   <h3>Premium: BMW i4 eDrive40 vs. BMW 320i</h3>
 
@@ -260,56 +267,9 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
     <small>— Cálculos enchufa2 con datos de mercado abril 2026</small>
   </blockquote>
 
-  <h3>Pero el escenario base no es tu escenario</h3>
+  <h3>¿Cuándo compensa? Puntos de equilibrio según kilometraje</h3>
 
-  <p>15.000 km/año y 5 años es la media estadística. Pero tú no eres la media. Estos tres perfiles reales muestran cómo cambia el resultado al ajustar kilometraje, tiempo de propiedad y tipo de carga:</p>
-
-  <h3>Escenario A: Urbano con garaje — Citroën ë-C3 vs. C3</h3>
-  <p><strong>10.000 km/año · 7 años · 95 % carga casa con tarifa EV (€0,06/kWh)</strong></p>
-
-  <div class="comparison-table">
-    <div class="ct-row ct-header">
-      <span>Concepto (7 años)</span><span class="ct-lfp">ë-C3</span><span class="ct-nmc">C3 gasolina</span>
-    </div>
-    <div class="ct-row"><span>Coste inicial neto</span><span>€19.300</span><span>€17.011</span></div>
-    <div class="ct-row"><span>Energía</span><span>€885</span><span>€6.076</span></div>
-    <div class="ct-row"><span>Mant. + seguro + IVTM + ITV</span><span>€5.860</span><span>€7.205</span></div>
-    <div class="ct-row"><span><strong>TCO total 7 años</strong></span><span><strong>€26.045</strong></span><span><strong>€30.292</strong></span></div>
-  </div>
-
-  <p><strong>Ahorro del ë-C3: €4.247</strong> (€51/mes). Con tarifa EV nocturna, la electricidad cuesta €885 en 7 años frente a €6.076 de gasolina — una diferencia de 7×. Breakeven: año 3. Es el perfil ideal para el eléctrico.</p>
-
-  <h3>Escenario B: Comercial sin garaje — VW ID.3 vs. Golf</h3>
-  <p><strong>30.000 km/año · 5 años · 40 % casa PVPC + 60 % carga rápida pública (€0,318/kWh)</strong></p>
-
-  <div class="comparison-table">
-    <div class="ct-row ct-header">
-      <span>Concepto (5 años)</span><span class="ct-lfp">ID.3 Pro S</span><span class="ct-nmc">Golf 1.5 TSI</span>
-    </div>
-    <div class="ct-row"><span>Coste inicial neto</span><span>€35.915</span><span>€27.945</span></div>
-    <div class="ct-row"><span>Energía</span><span>€7.394</span><span>€12.322</span></div>
-    <div class="ct-row"><span>Mant. + seguro + IVTM + ITV</span><span>€5.480</span><span>€6.815</span></div>
-    <div class="ct-row"><span><strong>TCO total 5 años</strong></span><span><strong>€48.789</strong></span><span><strong>€47.082</strong></span></div>
-  </div>
-
-  <p><strong>El Golf gana por €1.706</strong> (€28/mes). La carga rápida a €0,45/kWh dispara el coste energético del ID.3, aunque sigue siendo menor que la gasolina (€7.394 vs €12.322). El problema es el precio de compra: €12.470 de diferencia son muchos km por recorrer. Si este perfil mantuviera el coche 7 años, el ID.3 empezaría a ganar.</p>
-
-  <h3>Escenario C: Profesional premium — BMW i4 vs. 320i</h3>
-  <p><strong>20.000 km/año · 10 años · 70 % casa PVPC + 30 % carga rápida (€0,219/kWh)</strong></p>
-
-  <div class="comparison-table">
-    <div class="ct-row ct-header">
-      <span>Concepto (10 años)</span><span class="ct-lfp">i4 eDrive40</span><span class="ct-nmc">320i</span>
-    </div>
-    <div class="ct-row"><span>Coste inicial neto</span><span>€59.900</span><span>€51.851</span></div>
-    <div class="ct-row"><span>Energía</span><span>€6.745</span><span>€20.150</span></div>
-    <div class="ct-row"><span>Mant. + seguro + IVTM + ITV</span><span>€16.340</span><span>€19.515</span></div>
-    <div class="ct-row"><span><strong>TCO total 10 años</strong></span><span><strong>€82.985</strong></span><span><strong>€91.516</strong></span></div>
-  </div>
-
-  <p><strong>Ahorro del i4: €8.531</strong> (€71/mes). Sin subvención, el i4 necesita hasta el año 5 para alcanzar al 320i. Pero a 10 años y 200.000 km, la diferencia en energía es demoledora: €13.405. Si conduces mucho y mantienes el coche, el EV premium compensa con creces.</p>
-
-  <h3>¿Cuándo compensa exactamente? Puntos de equilibrio</h3>
+  <p>El escenario base (15.000 km/año, 5 años) es la media estadística, pero tú no eres la media. Lo que determina el resultado es cuántos kilómetros haces y cuánto tiempo mantienes el coche:</p>
 
   <div class="comparison-table">
     <div class="ct-row ct-header">
@@ -328,8 +288,8 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
   </figure>
 
   <figure>
-    <img src="/guias/compra/coste-real-ev/grafico_tco_acumulado.svg" alt="Gráfico de líneas mostrando TCO acumulado del ë-C3 vs C3 a 7 años con tarifa EV, con área de ahorro de €4.247" loading="lazy" />
-    <figcaption>TCO acumulado del ë-C3 (EV) vs Citroën C3 (gasolina) a 7 años con tarifa EV nocturna. El área amarilla representa el ahorro acumulado: €4.247. Fuente: cálculos enchufa2.</figcaption>
+    <img src="/guias/compra/coste-real-ev/grafico_tco_acumulado.svg" alt="Gráfico de líneas mostrando TCO acumulado del ë-C3 vs C3 a 5 años (escenario base), con cruce en el año 3 y ahorro de €2.963" loading="lazy" />
+    <figcaption>TCO acumulado del ë-C3 (EV) vs Citroën C3 (gasolina) en el escenario base (15.000 km/año, carga mixta). El cruce se produce en el año 3. Fuente: cálculos enchufa2.</figcaption>
   </figure>
 
   <hr />
@@ -411,9 +371,9 @@ import ArticleLayout from '../../../layouts/ArticleLayout.astro';
   <hr />
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <h2>06 — Lo que nadie te cuenta</h2>
+  <h2>06 — Costes ocultos y riesgos reales del EV</h2>
 
-  <p>Hasta aquí, los números favorecen al eléctrico en todos los segmentos. Pero hay costes y riesgos que rara vez aparecen en las comparativas optimistas.</p>
+  <p>Las comparativas anteriores muestran que el EV no siempre gana — y eso es solo con los costes estándar. Hay gastos adicionales que rara vez aparecen en las comparativas y que conviene tener en cuenta.</p>
 
   <h3>La batería fuera de garantía</h3>
 
