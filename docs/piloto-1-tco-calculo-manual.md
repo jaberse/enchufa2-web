@@ -107,11 +107,13 @@
 
 ## Decisiones pendientes antes de producción
 
-1. **Precio de electricidad:** ¿usamos mix enchufa2 (0,17 €/kWh) como default? ¿Lo exponemos como slider al usuario?
-2. **Precio gasolina:** ¿cifra fija o vinculada al Geoportal del MITECO en real-time?
-3. **Horizonte:** ¿5 años como default y 10 años como opción secundaria?
-4. **Visualización de incertidumbre:** ¿mostramos rango (mejor/esperado/peor caso) o solo punto central con disclaimer?
-5. **Depreciación EV:** ¿aceptamos proyecciones hasta tener histórico real, o bloqueamos modelos con <3 años de mercado?
+Resueltas el 13 abril 2026 (ver plan-calculadora-tco.md §10 D10–D14):
+
+1. **Precio electricidad** → ✅ **Slider configurable**. Default mix enchufa2 0,17 €/kWh. Rango 0,08 (autoconsumo FV) a 0,55 €/kWh (100% rápida pública).
+2. **Precio gasolina** → ✅ **Real-time Geoportal MITECO** vía cron diario. Fallback al último valor cacheado.
+3. **Horizonte** → ✅ **5 años default, configurable**. Selector 3/5/7/10 años. 5 destacado.
+4. **Visualización incertidumbre** → ✅ **Rango mejor/esperado/peor**. Confianza baja ±15%, media ±8%, alta sin rango.
+5. **Modelos <3 años** → ✅ **Proyección + disclaimer explícito**. Badge "Datos proyectados" + fuente de análogo documentada. Revisión trimestral.
 
 ---
 

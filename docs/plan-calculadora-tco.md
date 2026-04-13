@@ -311,6 +311,24 @@ Desde cualquier ficha de coche del comparador, botón "calcular TCO para este mo
 
 Se registra la mediana en `seguro_anual_eur` y las 3 cotizaciones individuales en `seguro_cotizaciones` como array de `{ comparador, prima_eur, fecha }`.
 
+**D10 — Precio de electricidad (13 abril 2026).** ✅ **Slider configurable por el usuario**. Default mix enchufa2: 0,17 €/kWh (70% casa PVPC valle + 30% pública). Extremos del slider: 0,08 €/kWh (tarifa fotovoltaica autoconsumo) y 0,55 €/kWh (100% carga rápida pública). El cambio del slider recalcula TCO en vivo.
+
+**D11 — Precio de gasolina/diésel (13 abril 2026).** ✅ **Real-time desde Geoportal MITECO**. Se consulta la API de gasolineras en cada build (cron diario vía Cloudflare Workers) y se publica la media nacional en `/data/combustibles.json`. El TCO usa este valor dinámico como default. Fallback si API cae: último valor cacheado + nota de última actualización.
+
+**D12 — Horizonte temporal (13 abril 2026).** ✅ **5 años por defecto**, configurable vía selector de "horizonte": 3, 5, 7, 10 años. La UI marca 5 años como destacado. Los datos de depreciación a 3/5/10 están en `specs_tco`; el horizonte de 7 se interpola linealmente entre y5 y y10.
+
+**D13 — Visualización de incertidumbre (13 abril 2026).** ✅ **Rango mejor/esperado/peor** para cada partida sensible y para el TCO total. Implementación:
+- Cada campo de `specs_tco` con `confianza: baja|media` genera un rango del ±15% (baja) o ±8% (media) sobre el valor central.
+- El resultado se muestra como barra horizontal: TCO esperado marcado con línea, rango min-max como área gris.
+- Tooltip por partida explica qué factores mueven el rango.
+- Campos con `confianza: alta` no tienen rango (valor fijo).
+
+**D14 — Modelos con <3 años de mercado (13 abril 2026).** ✅ **Se permite con proyección + disclaimer explícito**. Implementación:
+- Si `model_year` del EV es posterior a (año_actual − 3), se muestra badge "Datos proyectados" en la ficha TCO.
+- Se usa como base la depreciación de un análogo defensible (Peugeot e-208 para Stellantis, BMW iX1 para BMW pequeños, etc.) documentado en `specs_tco.depreciacion_proyeccion_fuente`.
+- Disclaimer en UI: "La depreciación de este modelo es una proyección basada en análogos. Primera validación con datos reales disponible a partir de [año_lanzamiento + 3]."
+- Se revisa cada modelo trimestralmente hasta que entre la primera cohorte real al mercado usado.
+
 ---
 
 ## 11. Siguientes pasos
