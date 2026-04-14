@@ -711,9 +711,95 @@
       "fuente_detalle": "Web oficial Tesla España"
     }
   },
+  "specs_tco": {
+    "depreciacion_y3_pct": {
+      "valor": 0.30,
+      "fuente_tipo": "mercado_agregado",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Tesla Model Y retiene mejor que Model 3 por formato SUV (más demandado mercado español 2024-2025). Muestra Coches.net Model Y 2023 con 45k km: retención ~70% del PVP lista original. Alineado con Motorpasión abril 2026.",
+      "notas": "Rebajas Tesla 2023-2025 han elevado depreciación aparente. Revisar 2026-Q4 con sub-muestra RWD Long Range específica."
+    },
+    "depreciacion_y5_pct": {
+      "valor": 0.44,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección BEV SUV premium NMC: y3=30% + ~4,7%/año ≈ 44% a 5 años. Misma curva que Model 3 (también 44% a 5a) con SUV retención ligeramente superior, compensando NMC vs LFP.",
+      "notas": "Proyección con riesgo: Model Y RWD Long Range 2023 cumple 5 años en 2028. Valor a validar entonces."
+    },
+    "depreciacion_y10_pct": {
+      "valor": 0.62,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección BEV SUV a 10 años con química NMC. Alta incertidumbre por evolución tecnológica (baterías estado sólido, vehículo definido por software, soporte Tesla a largo plazo).",
+      "notas": "Sin precedente de mercado español Tesla Model Y a 10 años. Dato experimental."
+    },
+    "mantenimiento_anual_eur": {
+      "valor": 95,
+      "fuente_tipo": "dato_real_usuario",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Alineado con Model 3 Highland (90€/año) + 5€/año extra por neumáticos 19-20\" y mayor peso SUV. Tesla no obliga a plan oficial: líquido frenos c/2a (~100€), filtro habitáculo c/2a (~50€), revisión bajos c/año (~145€).",
+      "notas": "Muestra real Model Y usuarios españoles pendiente. Coste real muy bajo por ausencia de aceite/bujías y frenos apenas desgastados por regenerativa.",
+      "mantenimiento_cobertura": "Inspección bajos, fluidos, filtro habitáculo, diagnosis remota. Excluye neumáticos y extras."
+    },
+    "seguro_anual_eur": {
+      "valor": 820,
+      "fuente_tipo": "estimacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Perfil enchufa2 estándar: SUV premium BEV 299 CV, prima típica 760-880€/año todo riesgo 500€ franquicia. Ligeramente superior a Model 3 (700€) por formato SUV y coste reparación. Referencia media Rastreator/Kelisto Tesla Model Y 2025.",
+      "notas": "Pendiente 3 cotizaciones específicas Model Y RWD Long Range con perfil enchufa2.",
+      "seguro_cotizaciones": []
+    },
+    "precio_electricidad_eur_kwh": {
+      "valor": null,
+      "fuente_tipo": "parametros_calculador",
+      "verificado": false,
+      "unidad": "€/kWh",
+      "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
+    },
+    "consumo_real_factor": {
+      "valor": 1.13,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2024-10-01",
+      "fuente_detalle": "EV Database + ICCT gap 2024 — Tesla Model Y RWD: 12.7 WLTP → ~14.4 kWh/100km real. Cd 0.23 + SUV silhouette + RWD eficiente. Ligeramente peor que Model 3 (1.12) por formato SUV.",
+      "verificado": true,
+      "confianza": "alta",
+      "unidad": "multiplicador",
+      "notas": "Factor bajo para formato SUV gracias a la ingeniería aerodinámica Tesla. Comparar con Skoda Elroq (~1.17) o Atto 3 (~1.20)."
+    },
+    "equivalente_ice": {
+      "tipo": "benchmark_segmento",
+      "segmento": "D-SUV",
+      "razon": "Tesla no tiene gama ICE. Model Y compite en D-SUV premium (4,79m, AWD opcional, 299 CV). Benchmark default: BMW X3 xDrive20i — mismo formato, MHEV 48V premium 208 CV. Alternativas segmento: Audi Q5 40 TFSI, Mercedes GLC 200.",
+      "fuente_tipo": "decision_editorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "confianza": "alta"
+    }
+  },
   "meta": {
-    "fecha_actualizacion": "2026-04-05",
-    "estado": "pendiente",
-    "notas_my": null
+    "fecha_actualizacion": "2026-04-14",
+    "estado": "ficha_completa_tco_borrador",
+    "notas_my": null,
+    "tco_scaffolded": true,
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "media",
+    "tco_revision_requerida": "Muestra Coches.net Model Y RWD Long Range 2023 con 45k km + 3 cotizaciones seguro específicas + confirmación ayuda Plan Auto+ (actualmente 0€, Model Y Shanghai no elegible UE)"
   }
 }

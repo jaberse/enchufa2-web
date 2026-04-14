@@ -7119,7 +7119,7 @@
       "soh_minimo_garantizado_pct": null,
       "autonomia_wltp_km": 430,
       "autonomia_real_estimada_km": null,
-      "consumo_wltp_kwh100km": null,
+      "consumo_wltp_kwh100km": 15.1,
       "carga_ac_max_kw": 11,
       "carga_dc_max_kw": 155,
       "carga_dc_media_10_80_kw": null,

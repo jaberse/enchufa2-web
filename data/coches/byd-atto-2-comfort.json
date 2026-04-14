@@ -73,11 +73,14 @@
       "unidad": "km"
     },
     "consumo_wltp_kwh100km": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
+      "valor": 15.1,
+      "fuente_tipo": "calculado",
+      "fuente_fecha": "2026-04-14",
       "verificado": false,
       "unidad": "kWh/100km",
-      "notas": "Pendiente de confirmar fuente oficial. Derivado matemático ~15,07 kWh/100km pero no publicado"
+      "confianza": "media",
+      "fuente_detalle": "Derivado matemáticamente: 64,8 kWh neta / 430 km WLTP × 100 = 15,07 kWh/100km. BYD España no publica cifra oficial WLTP combinada específica de la variante Comfort.",
+      "notas": "Revisar cuando BYD publique ficha técnica WLTP oficial de la variante Comfort 64,8 kWh."
     },
     "carga_ac_max_kw": {
       "valor": 11,
@@ -657,49 +660,71 @@
     }
   },
   "specs_tco": {
-    "depreciacion_y1_pct": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
-      "verificado": false,
-      "unidad": "fracción"
-    },
     "depreciacion_y3_pct": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
+      "valor": 0.42,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
       "verificado": false,
-      "unidad": "fracción"
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "BEV chino B-SUV de lanzamiento 2025 con demanda inicial moderada: retención ~58% a 3 años. Más volátil que Tesla (32%) y BMW (28%) por marca emergente en España, pero mitigada por LFP Blade (mejor reputación química que NMC chino).",
+      "notas": "Revisar con muestra real Coches.net Atto 2 2025 en 2028 (aún no existe muestra a 3 años del Atto 2)."
     },
     "depreciacion_y5_pct": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
+      "valor": 0.56,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
       "verificado": false,
-      "unidad": "fracción"
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección: y3=42% + ~4,7%/año → ~56% a 5 años. Alineado con promedio BEV chino generalista 2024-2025, con prima adversa por incertidumbre post-garantía pero mitigación por Blade LFP."
     },
     "depreciacion_y10_pct": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
+      "valor": 0.78,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
       "verificado": false,
-      "unidad": "fracción"
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Decay asintótico sin precedente de mercado español. BEV chinos a 10 años: 75-82% depreciación por riesgo de disponibilidad de recambios y soporte software.",
+      "notas": "Dato experimental, sin muestra real. Alta incertidumbre regulatoria (Euro 8, vehículo definido por software, OTA)."
     },
     "mantenimiento_anual_eur": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
+      "valor": 220,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
       "verificado": false,
-      "unidad": "€/año"
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Plan mantenimiento BYD España estimado ~120€/año (intervalos 12m/20k km, BEV simple sin aceite/filtros motor) + ~100€/año consumibles (neumáticos, pastillas poco usadas por regenerativa, ITV prorrateada).",
+      "notas": "Perfil coherente con BEV LFP B-SUV de mantenimiento bajo. Pendiente confirmar tarifa oficial servicio BYD España 2026.",
+      "mantenimiento_cobertura": "Inspección alta/baja tensión, filtro habitáculo c/2a, líquido frenos c/2a, neumáticos y ITV excluidos."
     },
     "seguro_anual_eur": {
-      "valor": null,
-      "fuente_tipo": "pendiente",
+      "valor": 580,
+      "fuente_tipo": "estimacion_sectorial",
+      "fuente_fecha": "2026-04-14",
       "verificado": false,
+      "confianza": "media",
       "unidad": "€/año",
-      "notas": "Perfil estándar enchufa2: titular 40 años, 15 años carnet, zona media, todo riesgo franquicia 500€"
+      "fuente_detalle": "Perfil enchufa2 estándar: BEV B-SUV 204 CV marca china joven, prima típica 540-620€/año todo riesgo 500€ franquicia. Ligeramente superior a SUV ICE equivalente por coste pieza específica y perito.",
+      "notas": "Pendiente 3 cotizaciones específicas Rastreator/Mapfre/Mutua con perfil enchufa2.",
+      "seguro_cotizaciones": []
+    },
+    "precio_electricidad_eur_kwh": {
+      "valor": null,
+      "fuente_tipo": "parametros_calculador",
+      "verificado": false,
+      "unidad": "€/kWh",
+      "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
     },
     "consumo_real_factor": {
       "valor": 1.18,
       "fuente_tipo": "investigacion_web",
       "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "ICCT Real-World Energy Consumption 2024 (factor estándar EV Europa)",
+      "fuente_detalle": "ICCT Real-World Energy Consumption 2024 — BEV SUV generalista ~15-22% sobre WLTP. Cd ~0,31 + 1.635 kg + neumáticos 17-18\" penalizan vs sedán aerodinámico (Tesla 1.12).",
       "verificado": true,
+      "confianza": "alta",
       "unidad": "multiplicador"
     },
     "equivalente_ice": {
@@ -709,14 +734,19 @@
       "razon": "BYD no tiene gama ICE en España. Atto 2 compite en B-SUV urbano (4,32m, 425L maletero). Benchmark por defecto: Peugeot 2008 PureTech 100 CV (líder segmento). UI permite cambiar a Kia Stonic o Toyota Yaris Cross HEV",
       "fuente_tipo": "decision_editorial",
       "fuente_fecha": "2026-04-15",
-      "verificado": true
+      "verificado": true,
+      "confianza": "alta"
     }
   },
   "meta": {
-    "fecha_actualizacion": "2026-04-15",
-    "estado": "pendiente",
+    "fecha_actualizacion": "2026-04-14",
+    "estado": "ficha_completa_tco_borrador",
     "notas_my": "Modelo lanzado en España en 2025. Variante representada: Comfort (64,8 kWh, 430 km WLTP, 204 CV). Existe variante Active (45,1 kWh, 312 km, 177 CV) a 25.790€ que podría añadirse como variante separada en v2",
     "tco_scaffolded": true,
-    "tco_activo_en_calculadora": false
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "media",
+    "tco_revision_requerida": "Consumo WLTP oficial BYD + muestra Coches.net Atto 2 2025 cuando cumpla 3 años + 3 cotizaciones seguro + plan oficial mantenimiento BYD España"
   }
 }
