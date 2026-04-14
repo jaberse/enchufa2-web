@@ -58,6 +58,9 @@ export function bevFromJson(json, opts = {}) {
   const consumo = v(json, 'specs', 'consumo_wltp_kwh100km');
   const factor = v(json, 'specs_tco', 'consumo_real_factor');
   const deprec = v(json, 'specs_tco', `depreciacion_y${horizonte}_pct`);
+  const y3 = v(json, 'specs_tco', 'depreciacion_y3_pct');
+  const y5 = v(json, 'specs_tco', 'depreciacion_y5_pct');
+  const y10 = v(json, 'specs_tco', 'depreciacion_y10_pct');
   const mant = v(json, 'specs_tco', 'mantenimiento_anual_eur');
   const seguro = v(json, 'specs_tco', 'seguro_anual_eur');
 
@@ -68,6 +71,11 @@ export function bevFromJson(json, opts = {}) {
     consumo_wltp: Number(consumo.valor),
     consumo_real_factor: Number(factor.valor),
     depreciacion_pct: Number(deprec.valor),
+    depreciacion_anchors: {
+      y3: Number(y3.valor),
+      y5: Number(y5.valor),
+      y10: Number(y10.valor),
+    },
     mantenimiento_anual_eur: Number(mant.valor),
     seguro_anual_eur: Number(seguro.valor),
     confianza_depreciacion: deprec.confianza,
@@ -92,6 +100,9 @@ export function iceFromJson(json, opts = {}) {
   const consumo = v(json, 'specs', 'consumo_wltp_l100km');
   const factor = v(json, 'specs_tco', 'consumo_real_factor');
   const deprec = v(json, 'specs_tco', `depreciacion_y${horizonte}_pct`);
+  const y3 = v(json, 'specs_tco', 'depreciacion_y3_pct');
+  const y5 = v(json, 'specs_tco', 'depreciacion_y5_pct');
+  const y10 = v(json, 'specs_tco', 'depreciacion_y10_pct');
   const mant = v(json, 'specs_tco', 'mantenimiento_anual_eur');
   const seguro = v(json, 'specs_tco', 'seguro_anual_eur');
 
@@ -101,6 +112,11 @@ export function iceFromJson(json, opts = {}) {
     consumo_wltp: Number(consumo.valor),
     consumo_real_factor: Number(factor.valor),
     depreciacion_pct: Number(deprec.valor),
+    depreciacion_anchors: {
+      y3: Number(y3.valor),
+      y5: Number(y5.valor),
+      y10: Number(y10.valor),
+    },
     mantenimiento_anual_eur: Number(mant.valor),
     seguro_anual_eur: Number(seguro.valor),
     confianza_depreciacion: deprec.confianza,

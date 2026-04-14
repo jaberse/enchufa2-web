@@ -255,6 +255,45 @@ const iniIce = parInicial.horizontes[iniH].ice;
         </article>
       </div>
 
+      <!-- Gráfico TCO acumulado BEV vs ICE -->
+      <figure class="tco-chart-fig" aria-labelledby="chart-title">
+        <figcaption>
+          <h3 id="chart-title">Coste acumulado año a año</h3>
+          <p class="chart-sub">
+            Cuánto lleva gastado cada coche en cada punto del horizonte. Si las
+            líneas se cruzan, es el <em>break-even</em>: el momento en el que
+            el eléctrico pasa a costar menos que el de combustión.
+          </p>
+        </figcaption>
+
+        <div class="chart-wrap">
+          <svg
+            id="tco-chart"
+            viewBox="0 0 800 420"
+            role="img"
+            aria-labelledby="chart-title"
+            aria-describedby="chart-desc"
+            preserveAspectRatio="xMidYMid meet"
+          >
+            <title id="chart-title-svg">Coste acumulado BEV vs ICE</title>
+            <desc id="chart-desc">
+              Curvas de coste acumulado del coche eléctrico (amarillo) y del
+              coche de combustión (gris discontinuo) desde el año 0 hasta el
+              horizonte seleccionado, con indicación del punto de break-even.
+            </desc>
+            <!-- Contenido renderizado por JS -->
+          </svg>
+          <table class="sr-only" id="chart-table" aria-label="Datos del gráfico"></table>
+          <div class="chart-legend" aria-hidden="true">
+            <span class="lg-item lg-bev"><span class="lg-swatch"></span> Eléctrico</span>
+            <span class="lg-item lg-ice"><span class="lg-swatch"></span> Combustión</span>
+            <span class="lg-item lg-be" id="lg-be-item" hidden>
+              <span class="lg-swatch"></span> Break-even
+            </span>
+          </div>
+        </div>
+      </figure>
+
       <div class="share">
         <button type="button" id="share-btn">Copiar enlace con este escenario</button>
         <span class="share-msg" id="share-msg" role="status"></span>
@@ -313,7 +352,7 @@ const iniIce = parInicial.horizontes[iniH].ice;
 
   <!-- Lógica interactiva (auto-bundled por Astro) -->
   <script>
-    import { calcularTCO, compararTCO } from '../lib/tco/calculadora.mjs';
+    import { calcularTCO, compararTCO, curvaTCO } from '../lib/tco/calculadora.mjs';
 
     const eur = (n: number) =>
       new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 }).format(n);
@@ -376,6 +415,194 @@ const iniIce = parInicial.horizontes[iniH].ice;
       return PAYLOAD.find((x) => x.slug === state.slug)!;
     }
 
+    // ── Gráfico TCO acumulado ──
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    const VB_W = 800;
+    const VB_H = 420;
+    const M = { top: 28, right: 24, bottom: 48, left: 72 };
+    const PLOT_W = VB_W - M.left - M.right;
+    const PLOT_H = VB_H - M.top - M.bottom;
+
+    function niceStep(range: number, ticks: number) {
+      const raw = range / ticks;
+      const pow = Math.pow(10, Math.floor(Math.log10(Math.abs(raw) || 1)));
+      const norm = raw / pow;
+      const mult = norm < 1.5 ? 1 : norm < 3 ? 2 : norm < 7 ? 5 : 10;
+      return mult * pow;
+    }
+
+    function fmtEur(n: number) {
+      if (Math.abs(n) >= 1000) {
+        return `${eur(n / 1000)} k€`;
+      }
+      return `${eur(n)} €`;
+    }
+
+    function el(tag: string, attrs: Record<string, string | number> = {}, text?: string) {
+      const n = document.createElementNS(SVG_NS, tag);
+      for (const [k, v] of Object.entries(attrs)) {
+        n.setAttribute(k, String(v));
+      }
+      if (text != null) n.textContent = text;
+      return n;
+    }
+
+    function renderChart(bevInput: any, iceInput: any) {
+      const svg = $('tco-chart');
+      const tbl = $('chart-table') as HTMLTableElement;
+
+      // Limpiar
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+      const curva = curvaTCO(bevInput, iceInput, {
+        km_anual: state.km,
+        horizonte_anios: state.horizonte,
+        precio_kwh_eur: state.kwh,
+        precio_litro_eur: state.litro,
+      }, { horizonte_max: state.horizonte, granularidad_anios: 0.25 });
+
+      const pts = curva.puntos;
+      const xMin = 0;
+      const xMax = curva.horizonte_max;
+
+      let yMin = Infinity;
+      let yMax = -Infinity;
+      for (const p of pts) {
+        yMin = Math.min(yMin, p.tco_bev, p.tco_ice);
+        yMax = Math.max(yMax, p.tco_bev, p.tco_ice);
+      }
+      // Colchón visual
+      const yRange = yMax - yMin || 1;
+      yMin -= yRange * 0.05;
+      yMax += yRange * 0.08;
+      if (yMin > 0) yMin = 0;
+
+      const x = (a: number) => M.left + ((a - xMin) / (xMax - xMin || 1)) * PLOT_W;
+      const y = (t: number) => M.top + (1 - (t - yMin) / (yMax - yMin || 1)) * PLOT_H;
+
+      // Grid horizontal (5 ticks)
+      const stepY = niceStep(yMax - yMin, 5);
+      const startY = Math.ceil(yMin / stepY) * stepY;
+      const yTicks: number[] = [];
+      for (let v = startY; v <= yMax; v += stepY) yTicks.push(v);
+
+      for (const v of yTicks) {
+        const yy = y(v);
+        svg.appendChild(el('line', {
+          x1: M.left, x2: M.left + PLOT_W, y1: yy, y2: yy,
+          class: v === 0 ? 'grid-zero' : 'grid-line',
+        }));
+        svg.appendChild(el('text', {
+          x: M.left - 10, y: yy + 4,
+          class: 'ax-label ax-y',
+          'text-anchor': 'end',
+        }, fmtEur(v)));
+      }
+
+      // X ticks (enteros cada año, o cada 0.5 si horizonte ≤ 3)
+      const paso = xMax <= 3 ? 0.5 : 1;
+      for (let t = 0; t <= xMax + 1e-6; t += paso) {
+        const xx = x(t);
+        svg.appendChild(el('line', {
+          x1: xx, x2: xx, y1: M.top, y2: M.top + PLOT_H,
+          class: 'grid-vert',
+        }));
+        svg.appendChild(el('text', {
+          x: xx, y: M.top + PLOT_H + 22,
+          class: 'ax-label ax-x',
+          'text-anchor': 'middle',
+        }, t % 1 === 0 ? `${t} año${t === 1 ? '' : 's'}` : `${t.toFixed(1)}`));
+      }
+
+      // Ejes
+      svg.appendChild(el('line', {
+        x1: M.left, x2: M.left, y1: M.top, y2: M.top + PLOT_H, class: 'ax-line',
+      }));
+      svg.appendChild(el('line', {
+        x1: M.left, x2: M.left + PLOT_W, y1: M.top + PLOT_H, y2: M.top + PLOT_H, class: 'ax-line',
+      }));
+
+      // Paths BEV y ICE
+      const pathBev = pts.map((p, i) =>
+        `${i === 0 ? 'M' : 'L'} ${x(p.anio).toFixed(1)} ${y(p.tco_bev).toFixed(1)}`,
+      ).join(' ');
+      const pathIce = pts.map((p, i) =>
+        `${i === 0 ? 'M' : 'L'} ${x(p.anio).toFixed(1)} ${y(p.tco_ice).toFixed(1)}`,
+      ).join(' ');
+
+      // Área BEV (fill suave)
+      const areaBev =
+        `M ${x(pts[0].anio).toFixed(1)} ${y(0).toFixed(1)} ` +
+        pts.map((p) => `L ${x(p.anio).toFixed(1)} ${y(p.tco_bev).toFixed(1)}`).join(' ') +
+        ` L ${x(pts[pts.length - 1].anio).toFixed(1)} ${y(0).toFixed(1)} Z`;
+      svg.appendChild(el('path', { d: areaBev, class: 'curve-bev-fill' }));
+
+      svg.appendChild(el('path', { d: pathIce, class: 'curve-ice' }));
+      svg.appendChild(el('path', { d: pathBev, class: 'curve-bev' }));
+
+      // Puntos extremos (último)
+      const last = pts[pts.length - 1];
+      svg.appendChild(el('circle', {
+        cx: x(last.anio), cy: y(last.tco_bev), r: 4, class: 'dot-bev',
+      }));
+      svg.appendChild(el('circle', {
+        cx: x(last.anio), cy: y(last.tco_ice), r: 4, class: 'dot-ice',
+      }));
+
+      // Break-even
+      const beItem = $('lg-be-item');
+      if (curva.breakeven_anio != null && curva.breakeven_anio > 0 && curva.breakeven_anio <= xMax) {
+        const bx = x(curva.breakeven_anio);
+        svg.appendChild(el('line', {
+          x1: bx, x2: bx, y1: M.top, y2: M.top + PLOT_H, class: 'be-line',
+        }));
+        const label = curva.breakeven_anio < 1
+          ? `Break-even: ${Math.round(curva.breakeven_anio * 12)} meses`
+          : `Break-even: año ${curva.breakeven_anio.toFixed(1)}`;
+        // Pill
+        const pad = 8;
+        const labelText = el('text', {
+          x: bx, y: M.top + 16, class: 'be-label', 'text-anchor': 'middle',
+        }, label);
+        // Calcular ancho aprox. (medio ancho del label en unidades SVG)
+        const approxW = label.length * 6.2 + pad * 2;
+        const pillX = Math.min(
+          Math.max(bx - approxW / 2, M.left + 4),
+          M.left + PLOT_W - approxW - 4,
+        );
+        svg.appendChild(el('rect', {
+          x: pillX, y: M.top + 4, width: approxW, height: 20, rx: 10, class: 'be-pill',
+        }));
+        svg.appendChild(el('text', {
+          x: pillX + approxW / 2, y: M.top + 18, class: 'be-label', 'text-anchor': 'middle',
+        }, label));
+        beItem.removeAttribute('hidden');
+      } else if (curva.rentable_desde_inicio) {
+        svg.appendChild(el('rect', {
+          x: M.left + 8, y: M.top + 4, width: 190, height: 20, rx: 10, class: 'be-pill',
+        }));
+        svg.appendChild(el('text', {
+          x: M.left + 103, y: M.top + 18, class: 'be-label', 'text-anchor': 'middle',
+        }, 'Rentable desde el día 1'));
+        beItem.removeAttribute('hidden');
+      } else {
+        beItem.setAttribute('hidden', '');
+      }
+
+      // Tabla sr-only (accesibilidad)
+      tbl.innerHTML =
+        '<caption>Coste acumulado anual BEV vs ICE (€)</caption>' +
+        '<thead><tr><th>Año</th><th>Eléctrico</th><th>Combustión</th></tr></thead>' +
+        '<tbody>' +
+        pts
+          .filter((p) => p.anio % 1 === 0)
+          .map((p) =>
+            `<tr><td>${p.anio}</td><td>${Math.round(p.tco_bev)}</td><td>${Math.round(p.tco_ice)}</td></tr>`,
+          )
+          .join('') +
+        '</tbody>';
+    }
+
     function recalc() {
       const par = currentPar();
       const fixtures = par.horizontes[state.horizonte];
@@ -424,6 +651,9 @@ const iniIce = parInicial.horizontes[iniH].ice;
         `<strong>${par.bevName}</strong> ${sign} ` +
         `<strong>${eur(abs)} €</strong> (${pct.toFixed(1)} %) ` +
         `frente al <strong>${par.iceName}</strong>.`;
+
+      // Gráfico
+      renderChart(bevInput, iceInput);
 
       writeUrl();
     }
@@ -848,6 +1078,172 @@ const iniIce = parInicial.horizontes[iniH].ice;
       font-variant-numeric: tabular-nums;
       font-weight: 500;
       text-align: right;
+    }
+
+    /* ── Gráfico TCO acumulado ── */
+    .tco-chart-fig {
+      margin: clamp(1.5rem, 4vw, 2.5rem) 0 0;
+      padding: clamp(1.25rem, 2.5vw, 2rem);
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .tco-chart-fig figcaption {
+      margin-bottom: 1.25rem;
+    }
+    .tco-chart-fig h3 {
+      font-size: 1.125rem;
+      font-weight: 500;
+      margin: 0 0 0.375rem;
+    }
+    .chart-sub {
+      font-size: 0.9375rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin: 0;
+      max-width: 640px;
+    }
+    .chart-sub em {
+      font-family: var(--font-serif);
+      font-style: italic;
+    }
+    .chart-wrap {
+      width: 100%;
+    }
+    #tco-chart {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+    }
+    .grid-line {
+      stroke: var(--border-subtle);
+      stroke-width: 1;
+    }
+    .grid-vert {
+      stroke: var(--border-subtle);
+      stroke-width: 1;
+      stroke-dasharray: 2 4;
+      opacity: 0.55;
+    }
+    .grid-zero {
+      stroke: var(--border);
+      stroke-width: 1;
+    }
+    .ax-line {
+      stroke: var(--border);
+      stroke-width: 1;
+    }
+    .ax-label {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      fill: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .curve-bev {
+      fill: none;
+      stroke: var(--yellow);
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .curve-bev-fill {
+      fill: var(--yellow);
+      opacity: 0.1;
+    }
+    .curve-ice {
+      fill: none;
+      stroke: var(--gray-600);
+      stroke-width: 2;
+      stroke-dasharray: 6 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    [data-theme="dark"] .curve-ice { stroke: var(--gray-300); }
+    .dot-bev {
+      fill: var(--yellow);
+      stroke: var(--card-bg);
+      stroke-width: 1.5;
+    }
+    .dot-ice {
+      fill: var(--gray-600);
+      stroke: var(--card-bg);
+      stroke-width: 1.5;
+    }
+    [data-theme="dark"] .dot-ice { fill: var(--gray-300); }
+    .be-line {
+      stroke: var(--text);
+      stroke-width: 1;
+      stroke-dasharray: 3 3;
+      opacity: 0.55;
+    }
+    .be-pill {
+      fill: var(--text);
+    }
+    .be-label {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 500;
+      fill: var(--card-bg);
+      font-variant-numeric: tabular-nums;
+    }
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+    }
+    .lg-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .lg-swatch {
+      display: inline-block;
+      width: 18px;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--yellow);
+    }
+    .lg-ice .lg-swatch {
+      background: linear-gradient(
+        to right,
+        var(--gray-600) 0,
+        var(--gray-600) 5px,
+        transparent 5px,
+        transparent 8px,
+        var(--gray-600) 8px,
+        var(--gray-600) 13px,
+        transparent 13px,
+        transparent 16px,
+        var(--gray-600) 16px,
+        var(--gray-600) 18px
+      );
+    }
+    [data-theme="dark"] .lg-ice .lg-swatch {
+      background: linear-gradient(
+        to right,
+        var(--gray-300) 0,
+        var(--gray-300) 5px,
+        transparent 5px,
+        transparent 8px,
+        var(--gray-300) 8px,
+        var(--gray-300) 13px,
+        transparent 13px,
+        transparent 16px,
+        var(--gray-300) 16px,
+        var(--gray-300) 18px
+      );
+    }
+    .lg-be .lg-swatch {
+      background: var(--text);
+      height: 12px;
+      width: 2px;
     }
 
     .share {

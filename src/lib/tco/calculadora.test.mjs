@@ -11,7 +11,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { calcularTCO, compararTCO } from './calculadora.mjs';
+import { calcularTCO, compararTCO, curvaTCO, depreciacionFraccion } from './calculadora.mjs';
 import { bevFromJson, iceFromJson } from './resolver.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -301,4 +301,108 @@ test('Propiedad — ICE ignora el campo ayuda_eur (aunque se pase)', () => {
     seguro_anual_eur: 400,
   });
   assert.equal(tco.ayudas_eur, 0);
+});
+
+// ────────────────────────────────────────────────────────────────
+// Curva TCO acumulada y break-even (Gráfico §7.2)
+// ────────────────────────────────────────────────────────────────
+
+test('depreciacionFraccion — anchors exactos en t=0, 3, 5, 10', () => {
+  const coche = {
+    tren: 'BEV', pvp_eur: 30_000, consumo_wltp: 15, consumo_real_factor: 1.15,
+    depreciacion_pct: 0.5, mantenimiento_anual_eur: 150, seguro_anual_eur: 500,
+    depreciacion_anchors: { y3: 0.36, y5: 0.50, y10: 0.70 },
+  };
+  eur(depreciacionFraccion(coche, 0) * 1000, 0, 0.01);
+  eur(depreciacionFraccion(coche, 3) * 1000, 360, 0.01);
+  eur(depreciacionFraccion(coche, 5) * 1000, 500, 0.01);
+  eur(depreciacionFraccion(coche, 10) * 1000, 700, 0.01);
+  eur(depreciacionFraccion(coche, 15) * 1000, 700, 0.01);
+});
+
+test('depreciacionFraccion — interpolación lineal en tramos intermedios', () => {
+  const coche = {
+    tren: 'BEV', pvp_eur: 30_000, consumo_wltp: 15, consumo_real_factor: 1.15,
+    depreciacion_pct: 0.5, mantenimiento_anual_eur: 150, seguro_anual_eur: 500,
+    depreciacion_anchors: { y3: 0.30, y5: 0.50, y10: 0.70 },
+  };
+  eur(depreciacionFraccion(coche, 1) * 1000, 100, 0.01);
+  eur(depreciacionFraccion(coche, 4) * 1000, 400, 0.01);
+  eur(depreciacionFraccion(coche, 7.5) * 1000, 600, 0.01);
+});
+
+test('curvaTCO — coherente con calcularTCO al horizonte del perfil', () => {
+  const bev = bevFromJson(
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/coches/tesla-model-3-rwd-highland.json'), 'utf8')),
+    { horizonte_anios: 5, aplicar_ayuda: true },
+  );
+  const ice = iceFromJson(
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/ice-equivalentes/bmw-320i-sedan.json'), 'utf8')),
+    { horizonte_anios: 5 },
+  );
+  const bk_bev = calcularTCO(bev, { horizonte_anios: 5 });
+  const bk_ice = calcularTCO(ice, { horizonte_anios: 5 });
+  const curva = curvaTCO(bev, ice, {}, { horizonte_max: 5, granularidad_anios: 0.25 });
+  const ultimo = curva.puntos[curva.puntos.length - 1];
+  eur(ultimo.anio, 5, 0.001);
+  eur(ultimo.tco_bev, bk_bev.tco_total_eur, 1);
+  eur(ultimo.tco_ice, bk_ice.tco_total_eur, 1);
+});
+
+test('curvaTCO — t=0: BEV arranca en −ayuda (Plan Auto+), ICE arranca en 0', () => {
+  const bev = {
+    tren: 'BEV', pvp_eur: 40_000, ayuda_eur: 4_500, consumo_wltp: 15,
+    consumo_real_factor: 1.15, depreciacion_pct: 0.5,
+    mantenimiento_anual_eur: 150, seguro_anual_eur: 500,
+    depreciacion_anchors: { y3: 0.36, y5: 0.50, y10: 0.70 },
+  };
+  const ice = {
+    tren: 'ICE', pvp_eur: 30_000, consumo_wltp: 6, consumo_real_factor: 1.1,
+    depreciacion_pct: 0.5, mantenimiento_anual_eur: 300, seguro_anual_eur: 500,
+    depreciacion_anchors: { y3: 0.40, y5: 0.55, y10: 0.75 },
+  };
+  const c = curvaTCO(bev, ice);
+  const t0 = c.puntos[0];
+  eur(t0.anio, 0, 0.001);
+  eur(t0.tco_bev, -4_500, 0.01);
+  eur(t0.tco_ice, 0, 0.01);
+});
+
+test('curvaTCO — monotonicidad: TCO acumulado nunca decrece tras t=0', () => {
+  const bev = {
+    tren: 'BEV', pvp_eur: 40_000, ayuda_eur: 4_500, consumo_wltp: 15,
+    consumo_real_factor: 1.15, depreciacion_pct: 0.5,
+    mantenimiento_anual_eur: 150, seguro_anual_eur: 500,
+    depreciacion_anchors: { y3: 0.36, y5: 0.50, y10: 0.70 },
+  };
+  const ice = {
+    tren: 'ICE', pvp_eur: 30_000, consumo_wltp: 6, consumo_real_factor: 1.1,
+    depreciacion_pct: 0.5, mantenimiento_anual_eur: 300, seguro_anual_eur: 500,
+    depreciacion_anchors: { y3: 0.40, y5: 0.55, y10: 0.75 },
+  };
+  const c = curvaTCO(bev, ice, {}, { horizonte_max: 5, granularidad_anios: 0.1 });
+  for (let i = 2; i < c.puntos.length; i++) {
+    assert.ok(
+      c.puntos[i].tco_bev >= c.puntos[i - 1].tco_bev - 0.01,
+      `BEV decrece en t=${c.puntos[i].anio}`,
+    );
+    assert.ok(
+      c.puntos[i].tco_ice >= c.puntos[i - 1].tco_ice - 0.01,
+      `ICE decrece en t=${c.puntos[i].anio}`,
+    );
+  }
+});
+
+test('curvaTCO — break-even del Tesla Model 3 con Plan Auto+ es desde t=0', () => {
+  const bev = bevFromJson(
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/coches/tesla-model-3-rwd-highland.json'), 'utf8')),
+    { horizonte_anios: 5, aplicar_ayuda: true },
+  );
+  const ice = iceFromJson(
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/ice-equivalentes/bmw-320i-sedan.json'), 'utf8')),
+    { horizonte_anios: 5 },
+  );
+  const c = curvaTCO(bev, ice, {}, { horizonte_max: 5 });
+  assert.equal(c.rentable_desde_inicio, true);
+  assert.equal(c.breakeven_anio, 0);
 });
