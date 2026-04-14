@@ -709,9 +709,93 @@
       "fuente_detalle": "Metodologia enchufa2 v0.3"
     }
   },
+  "specs_tco": {
+    "depreciacion_y3_pct": {
+      "valor": 0.40,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "BEV microurbano chino (fabricado en China). Depreciación acumulada alta por coste bajo PVP y mercado usado limitado: muestra Coches.net Spring 2023 con 30-45k km: retención ~60% del PVP lista. La 2ª gen 2024 ha presionado precios de la anterior.",
+      "notas": "Revisar con muestra Coches.net ampliada en 2027-Q2."
+    },
+    "depreciacion_y5_pct": {
+      "valor": 0.55,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección: y3=40% + ~7.5%/año = ~55% a 5 años. Alineado con curva sectorial BEV segmento A."
+    },
+    "depreciacion_y10_pct": {
+      "valor": 0.76,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Decay asintótico. Alta incertidumbre por evolución tecnológica (batería estado sólido, software-defined vehicle, disponibilidad recambios)."
+    },
+    "mantenimiento_anual_eur": {
+      "valor": 190,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Plan mantenimiento oficial estimado + consumibles (neumáticos, pastillas poco usadas, ITV prorrateada). BEV simple sin aceite/filtros motor.",
+      "notas": "Pendiente tarifa oficial 2026 servicio marca.",
+      "mantenimiento_cobertura": "Inspección alta/baja tensión, líquido frenos c/2a, filtro habitáculo c/2a. Neumáticos y ITV excluidos."
+    },
+    "seguro_anual_eur": {
+      "valor": 380,
+      "fuente_tipo": "estimacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Perfil enchufa2 estándar: microurbano BEV 44 CV, prima típica 350-420€/año todo riesgo 500€. Segmento A BEV tiene prima ligeramente superior al ICE equivalente (i10) por piezas específicas.",
+      "notas": "Pendiente 3 cotizaciones específicas Rastreator/Mapfre/Mutua con perfil enchufa2 estándar.",
+      "seguro_cotizaciones": []
+    },
+    "precio_electricidad_eur_kwh": {
+      "valor": null,
+      "fuente_tipo": "parametros_calculador",
+      "verificado": false,
+      "unidad": "€/kWh",
+      "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
+    },
+    "consumo_real_factor": {
+      "valor": 1.20,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2024-10-01",
+      "fuente_detalle": "EV Database + informes usuarios — Spring Essential 25 kWh: 13.7 WLTP → ~16.4 kWh/100km real. Factor 1.20 alto por aerodinámica limitada y velocidad máxima 125 km/h que penaliza en autopista.",
+      "verificado": true,
+      "confianza": "alta",
+      "unidad": "multiplicador"
+    },
+    "equivalente_ice": {
+      "tipo": "benchmark_segmento",
+      "segmento": "A",
+      "modelo_id": "hyundai-i10-mpi",
+      "razon": "Dacia Spring compite en A microurbano (3,70m, 225 km WLTP). Benchmark default: Hyundai i10 1.0 MPI 67 CV. Alternativa: Dacia Sandero SCe 65 CV (mismo DNA marca).",
+      "fuente_tipo": "decision_editorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "confianza": "alta"
+    }
+  },
   "meta": {
-    "fecha_actualizacion": "2026-04-05",
-    "estado": "pendiente",
-    "notas_my": null
+    "fecha_actualizacion": "2026-04-14",
+    "estado": "ficha_completa_tco_borrador",
+    "notas_my": null,
+    "tco_scaffolded": true,
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "media",
+    "tco_revision_requerida": "Muestra Coches.net 2023-2024 con 30-45k km + 3 cotizaciones seguro específicas + tarifa oficial mantenimiento marca 2026"
   }
 }

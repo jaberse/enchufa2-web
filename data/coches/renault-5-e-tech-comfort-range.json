@@ -614,9 +614,93 @@
       "fuente_detalle": "Web oficial Renault España"
     }
   },
+  "specs_tco": {
+    "depreciacion_y3_pct": {
+      "valor": 0.36,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Modelo nuevo lanzado 2024 con demanda alta en España: retención esperada ~64% a 3 años por efecto novedad y marca nacional (Palencia). Sin muestra Coches.net aún (primeros 2024 cumplen 3 años en 2027).",
+      "notas": "Revisar con muestra Coches.net ampliada en 2027-Q2."
+    },
+    "depreciacion_y5_pct": {
+      "valor": 0.50,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección: y3=36% + ~7.0%/año = ~50% a 5 años. Alineado con curva sectorial BEV segmento B."
+    },
+    "depreciacion_y10_pct": {
+      "valor": 0.70,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Decay asintótico. Alta incertidumbre por evolución tecnológica (batería estado sólido, software-defined vehicle, disponibilidad recambios)."
+    },
+    "mantenimiento_anual_eur": {
+      "valor": 150,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Plan mantenimiento oficial estimado + consumibles (neumáticos, pastillas poco usadas, ITV prorrateada). BEV simple sin aceite/filtros motor.",
+      "notas": "Pendiente tarifa oficial 2026 servicio marca.",
+      "mantenimiento_cobertura": "Inspección alta/baja tensión, líquido frenos c/2a, filtro habitáculo c/2a. Neumáticos y ITV excluidos."
+    },
+    "seguro_anual_eur": {
+      "valor": 520,
+      "fuente_tipo": "estimacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Perfil enchufa2 estándar: utilitario BEV 150 CV, prima típica 480-580€/año todo riesgo 500€.",
+      "notas": "Pendiente 3 cotizaciones específicas Rastreator/Mapfre/Mutua con perfil enchufa2 estándar.",
+      "seguro_cotizaciones": []
+    },
+    "precio_electricidad_eur_kwh": {
+      "valor": null,
+      "fuente_tipo": "parametros_calculador",
+      "verificado": false,
+      "unidad": "€/kWh",
+      "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
+    },
+    "consumo_real_factor": {
+      "valor": 1.18,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2024-10-01",
+      "fuente_detalle": "EV Database 2025 — Renault 5 Comfort Range 52 kWh: 15.2 WLTP → ~17.9 kWh/100km real. Factor 1.18 por formato utilitario alto.",
+      "verificado": true,
+      "confianza": "alta",
+      "unidad": "multiplicador"
+    },
+    "equivalente_ice": {
+      "tipo": "benchmark_segmento",
+      "segmento": "B",
+      "modelo_id": "dacia-sandero-tce",
+      "razon": "Renault 5 E-Tech compite en B urbano (3,92m, 410 km WLTP). Benchmark default: Dacia Sandero TCe 100 (rey ventas segmento). Alternativas: Clio TCe, Polo TSI.",
+      "fuente_tipo": "decision_editorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "confianza": "alta"
+    }
+  },
   "meta": {
-    "fecha_actualizacion": "2026-04-05",
-    "estado": "pendiente",
-    "notas_my": null
+    "fecha_actualizacion": "2026-04-14",
+    "estado": "ficha_completa_tco_borrador",
+    "notas_my": null,
+    "tco_scaffolded": true,
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "media",
+    "tco_revision_requerida": "Muestra Coches.net 2023-2024 con 30-45k km + 3 cotizaciones seguro específicas + tarifa oficial mantenimiento marca 2026"
   }
 }
