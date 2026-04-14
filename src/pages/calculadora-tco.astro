@@ -559,12 +559,8 @@ const iniIce = parInicial.horizontes[iniH].ice;
         const label = curva.breakeven_anio < 1
           ? `Break-even: ${Math.round(curva.breakeven_anio * 12)} meses`
           : `Break-even: año ${curva.breakeven_anio.toFixed(1)}`;
-        // Pill
-        const pad = 8;
-        const labelText = el('text', {
-          x: bx, y: M.top + 16, class: 'be-label', 'text-anchor': 'middle',
-        }, label);
-        // Calcular ancho aprox. (medio ancho del label en unidades SVG)
+        // Pill con pad y ancho aprox. (font-size 11 ⇒ ~6.2 px/char)
+        const pad = 10;
         const approxW = label.length * 6.2 + pad * 2;
         const pillX = Math.min(
           Math.max(bx - approxW / 2, M.left + 4),
@@ -1116,42 +1112,50 @@ const iniIce = parInicial.horizontes[iniH].ice;
       display: block;
       overflow: visible;
     }
-    .grid-line {
+    /* Clases aplicadas a nodos SVG creados por JS (createElementNS).
+       Astro no añade data-astro-cid a nodos dinámicos, así que
+       usamos :global() para que los estilos los alcancen. */
+    #tco-chart :global(.grid-line) {
       stroke: var(--border-subtle);
       stroke-width: 1;
+      fill: none;
     }
-    .grid-vert {
+    #tco-chart :global(.grid-vert) {
       stroke: var(--border-subtle);
       stroke-width: 1;
       stroke-dasharray: 2 4;
       opacity: 0.55;
+      fill: none;
     }
-    .grid-zero {
+    #tco-chart :global(.grid-zero) {
       stroke: var(--border);
       stroke-width: 1;
+      fill: none;
     }
-    .ax-line {
+    #tco-chart :global(.ax-line) {
       stroke: var(--border);
       stroke-width: 1;
+      fill: none;
     }
-    .ax-label {
+    #tco-chart :global(.ax-label) {
       font-family: var(--font-sans);
       font-size: 11px;
       fill: var(--text-muted);
       font-variant-numeric: tabular-nums;
     }
-    .curve-bev {
+    #tco-chart :global(.curve-bev) {
       fill: none;
       stroke: var(--yellow);
       stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
-    .curve-bev-fill {
+    #tco-chart :global(.curve-bev-fill) {
       fill: var(--yellow);
-      opacity: 0.1;
+      fill-opacity: 0.12;
+      stroke: none;
     }
-    .curve-ice {
+    #tco-chart :global(.curve-ice) {
       fill: none;
       stroke: var(--gray-600);
       stroke-width: 2;
@@ -1159,28 +1163,30 @@ const iniIce = parInicial.horizontes[iniH].ice;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
-    [data-theme="dark"] .curve-ice { stroke: var(--gray-300); }
-    .dot-bev {
+    [data-theme="dark"] #tco-chart :global(.curve-ice) { stroke: var(--gray-300); }
+    #tco-chart :global(.dot-bev) {
       fill: var(--yellow);
       stroke: var(--card-bg);
       stroke-width: 1.5;
     }
-    .dot-ice {
+    #tco-chart :global(.dot-ice) {
       fill: var(--gray-600);
       stroke: var(--card-bg);
       stroke-width: 1.5;
     }
-    [data-theme="dark"] .dot-ice { fill: var(--gray-300); }
-    .be-line {
+    [data-theme="dark"] #tco-chart :global(.dot-ice) { fill: var(--gray-300); }
+    #tco-chart :global(.be-line) {
       stroke: var(--text);
       stroke-width: 1;
       stroke-dasharray: 3 3;
       opacity: 0.55;
+      fill: none;
     }
-    .be-pill {
+    #tco-chart :global(.be-pill) {
       fill: var(--text);
+      stroke: none;
     }
-    .be-label {
+    #tco-chart :global(.be-label) {
       font-family: var(--font-sans);
       font-size: 11px;
       font-weight: 500;
