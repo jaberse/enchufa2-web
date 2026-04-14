@@ -611,8 +611,92 @@
     }
   },
   "meta": {
-    "fecha_actualizacion": "2026-04-05",
-    "estado": "pendiente",
-    "notas_my": null
+    "fecha_actualizacion": "2026-04-14",
+    "estado": "ficha_completa_tco_borrador",
+    "notas_my": null,
+    "tco_scaffolded": true,
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "media",
+    "tco_revision_requerida": "Muestra Coches.net 2023-2024 con 30-45k km + 3 cotizaciones seguro específicas + tarifa oficial mantenimiento marca 2026"
+  },
+  "specs_tco": {
+    "depreciacion_y3_pct": {
+      "valor": 0.34,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "BMW premium alemán Ratisbona con retención sólida. iX2 coupé tiene demanda 2ª mano algo inferior a iX1 por formato.",
+      "notas": "Pendiente muestra Coches.net 2023-2024 con 30-45k km."
+    },
+    "depreciacion_y5_pct": {
+      "valor": 0.48,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección: y3=34% + ~7.0%/año → ~48% a 5 años."
+    },
+    "depreciacion_y10_pct": {
+      "valor": 0.67,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Decay asintótico. Alta incertidumbre por evolución tecnológica batería, software-defined vehicle y disponibilidad recambios."
+    },
+    "mantenimiento_anual_eur": {
+      "valor": 380,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Plan BMW Service Inclusive 3y/40k km ≈ 780€ → ~260€/año + consumibles AWD premium (~120€/año).",
+      "notas": "Pendiente tarifa oficial 2026 servicio marca.",
+      "mantenimiento_cobertura": "Inspección alta/baja tensión, líquido frenos c/2a, filtro habitáculo c/2a. Neumáticos y ITV excluidos."
+    },
+    "seguro_anual_eur": {
+      "valor": 880,
+      "fuente_tipo": "estimacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Perfil enchufa2 estándar: C-SUV BEV premium AWD 313 CV, prima alta 830-930€/año todo riesgo 500€.",
+      "notas": "Pendiente 3 cotizaciones específicas Rastreator/Mapfre/Mutua con perfil enchufa2 estándar.",
+      "seguro_cotizaciones": []
+    },
+    "precio_electricidad_eur_kwh": {
+      "valor": null,
+      "fuente_tipo": "parametros_calculador",
+      "verificado": false,
+      "unidad": "€/kWh",
+      "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
+    },
+    "consumo_real_factor": {
+      "valor": 1.16,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2025-01-15",
+      "fuente_detalle": "EV Database 2025 — iX2 xDrive30 64.8 kWh útil: 16.3 WLTP → ~18.9 kWh/100km real. Factor 1.16 por SAC coupé AWD.",
+      "verificado": true,
+      "confianza": "alta",
+      "unidad": "multiplicador"
+    },
+    "equivalente_ice": {
+      "tipo": "benchmark_segmento",
+      "segmento": "C-SUV",
+      "modelo_id": "bmw-x1-sdrive18i",
+      "razon": "iX2 xDrive30 es la versión coupé del iX1 xDrive30 (plataforma UKL2/FAAR compartida). Benchmark intra-marca: BMW X1 sDrive18i. Comparación directa premium compacto SUV.",
+      "fuente_tipo": "decision_editorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "confianza": "alta"
+    }
   }
 }

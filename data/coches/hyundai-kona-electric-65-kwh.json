@@ -710,8 +710,92 @@
     }
   },
   "meta": {
-    "fecha_actualizacion": "2026-04-05",
-    "estado": "pendiente",
-    "notas_my": null
+    "fecha_actualizacion": "2026-04-14",
+    "estado": "ficha_completa_tco_borrador",
+    "notas_my": null,
+    "tco_scaffolded": true,
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "media",
+    "tco_revision_requerida": "Muestra Coches.net 2023-2024 con 30-45k km + 3 cotizaciones seguro específicas + tarifa oficial mantenimiento marca 2026"
+  },
+  "specs_tco": {
+    "depreciacion_y3_pct": {
+      "valor": 0.36,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Hyundai Kona marca consolidada España con demanda 2ª mano alta. 2ª gen 2023 con plataforma dedicada: retención mejor que 1ª gen.",
+      "notas": "Pendiente muestra Coches.net 2023-2024 con 30-45k km."
+    },
+    "depreciacion_y5_pct": {
+      "valor": 0.5,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección: y3=36% + ~7.0%/año → ~50% a 5 años."
+    },
+    "depreciacion_y10_pct": {
+      "valor": 0.7,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Decay asintótico. Alta incertidumbre por evolución tecnológica batería, software-defined vehicle y disponibilidad recambios."
+    },
+    "mantenimiento_anual_eur": {
+      "valor": 200,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Plan Hyundai 3y/45k km ≈ 480€ → ~160€/año + consumibles.",
+      "notas": "Pendiente tarifa oficial 2026 servicio marca.",
+      "mantenimiento_cobertura": "Inspección alta/baja tensión, líquido frenos c/2a, filtro habitáculo c/2a. Neumáticos y ITV excluidos."
+    },
+    "seguro_anual_eur": {
+      "valor": 630,
+      "fuente_tipo": "estimacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Perfil enchufa2 estándar: C-SUV BEV 218 CV, prima 580-680€/año todo riesgo 500€.",
+      "notas": "Pendiente 3 cotizaciones específicas Rastreator/Mapfre/Mutua con perfil enchufa2 estándar.",
+      "seguro_cotizaciones": []
+    },
+    "precio_electricidad_eur_kwh": {
+      "valor": null,
+      "fuente_tipo": "parametros_calculador",
+      "verificado": false,
+      "unidad": "€/kWh",
+      "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
+    },
+    "consumo_real_factor": {
+      "valor": 1.14,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2025-01-15",
+      "fuente_detalle": "EV Database 2025 — Kona Electric 65.4 kWh: 14.7 WLTP → ~16.8 kWh/100km real. Factor 1.14 por eficiencia alta plataforma K3 dedicada.",
+      "verificado": true,
+      "confianza": "alta",
+      "unidad": "multiplicador"
+    },
+    "equivalente_ice": {
+      "tipo": "benchmark_segmento",
+      "segmento": "C-SUV",
+      "modelo_id": "volkswagen-tiguan-tsi",
+      "razon": "Kona Electric 2ª gen compite en C-SUV mainstream (4,35m, 510 km WLTP). Benchmark default: VW Tiguan. Alternativas: Toyota RAV4 HEV, Hyundai Tucson HEV.",
+      "fuente_tipo": "decision_editorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "confianza": "alta"
+    }
   }
 }

@@ -612,8 +612,92 @@
     }
   },
   "meta": {
-    "fecha_actualizacion": "2026-04-05",
-    "estado": "pendiente",
-    "notas_my": null
+    "fecha_actualizacion": "2026-04-14",
+    "estado": "ficha_completa_tco_borrador",
+    "notas_my": null,
+    "tco_scaffolded": true,
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "media",
+    "tco_revision_requerida": "Muestra Coches.net 2023-2024 con 30-45k km + 3 cotizaciones seguro específicas + tarifa oficial mantenimiento marca 2026"
+  },
+  "specs_tco": {
+    "depreciacion_y3_pct": {
+      "valor": 0.42,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "BYD marca china en proceso de consolidación en España: retención inferior a rivales coreanos/europeos. Demanda 2ª mano aún baja pero subiendo con red de concesionarios.",
+      "notas": "Pendiente muestra Coches.net 2023-2024 con 30-45k km."
+    },
+    "depreciacion_y5_pct": {
+      "valor": 0.56,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección: y3=42% + ~7.0%/año → ~56% a 5 años."
+    },
+    "depreciacion_y10_pct": {
+      "valor": 0.78,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Decay asintótico. Alta incertidumbre por evolución tecnológica batería, software-defined vehicle y disponibilidad recambios."
+    },
+    "mantenimiento_anual_eur": {
+      "valor": 210,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Plan servicio BYD 2y/40k km ≈ 400€ → ~200€/año + neumáticos/líquidos. SUV pesado penaliza neumáticos.",
+      "notas": "Pendiente tarifa oficial 2026 servicio marca.",
+      "mantenimiento_cobertura": "Inspección alta/baja tensión, líquido frenos c/2a, filtro habitáculo c/2a. Neumáticos y ITV excluidos."
+    },
+    "seguro_anual_eur": {
+      "valor": 610,
+      "fuente_tipo": "estimacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Perfil enchufa2 estándar: C-SUV BEV 204 CV, prima típica 560-670€/año todo riesgo 500€.",
+      "notas": "Pendiente 3 cotizaciones específicas Rastreator/Mapfre/Mutua con perfil enchufa2 estándar.",
+      "seguro_cotizaciones": []
+    },
+    "precio_electricidad_eur_kwh": {
+      "valor": null,
+      "fuente_tipo": "parametros_calculador",
+      "verificado": false,
+      "unidad": "€/kWh",
+      "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
+    },
+    "consumo_real_factor": {
+      "valor": 1.15,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2025-01-15",
+      "fuente_detalle": "EV Database 2025 — Atto 3 Comfort 60.5 kWh: 16.7 WLTP → ~19.2 kWh/100km real. Factor 1.15 por SUV alto con consumo alto en autopista.",
+      "verificado": true,
+      "confianza": "alta",
+      "unidad": "multiplicador"
+    },
+    "equivalente_ice": {
+      "tipo": "benchmark_segmento",
+      "segmento": "C-SUV",
+      "modelo_id": "volkswagen-tiguan-tsi",
+      "razon": "Atto 3 compite en C-SUV mainstream (4,46m, 420 km WLTP). Benchmark default: VW Tiguan 1.5 eTSI 150 CV. Alternativas: Toyota RAV4 HEV, Hyundai Tucson HEV.",
+      "fuente_tipo": "decision_editorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "confianza": "alta"
+    }
   }
 }
