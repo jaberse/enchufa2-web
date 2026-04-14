@@ -405,6 +405,35 @@ test('curvaTCO — break-even del Tesla Model 3 con Plan Auto+ es desde t=0', ()
   const c = curvaTCO(bev, ice, {}, { horizonte_max: 5 });
   assert.equal(c.rentable_desde_inicio, true);
   assert.equal(c.breakeven_anio, 0);
+  assert.equal(c.rentable_al_final, true, 'Tesla mantiene ventaja a 5 años');
+  assert.equal(c.perdida_rentabilidad_anio, null, 'Tesla no pierde ventaja en el horizonte');
+});
+
+test('curvaTCO — Hyundai Inster LR: rentable al inicio pero ICE lo alcanza', () => {
+  // Caso real: el Inster Long Range arranca con Plan Auto+ (-3.375 €)
+  // pero su depreciación supera los 16 k€ a 5 años, mientras que el
+  // i10 se deprecia mucho menos en términos absolutos. El BEV cruza
+  // al alza antes del año 5. La etiqueta correcta no es "Rentable
+  // desde el día 1" sino "Rentable hasta año X".
+  const bev = bevFromJson(
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/coches/hyundai-inster-long-range.json'), 'utf8')),
+    { horizonte_anios: 5, aplicar_ayuda: true },
+  );
+  const ice = iceFromJson(
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/ice-equivalentes/hyundai-i10-mpi.json'), 'utf8')),
+    { horizonte_anios: 5 },
+  );
+  assert.ok((bev.ayuda_eur ?? 0) > 0, 'Inster LR debe tener Plan Auto+ aplicado');
+
+  const c = curvaTCO(bev, ice, {}, { horizonte_max: 5, granularidad_anios: 0.25 });
+  assert.equal(c.rentable_desde_inicio, true, 'BEV arranca por debajo (ayuda)');
+  assert.equal(c.rentable_al_final, false, 'ICE acaba siendo más barato');
+  assert.ok(
+    c.perdida_rentabilidad_anio != null &&
+      c.perdida_rentabilidad_anio > 0 &&
+      c.perdida_rentabilidad_anio < 5,
+    'Debe detectarse un cruce (pérdida de rentabilidad) dentro del horizonte',
+  );
 });
 
 test('curvaTCO — empate en t=0 sin ayuda y BEV siempre más caro → sin break-even', () => {
@@ -429,4 +458,6 @@ test('curvaTCO — empate en t=0 sin ayuda y BEV siempre más caro → sin break
   assert.ok(last.tco_bev > last.tco_ice, 'BEV debe ser más caro al final del horizonte');
   assert.equal(c.rentable_desde_inicio, false);
   assert.equal(c.breakeven_anio, null);
+  assert.equal(c.rentable_al_final, false);
+  assert.equal(c.perdida_rentabilidad_anio, null, 'No ha habido rentabilidad que perder');
 });

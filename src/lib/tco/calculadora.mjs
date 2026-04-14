@@ -211,12 +211,17 @@ function tcoAcumulado(coche, p, t) {
 
 /**
  * Calcula la curva TCO acumulado (BEV vs ICE) en función del tiempo, muestreada
- * a `granularidad_anios` (default 0.25 años = trimestral). Devuelve también el
- * instante de break-even si el BEV cruza al ICE en el rango.
+ * a `granularidad_anios` (default 0.25 años = trimestral). Detecta los cruces
+ * de las dos curvas para que la UI pueda contar la historia real: cuándo el
+ * BEV empieza a ganar, cuándo deja de ganar, si se mantiene ventaja al final.
  *
- * Break-even: primer t ≥ 0 en el que tco_bev(t) ≤ tco_ice(t). Si el BEV ya
- * empieza por debajo en t=0 (por efecto de la ayuda), breakeven = 0 y se
- * devuelve `rentable_desde_inicio: true`.
+ * Semántica de campos:
+ *  - `rentable_desde_inicio`: BEV(0) < ICE(0) estricto (efecto ayuda).
+ *  - `breakeven_anio`: primer t>0 donde el BEV pasa de perder/empatar a
+ *     ganar. Incluye t=0 si `rentable_desde_inicio=true`.
+ *  - `perdida_rentabilidad_anio`: primer t>0 donde el BEV, siendo más
+ *     barato, pasa a ser más caro que el ICE.
+ *  - `rentable_al_final`: BEV(horizonte_max) ≤ ICE(horizonte_max).
  *
  * @param {InputCoche} bev
  * @param {InputCoche} ice
@@ -225,7 +230,9 @@ function tcoAcumulado(coche, p, t) {
  * @returns {{
  *   puntos: Array<{ anio: number, tco_bev: number, tco_ice: number }>,
  *   breakeven_anio: number | null,
+ *   perdida_rentabilidad_anio: number | null,
  *   rentable_desde_inicio: boolean,
+ *   rentable_al_final: boolean,
  *   horizonte_max: number,
  *   params: import('./params.mjs').TcoParams
  * }}
@@ -244,6 +251,7 @@ export function curvaTCO(bev, ice, overrides = {}, opts = {}) {
   /** @type {Array<{anio:number, tco_bev:number, tco_ice:number}>} */
   const puntos = [];
   let breakeven_anio = null;
+  let perdida_rentabilidad_anio = null;
   let rentable_desde_inicio = false;
   let prev = null;
 
@@ -254,31 +262,49 @@ export function curvaTCO(bev, ice, overrides = {}, opts = {}) {
     const tco_ice = tcoAcumulado(ice, p, t);
     puntos.push({ anio: t, tco_bev, tco_ice });
 
-    // Detectar cruce BEV ↓ ICE: primer t donde tco_bev < tco_ice.
-    // En t=0 solo cuenta "rentable desde el inicio" si el BEV empieza
-    // ESTRICTAMENTE por debajo del ICE (efecto ayuda Plan Auto+). Si
-    // ambos arrancan en 0 € (sin ayuda) es empate, no ventaja.
-    if (breakeven_anio === null) {
-      if (t === 0 && tco_bev < tco_ice) {
-        breakeven_anio = 0;
+    // t=0: solo es "rentable desde el inicio" si el BEV arranca
+    // ESTRICTAMENTE por debajo del ICE (efecto ayuda Plan Auto+). Un
+    // empate en 0 € no cuenta como ventaja.
+    if (i === 0) {
+      if (tco_bev < tco_ice) {
         rentable_desde_inicio = true;
-      } else if (prev && prev.tco_bev >= prev.tco_ice && tco_bev < tco_ice) {
-        // Cruce dentro del intervalo (arriba/igual → abajo).
-        // Interpolación lineal para ubicar el cruce exacto.
-        const diff_prev = prev.tco_bev - prev.tco_ice;
-        const diff_cur = tco_bev - tco_ice;
-        const denom = diff_prev - diff_cur;
-        const frac = denom === 0 ? 0 : diff_prev / denom;
-        breakeven_anio = prev.anio + frac * (t - prev.anio);
+        breakeven_anio = 0;
       }
+      prev = { anio: t, tco_bev, tco_ice };
+      continue;
     }
+
+    // Detectar cruces dentro del intervalo [prev.anio, t].
+    const d_prev = prev.tco_bev - prev.tco_ice;
+    const d_cur = tco_bev - tco_ice;
+    // Interpolación lineal del punto donde diff cambia de signo.
+    const interpolar = () => {
+      const denom = d_prev - d_cur;
+      const frac = denom === 0 ? 0 : d_prev / denom;
+      return prev.anio + frac * (t - prev.anio);
+    };
+
+    // BEV pasa a ganar (de ≥0 a <0): primer break-even favorable.
+    if (breakeven_anio === null && d_prev >= 0 && d_cur < 0) {
+      breakeven_anio = interpolar();
+    }
+    // BEV pierde la ventaja (de <0 a ≥0): primer "anti-break-even".
+    if (perdida_rentabilidad_anio === null && d_prev < 0 && d_cur >= 0) {
+      perdida_rentabilidad_anio = interpolar();
+    }
+
     prev = { anio: t, tco_bev, tco_ice };
   }
+
+  const ultimo = puntos[puntos.length - 1];
+  const rentable_al_final = ultimo.tco_bev <= ultimo.tco_ice;
 
   return {
     puntos,
     breakeven_anio,
+    perdida_rentabilidad_anio,
     rentable_desde_inicio,
+    rentable_al_final,
     horizonte_max,
     params: p,
   };
