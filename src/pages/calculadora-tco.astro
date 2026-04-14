@@ -1,7 +1,7 @@
 ---
 // src/pages/calculadora-tco.astro
-// Calculadora TCO — beta. Solo los modelos con specs_tco validado (Top 20).
-// v0.1 — 3 pares BEV/ICE (pilotos 1/2/3). Se amplía a medida que se pobla specs_tco.
+// Calculadora TCO — beta pública. Los 20 modelos del Top 20 catálogo v1.
+// v0.2 — expandido de 3 a 20 pares (Tandas 1-4 completas, 2026-04-14).
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,39 +16,44 @@ const ROOT = process.cwd();
 const dataFile = (rel: string) =>
   JSON.parse(fs.readFileSync(path.join(ROOT, rel), 'utf8'));
 
-// Pares BEV/ICE disponibles (los tres pilotos validados).
+// ── Pares BEV/ICE disponibles ──────────────────────────────────────────
+// Top 20 catálogo v1, ordenados para narrativa (impacto → paridad/delta).
+// `piloto` = URL al cálculo manual .md si existe (solo 3 de 20, pilotos 1-3).
+// El resto se calcula idénticamente vía pipeline + librería src/lib/tco/.
+// Default: tesla-model-3-rwd-highland (caso icónico, ahorro ~47 %).
 const PARES = [
-  {
-    slug: 'citroen-e-c3-you',
-    iceSlug: 'citroen-c3-puretech-100',
-    etiqueta: 'Citroën ë-C3 · vs · C3 PureTech 100',
-    comparacion: 'Intra-marca · urbano mass-market',
-    foto: '/comparador/citroen-e-c3-you.webp',
-    bevName: 'Citroën ë-C3 You',
-    iceName: 'Citroën C3 PureTech 100',
-    pilotoUrl: 'https://github.com/jaberse/enchufa2-web/blob/main/docs/piloto-1-tco-calculo-manual.md',
-  },
-  {
-    slug: 'bmw-ix1-xdrive30',
-    iceSlug: 'bmw-x1-sdrive18i',
-    etiqueta: 'BMW iX1 xDrive30 · vs · X1 sDrive18i',
-    comparacion: 'Intra-marca · premium C-SUV',
-    foto: '/comparador/bmw-ix1-xdrive30.webp',
-    bevName: 'BMW iX1 xDrive30',
-    iceName: 'BMW X1 sDrive18i',
-    pilotoUrl: 'https://github.com/jaberse/enchufa2-web/blob/main/docs/piloto-2-tco-calculo-manual.md',
-  },
-  {
-    slug: 'tesla-model-3-rwd-highland',
-    iceSlug: 'bmw-320i-sedan',
-    etiqueta: 'Tesla Model 3 RWD · vs · BMW 320i',
-    comparacion: 'Benchmark segmento D · berlina media',
-    foto: '/comparador/tesla-model-3-rwd-highland.webp',
-    bevName: 'Tesla Model 3 RWD Highland',
-    iceName: 'BMW 320i Sedan (benchmark D)',
-    pilotoUrl: 'https://github.com/jaberse/enchufa2-web/blob/main/docs/piloto-3-tco-calculo-manual.md',
-  },
-];
+  { slug: 'tesla-model-3-rwd-highland',   iceSlug: 'bmw-320i-sedan',        etiqueta: 'Tesla Model 3 RWD · vs · BMW 320i',              comparacion: 'Benchmark D · berlina media premium',  piloto: 'https://github.com/jaberse/enchufa2-web/blob/main/docs/piloto-3-tco-calculo-manual.md' },
+  { slug: 'tesla-model-y-rwd-long-range', iceSlug: 'bmw-x3-xdrive20i',      etiqueta: 'Tesla Model Y LR · vs · BMW X3 xDrive20i',       comparacion: 'Benchmark D-SUV · premium familiar' },
+  { slug: 'hyundai-kona-electric-65-kwh', iceSlug: 'volkswagen-tiguan-tsi', etiqueta: 'Hyundai Kona Electric 65 · vs · VW Tiguan',      comparacion: 'Benchmark C-SUV · mainstream' },
+  { slug: 'skoda-elroq-60',               iceSlug: 'volkswagen-tiguan-tsi', etiqueta: 'Škoda Elroq 60 · vs · VW Tiguan',                comparacion: 'Benchmark C-SUV · grupo VAG' },
+  { slug: 'kia-ev3-long-range',           iceSlug: 'volkswagen-tiguan-tsi', etiqueta: 'Kia EV3 Long Range · vs · VW Tiguan',            comparacion: 'Benchmark C-SUV · coreano plataforma E-GMP' },
+  { slug: 'bmw-ix1-xdrive30',             iceSlug: 'bmw-x1-sdrive18i',      etiqueta: 'BMW iX1 xDrive30 · vs · X1 sDrive18i',           comparacion: 'Intra-marca · premium C-SUV',           piloto: 'https://github.com/jaberse/enchufa2-web/blob/main/docs/piloto-2-tco-calculo-manual.md' },
+  { slug: 'bmw-ix2-xdrive30',             iceSlug: 'bmw-x1-sdrive18i',      etiqueta: 'BMW iX2 xDrive30 · vs · X1 sDrive18i',           comparacion: 'Intra-marca · SAC coupé premium' },
+  { slug: 'mercedes-eqa-250+',            iceSlug: 'volkswagen-tiguan-tsi', etiqueta: 'Mercedes EQA 250+ · vs · VW Tiguan',             comparacion: 'Premium EV vs mainstream ICE · paridad' },
+  { slug: 'toyota-bz4x-fwd',              iceSlug: 'volkswagen-tiguan-tsi', etiqueta: 'Toyota bZ4X FWD · vs · VW Tiguan',               comparacion: 'Benchmark C-SUV · Toyota BEV' },
+  { slug: 'byd-atto-3-comfort',           iceSlug: 'volkswagen-tiguan-tsi', etiqueta: 'BYD Atto 3 Comfort · vs · VW Tiguan',            comparacion: 'Benchmark C-SUV · BYD LFP Blade' },
+  { slug: 'byd-atto-2-comfort',           iceSlug: 'peugeot-2008-puretech', etiqueta: 'BYD Atto 2 · vs · Peugeot 2008 Hybrid',          comparacion: 'Benchmark B-SUV · entrada BYD' },
+  { slug: 'byd-seal-awd-excellence',      iceSlug: 'bmw-320i-sedan',        etiqueta: 'BYD Seal AWD · vs · BMW 320i',                   comparacion: 'Benchmark D · berlina performance 530 CV' },
+  { slug: 'byd-dolphin-60kwh',            iceSlug: 'dacia-sandero-tce',     etiqueta: 'BYD Dolphin 60 kWh · vs · Dacia Sandero TCe',    comparacion: 'Benchmark B · BEV vs GLP bifuel' },
+  { slug: 'jeep-avenger-electric',        iceSlug: 'peugeot-2008-puretech', etiqueta: 'Jeep Avenger BEV · vs · Peugeot 2008 Hybrid',    comparacion: 'Plataforma e-CMP · Stellantis' },
+  { slug: 'peugeot-e-2008-allure',        iceSlug: 'peugeot-2008-puretech', etiqueta: 'Peugeot e-2008 · vs · Peugeot 2008 Hybrid',      comparacion: 'Intra-marca · B-SUV Stellantis' },
+  { slug: 'renault-5-e-tech-comfort-range', iceSlug: 'dacia-sandero-tce',   etiqueta: 'Renault 5 E-Tech · vs · Dacia Sandero TCe',      comparacion: 'Benchmark B · made in Palencia' },
+  { slug: 'citroen-e-c3-you',             iceSlug: 'citroen-c3-puretech-100', etiqueta: 'Citroën ë-C3 · vs · C3 PureTech 100',          comparacion: 'Intra-marca · urbano mass-market',      piloto: 'https://github.com/jaberse/enchufa2-web/blob/main/docs/piloto-1-tco-calculo-manual.md' },
+  { slug: 'dacia-spring-essential',       iceSlug: 'hyundai-i10-mpi',       etiqueta: 'Dacia Spring Essential · vs · Hyundai i10 MPI',  comparacion: 'Benchmark A · BEV más barato' },
+  { slug: 'byd-dolphin-surf-comfort',     iceSlug: 'hyundai-i10-mpi',       etiqueta: 'BYD Dolphin Surf Comfort · vs · Hyundai i10 MPI', comparacion: 'Benchmark A · BYD entrada' },
+  { slug: 'hyundai-inster-long-range',    iceSlug: 'hyundai-i10-mpi',       etiqueta: 'Hyundai Inster LR · vs · Hyundai i10 MPI',       comparacion: 'Intra-marca · A utilitario coreano' }
+].map((p) => {
+  const bevJson = dataFile(`data/coches/${p.slug}.json`);
+  const iceJson = dataFile(`data/referencias/ice-equivalentes/${p.iceSlug}.json`);
+  return {
+    ...p,
+    foto: `/comparador/${p.slug}.webp`,
+    bevName: `${bevJson.marca} ${bevJson.modelo}${bevJson.variante ? ' ' + bevJson.variante : ''}`,
+    iceName: `${iceJson.marca} ${iceJson.modelo} ${iceJson.variante ?? ''}`.trim(),
+  };
+});
+
+const DEFAULT_SLUG = 'tesla-model-3-rwd-highland';
 
 // Construir payload para el cliente: por cada par, los inputs BEV + ICE
 // en cada horizonte disponible (3 y 5 años en todos los casos).
@@ -74,7 +79,9 @@ const payload = PARES.map((par) => {
   };
 });
 
-const parInicial = payload[2]; // Tesla Model 3 como default (caso más llamativo)
+const parInicial =
+  payload.find((p) => p.slug === DEFAULT_SLUG) ?? payload[0];
+const pilotosValidados = payload.filter((p) => p.piloto);
 const iniH = 5;
 const iniBev = parInicial.horizontes[iniH].bev;
 const iniIce = parInicial.horizontes[iniH].ice;
@@ -97,9 +104,10 @@ const iniIce = parInicial.horizontes[iniH].ice;
         tres pilotos manuales.
       </p>
       <div class="beta-warn" role="note">
-        <strong>Beta v0.1</strong> — 3 pares validados de los 20 previstos.
-        Los modelos se añaden a medida que se pobla <code>specs_tco</code> con
-        datos verificados. <a href="#metodologia">Ver metodología</a>.
+        <strong>Beta v0.2</strong> — {payload.length} pares del Top {payload.length} ya disponibles.
+        Datos con <code>confianza=media</code> hasta calibrar depreciación con
+        muestras reales de Coches.net y cotizaciones de seguro específicas.
+        <a href="#metodologia">Ver metodología</a>.
       </div>
     </section>
 
@@ -266,18 +274,29 @@ const iniIce = parInicial.horizontes[iniH].ice;
         seguro como mediana de 3 cotizaciones con el perfil estándar enchufa2.
       </p>
       <p>
-        Esta beta solo incluye los <strong>3 pares validados manualmente</strong>
-        (pilotos 1, 2 y 3). A medida que se puebla <code>specs_tco</code> en el
-        resto del Top 20 se irán añadiendo modelos. Consulta los cálculos
-        manuales:
+        El Top {payload.length} del catálogo está completo: <strong>20 de 20 modelos</strong>
+        tienen <code>specs_tco</code> validado por el auditor del pipeline
+        (<code>npm run data:tco-audit</code>, 0 errores) y superan los
+        <strong>13 tests de no-regresión</strong> que reproducen los tres
+        cálculos manuales ±3 €. Estos son los pilotos que marcan la vara
+        metodológica:
       </p>
       <ul class="pilotos">
-        {payload.map((par) => (
+        {pilotosValidados.map((par) => (
           <li>
-            <a href={par.pilotoUrl}>{par.etiqueta}</a>
+            <a href={par.piloto}>{par.etiqueta}</a>
           </li>
         ))}
       </ul>
+      <p class="minor">
+        El resto de pares (17 de 20) se calculan con la misma librería
+        <code>src/lib/tco/</code> y los mismos datos del pipeline. Todos los
+        modelos publicados tienen <code>tco_confianza_general=media</code>
+        hasta que se calibre la depreciación con muestras reales de
+        Coches.net 2023-2024 y se incorporen 3 cotizaciones de seguro
+        específicas (Rastreator / Mapfre / Mutua) con el perfil estándar
+        enchufa2.
+      </p>
       <p class="minor">
         Perfil estándar: {PARAMS_ENCHUFA2_ESTANDAR.km_anual.toLocaleString('es-ES')} km/año,
         5 años, 0,17 €/kWh, 1,55 €/L, IVTM BEV {PARAMS_ENCHUFA2_ESTANDAR.ivtm_bev_eur} €/año ·
@@ -315,8 +334,10 @@ const iniIce = parInicial.horizontes[iniH].ice;
     const $ = <T extends HTMLElement = HTMLElement>(id: string) =>
       document.getElementById(id) as T;
 
+    const DEFAULT_SLUG = 'tesla-model-3-rwd-highland';
     const state = {
-      slug: PAYLOAD[PAYLOAD.length - 1].slug,
+      slug:
+        PAYLOAD.find((p) => p.slug === DEFAULT_SLUG)?.slug ?? PAYLOAD[0].slug,
       horizonte: 5 as 3 | 5,
       km: 15000,
       kwh: 0.17,

@@ -2,6 +2,7 @@
 const currentPath = Astro.url.pathname;
 const isHome = currentPath === '/' || currentPath === '';
 const isComparador = currentPath.startsWith('/comparador');
+const isCalculadora = currentPath.startsWith('/calculadora-tco');
 ---
 <a href="#main" class="skip-link">Saltar al contenido</a>
 <header class="site-header" id="site-header">
@@ -54,6 +55,7 @@ const isComparador = currentPath.startsWith('/comparador');
       <a href={isHome ? '#autonomia' : '/#autonomia'}>¿Puedo viajar?</a>
       <a href={isHome ? '#tecnologia' : '/#tecnologia'}>¿Cómo funciona?</a>
       <a href="/comparador" class={isComparador ? 'active' : ''}>Comparador</a>
+      <a href="/calculadora-tco" class={isCalculadora ? 'active' : ''}>Calculadora</a>
     </div>
   </nav>
 
