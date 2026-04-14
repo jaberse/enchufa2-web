@@ -610,9 +610,95 @@
       "fuente_detalle": "Web oficial BMW España"
     }
   },
+  "specs_tco": {
+    "depreciacion_y3_pct": {
+      "valor": 0.20,
+      "fuente_tipo": "mercado_agregado_ajustado",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "BMW Premium Selection + Coches.net abril 2026 — muestra iX1 2023 real: media 46.593€ con ~11k km (depreciación ~13% pero sesgada por km bajo). Ajustado al perfil enchufa2 15.000 km/año → 45k km: +7 pp por sobre-kilometraje → ~20%",
+      "notas": "Muestra n=91 anuncios Coches.net. Modelo premium con bajo stock nuevo → depreciación menor que ICE equivalente (X1 sDrive18i=28%). Revisar 2026-Q4 con muestra ≥40k km."
+    },
+    "depreciacion_y5_pct": {
+      "valor": 0.32,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-13",
+      "verificado": false,
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección BEV C-SUV premium 2025-2030: y3=20% + ~6%/año tras deterioro batería percibido = ~32% a 5 años. Menor que ICE X1 (42%) por ventaja fiscal + menor mantenimiento.",
+      "notas": "iX1 solo lleva 3 años en mercado. Proyección con riesgo: madurez de usados BEV premium aún incierta. Valor a revisar 2028-Q1."
+    },
+    "depreciacion_y10_pct": {
+      "valor": 0.55,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-13",
+      "verificado": false,
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección BEV premium a 10 años con degradación batería típica NMC (~15-20% SoH). Alta incertidumbre.",
+      "notas": "Sin precedente de mercado para BEV premium 10 años en España. Dato experimental."
+    },
+    "mantenimiento_anual_eur": {
+      "valor": 230,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "confianza": "alta",
+      "unidad": "€/año",
+      "fuente_detalle": "BMW Service Inclusive Next 4 años/60.000 km = 925€ (fuente BMW.es) → 231€/año. Cubre revisiones oficiales BMW según Condition Based Service.",
+      "notas": "BEV ahorra vs ICE: sin aceite motor, sin bujías, sin correa distribución, sin filtros combustible, frenos duran ~2x por regenerativa. Plan Service Inclusive base BMW es común a iX1/X1.",
+      "mantenimiento_cobertura": "Revisiones oficiales, líquido refrigerante batería, filtro habitáculo, inspección electrónica. Excluye neumáticos, pastillas frenos, ITV desde año 4."
+    },
+    "seguro_anual_eur": {
+      "valor": 680,
+      "fuente_tipo": "estimacion_sectorial",
+      "fuente_fecha": "2026-04-13",
+      "verificado": false,
+      "confianza": "baja",
+      "unidad": "€/año",
+      "fuente_detalle": "Estimación: seguro X1 sDrive18i 594€ × factor 1.15 (típico incremento BEV premium por valor asegurado y coste reparación). Sin datos específicos iX1.",
+      "notas": "Perfil estándar enchufa2 (40 años, 15 años carnet, zona media, todo riesgo franquicia 500€). PRIORIDAD: obtener 3 cotizaciones específicas iX1 antes de activar en calculador.",
+      "seguro_cotizaciones": []
+    },
+    "precio_electricidad_eur_kwh": {
+      "valor": null,
+      "fuente_tipo": "parametros_calculador",
+      "verificado": false,
+      "unidad": "€/kWh",
+      "notas": "Se tomará del slider del calculador (D10: default 0.17 €/kWh, rango 0.08-0.55)."
+    },
+    "consumo_real_factor": {
+      "valor": 1.20,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2024-10-01",
+      "fuente_detalle": "BEV AWD compacto 17.5 WLTP → ~21 kWh/100km real (factor 1.20). Coherente con datos reales de usuarios EV Database.",
+      "verificado": true,
+      "confianza": "alta",
+      "unidad": "multiplicador",
+      "notas": "Mayor gap que ë-C3 (1.18) por AWD (dos motores) + mayor peso (2.085 kg) + conducción en carretera del usuario promedio premium."
+    },
+    "equivalente_ice": {
+      "tipo": "intra_marca",
+      "modelo_id": "bmw-x1-sdrive18i",
+      "razon": "BMW X1 sDrive18i comparte plataforma UKL/FAAR, planta (Ratisbona) y carrocería con el iX1. Mismo posicionamiento SUV compacto premium acceso.",
+      "fuente_tipo": "decision_editorial",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "confianza": "alta"
+    }
+  },
   "meta": {
-    "fecha_actualizacion": "2026-04-05",
-    "estado": "pendiente",
-    "notas_my": null
+    "fecha_actualizacion": "2026-04-13",
+    "estado": "ficha_completa_tco_borrador",
+    "notas_my": null,
+    "tco_scaffolded": true,
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "media",
+    "tco_revision_requerida": "3 cotizaciones específicas seguro iX1 + muestra depreciación con ≥40k km (revisar 2026-Q4)"
   }
 }

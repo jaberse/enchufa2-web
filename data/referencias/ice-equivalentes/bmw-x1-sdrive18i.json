@@ -1,0 +1,323 @@
+{
+  "id": "bmw-x1-sdrive18i",
+  "slug": "bmw-x1-sdrive18i",
+  "marca": "BMW",
+  "modelo": "X1",
+  "variante": "sDrive18i",
+  "nombre_completo": "BMW X1 sDrive18i",
+  "segmento": "C-SUV",
+  "tipo_vehiculo": "ICE",
+  "combustible": "gasolina",
+  "uso": "referencia_tco_intra_marca",
+  "equivalente_ev_id": "bmw-ix1-xdrive30",
+  "specs": {
+    "carroceria": {
+      "valor": "SUV compacto",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true
+    },
+    "traccion": {
+      "valor": "FWD",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true
+    },
+    "motor_tipo": {
+      "valor": "1.5 TwinPower Turbo, 3 cilindros en línea, inyección directa, mild hybrid 48V",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "fuente_detalle": "BMW España U11 + km77 ficha técnica"
+    },
+    "cilindrada_cc": {
+      "valor": 1499,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "cc"
+    },
+    "n_cilindros": {
+      "valor": 3,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true
+    },
+    "potencia_kw": {
+      "valor": 100,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "kW"
+    },
+    "potencia_cv": {
+      "valor": 136,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "CV"
+    },
+    "par_nm": {
+      "valor": 230,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "Nm"
+    },
+    "transmision": {
+      "valor": "Automática DCT 7 velocidades (Steptronic)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true
+    },
+    "consumo_wltp_l100km": {
+      "valor": 6.4,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "L/100km",
+      "fuente_detalle": "WLTP combinado, km77"
+    },
+    "emisiones_co2_wltp_g_km": {
+      "valor": 144,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "g/km"
+    },
+    "normativa_emisiones": {
+      "valor": "Euro 6",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true
+    },
+    "distintivo_dgt": {
+      "valor": "ECO",
+      "fuente_tipo": "DGT",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "notas": "Distintivo ECO por sistema mild hybrid 48V"
+    },
+    "aceleracion_0_100_s": {
+      "valor": 9.2,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "s"
+    },
+    "velocidad_max_kmh": {
+      "valor": 208,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "km/h"
+    },
+    "largo_mm": {
+      "valor": 4500,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "ancho_mm": {
+      "valor": 1845,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "alto_mm": {
+      "valor": 1642,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "batalla_mm": {
+      "valor": 2692,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "mm",
+      "notas": "Misma batalla que el iX1 — plataforma UKL/FAAR compartida"
+    },
+    "peso_kg": {
+      "valor": 1575,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "kg",
+      "notas": "peso en orden de marcha; 510 kg menos que el iX1 (2.085 kg)"
+    },
+    "plazas": {
+      "valor": 5,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true
+    },
+    "maletero_l": {
+      "valor": 540,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "L",
+      "notas": "50 L más que el iX1 (490 L) — sin batería bajo suelo"
+    },
+    "deposito_combustible_l": {
+      "valor": 45,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "L"
+    },
+    "autonomia_wltp_km_derivada": {
+      "valor": 703,
+      "fuente_tipo": "calculado",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "km",
+      "notas": "45 L × (100 / 6.4 L/100km) = 703 km teóricos WLTP"
+    },
+    "pvp": {
+      "valor": 47636,
+      "fuente_tipo": "distribuidor",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "€",
+      "fuente_detalle": "drivek.es — PVP oficial X1 sDrive18i base abril 2026"
+    },
+    "pvp_fecha": {
+      "valor": "2026-04-13",
+      "fuente_tipo": "distribuidor",
+      "verificado": true
+    },
+    "pais_fabricacion": {
+      "valor": "Alemania (Ratisbona)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "notas": "Misma planta que el iX1 — comparación intra-marca limpia"
+    },
+    "plataforma": {
+      "valor": "UKL/FAAR (BMW Group)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "notas": "Plataforma compartida con iX1; diferencia solo en tren motriz"
+    },
+    "garantia_vehiculo_anos": {
+      "valor": 2,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "unidad": "años",
+      "fuente_detalle": "BMW España — garantía legal estándar, ampliable con BMW Service Inclusive"
+    },
+    "fecha_lanzamiento_es": {
+      "valor": "2022",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "notas": "Generación U11 (actual)"
+    },
+    "model_year": {
+      "valor": "2026",
+      "fuente_tipo": "distribuidor",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true
+    },
+    "estado_comercial": {
+      "valor": "a la venta",
+      "fuente_tipo": "distribuidor",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true
+    }
+  },
+  "specs_tco": {
+    "depreciacion_y3_pct": {
+      "valor": 0.28,
+      "fuente_tipo": "mercado_agregado",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "confianza": "alta",
+      "unidad": "fracción",
+      "fuente_detalle": "Coches.net abril 2026 — muestras sDrive18i 2023 con ~46-52k km: 33.900€ y 34.590€. Media ~34.245€ sobre PVP 47.636€ → retención 71.9%",
+      "notas": "Kilometraje alineado con perfil enchufa2 (15.000 km/año → 45.000 km a 3 años). Muestra limitada pero coherente."
+    },
+    "depreciacion_y5_pct": {
+      "valor": 0.42,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-13",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección sectorial ICE C-SUV premium: y3=28% + ~7%/año = ~42% a 5 años. Consistente con curvas Ganvam 2024 para BMW X1 gasolina.",
+      "notas": "Valor a revisar 2027-Q2 cuando haya muestra representativa de sDrive18i U11 a 5 años."
+    },
+    "depreciacion_y10_pct": {
+      "valor": 0.62,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-13",
+      "verificado": false,
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección decay asintótico. BMW X1 gasolina tiende al 60-65% de depreciación a 10 años.",
+      "notas": "Horizonte largo con alta incertidumbre regulatoria (ZBE, Euro 7)."
+    },
+    "mantenimiento_anual_eur": {
+      "valor": 450,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "BMW Service Inclusive Next 4 años/60.000 km = 925€ (fuente BMW.es). ~230€/año cubre revisiones oficiales. Añadimos ~220€/año por consumibles no cubiertos (frenos, neumáticos prorrateados, ITV desde año 4).",
+      "notas": "Plan ICE típicamente 2x que un EV equivalente por aceite, filtros, bujías, gases escape. Pendiente: cotización específica para X1 sDrive18i.",
+      "mantenimiento_cobertura": "Revisión oficial cada 12 meses o según Condition Based Service. Excluye neumáticos, frenos, líquidos auxiliares e ITV."
+    },
+    "seguro_anual_eur": {
+      "valor": 594,
+      "fuente_tipo": "comparador_agregado",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Mediana de 3 cotizaciones: Allianz Direct 317€, Direct Seguros 455€, Rastreator media BMW X1 990€ → mediana 594€",
+      "notas": "Perfil estándar enchufa2 (40 años, 15 años carnet, zona media, todo riesgo franquicia 500€). Pendiente: 3 cotizaciones específicas con mismo perfil.",
+      "seguro_cotizaciones": [
+        { "aseguradora": "Allianz Direct", "prima_eur": 317, "fuente_fecha": "2026-04-13" },
+        { "aseguradora": "Direct Seguros", "prima_eur": 455, "fuente_fecha": "2026-04-13" },
+        { "aseguradora": "Rastreator (media X1)", "prima_eur": 990, "fuente_fecha": "2026-04-13" }
+      ]
+    },
+    "precio_combustible_eur_l": {
+      "valor": null,
+      "fuente_tipo": "parametros_calculador",
+      "verificado": false,
+      "unidad": "€/L",
+      "notas": "Se tomará del archivo de parámetros del calculador (real-time MITECO vía Cloudflare Workers cron)."
+    },
+    "consumo_real_factor": {
+      "valor": 1.15,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2024-10-01",
+      "fuente_detalle": "ICCT Real-World Fuel Consumption gap 2024 — gasolina turbo compacta ~12-18% sobre WLTP",
+      "verificado": true,
+      "confianza": "alta",
+      "unidad": "multiplicador",
+      "notas": "Gap WLTP/real mayor que C3 PureTech (1.10) por mayor peso, tracción FWD con engine stop-start 48V pero ciclo más exigente."
+    }
+  },
+  "meta": {
+    "fecha_actualizacion": "2026-04-13",
+    "estado": "ficha_completa_tco_borrador",
+    "notas_my": "MY 2026 en comercialización. Generación U11 (2022-actualidad). Comparte plataforma UKL/FAAR y planta (Ratisbona) con el iX1 — comparación intra-marca limpia.",
+    "proposito": "Referencia ICE 1:1 para Piloto 2 del Calculador TCO vs BMW iX1 xDrive30. No se incluye en el comparador de EVs.",
+    "tco_scaffolded": true,
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "media",
+    "tco_revision_requerida": "Cotización específica seguro X1 sDrive18i perfil enchufa2 + cotización BMW Service Inclusive X1 Next 5y/75k km"
+  }
+}
