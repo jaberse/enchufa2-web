@@ -1,0 +1,902 @@
+---
+// src/pages/calculadora-tco.astro
+// Calculadora TCO — beta. Solo los modelos con specs_tco validado (Top 20).
+// v0.1 — 3 pares BEV/ICE (pilotos 1/2/3). Se amplía a medida que se pobla specs_tco.
+
+import fs from 'node:fs';
+import path from 'node:path';
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { bevFromJson, iceFromJson } from '../lib/tco/resolver.mjs';
+import { PARAMS_ENCHUFA2_ESTANDAR } from '../lib/tco/params.mjs';
+import '../styles/global.css';
+
+const ROOT = process.cwd();
+const dataFile = (rel: string) =>
+  JSON.parse(fs.readFileSync(path.join(ROOT, rel), 'utf8'));
+
+// Pares BEV/ICE disponibles (los tres pilotos validados).
+const PARES = [
+  {
+    slug: 'citroen-e-c3-you',
+    iceSlug: 'citroen-c3-puretech-100',
+    etiqueta: 'Citroën ë-C3 · vs · C3 PureTech 100',
+    comparacion: 'Intra-marca · urbano mass-market',
+    foto: '/comparador/citroen-e-c3-you.webp',
+    bevName: 'Citroën ë-C3 You',
+    iceName: 'Citroën C3 PureTech 100',
+    pilotoUrl: 'https://github.com/jaberse/enchufa2-web/blob/main/docs/piloto-1-tco-calculo-manual.md',
+  },
+  {
+    slug: 'bmw-ix1-xdrive30',
+    iceSlug: 'bmw-x1-sdrive18i',
+    etiqueta: 'BMW iX1 xDrive30 · vs · X1 sDrive18i',
+    comparacion: 'Intra-marca · premium C-SUV',
+    foto: '/comparador/bmw-ix1-xdrive30.webp',
+    bevName: 'BMW iX1 xDrive30',
+    iceName: 'BMW X1 sDrive18i',
+    pilotoUrl: 'https://github.com/jaberse/enchufa2-web/blob/main/docs/piloto-2-tco-calculo-manual.md',
+  },
+  {
+    slug: 'tesla-model-3-rwd-highland',
+    iceSlug: 'bmw-320i-sedan',
+    etiqueta: 'Tesla Model 3 RWD · vs · BMW 320i',
+    comparacion: 'Benchmark segmento D · berlina media',
+    foto: '/comparador/tesla-model-3-rwd-highland.webp',
+    bevName: 'Tesla Model 3 RWD Highland',
+    iceName: 'BMW 320i Sedan (benchmark D)',
+    pilotoUrl: 'https://github.com/jaberse/enchufa2-web/blob/main/docs/piloto-3-tco-calculo-manual.md',
+  },
+];
+
+// Construir payload para el cliente: por cada par, los inputs BEV + ICE
+// en cada horizonte disponible (3 y 5 años en todos los casos).
+const HORIZONTES_DISPONIBLES = [3, 5];
+
+const payload = PARES.map((par) => {
+  const bevJson = dataFile(`data/coches/${par.slug}.json`);
+  const iceJson = dataFile(
+    `data/referencias/ice-equivalentes/${par.iceSlug}.json`,
+  );
+  const horizontes: Record<number, { bev: any; ice: any }> = {};
+  for (const h of HORIZONTES_DISPONIBLES) {
+    horizontes[h] = {
+      bev: bevFromJson(bevJson, { horizonte_anios: h, aplicar_ayuda: true }),
+      ice: iceFromJson(iceJson, { horizonte_anios: h }),
+    };
+  }
+  return {
+    ...par,
+    horizontes,
+    ayuda_disponible: (horizontes[5].bev.ayuda_eur ?? 0) > 0,
+    ayuda_eur: horizontes[5].bev.ayuda_eur ?? 0,
+  };
+});
+
+const parInicial = payload[2]; // Tesla Model 3 como default (caso más llamativo)
+const iniH = 5;
+const iniBev = parInicial.horizontes[iniH].bev;
+const iniIce = parInicial.horizontes[iniH].ice;
+---
+
+<Layout
+  title="Calculadora TCO — enchufa2"
+  description="Calcula el coste real de un coche eléctrico a 3 o 5 años frente a su equivalente de combustión. Depreciación, energía, mantenimiento, seguro, impuestos y Plan Auto+."
+>
+  <Header />
+
+  <main id="main" class="calc-tco">
+    <section class="hero">
+      <p class="eyebrow">Herramienta · beta</p>
+      <h1>Calculadora TCO</h1>
+      <p class="deck">
+        Cuánto cuesta <em>de verdad</em> un coche eléctrico en España comparado
+        con su equivalente de combustión. Fórmula canónica ICCT: depreciación,
+        energía, mantenimiento, seguro, impuestos y ayudas — validada contra
+        tres pilotos manuales.
+      </p>
+      <div class="beta-warn" role="note">
+        <strong>Beta v0.1</strong> — 3 pares validados de los 20 previstos.
+        Los modelos se añaden a medida que se pobla <code>specs_tco</code> con
+        datos verificados. <a href="#metodologia">Ver metodología</a>.
+      </div>
+    </section>
+
+    <!-- ────────── CONTROLES ────────── -->
+    <section class="controles" aria-labelledby="h-controles">
+      <h2 id="h-controles" class="sr-only">Parámetros</h2>
+
+      <div class="ctrl-grid">
+        <!-- Selector de par -->
+        <fieldset class="ctrl ctrl-par">
+          <legend>Coche a analizar</legend>
+          <div class="par-opts" role="radiogroup" aria-label="Elige el modelo BEV">
+            {payload.map((par, i) => (
+              <label class="par-opt" data-slug={par.slug}>
+                <input
+                  type="radio"
+                  name="par"
+                  value={par.slug}
+                  checked={par.slug === parInicial.slug}
+                />
+                <img src={par.foto} alt={par.bevName} loading="lazy" width="120" height="72" />
+                <div class="par-opt-txt">
+                  <span class="par-opt-name">{par.bevName}</span>
+                  <span class="par-opt-sub">{par.comparacion}</span>
+                </div>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <!-- Horizonte -->
+        <fieldset class="ctrl">
+          <legend>Horizonte</legend>
+          <div class="pills" role="radiogroup" aria-label="Años de propiedad">
+            {HORIZONTES_DISPONIBLES.map((h) => (
+              <label class="pill">
+                <input type="radio" name="horizonte" value={h} checked={h === iniH} />
+                <span>{h} años</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <!-- Km/año -->
+        <div class="ctrl">
+          <label for="km">
+            Kilometraje anual
+            <output id="km-out">{PARAMS_ENCHUFA2_ESTANDAR.km_anual.toLocaleString('es-ES')} km</output>
+          </label>
+          <input
+            id="km"
+            type="range"
+            min="5000"
+            max="40000"
+            step="500"
+            value={PARAMS_ENCHUFA2_ESTANDAR.km_anual}
+          />
+        </div>
+
+        <!-- Precio electricidad -->
+        <div class="ctrl">
+          <label for="kwh">
+            Precio electricidad
+            <output id="kwh-out">{PARAMS_ENCHUFA2_ESTANDAR.precio_kwh_eur.toFixed(2)} €/kWh</output>
+          </label>
+          <input
+            id="kwh"
+            type="range"
+            min="0.08"
+            max="0.55"
+            step="0.01"
+            value={PARAMS_ENCHUFA2_ESTANDAR.precio_kwh_eur}
+          />
+          <span class="ctrl-hint">Default mix enchufa2: 70 % casa PVPC valle + 30 % pública</span>
+        </div>
+
+        <!-- Precio gasolina -->
+        <div class="ctrl">
+          <label for="litro">
+            Precio gasolina 95
+            <output id="litro-out">{PARAMS_ENCHUFA2_ESTANDAR.precio_litro_eur.toFixed(2)} €/L</output>
+          </label>
+          <input
+            id="litro"
+            type="range"
+            min="1.20"
+            max="2.00"
+            step="0.01"
+            value={PARAMS_ENCHUFA2_ESTANDAR.precio_litro_eur}
+          />
+          <span class="ctrl-hint">MITECO abril 2026</span>
+        </div>
+
+        <!-- Plan Auto+ -->
+        <div class="ctrl ctrl-check" id="ctrl-ayuda" data-has-ayuda={parInicial.ayuda_disponible}>
+          <label>
+            <input type="checkbox" id="ayuda" checked={parInicial.ayuda_disponible} />
+            <span>
+              Aplicar Plan Auto+
+              <output id="ayuda-out">{parInicial.ayuda_disponible ? `(${parInicial.ayuda_eur.toLocaleString('es-ES')} €)` : '(no elegible)'}</output>
+            </span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────────── RESULTADO ────────── -->
+    <section class="resultado" aria-labelledby="h-resultado" aria-live="polite">
+      <h2 id="h-resultado" class="sr-only">Resultado</h2>
+
+      <p class="lede" id="lede">Cargando…</p>
+
+      <div class="tco-grid">
+        <article class="tco-card tco-bev">
+          <header>
+            <p class="tco-tren">Eléctrico</p>
+            <h3 id="bev-name">{parInicial.bevName}</h3>
+          </header>
+          <p class="tco-big"><span id="bev-tco">—</span> €</p>
+          <p class="tco-sub"><span id="bev-kmkm">—</span> €/km · <span id="bev-horizonte">—</span> años</p>
+          <dl class="tco-breakdown">
+            <dt>Depreciación</dt><dd><span id="bev-dep">—</span> €</dd>
+            <dt>Energía</dt><dd><span id="bev-ene">—</span> €</dd>
+            <dt>Mantenimiento</dt><dd><span id="bev-man">—</span> €</dd>
+            <dt>Seguro</dt><dd><span id="bev-seg">—</span> €</dd>
+            <dt>Impuestos</dt><dd><span id="bev-imp">—</span> €</dd>
+            <dt>Ayudas</dt><dd>− <span id="bev-ayu">—</span> €</dd>
+          </dl>
+        </article>
+
+        <article class="tco-card tco-ice">
+          <header>
+            <p class="tco-tren">Combustión</p>
+            <h3 id="ice-name">{parInicial.iceName}</h3>
+          </header>
+          <p class="tco-big"><span id="ice-tco">—</span> €</p>
+          <p class="tco-sub"><span id="ice-kmkm">—</span> €/km · <span id="ice-horizonte">—</span> años</p>
+          <dl class="tco-breakdown">
+            <dt>Depreciación</dt><dd><span id="ice-dep">—</span> €</dd>
+            <dt>Energía</dt><dd><span id="ice-ene">—</span> €</dd>
+            <dt>Mantenimiento</dt><dd><span id="ice-man">—</span> €</dd>
+            <dt>Seguro</dt><dd><span id="ice-seg">—</span> €</dd>
+            <dt>Impuestos</dt><dd><span id="ice-imp">—</span> €</dd>
+          </dl>
+        </article>
+      </div>
+
+      <div class="share">
+        <button type="button" id="share-btn">Copiar enlace con este escenario</button>
+        <span class="share-msg" id="share-msg" role="status"></span>
+      </div>
+    </section>
+
+    <!-- ────────── METODOLOGÍA ────────── -->
+    <section class="metodologia" id="metodologia" aria-labelledby="h-metodologia">
+      <h2 id="h-metodologia">Metodología rápida</h2>
+      <p>
+        La fórmula es canónica ICCT:
+        <strong>TCO = depreciación + energía + mantenimiento + seguro + impuestos − ayudas</strong>.
+        Cada dato proviene del pipeline verificado del comparador: el PVP del
+        configurador oficial, el consumo homologado WLTP corregido por un factor
+        real (ICCT + EV Database), la depreciación de Ganvam + muestras reales
+        de Coches.net, el mantenimiento del plan oficial del fabricante, y el
+        seguro como mediana de 3 cotizaciones con el perfil estándar enchufa2.
+      </p>
+      <p>
+        Esta beta solo incluye los <strong>3 pares validados manualmente</strong>
+        (pilotos 1, 2 y 3). A medida que se puebla <code>specs_tco</code> en el
+        resto del Top 20 se irán añadiendo modelos. Consulta los cálculos
+        manuales:
+      </p>
+      <ul class="pilotos">
+        {payload.map((par) => (
+          <li>
+            <a href={par.pilotoUrl}>{par.etiqueta}</a>
+          </li>
+        ))}
+      </ul>
+      <p class="minor">
+        Perfil estándar: {PARAMS_ENCHUFA2_ESTANDAR.km_anual.toLocaleString('es-ES')} km/año,
+        5 años, 0,17 €/kWh, 1,55 €/L, IVTM BEV {PARAMS_ENCHUFA2_ESTANDAR.ivtm_bev_eur} €/año ·
+        IVTM ICE {PARAMS_ENCHUFA2_ESTANDAR.ivtm_ice_eur} €/año. Todos los
+        parámetros son editables en esta página.
+      </p>
+    </section>
+  </main>
+
+  <Footer />
+
+  <!-- Datos server → cliente -->
+  <script type="application/json" id="tco-payload" set:html={JSON.stringify(payload)} />
+
+  <!-- Lógica interactiva (auto-bundled por Astro) -->
+  <script>
+    import { calcularTCO, compararTCO } from '../lib/tco/calculadora.mjs';
+
+    const eur = (n: number) =>
+      new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 }).format(n);
+    const eur2 = (n: number) =>
+      new Intl.NumberFormat('es-ES', { maximumFractionDigits: 3, minimumFractionDigits: 2 }).format(n);
+
+    const payloadEl = document.getElementById('tco-payload')!;
+    const PAYLOAD = JSON.parse(payloadEl.textContent ?? '[]') as Array<{
+      slug: string;
+      etiqueta: string;
+      bevName: string;
+      iceName: string;
+      ayuda_disponible: boolean;
+      ayuda_eur: number;
+      horizontes: Record<string, { bev: any; ice: any }>;
+    }>;
+
+    const $ = <T extends HTMLElement = HTMLElement>(id: string) =>
+      document.getElementById(id) as T;
+
+    const state = {
+      slug: PAYLOAD[PAYLOAD.length - 1].slug,
+      horizonte: 5 as 3 | 5,
+      km: 15000,
+      kwh: 0.17,
+      litro: 1.55,
+      ayuda: true,
+    };
+
+    // Lee URL querystring si existe
+    function readUrl() {
+      const p = new URLSearchParams(location.search);
+      const slug = p.get('m');
+      if (slug && PAYLOAD.some((x) => x.slug === slug)) state.slug = slug;
+      const h = Number(p.get('h'));
+      if (h === 3 || h === 5) state.horizonte = h;
+      const k = Number(p.get('km'));
+      if (k >= 5000 && k <= 40000) state.km = k;
+      const e = Number(p.get('kwh'));
+      if (e >= 0.08 && e <= 0.55) state.kwh = e;
+      const g = Number(p.get('l'));
+      if (g >= 1.2 && g <= 2) state.litro = g;
+      if (p.get('a') === '0') state.ayuda = false;
+    }
+
+    function writeUrl() {
+      const p = new URLSearchParams();
+      p.set('m', state.slug);
+      p.set('h', String(state.horizonte));
+      p.set('km', String(state.km));
+      p.set('kwh', state.kwh.toFixed(2));
+      p.set('l', state.litro.toFixed(2));
+      if (!state.ayuda) p.set('a', '0');
+      history.replaceState(null, '', `?${p.toString()}`);
+    }
+
+    function currentPar() {
+      return PAYLOAD.find((x) => x.slug === state.slug)!;
+    }
+
+    function recalc() {
+      const par = currentPar();
+      const fixtures = par.horizontes[state.horizonte];
+      const bevInput = { ...fixtures.bev };
+      if (!state.ayuda || !par.ayuda_disponible) bevInput.ayuda_eur = 0;
+      const iceInput = fixtures.ice;
+
+      const cmp = compararTCO(bevInput, iceInput, {
+        km_anual: state.km,
+        horizonte_anios: state.horizonte,
+        precio_kwh_eur: state.kwh,
+        precio_litro_eur: state.litro,
+      });
+
+      // Nombres
+      $('bev-name').textContent = par.bevName;
+      $('ice-name').textContent = par.iceName;
+      $('bev-horizonte').textContent = String(state.horizonte);
+      $('ice-horizonte').textContent = String(state.horizonte);
+
+      // BEV breakdown
+      $('bev-tco').textContent = eur(cmp.bev.tco_total_eur);
+      $('bev-kmkm').textContent = eur2(cmp.bev.tco_por_km_eur);
+      $('bev-dep').textContent = eur(cmp.bev.depreciacion_eur);
+      $('bev-ene').textContent = eur(cmp.bev.energia_eur);
+      $('bev-man').textContent = eur(cmp.bev.mantenimiento_eur);
+      $('bev-seg').textContent = eur(cmp.bev.seguro_eur);
+      $('bev-imp').textContent = eur(cmp.bev.impuestos_eur);
+      $('bev-ayu').textContent = eur(cmp.bev.ayudas_eur);
+
+      // ICE breakdown
+      $('ice-tco').textContent = eur(cmp.ice.tco_total_eur);
+      $('ice-kmkm').textContent = eur2(cmp.ice.tco_por_km_eur);
+      $('ice-dep').textContent = eur(cmp.ice.depreciacion_eur);
+      $('ice-ene').textContent = eur(cmp.ice.energia_eur);
+      $('ice-man').textContent = eur(cmp.ice.mantenimiento_eur);
+      $('ice-seg').textContent = eur(cmp.ice.seguro_eur);
+      $('ice-imp').textContent = eur(cmp.ice.impuestos_eur);
+
+      // Lede editorial
+      const sign = cmp.ahorro_bev_eur >= 0 ? 'ahorra' : 'sobrecuesta';
+      const abs = Math.abs(cmp.ahorro_bev_eur);
+      const pct = Math.abs(cmp.ahorro_bev_pct * 100);
+      $('lede').innerHTML =
+        `A ${state.horizonte} años y ${eur(state.km)} km/año, el ` +
+        `<strong>${par.bevName}</strong> ${sign} ` +
+        `<strong>${eur(abs)} €</strong> (${pct.toFixed(1)} %) ` +
+        `frente al <strong>${par.iceName}</strong>.`;
+
+      writeUrl();
+    }
+
+    // ── Bindings ──
+    document.querySelectorAll<HTMLInputElement>('input[name="par"]').forEach((r) => {
+      r.addEventListener('change', () => {
+        if (!r.checked) return;
+        state.slug = r.value;
+        const par = currentPar();
+        // Ajuste del toggle ayuda
+        const ctrl = $('ctrl-ayuda');
+        const chk = $('ayuda') as HTMLInputElement;
+        ctrl.dataset.hasAyuda = String(par.ayuda_disponible);
+        chk.disabled = !par.ayuda_disponible;
+        chk.checked = par.ayuda_disponible;
+        state.ayuda = par.ayuda_disponible;
+        $('ayuda-out').textContent = par.ayuda_disponible
+          ? `(${eur(par.ayuda_eur)} €)`
+          : '(no elegible)';
+        recalc();
+      });
+    });
+
+    document.querySelectorAll<HTMLInputElement>('input[name="horizonte"]').forEach((r) => {
+      r.addEventListener('change', () => {
+        if (!r.checked) return;
+        state.horizonte = Number(r.value) as 3 | 5;
+        recalc();
+      });
+    });
+
+    ($('km') as HTMLInputElement).addEventListener('input', (e) => {
+      state.km = Number((e.target as HTMLInputElement).value);
+      $('km-out').textContent = `${eur(state.km)} km`;
+      recalc();
+    });
+
+    ($('kwh') as HTMLInputElement).addEventListener('input', (e) => {
+      state.kwh = Number((e.target as HTMLInputElement).value);
+      $('kwh-out').textContent = `${state.kwh.toFixed(2)} €/kWh`;
+      recalc();
+    });
+
+    ($('litro') as HTMLInputElement).addEventListener('input', (e) => {
+      state.litro = Number((e.target as HTMLInputElement).value);
+      $('litro-out').textContent = `${state.litro.toFixed(2)} €/L`;
+      recalc();
+    });
+
+    ($('ayuda') as HTMLInputElement).addEventListener('change', (e) => {
+      state.ayuda = (e.target as HTMLInputElement).checked;
+      const par = currentPar();
+      $('ayuda-out').textContent = state.ayuda
+        ? `(${eur(par.ayuda_eur)} €)`
+        : '(no aplicada)';
+      recalc();
+    });
+
+    $('share-btn').addEventListener('click', async () => {
+      writeUrl();
+      try {
+        await navigator.clipboard.writeText(location.href);
+        $('share-msg').textContent = '¡Enlace copiado!';
+      } catch {
+        $('share-msg').textContent = 'Selecciona la URL del navegador para copiarla.';
+      }
+      setTimeout(() => {
+        $('share-msg').textContent = '';
+      }, 2500);
+    });
+
+    // ── Arranque ──
+    function hydrateControls() {
+      (document.querySelector(
+        `input[name="par"][value="${state.slug}"]`,
+      ) as HTMLInputElement | null)?.click();
+      // click() dispara change → recalc, pero también reescribe ayuda.
+      // Reinicializamos todos los campos tras leer la URL.
+      const hInput = document.querySelector(
+        `input[name="horizonte"][value="${state.horizonte}"]`,
+      ) as HTMLInputElement | null;
+      if (hInput) hInput.checked = true;
+      ($('km') as HTMLInputElement).value = String(state.km);
+      ($('kwh') as HTMLInputElement).value = String(state.kwh);
+      ($('litro') as HTMLInputElement).value = String(state.litro);
+      ($('ayuda') as HTMLInputElement).checked = state.ayuda;
+      $('km-out').textContent = `${eur(state.km)} km`;
+      $('kwh-out').textContent = `${state.kwh.toFixed(2)} €/kWh`;
+      $('litro-out').textContent = `${state.litro.toFixed(2)} €/L`;
+    }
+
+    readUrl();
+    hydrateControls();
+    recalc();
+  </script>
+
+  <style>
+    .calc-tco {
+      padding: var(--section-pad) var(--page-gutter);
+      max-width: var(--max-w);
+      margin: 0 auto;
+      color: var(--text);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      max-width: 780px;
+      margin-bottom: clamp(2rem, 5vw, 4rem);
+    }
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.25rem, 6vw, 4rem);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      margin-bottom: 1rem;
+    }
+    .deck {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(1.125rem, 2vw, 1.375rem);
+      color: var(--text-secondary);
+      line-height: 1.45;
+      max-width: 680px;
+    }
+    .beta-warn {
+      margin-top: 1.5rem;
+      padding: 0.75rem 1rem;
+      border-left: 3px solid var(--yellow);
+      background: var(--yellow-glow);
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+    .beta-warn strong { color: var(--text); }
+    .beta-warn code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.8125rem;
+      background: var(--surface-alt);
+      padding: 0 0.25rem;
+      border-radius: 3px;
+    }
+    .beta-warn a { color: var(--text); text-decoration: underline; }
+
+    /* ── Controles ── */
+    .controles {
+      margin-bottom: clamp(2rem, 5vw, 3.5rem);
+      padding: clamp(1.5rem, 3vw, 2rem);
+      background: var(--surface-alt);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-subtle);
+    }
+    .ctrl-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 720px) {
+      .ctrl-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .ctrl-par { grid-column: 1 / -1; }
+    }
+    .ctrl {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    fieldset.ctrl {
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+    .ctrl legend,
+    .ctrl > label:first-child {
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.25rem;
+      gap: 1rem;
+    }
+    .ctrl output {
+      font-variant-numeric: tabular-nums;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    .ctrl-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Selector par */
+    .par-opts {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    @media (min-width: 640px) {
+      .par-opts { grid-template-columns: repeat(3, 1fr); }
+    }
+    .par-opt {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: border-color 0.2s var(--ease-out-expo),
+                  background 0.2s var(--ease-out-expo);
+    }
+    .par-opt:hover { border-color: var(--gray-300); }
+    .par-opt input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .par-opt:has(input:checked) {
+      border-color: var(--yellow);
+      background: var(--yellow-glow);
+    }
+    .par-opt img {
+      width: 72px;
+      height: auto;
+      aspect-ratio: 16 / 10;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+    .par-opt-txt {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+      min-width: 0;
+    }
+    .par-opt-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .par-opt-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Pills */
+    .pills {
+      display: inline-flex;
+      gap: 0.25rem;
+      padding: 0.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      width: fit-content;
+    }
+    .pill {
+      position: relative;
+      padding: 0.375rem 1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      transition: background 0.2s, color 0.2s;
+    }
+    .pill input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .pill:has(input:checked) {
+      background: var(--black);
+      color: var(--white);
+    }
+    [data-theme="dark"] .pill:has(input:checked) {
+      background: var(--yellow);
+      color: var(--black);
+    }
+
+    /* Sliders */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 999px;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--yellow);
+      border: 2px solid var(--black);
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.1); }
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--yellow);
+      border: 2px solid var(--black);
+      cursor: pointer;
+    }
+    input[type="range"]:focus-visible::-webkit-slider-thumb {
+      outline: 2px solid var(--yellow);
+      outline-offset: 2px;
+    }
+
+    /* Checkbox */
+    .ctrl-check label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+    .ctrl-check input { width: 18px; height: 18px; accent-color: var(--yellow); }
+    .ctrl-check[data-has-ayuda="false"] label {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ── Resultado ── */
+    .resultado {
+      margin-bottom: clamp(2rem, 5vw, 3.5rem);
+    }
+    .lede {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+      line-height: 1.35;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      max-width: 780px;
+    }
+    .lede strong {
+      font-family: var(--font-sans);
+      font-style: normal;
+      font-weight: 500;
+    }
+
+    .tco-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 720px) {
+      .tco-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .tco-card {
+      padding: clamp(1.25rem, 2.5vw, 2rem);
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .tco-bev {
+      border-left: 3px solid var(--yellow);
+    }
+    .tco-ice {
+      border-left: 3px solid var(--gray-400);
+    }
+    .tco-card header { margin-bottom: 1rem; }
+    .tco-tren {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .tco-card h3 {
+      font-size: 1.125rem;
+      font-weight: 500;
+      margin-top: 0.25rem;
+    }
+    .tco-big {
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .tco-sub {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .tco-breakdown {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.375rem 1rem;
+      font-size: 0.9375rem;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 1rem;
+    }
+    .tco-breakdown dt { color: var(--text-secondary); }
+    .tco-breakdown dd {
+      font-variant-numeric: tabular-nums;
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .share {
+      margin-top: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    #share-btn {
+      padding: 0.625rem 1.25rem;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #share-btn:hover { background: var(--gray-600); }
+    [data-theme="dark"] #share-btn { background: var(--yellow); color: var(--black); }
+    .share-msg {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    /* ── Metodología ── */
+    .metodologia {
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-subtle);
+      max-width: 780px;
+    }
+    .metodologia h2 {
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 1rem;
+    }
+    .metodologia p {
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+    .metodologia strong { color: var(--text); font-weight: 500; }
+    .metodologia code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.875rem;
+      background: var(--surface-alt);
+      padding: 0 0.25rem;
+      border-radius: 3px;
+    }
+    .pilotos {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0 1.5rem;
+    }
+    .pilotos li { margin-bottom: 0.375rem; }
+    .pilotos a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+    .pilotos a:hover { color: var(--yellow-text); }
+    .metodologia .minor {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ── Reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+  </style>
+</Layout>
