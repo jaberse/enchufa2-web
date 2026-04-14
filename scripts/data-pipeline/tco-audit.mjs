@@ -117,7 +117,9 @@ function loadIceEquivalentes() {
 
 function loadBenchmarks() {
   if (!fs.existsSync(BENCHMARKS_FILE)) return null;
-  return JSON.parse(fs.readFileSync(BENCHMARKS_FILE, 'utf8'));
+  const raw = JSON.parse(fs.readFileSync(BENCHMARKS_FILE, 'utf8'));
+  // El archivo envuelve segmentos bajo la clave `segmentos`
+  return raw.segmentos || raw;
 }
 
 // ─── Validación de un campo individual ───────────────────────
@@ -215,7 +217,24 @@ function resolverEquivalenteICE(eq, iceIndex, benchmarks) {
     const seg = eq.segmento;
     if (!seg && !eq.modelo_id) return { ok: false, msg: 'benchmark_segmento sin segmento ni modelo_id' };
     if (seg && !benchmarks[seg]) return { ok: false, msg: `segmento "${seg}" no existe en benchmarks_ice.json` };
-    return { ok: true, benchmark: benchmarks[seg] };
+
+    // Resolver a ICE real: si eq.modelo_id, usar ese; si no, el default del segmento
+    const benchmark = benchmarks[seg];
+    const opciones = benchmark?.opciones || [];
+    let iceSlug = eq.modelo_id;
+    if (!iceSlug) {
+      const def = opciones.find(o => o.default) || opciones[0];
+      if (!def) return { ok: false, msg: `segmento "${seg}" sin opciones de benchmark` };
+      iceSlug = def.id;
+    }
+    const target = iceIndex.find(i => i.slug === iceSlug);
+    if (!target) {
+      return {
+        ok: false,
+        msg: `benchmark "${iceSlug}" del segmento "${seg}" no existe en data/referencias/ice-equivalentes/`,
+      };
+    }
+    return { ok: true, target, benchmark, via: `segmento ${seg} → ${iceSlug}` };
   }
 
   return { ok: false, msg: `tipo desconocido "${eq.tipo}"` };
@@ -403,7 +422,9 @@ function detalleCoche(slug) {
 
     if (key === 'equivalente_ice') {
       const r = resolverEquivalenteICE(spec, iceIndex, benchmarks);
-      console.log(`  ${r.ok ? '✓' : '✗'} ${key}: tipo=${spec.tipo} ${spec.modelo_id || spec.segmento || ''} ${r.ok ? '' : '→ ' + r.msg}`);
+      const ref = spec.modelo_id || spec.segmento || '';
+      const via = r.ok && r.via ? `(${r.via})` : '';
+      console.log(`  ${r.ok ? '✓' : '✗'} ${key}: tipo=${spec.tipo} ${ref} ${via} ${r.ok ? '' : '→ ' + r.msg}`);
       continue;
     }
 

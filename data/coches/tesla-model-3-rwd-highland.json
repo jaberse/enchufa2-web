@@ -712,9 +712,100 @@
       "fuente_detalle": "Web oficial Tesla España"
     }
   },
+  "specs_tco": {
+    "depreciacion_y3_pct": {
+      "valor": 0.32,
+      "fuente_tipo": "mercado_agregado",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Motorpasión abril 2026 + Coches.net: Tesla Model 3 retiene mejor valor que media EV (59.2% a 3 años). Estimación 30-35% y3 con perfil enchufa2 (45k km). Rebajas agresivas Tesla 2023-2025 han elevado la depreciación aparente respecto al periodo dorado 2021.",
+      "notas": "Muestra n=276 Coches.net abril 2026. Rango amplio por efecto rebajas Tesla. Revisar 2026-Q4 con sub-muestra RWD Highland específica."
+    },
+    "depreciacion_y5_pct": {
+      "valor": 0.45,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-13",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección BEV premium sedán D: y3=32% + ~6.5%/año = ~45% a 5 años. Factor tecnología (LFP pack 60 kWh, ciclado mejor que NMC) + marca Tesla retiene mejor que BEV premium alemán.",
+      "notas": "Proyección con riesgo: primeros Model 3 Highland (2023) cumplen 5 años en 2028. Valor a validar con muestra real entonces."
+    },
+    "depreciacion_y10_pct": {
+      "valor": 0.62,
+      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_fecha": "2026-04-13",
+      "verificado": false,
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección BEV sedán a 10 años con química LFP (degradación más lenta que NMC). Alta incertidumbre por evolución tecnológica (baterías estado sólido, vehículo definido por software).",
+      "notas": "Sin precedente de mercado español BEV a 10 años. Dato experimental."
+    },
+    "mantenimiento_anual_eur": {
+      "valor": 90,
+      "fuente_tipo": "dato_real_usuario",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "confianza": "alta",
+      "unidad": "€/año",
+      "fuente_detalle": "Media de casos reales documentados: 163€ en 4 años (Agirregabiria) y 330€ en 5 años (hibridosyelectricos.com). Media ponderada ~55€/año ajustada al perfil enchufa2 con +35€/año de provisión imprevistos = ~90€/año.",
+      "notas": "Tesla no obliga a plan oficial. Coste real muy bajo. Factor clave: líquido frenos c/2a (~100€), filtro habitáculo c/2a (~50€), revisión bajos c/año (~145€). El resto se evita gracias a regenerativa (frenos) y ausencia de aceite/bujías.",
+      "mantenimiento_cobertura": "Inspección bajos, fluidos, filtro habitáculo, diagnosis remota. Excluye neumáticos y extras."
+    },
+    "seguro_anual_eur": {
+      "valor": 700,
+      "fuente_tipo": "comparador_agregado",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Media 915€ reportada por comparadores (RapidSecur, Kelisto, Caser, Arpem). Mediana ajustada ~700€ tras excluir outliers jóvenes (1.498€) y franquicias altas (321€).",
+      "notas": "Perfil estándar enchufa2 (40 años, 15 años carnet, zona media, TR franquicia 500€). Prima Tesla ligeramente superior a ICE equivalente por coste reparación y piezas específicas.",
+      "seguro_cotizaciones": [
+        { "aseguradora": "RapidSecur (media)", "prima_eur": 915, "fuente_fecha": "2026-04-13" },
+        { "aseguradora": "Allianz/Direct (franquicia alta)", "prima_eur": 335, "fuente_fecha": "2026-04-13" },
+        { "aseguradora": "MAPFRE/Caser (premium)", "prima_eur": 857, "fuente_fecha": "2026-04-13" }
+      ]
+    },
+    "precio_electricidad_eur_kwh": {
+      "valor": null,
+      "fuente_tipo": "parametros_calculador",
+      "verificado": false,
+      "unidad": "€/kWh",
+      "notas": "Slider calculador (D10): default 0.17 €/kWh, rango 0.08-0.55."
+    },
+    "consumo_real_factor": {
+      "valor": 1.12,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2024-10-01",
+      "fuente_detalle": "EV Database + reportes reales usuarios Model 3 Highland RWD: 13.2 WLTP → ~14.8 kWh/100km real. Factor 1.12 gracias a aerodinámica Cd 0.219 + RWD eficiente + pack LFP 60 kWh.",
+      "verificado": true,
+      "confianza": "alta",
+      "unidad": "multiplicador",
+      "notas": "Gap WLTP/real más bajo del catálogo junto con ë-C3. Tesla destaca en eficiencia real a velocidad autopista."
+    },
+    "equivalente_ice": {
+      "tipo": "benchmark_segmento",
+      "segmento": "D",
+      "razon": "Tesla no tiene gama ICE. Berlina media premium (4.72m, 5 plazas, RWD, prestaciones 0-100 en 5-7s). Benchmark default: BMW 320i Sedan — mismo formato, tracción trasera clásica, motor gasolina mild hybrid 184 CV.",
+      "fuente_tipo": "decision_editorial",
+      "fuente_fecha": "2026-04-13",
+      "verificado": true,
+      "confianza": "alta",
+      "notas": "Alternativas en segmento D benchmarks_ice.json: Mercedes C 200, Audi A4 35 TFSI. UI permitirá cambiar la elección."
+    }
+  },
   "meta": {
-    "fecha_actualizacion": "2026-04-05",
-    "estado": "pendiente",
-    "notas_my": null
+    "fecha_actualizacion": "2026-04-13",
+    "estado": "ficha_completa_tco_borrador",
+    "notas_my": null,
+    "tco_scaffolded": true,
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "media",
+    "tco_revision_requerida": "Muestra Coches.net RWD Highland específica 2026-Q4 + confirmación ayuda Plan Auto+ 3.375€ por tramo exacto (ensamblaje no UE)"
   }
 }
