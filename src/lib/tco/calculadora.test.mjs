@@ -406,3 +406,27 @@ test('curvaTCO — break-even del Tesla Model 3 con Plan Auto+ es desde t=0', ()
   assert.equal(c.rentable_desde_inicio, true);
   assert.equal(c.breakeven_anio, 0);
 });
+
+test('curvaTCO — empate en t=0 sin ayuda y BEV siempre más caro → sin break-even', () => {
+  // Caso real del usuario: BYD Dolphin Surf vs Hyundai i10 con Plan
+  // Auto+ desactivado manualmente (toggle OFF). Sin ayuda, ambos
+  // arrancan en 0 € y el BEV acumula coste más rápido por
+  // depreciación + seguro. No debe reportar break-even ni
+  // "rentable_desde_inicio" (el bug previo hacía que el empate en
+  // t=0 disparase rentable_desde_inicio=true).
+  const bev = bevFromJson(
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/coches/byd-dolphin-surf-comfort.json'), 'utf8')),
+    { horizonte_anios: 3, aplicar_ayuda: false },
+  );
+  const ice = iceFromJson(
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/ice-equivalentes/hyundai-i10-mpi.json'), 'utf8')),
+    { horizonte_anios: 3 },
+  );
+  assert.equal(bev.ayuda_eur ?? 0, 0);
+
+  const c = curvaTCO(bev, ice, {}, { horizonte_max: 3, granularidad_anios: 0.25 });
+  const last = c.puntos[c.puntos.length - 1];
+  assert.ok(last.tco_bev > last.tco_ice, 'BEV debe ser más caro al final del horizonte');
+  assert.equal(c.rentable_desde_inicio, false);
+  assert.equal(c.breakeven_anio, null);
+});

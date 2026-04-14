@@ -254,16 +254,21 @@ export function curvaTCO(bev, ice, overrides = {}, opts = {}) {
     const tco_ice = tcoAcumulado(ice, p, t);
     puntos.push({ anio: t, tco_bev, tco_ice });
 
-    // Detectar cruce BEV ↓ ICE: primer t donde tco_bev ≤ tco_ice
+    // Detectar cruce BEV ↓ ICE: primer t donde tco_bev < tco_ice.
+    // En t=0 solo cuenta "rentable desde el inicio" si el BEV empieza
+    // ESTRICTAMENTE por debajo del ICE (efecto ayuda Plan Auto+). Si
+    // ambos arrancan en 0 € (sin ayuda) es empate, no ventaja.
     if (breakeven_anio === null) {
-      if (t === 0 && tco_bev <= tco_ice) {
+      if (t === 0 && tco_bev < tco_ice) {
         breakeven_anio = 0;
         rentable_desde_inicio = true;
-      } else if (prev && prev.tco_bev > prev.tco_ice && tco_bev <= tco_ice) {
-        // Interpolación lineal para ubicar el cruce exacto dentro del intervalo
+      } else if (prev && prev.tco_bev >= prev.tco_ice && tco_bev < tco_ice) {
+        // Cruce dentro del intervalo (arriba/igual → abajo).
+        // Interpolación lineal para ubicar el cruce exacto.
         const diff_prev = prev.tco_bev - prev.tco_ice;
         const diff_cur = tco_bev - tco_ice;
-        const frac = diff_prev / (diff_prev - diff_cur);
+        const denom = diff_prev - diff_cur;
+        const frac = denom === 0 ? 0 : diff_prev / denom;
         breakeven_anio = prev.anio + frac * (t - prev.anio);
       }
     }
