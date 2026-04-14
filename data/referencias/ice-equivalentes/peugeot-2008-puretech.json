@@ -1,0 +1,162 @@
+{
+  "id": "peugeot-2008-puretech",
+  "slug": "peugeot-2008-puretech",
+  "marca": "Peugeot",
+  "modelo": "2008",
+  "variante": "Hybrid 136 e-DCS6 Allure",
+  "nombre_completo": "Peugeot 2008 Hybrid 136 Allure",
+  "segmento": "B-SUV",
+  "tipo_vehiculo": "ICE",
+  "combustible": "gasolina MHEV 48V",
+  "uso": "referencia_tco_benchmark_segmento",
+  "equivalente_ev_id": null,
+  "benchmark_para": ["byd-atto-2-comfort", "jeep-avenger-electric", "byd-dolphin-60kwh"],
+  "specs": {
+    "carroceria": { "valor": "SUV pequeño 5p", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "traccion": { "valor": "FWD", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "motor_tipo": {
+      "valor": "1.2 PureTech turbo, 3 cilindros, + motor eléctrico 21 kW 48V MHEV",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "fuente_detalle": "Peugeot España + km77 — ficha 2008 Hybrid 2026",
+      "notas": "Slug heredado del plan original (PureTech 100); en 2026 la motorización comercializada es Hybrid 136 MHEV 48V."
+    },
+    "cilindrada_cc": { "valor": 1199, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "cc" },
+    "n_cilindros": { "valor": 3, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "potencia_kw": { "valor": 100, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "kW", "notas": "Potencia combinada sistema híbrido" },
+    "potencia_cv": { "valor": 136, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "CV" },
+    "par_nm": { "valor": 230, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "Nm" },
+    "transmision": { "valor": "Automática e-DCS6 6 velocidades doble embrague", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "consumo_wltp_l100km": {
+      "valor": 4.9,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "L/100km",
+      "fuente_detalle": "WLTP combinado — Peugeot España + km77"
+    },
+    "emisiones_co2_wltp_g_km": { "valor": 111, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "g/km" },
+    "normativa_emisiones": { "valor": "Euro 6", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "distintivo_dgt": { "valor": "ECO", "fuente_tipo": "DGT", "fuente_fecha": "2026-04-14", "verificado": true, "notas": "Distintivo ECO por sistema MHEV 48V" },
+    "aceleracion_0_100_s": { "valor": 8.1, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "s" },
+    "velocidad_max_kmh": { "valor": 198, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "km/h" },
+    "largo_mm": { "valor": 4304, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
+    "ancho_mm": { "valor": 1775, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
+    "alto_mm": { "valor": 1550, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
+    "batalla_mm": { "valor": 2605, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
+    "peso_kg": { "valor": 1372, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "kg" },
+    "plazas": { "valor": 5, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "maletero_l": { "valor": 341, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "L" },
+    "deposito_combustible_l": { "valor": 44, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "L" },
+    "autonomia_wltp_km_derivada": {
+      "valor": 898,
+      "fuente_tipo": "calculado",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "km",
+      "notas": "44 L × (100 / 4.9 L/100km) = 898 km teóricos WLTP"
+    },
+    "pvp": {
+      "valor": 29990,
+      "fuente_tipo": "distribuidor",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "unidad": "€",
+      "fuente_detalle": "PVP lista Allure Hybrid 136 abril 2026 (km77 lista implícita 31.890€ menos 5.250€ descuento permanente promoción). Se toma 29.990€ como referencia realista sin ayuda Peugeot Entretenimiento.",
+      "confianza": "media",
+      "notas": "Peugeot ofrece descuentos permanentes; PVP efectiva varía mucho."
+    },
+    "pvp_fecha": { "valor": "2026-04-14", "fuente_tipo": "distribuidor", "verificado": false },
+    "pais_fabricacion": { "valor": "España (Vigo) / Eslovaquia (Trnava)", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "notas": "Variantes europeas del 2008 Hybrid se fabrican en planta de Stellantis Vigo o Trnava según mercado" },
+    "plataforma": { "valor": "Stellantis CMP (Common Modular Platform)", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "garantia_vehiculo_anos": {
+      "valor": 2,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "años",
+      "fuente_detalle": "Peugeot España — 2 años legal, extensible con Peugeot Entretenimiento"
+    },
+    "fecha_lanzamiento_es": { "valor": "2020", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "notas": "2ª gen P24, facelift 2023" },
+    "model_year": { "valor": "2026", "fuente_tipo": "distribuidor", "fuente_fecha": "2026-04-14", "verificado": true },
+    "estado_comercial": { "valor": "a la venta", "fuente_tipo": "distribuidor", "fuente_fecha": "2026-04-14", "verificado": true }
+  },
+  "specs_tco": {
+    "depreciacion_y3_pct": {
+      "valor": 0.38,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Segmento B-SUV generalista gasolina MHEV: y3 ~38%. Más alto que Sandero por PVP mayor y descuentos permanentes que inflan PVP lista de referencia.",
+      "notas": "Clicars y Coches.net muestran 2008 2023 con 45k km en ~18.500€ = ~38% desde 30.000€ PVP efectivo."
+    },
+    "depreciacion_y5_pct": {
+      "valor": 0.52,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección: y3=38% + ~4,7%/año → ~52% a 5 años. Algo superior a la media del segmento por regulatory risk (ZBE)."
+    },
+    "depreciacion_y10_pct": {
+      "valor": 0.74,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Decay asintótico. SUV pequeños gasolina a 10 años: 70-78%."
+    },
+    "mantenimiento_anual_eur": {
+      "valor": 420,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Plan Peugeot Entretenimiento 4y/60k km ≈ 900€ → ~225€/año + ~195€/año consumibles (neumáticos, pastillas, ITV). Motor híbrido MHEV añade coste de batería 48V a largo plazo."
+    },
+    "seguro_anual_eur": {
+      "valor": 520,
+      "fuente_tipo": "estimacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Perfil enchufa2 estándar: SUV pequeño generalista 136 CV, prima típica 500-550€/año todo riesgo 500€ franquicia.",
+      "notas": "Pendiente 3 cotizaciones específicas.",
+      "seguro_cotizaciones": []
+    },
+    "precio_combustible_eur_l": {
+      "valor": null,
+      "fuente_tipo": "parametros_calculador",
+      "verificado": false,
+      "unidad": "€/L"
+    },
+    "consumo_real_factor": {
+      "valor": 1.13,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2024-10-01",
+      "fuente_detalle": "ICCT gap 2024 — MHEV 48V gasolina ~10-16% sobre WLTP. MHEV mejora ciudad pero WLTP ya es optimista.",
+      "verificado": true,
+      "confianza": "alta",
+      "unidad": "multiplicador"
+    }
+  },
+  "meta": {
+    "fecha_actualizacion": "2026-04-14",
+    "estado": "ficha_completa_tco_borrador",
+    "notas_my": "MY 2026 en comercialización como Hybrid 136 MHEV 48V. El PureTech 100/130 se discontinuó en 2025. Slug mantenido por coherencia con benchmarks_ice.json; considerar rename a peugeot-2008-hybrid-136 en v1.",
+    "proposito": "Referencia ICE benchmark para el segmento B-SUV del comparador TCO. Usado por BYD Atto 2, Jeep Avenger, Peugeot e-2008 (cuando no se use equivalente intra-marca).",
+    "tco_scaffolded": true,
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "media",
+    "tco_revision_requerida": "PVP lista 2026 oficial Peugeot España + muestra Coches.net 2008 Hybrid 2023-2024 + 3 cotizaciones seguro + decisión rename slug"
+  }
+}

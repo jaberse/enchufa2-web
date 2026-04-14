@@ -1,0 +1,177 @@
+{
+  "id": "hyundai-i10-mpi",
+  "slug": "hyundai-i10-mpi",
+  "marca": "Hyundai",
+  "modelo": "i10",
+  "variante": "1.0 MPI 67 CV Essence",
+  "nombre_completo": "Hyundai i10 1.0 MPI 67 CV Essence",
+  "segmento": "A",
+  "tipo_vehiculo": "ICE",
+  "combustible": "gasolina",
+  "uso": "referencia_tco_benchmark_segmento",
+  "equivalente_ev_id": null,
+  "benchmark_para": ["dacia-spring-essential", "byd-dolphin-surf-comfort", "citroen-e-c3-you"],
+  "specs": {
+    "carroceria": {
+      "valor": "Utilitario 5p",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "traccion": {
+      "valor": "FWD",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "motor_tipo": {
+      "valor": "1.0 MPI atmosférico, 3 cilindros en línea",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "fuente_detalle": "Hyundai España — ficha i10 2026"
+    },
+    "cilindrada_cc": { "valor": 998, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "cc" },
+    "n_cilindros": { "valor": 3, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "potencia_kw": { "valor": 49, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "kW" },
+    "potencia_cv": { "valor": 67, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "CV" },
+    "par_nm": { "valor": 96, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "Nm" },
+    "transmision": {
+      "valor": "Manual 5 velocidades",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "consumo_wltp_l100km": {
+      "valor": 4.9,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "L/100km",
+      "fuente_detalle": "WLTP combinado — Hyundai España"
+    },
+    "emisiones_co2_wltp_g_km": { "valor": 112, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "g/km" },
+    "normativa_emisiones": { "valor": "Euro 6", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "distintivo_dgt": { "valor": "C", "fuente_tipo": "DGT", "fuente_fecha": "2026-04-14", "verificado": true },
+    "aceleracion_0_100_s": { "valor": 14.6, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "s" },
+    "velocidad_max_kmh": { "valor": 156, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "km/h" },
+    "largo_mm": { "valor": 3670, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
+    "ancho_mm": { "valor": 1680, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
+    "alto_mm": { "valor": 1500, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
+    "batalla_mm": { "valor": 2425, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
+    "peso_kg": { "valor": 1012, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "kg" },
+    "plazas": { "valor": 5, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "maletero_l": { "valor": 252, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "L" },
+    "deposito_combustible_l": { "valor": 36, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "L" },
+    "autonomia_wltp_km_derivada": {
+      "valor": 735,
+      "fuente_tipo": "calculado",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "km",
+      "notas": "36 L × (100 / 4.9 L/100km) = 735 km teóricos WLTP"
+    },
+    "pvp": {
+      "valor": 15490,
+      "fuente_tipo": "distribuidor",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "unidad": "€",
+      "fuente_detalle": "PVP lista 2026 estimado Hyundai España — Essence sin promoción (rango típico 15.000-16.000€).",
+      "confianza": "media"
+    },
+    "pvp_fecha": { "valor": "2026-04-14", "fuente_tipo": "distribuidor", "verificado": false },
+    "pais_fabricacion": { "valor": "Turquía (Izmit)", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "plataforma": { "valor": "Hyundai K1 BA", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "garantia_vehiculo_anos": {
+      "valor": 5,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "años",
+      "fuente_detalle": "Hyundai 5 años / kilometraje ilimitado"
+    },
+    "fecha_lanzamiento_es": { "valor": "2020", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "notas": "3ª gen (AI3), facelift 2023" },
+    "model_year": { "valor": "2026", "fuente_tipo": "distribuidor", "fuente_fecha": "2026-04-14", "verificado": true },
+    "estado_comercial": { "valor": "a la venta", "fuente_tipo": "distribuidor", "fuente_fecha": "2026-04-14", "verificado": true }
+  },
+  "specs_tco": {
+    "depreciacion_y3_pct": {
+      "valor": 0.36,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección segmento A gasolina: retención ~64% a 3 años. Alineado con promedio AutoScout24/Coches.net i10 2023 con 45k km.",
+      "notas": "Utilitarios pequeños se deprecian más rápido en % aunque menos en € absolutos."
+    },
+    "depreciacion_y5_pct": {
+      "valor": 0.52,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección: y3=36% + ~5,3%/año → ~52% a 5 años. Consistente con segmento A 2020-2021 actual."
+    },
+    "depreciacion_y10_pct": {
+      "valor": 0.78,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Decay asintótico. Utilitarios gasolina 10 años: típicamente 72-82%."
+    },
+    "mantenimiento_anual_eur": {
+      "valor": 280,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Motor atmosférico simple: ~140€/año plan oficial (intervalos 12m/15k km) + ~140€/año consumibles (neumáticos, pastillas, ITV prorrateados).",
+      "notas": "Coste real más bajo del catálogo ICE por mecánica atmosférica sin turbo ni hybrid."
+    },
+    "seguro_anual_eur": {
+      "valor": 380,
+      "fuente_tipo": "estimacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Perfil enchufa2 estándar: utilitario generalista 67 CV, prima típica 350-420€/año todo riesgo 500€ franquicia.",
+      "notas": "Pendiente 3 cotizaciones Rastreator/Kelisto/Mapfre con perfil enchufa2.",
+      "seguro_cotizaciones": []
+    },
+    "precio_combustible_eur_l": {
+      "valor": null,
+      "fuente_tipo": "parametros_calculador",
+      "verificado": false,
+      "unidad": "€/L",
+      "notas": "Se tomará del archivo de parámetros (real-time MITECO)."
+    },
+    "consumo_real_factor": {
+      "valor": 1.12,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2024-10-01",
+      "fuente_detalle": "ICCT Real-World Fuel Consumption gap 2024 — gasolina atmosférica pequeña ~10-15% sobre WLTP (motor poco estresado en ciclo real urbano).",
+      "verificado": true,
+      "confianza": "alta",
+      "unidad": "multiplicador"
+    }
+  },
+  "meta": {
+    "fecha_actualizacion": "2026-04-14",
+    "estado": "ficha_completa_tco_borrador",
+    "notas_my": "MY 2026 en comercialización. Default del segmento A en benchmarks_ice.json.",
+    "proposito": "Referencia ICE benchmark para el segmento A del comparador TCO. Usado por Dacia Spring, BYD Dolphin Surf, Citroën ë-C3.",
+    "tco_scaffolded": true,
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "media",
+    "tco_revision_requerida": "PVP lista 2026 Hyundai España oficial + muestra Coches.net i10 2023 45k km + 3 cotizaciones seguro"
+  }
+}

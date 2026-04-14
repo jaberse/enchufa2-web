@@ -1,0 +1,160 @@
+{
+  "id": "volkswagen-tiguan-tsi",
+  "slug": "volkswagen-tiguan-tsi",
+  "marca": "Volkswagen",
+  "modelo": "Tiguan",
+  "variante": "1.5 eTSI 150 CV DSG Life",
+  "nombre_completo": "Volkswagen Tiguan 1.5 eTSI 150 CV DSG Life",
+  "segmento": "C-SUV",
+  "tipo_vehiculo": "ICE",
+  "combustible": "gasolina MHEV 48V",
+  "uso": "referencia_tco_benchmark_segmento",
+  "equivalente_ev_id": null,
+  "benchmark_para": ["toyota-bz4x-fwd", "byd-atto-3-comfort", "skoda-elroq-60", "hyundai-kona-electric-65-kwh"],
+  "specs": {
+    "carroceria": { "valor": "SUV medio 5p", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "traccion": { "valor": "FWD", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "motor_tipo": {
+      "valor": "1.5 eTSI turbo, 4 cilindros en línea, mild hybrid 48V con cilindrada variable ACT+",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "fuente_detalle": "Volkswagen España — ficha Tiguan III 2026"
+    },
+    "cilindrada_cc": { "valor": 1498, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "cc" },
+    "n_cilindros": { "valor": 4, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "potencia_kw": { "valor": 110, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "kW" },
+    "potencia_cv": { "valor": 150, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "CV" },
+    "par_nm": { "valor": 250, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "Nm" },
+    "transmision": { "valor": "Automática DSG7 doble embrague", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "consumo_wltp_l100km": {
+      "valor": 6.5,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "L/100km",
+      "fuente_detalle": "WLTP combinado — Volkswagen España"
+    },
+    "emisiones_co2_wltp_g_km": { "valor": 147, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "g/km" },
+    "normativa_emisiones": { "valor": "Euro 6", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "distintivo_dgt": { "valor": "ECO", "fuente_tipo": "DGT", "fuente_fecha": "2026-04-14", "verificado": true, "notas": "Distintivo ECO por MHEV 48V" },
+    "aceleracion_0_100_s": { "valor": 9.1, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "s" },
+    "velocidad_max_kmh": { "valor": 207, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "km/h" },
+    "largo_mm": { "valor": 4539, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
+    "ancho_mm": { "valor": 1859, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
+    "alto_mm": { "valor": 1658, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
+    "batalla_mm": { "valor": 2681, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
+    "peso_kg": { "valor": 1625, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "kg" },
+    "plazas": { "valor": 5, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "maletero_l": { "valor": 652, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "L" },
+    "deposito_combustible_l": { "valor": 55, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "L" },
+    "autonomia_wltp_km_derivada": {
+      "valor": 846,
+      "fuente_tipo": "calculado",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "km",
+      "notas": "55 L × (100 / 6.5 L/100km) = 846 km teóricos WLTP"
+    },
+    "pvp": {
+      "valor": 37740,
+      "fuente_tipo": "distribuidor",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "unidad": "€",
+      "fuente_detalle": "PVP lista Life 1.5 eTSI DSG 2026 Volkswagen España (rango típico 37.000-39.500€ sin promociones).",
+      "confianza": "media"
+    },
+    "pvp_fecha": { "valor": "2026-04-14", "fuente_tipo": "distribuidor", "verificado": false },
+    "pais_fabricacion": { "valor": "Alemania (Wolfsburgo)", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "plataforma": { "valor": "Volkswagen Group MQB evo", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "garantia_vehiculo_anos": {
+      "valor": 3,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "años",
+      "fuente_detalle": "Volkswagen España — 3 años sin límite km"
+    },
+    "fecha_lanzamiento_es": { "valor": "2024", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "notas": "3ª gen CT1, lanzada 2024" },
+    "model_year": { "valor": "2026", "fuente_tipo": "distribuidor", "fuente_fecha": "2026-04-14", "verificado": true },
+    "estado_comercial": { "valor": "a la venta", "fuente_tipo": "distribuidor", "fuente_fecha": "2026-04-14", "verificado": true }
+  },
+  "specs_tco": {
+    "depreciacion_y3_pct": {
+      "valor": 0.34,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Segmento C-SUV generalista premium: y3 ~34%. Tiguan es referencia del segmento con buena retención.",
+      "notas": "Revisar con muestra Coches.net Tiguan 1.5 eTSI 2023 con 45k km."
+    },
+    "depreciacion_y5_pct": {
+      "valor": 0.48,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección: y3=34% + ~4,7%/año → ~48% a 5 años. Ligeramente mejor que la media del segmento por demanda sostenida."
+    },
+    "depreciacion_y10_pct": {
+      "valor": 0.72,
+      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Decay asintótico. SUV medios gasolina a 10 años: 68-76%."
+    },
+    "mantenimiento_anual_eur": {
+      "valor": 520,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Plan Volkswagen Mantenimiento 4y/60k km ≈ 1.100€ → ~275€/año + ~245€/año consumibles. DSG7 añade revisión aceite transmisión."
+    },
+    "seguro_anual_eur": {
+      "valor": 620,
+      "fuente_tipo": "estimacion_sectorial",
+      "fuente_fecha": "2026-04-14",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "Perfil enchufa2 estándar: SUV medio generalista 150 CV, prima típica 580-650€/año todo riesgo 500€ franquicia.",
+      "notas": "Pendiente 3 cotizaciones específicas.",
+      "seguro_cotizaciones": []
+    },
+    "precio_combustible_eur_l": {
+      "valor": null,
+      "fuente_tipo": "parametros_calculador",
+      "verificado": false,
+      "unidad": "€/L"
+    },
+    "consumo_real_factor": {
+      "valor": 1.17,
+      "fuente_tipo": "investigacion_web",
+      "fuente_fecha": "2024-10-01",
+      "fuente_detalle": "ICCT gap 2024 — SUV medio MHEV gasolina ~14-20% sobre WLTP. Peso y aerodinámica penalizan en ciclo real.",
+      "verificado": true,
+      "confianza": "alta",
+      "unidad": "multiplicador"
+    }
+  },
+  "meta": {
+    "fecha_actualizacion": "2026-04-14",
+    "estado": "ficha_completa_tco_borrador",
+    "notas_my": "MY 2026 en comercialización. 3ª gen desde 2024. Default del segmento C-SUV en benchmarks_ice.json.",
+    "proposito": "Referencia ICE benchmark para el segmento C-SUV del comparador TCO. Usado por Toyota bZ4X, BYD Atto 3, Skoda Elroq, Hyundai Kona Electric.",
+    "tco_scaffolded": true,
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "media",
+    "tco_revision_requerida": "PVP lista 2026 oficial + muestra Coches.net Tiguan III 1.5 eTSI + 3 cotizaciones seguro"
+  }
+}
