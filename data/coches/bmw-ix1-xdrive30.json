@@ -455,9 +455,9 @@
       "verificado": false
     },
     "pvp_con_plan_auto_eur": {
-      "valor": null,
+      "valor": 49550,
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-12",
+      "fuente_fecha": "2026-04-15",
       "verificado": true,
       "unidad": "€"
     },
@@ -568,11 +568,12 @@
       "verificado": true
     },
     "ayuda_plan_auto_eur": {
-      "valor": 0,
+      "valor": 4050,
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-12",
+      "fuente_fecha": "2026-04-15",
       "verificado": true,
-      "unidad": "€"
+      "unidad": "€",
+      "fuente_detalle": "Ensamblaje Regensburg + batería Regensburg (UE). PVP sin IVA 44.298€ < 45k → elegible tramo 35-45k. EEE: 2250 + 675 + 675 + 450 = 4050€"
     },
     "garantia_estrellas": {
       "valor": 3,
@@ -612,7 +613,7 @@
   },
   "specs_tco": {
     "depreciacion_y3_pct": {
-      "valor": 0.20,
+      "valor": 0.2,
       "fuente_tipo": "mercado_agregado_ajustado",
       "fuente_fecha": "2026-04-13",
       "verificado": true,
@@ -671,7 +672,7 @@
       "notas": "Se tomará del slider del calculador (D10: default 0.17 €/kWh, rango 0.08-0.55)."
     },
     "consumo_real_factor": {
-      "valor": 1.20,
+      "valor": 1.2,
       "fuente_tipo": "investigacion_web",
       "fuente_fecha": "2024-10-01",
       "fuente_detalle": "BEV AWD compacto 17.5 WLTP → ~21 kWh/100km real (factor 1.20). Coherente con datos reales de usuarios EV Database.",
@@ -691,7 +692,7 @@
     }
   },
   "meta": {
-    "fecha_actualizacion": "2026-04-13",
+    "fecha_actualizacion": "2026-04-15",
     "estado": "ficha_completa_tco_borrador",
     "notas_my": null,
     "tco_scaffolded": true,

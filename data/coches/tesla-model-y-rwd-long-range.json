@@ -458,9 +458,9 @@
       "verificado": false
     },
     "pvp_con_plan_auto_eur": {
-      "valor": null,
+      "valor": 42940,
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-12",
+      "fuente_fecha": "2026-04-15",
       "verificado": true,
       "unidad": "€"
     },
@@ -571,11 +571,12 @@
       "verificado": true
     },
     "ayuda_plan_auto_eur": {
-      "valor": 0,
+      "valor": 4050,
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-12",
+      "fuente_fecha": "2026-04-15",
       "verificado": true,
-      "unidad": "€"
+      "unidad": "€",
+      "fuente_detalle": "Ensamblaje Giga Berlin + batería UE (pack Berlín, celdas BYD). EEE: Eléctrico 2250€ + Económico 35-45k 675€ + Europeo ensamblaje 675€ + Europeo batería 450€ = 4050€"
     },
     "fiabilidad_estrellas": {
       "valor": 3,
@@ -713,7 +714,7 @@
   },
   "specs_tco": {
     "depreciacion_y3_pct": {
-      "valor": 0.30,
+      "valor": 0.3,
       "fuente_tipo": "mercado_agregado",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
@@ -792,7 +793,7 @@
     }
   },
   "meta": {
-    "fecha_actualizacion": "2026-04-14",
+    "fecha_actualizacion": "2026-04-15",
     "estado": "ficha_completa_tco_borrador",
     "notas_my": null,
     "tco_scaffolded": true,

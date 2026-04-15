@@ -455,9 +455,9 @@
       "verificado": false
     },
     "pvp_con_plan_auto_eur": {
-      "valor": null,
+      "valor": 46065,
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-12",
+      "fuente_fecha": "2026-04-15",
       "verificado": true,
       "unidad": "€"
     },
@@ -568,11 +568,12 @@
       "verificado": true
     },
     "ayuda_plan_auto_eur": {
-      "valor": 0,
+      "valor": 2925,
       "fuente_tipo": "calculado",
-      "fuente_fecha": "2026-04-12",
+      "fuente_fecha": "2026-04-15",
       "verificado": true,
-      "unidad": "€"
+      "unidad": "€",
+      "fuente_detalle": "Importado China (no ensamblaje UE, no batería UE). PVP sin IVA 40.488€ < 45k → elegible tramo Económico pero no tramos Europeos. EEE: 2250 + 675 + 0 + 0 = 2925€"
     },
     "garantia_estrellas": {
       "valor": 4,
@@ -611,7 +612,7 @@
     }
   },
   "meta": {
-    "fecha_actualizacion": "2026-04-14",
+    "fecha_actualizacion": "2026-04-15",
     "estado": "ficha_completa_tco_borrador",
     "notas_my": null,
     "tco_scaffolded": true,
