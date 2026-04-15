@@ -1,87 +1,107 @@
-# Migración fuente_tipo v1 — Warnings de confianza pendientes
+# Migración fuente_tipo v1 — Warnings de confianza · Resuelto
 
-**Fecha:** 2026-04-15
+**Fecha creación:** 2026-04-15
+**Fecha resolución:** 2026-04-15
 **Origen:** pasada de `scripts/data-pipeline/_migrate_fuente_tipo_v1.mjs --apply` tras publicar `docs/metodologia-tco.md` v1.
-**Estado:** 99 campos migrados a nombres canónicos. 22 warnings de confianza pendientes de revisión manual.
+**Estado:** ✅ 22 warnings revisados caso por caso. 4 demotes aplicados, 15 conservados con justificación, 3 heredados del iX1 conservados. Metodología §3 refinada para aceptar divergencia legítima a la baja.
 
-## Resumen
+---
 
-La migración de `fuente_tipo` legacy a los nombres canónicos de §3 de la metodología se ha aplicado a los 20 JSONs con `specs_tco`. Los cambios de nombre son seguros. Lo que queda pendiente es revisar **divergencias de confianza**: casos en los que el valor actual de `confianza` del JSON no coincide con el valor por defecto que la metodología asigna al nuevo `fuente_tipo` canónico.
+## Resumen de decisiones
 
-Ninguna divergencia se ha auto-corregido — cada una requiere decisión editorial explícita porque el valor de `confianza` impacta directamente sobre la banda de incertidumbre de la calculadora (§4 de la metodología).
+| Grupo | Casos | Decisión | Resultado |
+|---|---|---|---|
+| A — manto · fabricante media | 15 | Conservar | `fabricante` + `media` es legítimo: valor combina plan oficial + estimación de consumibles |
+| B — consumo · factor_categoria alta | 2 | **Demote a media** | ICCT por categoría, no medición del modelo |
+| C — ëC3 manto · media_bev_categoria media | 1 | **Demote a baja** | Tarifa Citroën Essential Service no publicada, es estimación sectorial |
+| D — Tesla M3 manto · plan_hermano_fabricante alta | 1 | **Demote a media** | Datos de bloggers (Agirregabiria, hibridosyelectricos), no oficial |
+| E — iX1 baseline_compartido | 3 | Conservar | Marcados baja en la unificación con iX2 del 2026-04-15 |
 
-## Excepción ya aplicada en el script
+Total: **4 demotes aplicados**, 18 conservados con justificación.
 
-- **y10 siempre confianza `baja`** (§4 excepción). El script no marca warning cuando `depreciacion_y10_pct` tiene confianza baja aunque el canon del tipo sea media. Son 20 casos que son correctos por definición.
+---
 
-## Warnings por categoría
+## Grupo A — Conservado con refinamiento metodológico
 
-### A. Promote candidato: mantenimiento + fabricante → debería ser `alta`
+15 modelos con `fuente_tipo: fabricante` y `confianza: media`:
 
-15 modelos con `fuente_tipo: fabricante` y `confianza: media`. La metodología dice que `fabricante` es `alta` por defecto, pero media puede estar justificada si el plan del fabricante no cubre todo (p.ej. solo años 1–3, o solo revisiones sin consumibles).
+- byd-atto-2-comfort · byd-atto-3-comfort · byd-dolphin-60kwh · byd-dolphin-surf-comfort · byd-seal-awd-excellence
+- dacia-spring-essential · hyundai-inster-long-range · hyundai-kona-electric-65-kwh
+- jeep-avenger-electric · kia-ev3-long-range · mercedes-eqa-250+
+- peugeot-e-2008-allure · renault-5-e-tech-comfort-range · skoda-elroq-60
+- tesla-model-y-rwd-long-range · toyota-bz4x-fwd
 
-Revisar caso por caso:
-- byd-atto-2-comfort
-- byd-atto-3-comfort
-- byd-dolphin-60kwh
-- byd-dolphin-surf-comfort
-- byd-seal-awd-excellence
-- dacia-spring-essential
-- hyundai-inster-long-range
-- hyundai-kona-electric-65-kwh
-- jeep-avenger-electric
-- kia-ev3-long-range
-- mercedes-eqa-250+
-- peugeot-e-2008-allure
-- renault-5-e-tech-comfort-range
-- skoda-elroq-60
-- tesla-model-y-rwd-long-range
-- toyota-bz4x-fwd
+**Análisis:** al revisar el `fuente_detalle` de los 15, todos cumplen el patrón *"Plan [marca] Xy/Yk km ≈ Z€ → N€/año + consumibles"*. Es decir, parten del plan oficial del fabricante (que es información primaria verificable) pero suman una estimación de consumibles (neumáticos, pastillas, ITV prorrateada) que no viene del plan oficial. Ejemplo real del Kia EV3 LR:
 
-**Criterio de decisión:** si el `fuente_detalle` cita un plan oficial con precio publicado y años de cobertura explícitos, promote a `alta`. Si solo cita "típico de la marca" o "promedio", dejar en `media` y considerar si el tipo correcto es `plan_hermano_fabricante`.
+> Plan Kia 3y/45k km ≈ 540€ → ~180€/año + consumibles.
 
-### B. Demote candidato: consumo + factor_categoria → debería ser `media`
+El tipo `fabricante` es correcto — la fuente primaria **es** el fabricante. Pero el valor final incorpora una estimación adicional, lo que justifica declarar `media` en vez de `alta`.
 
-2 modelos con `fuente_tipo: factor_categoria` y `confianza: alta`. La metodología dice que `factor_categoria` es `media` por defecto porque es una media por carrocería sin datos del modelo concreto.
+**Refinamiento aplicado a la metodología (§3):** se añade nota explícita de que la confianza canónica es el máximo alcanzable para ese tipo cuando el dato es íntegro, y que un JSON puede declarar confianza inferior cuando incorpora estimaciones parciales, documentándolo en `fuente_detalle` o `notas`. No se permite declarar confianza superior al canon.
 
-- byd-atto-2-comfort
-- citroen-e-c3-you
+Con este refinamiento, los 15 casos dejan de ser warnings: `fabricante` + `media` + `fuente_detalle` que explicita el ajuste es una combinación válida.
 
-**Criterio de decisión:** verificar si el `fuente_detalle` realmente cita datos del modelo concreto. Si los cita, el tipo correcto es `ev_database` (que sí es alta). Si son datos agregados de carrocería, bajar a `media`.
+---
 
-### C. Demote candidato: citroen-e-c3 mantenimiento + media_bev_categoria → debería ser `baja`
+## Grupo B — Demote aplicado (2 casos)
 
-1 caso:
-- citroen-e-c3-you · mantenimiento_anual_eur · media_bev_categoria: actual=media canon=baja
+### byd-atto-2-comfort · consumo_real_factor
+- Antes: `factor_categoria · alta · verificado: true`
+- Después: `factor_categoria · media · verificado: false`
+- Razón: `fuente_detalle` cita *"ICCT Real-World Energy Consumption 2024 — BEV SUV generalista ~15-22% sobre WLTP"*. Es un rango de categoría, no una medición del Atto 2. El canon de `factor_categoria` es media.
+- Nota añadida: *"Factor derivado de rango ICCT 15-22% para BEV SUV generalista, no medición específica Atto 2. Confianza media por ser factor de categoría."*
 
-**Criterio:** si se migró desde `estimacion_sectorial` a `media_bev_categoria`, la confianza correcta es baja. Bajar a baja.
+### citroen-e-c3-you · consumo_real_factor
+- Antes: `factor_categoria · alta · verificado: true`
+- Después: `factor_categoria · media · verificado: false`
+- Razón: `fuente_detalle` dice literalmente *"factor estándar EV Europa"*. No hay medición del ëC3 concreto.
+- Nota añadida: *"Factor estándar ICCT por carrocería, no medición específica ëC3. Confianza media por ser factor de categoría (§2.4 metodología-tco.md)."*
 
-### D. Demote candidato: tesla M3 mantenimiento + plan_hermano_fabricante → debería ser `media`
+---
 
-1 caso:
-- tesla-model-3-rwd-highland · mantenimiento_anual_eur · plan_hermano_fabricante: actual=alta canon=media
+## Grupo C — Demote aplicado (1 caso)
 
-**Criterio:** Tesla no tiene plan oficial de mantenimiento publicado para España. Si se derivó de datos reales de usuarios o plan US, el tipo correcto puede ser `fabricante` con verificado:true o `plan_hermano_fabricante` con confianza media. Bajar a media por defecto.
+### citroen-e-c3-you · mantenimiento_anual_eur
+- Antes: `media_bev_categoria · media`
+- Después: `media_bev_categoria · baja`
+- Razón: `notas` del JSON dice *"Tarifa Citroën Essential Service no publicada; estimación sectorial EV"*. Si no hay dato oficial publicado, el canon de `media_bev_categoria` es baja.
 
-### E. Conservados: iX1 con confianza `baja` sobre `ganvam_segmento`
+---
 
-3 casos:
+## Grupo D — Demote aplicado (1 caso)
+
+### tesla-model-3-rwd-highland · mantenimiento_anual_eur
+- Antes: `plan_hermano_fabricante · alta · verificado: true`
+- Después: `plan_hermano_fabricante · media · verificado: false`
+- Razón: Tesla no publica plan oficial de mantenimiento para España. El `fuente_detalle` cita *"Media de casos reales documentados: 163€ en 4 años (Agirregabiria) y 330€ en 5 años (hibridosyelectricos.com)"*. Son datos de divulgadores, no oficiales. No es medición primaria.
+- Gap pendiente: el tipo `plan_hermano_fabricante` no encaja exactamente (no se tomó de otra marca, son datos de usuarios Tesla). Podría requerir un nuevo tipo `casos_documentados_usuarios` en la v2 de la metodología — queda como nota para la revisión.
+
+---
+
+## Grupo E — Conservado (3 casos)
+
 - bmw-ix1-xdrive30 · depreciacion_y3_pct
 - bmw-ix1-xdrive30 · depreciacion_y5_pct
 - bmw-ix1-xdrive30 · seguro_anual_eur
 
-**No tocar.** Estos valores son el resultado de la unificación baseline con iX2 el 2026-04-15. Se bajó a `baja` explícitamente para marcar que son datos heredados, no verificados individualmente para el iX1. La divergencia con el canon (media) es intencional y está documentada en `docs/regla-baseline-intra-plataforma.md`.
+No se tocan. Son el resultado de la unificación baseline con iX2 del 2026-04-15 (commit `65891d2`). Se bajaron a `baja` intencionalmente para marcar que son datos heredados del hermano, no verificados para el iX1 individualmente. La divergencia con el canon es consciente y está documentada en `docs/regla-baseline-intra-plataforma.md`.
 
-## Siguiente paso
+---
 
-Revisión caso por caso de A-D en una pasada manual. E se deja como está.
+## Auditoría posterior
 
-Cuando la revisión esté hecha, ejecutar:
+Tras aplicar los 4 demotes:
 
 ```bash
+node scripts/data-pipeline/_migrate_fuente_tipo_v1.mjs   # dry-run
 node scripts/data-pipeline/_audit_intra_plataforma.mjs
 npm run data:build
-npm run data:audit
 ```
 
-Todo debe pasar sin errores antes de commit.
+Todos deben pasar sin errores. Los únicos warnings residuales deberían ser:
+- 15 casos de grupo A (aceptados por refinamiento §3)
+- 3 casos de grupo E (aceptados por regla intra-plataforma)
+
+---
+
+*Gap pendiente para v2 de la metodología:* crear un tipo `casos_documentados_usuarios` para cuando el coste de mantenimiento se deriva de reportes reales de propietarios (divulgadores EV, foros). Caso de uso: Tesla (sin plan oficial). Confianza por defecto: media.*

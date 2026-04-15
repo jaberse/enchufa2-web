@@ -119,6 +119,8 @@ Este factor es el único campo de `specs_tco` que **no** tiene banda de incertid
 
 Tabla cerrada. Cualquier `fuente_tipo` fuera de esta lista debe ser migrado o revisado.
 
+**Cómo leer la columna "Confianza por defecto":** es el **máximo alcanzable** para ese tipo cuando el dato es íntegro (fuente primaria directa, sin ajustes ni extrapolaciones). Un JSON puede declarar una confianza **inferior** al canon cuando el valor incorpora estimaciones parciales, combinaciones con otras fuentes, o ajustes editoriales — en ese caso el motivo se documenta en `fuente_detalle` o `notas`. Un JSON **no puede** declarar confianza superior al canon. Las bandas de §4 se aplican siempre sobre la confianza declarada, no sobre el canon.
+
 | `fuente_tipo` | Campos donde aplica | Confianza por defecto |
 |---|---|---|
 | `baseline_compartido_intra_plataforma` | depreciación, seguro, manto | baja |

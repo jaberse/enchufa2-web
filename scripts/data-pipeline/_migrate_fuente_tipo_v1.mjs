@@ -145,11 +145,15 @@ for (const file of files) {
         fileChanged = true;
       }
     }
-    // Warning si confianza no coincide con canónica
-    // Excepción §4: y10 siempre se fuerza a baja independientemente del tipo
+    // Warning si confianza EXCEDE la canónica (declarar más confianza que la
+    // que el tipo permite). Divergencia a la baja es legítima per §3 de
+    // docs/metodologia-tco.md: la confianza del canon es el máximo alcanzable,
+    // se puede declarar inferior si el valor incorpora estimaciones parciales.
+    // Excepción §4: y10 siempre se fuerza a baja independientemente del tipo.
     const esY10 = campo === 'depreciacion_y10_pct';
     const canon = CANON_CONFIANZA[nuevo];
-    if (!esY10 && canon && val.confianza && val.confianza !== canon) {
+    const ORDEN = { baja: 0, media: 1, alta: 2 };
+    if (!esY10 && canon && val.confianza && ORDEN[val.confianza] > ORDEN[canon]) {
       warnings.push({
         file,
         campo,

@@ -637,7 +637,7 @@
       "fuente_tipo": "media_bev_categoria",
       "fuente_fecha": "2026-04-13",
       "verificado": false,
-      "confianza": "media",
+      "confianza": "baja",
       "unidad": "€/año",
       "fuente_detalle": "Revisión oficial Citroën cada 30.000 km (~110€) + filtros aire/habitáculo + inspección",
       "notas": "Tarifa Citroën Essential Service no publicada; estimación sectorial EV. Sin aceite ni correa. Pastillas duran el doble por regenerativo.",
@@ -659,9 +659,10 @@
       "fuente_tipo": "factor_categoria",
       "fuente_fecha": "2024-10-01",
       "fuente_detalle": "ICCT Real-World Energy Consumption 2024 (factor estándar EV Europa)",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador"
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "multiplicador",
+      "notas": "Factor estándar ICCT por carrocería, no medición específica ëC3. Confianza media por ser factor de categoría (§2.4 metodología-tco.md)."
     },
     "equivalente_ice": {
       "tipo": "intra_marca",
