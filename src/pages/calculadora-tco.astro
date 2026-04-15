@@ -285,19 +285,66 @@ const kwhEfectivoIni =
 
       <p class="lede" id="lede">Cargando…</p>
 
-      <!-- ── E7 — Sensibilidad a inputs del usuario ── -->
+      <!-- ── E7 — Sensibilidad interactiva ── -->
       <aside class="sensibilidad" aria-labelledby="h-sensibilidad">
         <h3 id="h-sensibilidad">¿Y si te equivocas en los inputs?</h3>
         <p class="sens-intro">
-          El rango que aparece junto al TCO es <em>nuestra</em> incertidumbre
-          metodológica. Lo que sigue es la <em>tuya</em>: cuánto se mueve el
-          ahorro si alguno de los supuestos clave no es exactamente el que has
-          metido.
+          El rango junto al TCO es <em>nuestra</em> incertidumbre metodológica.
+          Esta es la <em>tuya</em>: mueve los tres supuestos clave para ver
+          cómo se desplaza el ahorro sin tocar el escenario principal.
         </p>
         <ul class="sens-list">
-          <li id="sens-km">—</li>
-          <li id="sens-kwh">—</li>
-          <li id="sens-casa">—</li>
+          <li class="sens-row">
+            <div class="sens-ctrl">
+              <label for="sens-km-slider">
+                Km/año
+                <output id="sens-km-mul">+20 %</output>
+              </label>
+              <input
+                id="sens-km-slider"
+                type="range"
+                min="-40"
+                max="40"
+                step="5"
+                value="20"
+              />
+            </div>
+            <p class="sens-out" id="sens-km">—</p>
+          </li>
+          <li class="sens-row">
+            <div class="sens-ctrl">
+              <label for="sens-kwh-slider">
+                kWh efectivo
+                <output id="sens-kwh-mul">+0,05 €</output>
+              </label>
+              <input
+                id="sens-kwh-slider"
+                type="range"
+                min="-0.20"
+                max="0.20"
+                step="0.01"
+                value="0.05"
+              />
+            </div>
+            <p class="sens-out" id="sens-kwh">—</p>
+          </li>
+          <li class="sens-row">
+            <div class="sens-ctrl">
+              <label for="sens-casa-slider">
+                % casa
+                <output id="sens-casa-mul">−20 pts</output>
+              </label>
+              <input
+                id="sens-casa-slider"
+                type="range"
+                min="-50"
+                max="50"
+                step="5"
+                value="-20"
+              />
+            </div>
+            <p class="sens-out" id="sens-casa">—</p>
+          </li>
         </ul>
       </aside>
 
@@ -477,6 +524,22 @@ const kwhEfectivoIni =
       litro: 1.55,
       ayuda: true,
     };
+
+    // Estado independiente de los mini-sliders de sensibilidad (E7).
+    // Se superponen sobre el escenario principal SIN afectar al lede ni al
+    // gráfico. Cada valor es un delta respecto al baseline actual.
+    const sensState = {
+      kmPct: 20,      // ±% sobre state.km  (−40..+40)
+      kwhDelta: 0.05, // € sobre kwhEfectivo (−0,20..+0,20)
+      pctPts: -20,    // puntos sobre state.pctCasa (−50..+50)
+    };
+
+    // Cache del escenario baseline para recomputar E7 sin rehacer el principal.
+    let baselineCache: {
+      bevInput: any;
+      iceInput: any;
+      ahorroActual: number;
+    } | null = null;
 
     // €/kWh efectivo derivado del mix casa/pública (E1).
     const kwhEfectivo = () =>
@@ -862,10 +925,28 @@ const kwhEfectivoIni =
         `<strong>${eur(abs)} €</strong> (${pct.toFixed(1)} %) ` +
         `frente al <strong>${par.iceName}</strong>.${rangoLede}`;
 
-      // ── E7 — Sensibilidad a inputs del usuario ──
-      // Reproducimos el cálculo con perturbaciones en km, precio kWh y
-      // % carga casa para mostrar cómo se mueve el ahorro total.
-      const ahorroActual = cmp.ahorro_bev_eur;
+      // Cacheamos baseline para que los mini-sliders de E7 puedan recalcular
+      // sin pasar por todo recalc() otra vez.
+      baselineCache = {
+        bevInput,
+        iceInput,
+        ahorroActual: cmp.ahorro_bev_eur,
+      };
+      recalcSens();
+
+      // Gráfico
+      renderChart(bevInput, iceInput);
+
+      writeUrl();
+    }
+
+    // ── E7 — Sensibilidad interactiva ──
+    // Recomputa las 3 líneas del aside en función de sensState, usando el
+    // baselineCache ya calculado. No toca lede, gráfico ni breakdown.
+    function recalcSens() {
+      if (!baselineCache) return;
+      const { bevInput, iceInput, ahorroActual } = baselineCache;
+
       const wiggle = (overrides: { km?: number; kwh?: number; pctCasa?: number }) => {
         const km = overrides.km ?? state.km;
         const pctCasa = overrides.pctCasa ?? state.pctCasa;
@@ -886,25 +967,44 @@ const kwhEfectivoIni =
         const delta = nuevo - actual;
         const verbo = nuevo >= 0 ? 'ahorras' : 'sobrecuesta';
         const abs = Math.abs(nuevo);
+        if (Math.abs(delta) < 0.5) {
+          return `${verbo} <strong>${eur(abs)} €</strong> (prácticamente igual)`;
+        }
         const signoDelta = delta >= 0 ? '+' : '−';
         return `${verbo} <strong>${eur(abs)} €</strong> (${signoDelta}${eur(Math.abs(delta))} € vs escenario actual)`;
       };
 
-      const kmUp = wiggle({ km: Math.round(state.km * 1.20) });
-      const kwhUp = wiggle({ kwh: kwhEfectivo() + 0.05 });
-      const pctDown = wiggle({ pctCasa: Math.max(0, state.pctCasa - 20) });
+      const signoPct = (v: number) => (v >= 0 ? '+' : '−');
+      const signoDec = (v: number) =>
+        v >= 0 ? `+${v.toFixed(2).replace('.', ',')}` : `−${Math.abs(v).toFixed(2).replace('.', ',')}`;
 
+      // Km/año.
+      const kmHipo = Math.max(1000, Math.round(state.km * (1 + sensState.kmPct / 100)));
+      const kmAhorro = wiggle({ km: kmHipo });
+      $('sens-km-mul').textContent = `${signoPct(sensState.kmPct)}${Math.abs(sensState.kmPct)} %`;
       $('sens-km').innerHTML =
-        `Si haces <strong>${eur(Math.round(state.km * 1.20))} km/año</strong> (+20 %) → ${fmtDelta(ahorroActual, kmUp)}`;
+        sensState.kmPct === 0
+          ? `Con tus <strong>${eur(state.km)} km/año</strong> → ${fmtDelta(ahorroActual, kmAhorro)}`
+          : `Si haces <strong>${eur(kmHipo)} km/año</strong> (${signoPct(sensState.kmPct)}${Math.abs(sensState.kmPct)} %) → ${fmtDelta(ahorroActual, kmAhorro)}`;
+
+      // kWh efectivo.
+      const kwhBase = kwhEfectivo();
+      const kwhHipo = Math.max(0.05, kwhBase + sensState.kwhDelta);
+      const kwhAhorro = wiggle({ kwh: kwhHipo });
+      $('sens-kwh-mul').textContent = `${signoDec(sensState.kwhDelta)} €`;
       $('sens-kwh').innerHTML =
-        `Si el kWh efectivo sube <strong>+0,05 €</strong> (p. ej. subida PVPC) → ${fmtDelta(ahorroActual, kwhUp)}`;
+        sensState.kwhDelta === 0
+          ? `Con el kWh efectivo actual (<strong>${kwhBase.toFixed(3)} €</strong>) → ${fmtDelta(ahorroActual, kwhAhorro)}`
+          : `Si el kWh efectivo vale <strong>${kwhHipo.toFixed(3)} €</strong> (${signoDec(sensState.kwhDelta)} €) → ${fmtDelta(ahorroActual, kwhAhorro)}`;
+
+      // % casa.
+      const pctHipo = Math.min(100, Math.max(0, state.pctCasa + sensState.pctPts));
+      const pctAhorro = wiggle({ pctCasa: pctHipo });
+      $('sens-casa-mul').textContent = `${signoPct(sensState.pctPts)}${Math.abs(sensState.pctPts)} pts`;
       $('sens-casa').innerHTML =
-        `Si solo cargas <strong>${Math.max(0, state.pctCasa - 20)} %</strong> en casa (−20 puntos) → ${fmtDelta(ahorroActual, pctDown)}`;
-
-      // Gráfico
-      renderChart(bevInput, iceInput);
-
-      writeUrl();
+        sensState.pctPts === 0
+          ? `Con tu <strong>${state.pctCasa} %</strong> en casa → ${fmtDelta(ahorroActual, pctAhorro)}`
+          : `Si cargas <strong>${pctHipo} %</strong> en casa (${signoPct(sensState.pctPts)}${Math.abs(sensState.pctPts)} pts) → ${fmtDelta(ahorroActual, pctAhorro)}`;
     }
 
     // ── Bindings ──
@@ -991,6 +1091,20 @@ const kwhEfectivoIni =
         ? `(${eur(par.ayuda_eur)} €)`
         : '(no aplicada)';
       recalc();
+    });
+
+    // ── E7 — Bindings mini-sliders sensibilidad ──
+    ($('sens-km-slider') as HTMLInputElement).addEventListener('input', (e) => {
+      sensState.kmPct = Number((e.target as HTMLInputElement).value);
+      recalcSens();
+    });
+    ($('sens-kwh-slider') as HTMLInputElement).addEventListener('input', (e) => {
+      sensState.kwhDelta = Number((e.target as HTMLInputElement).value);
+      recalcSens();
+    });
+    ($('sens-casa-slider') as HTMLInputElement).addEventListener('input', (e) => {
+      sensState.pctPts = Number((e.target as HTMLInputElement).value);
+      recalcSens();
     });
 
     $('share-btn').addEventListener('click', async () => {
@@ -1441,23 +1555,55 @@ const kwhEfectivoIni =
       margin: 0;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.875rem;
     }
-    .sens-list li {
+    .sens-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.375rem;
+      padding: 0.75rem 0.875rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) * 0.75);
+    }
+    @media (min-width: 640px) {
+      .sens-row {
+        grid-template-columns: minmax(180px, 240px) 1fr;
+        gap: 1rem;
+        align-items: center;
+      }
+    }
+    .sens-ctrl {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+      min-width: 0;
+    }
+    .sens-ctrl label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .sens-ctrl output {
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 500;
+    }
+    .sens-out {
+      margin: 0;
       font-size: 0.875rem;
       line-height: 1.45;
       color: var(--text-secondary);
-      padding-left: 1rem;
-      position: relative;
     }
-    .sens-list li::before {
-      content: "→";
-      position: absolute;
-      left: 0;
-      color: var(--yellow);
-      font-weight: 500;
-    }
-    .sens-list li strong {
+    .sens-out strong {
       color: var(--text);
       font-weight: 500;
       font-variant-numeric: tabular-nums;
