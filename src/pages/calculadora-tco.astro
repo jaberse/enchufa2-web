@@ -190,8 +190,8 @@ const kwhEfectivoIni =
 
       <div class="ctrl-grid">
         <!-- Selector multi-coche (Sprint 2 E2 paso 2B) -->
-        <fieldset class="ctrl ctrl-seleccion">
-          <legend>Coches a analizar</legend>
+        <div class="ctrl ctrl-seleccion" role="group" aria-label="Coches a analizar">
+          <p class="ctrl-title">Coches a analizar</p>
           <p class="seleccion-hint">
             Empieza con un par rápido o añade hasta 4 eléctricos y 4 de
             combustión para comparar. Haz clic en un coche de la lista —
@@ -243,7 +243,7 @@ const kwhEfectivoIni =
               </div>
             </div>
           </div>
-        </fieldset>
+        </div>
 
         <!-- Horizonte (E6a — slider libre 2-10) -->
         <div class="ctrl">
@@ -283,8 +283,8 @@ const kwhEfectivoIni =
         </div>
 
         <!-- ── E1 — Mix de carga casa/pública ── -->
-        <fieldset class="ctrl ctrl-mix">
-          <legend>Cómo cargas habitualmente</legend>
+        <div class="ctrl ctrl-mix" role="group" aria-label="Cómo cargas habitualmente">
+          <p class="ctrl-title">Cómo cargas habitualmente</p>
           <div class="mix-presets" role="group" aria-label="Perfiles de carga predefinidos">
             <button type="button" class="mix-preset" data-pct="90">Casa 90 %</button>
             <button type="button" class="mix-preset" data-pct="70">Mixto 70 %</button>
@@ -344,7 +344,7 @@ const kwhEfectivoIni =
             Precio medio efectivo:
             <strong id="kwh-efectivo-out">{kwhEfectivoIni.toFixed(3)} €/kWh</strong>
           </p>
-        </fieldset>
+        </div>
 
         <!-- Precio gasolina -->
         <div class="ctrl">
@@ -381,73 +381,6 @@ const kwhEfectivoIni =
       <h2 id="h-resultado" class="sr-only">Resultado</h2>
 
       <p class="lede" id="lede">Cargando…</p>
-
-      <!-- ── E7 — Sensibilidad interactiva ── -->
-      <aside class="sensibilidad" aria-labelledby="h-sensibilidad">
-        <h3 id="h-sensibilidad">¿Y si te equivocas en los inputs?</h3>
-        <p class="sens-intro">
-          El rango junto al TCO es <em>nuestra</em> incertidumbre metodológica.
-          Esta es la <em>tuya</em>: mueve los tres supuestos clave para ver
-          cómo se desplaza el ahorro sin tocar el escenario principal.
-        </p>
-        <p class="sens-pair" id="sens-pair" aria-live="polite">
-          Comparando <strong id="sens-pair-bev">—</strong> vs
-          <strong id="sens-pair-ice">—</strong>
-        </p>
-        <ul class="sens-list">
-          <li class="sens-row">
-            <div class="sens-ctrl">
-              <label for="sens-km-slider">
-                Km/año
-                <output id="sens-km-mul">+20 %</output>
-              </label>
-              <input
-                id="sens-km-slider"
-                type="range"
-                min="-40"
-                max="40"
-                step="5"
-                value="20"
-              />
-            </div>
-            <p class="sens-out" id="sens-km">—</p>
-          </li>
-          <li class="sens-row">
-            <div class="sens-ctrl">
-              <label for="sens-kwh-slider">
-                kWh efectivo
-                <output id="sens-kwh-mul">+0,05 €</output>
-              </label>
-              <input
-                id="sens-kwh-slider"
-                type="range"
-                min="-0.20"
-                max="0.20"
-                step="0.01"
-                value="0.05"
-              />
-            </div>
-            <p class="sens-out" id="sens-kwh">—</p>
-          </li>
-          <li class="sens-row">
-            <div class="sens-ctrl">
-              <label for="sens-casa-slider">
-                % casa
-                <output id="sens-casa-mul">−20 pts</output>
-              </label>
-              <input
-                id="sens-casa-slider"
-                type="range"
-                min="-50"
-                max="50"
-                step="5"
-                value="-20"
-              />
-            </div>
-            <p class="sens-out" id="sens-casa">—</p>
-          </li>
-        </ul>
-      </aside>
 
       <div class="tco-focus-wrap">
         <article class="tco-card tco-focus" id="tco-focus" data-tren="BEV" aria-live="polite">
@@ -499,13 +432,8 @@ const kwhEfectivoIni =
             <!-- Contenido renderizado por JS -->
           </svg>
           <table class="sr-only" id="chart-table" aria-label="Datos del gráfico"></table>
-          <div class="chart-legend" aria-hidden="true">
-            <span class="lg-item lg-bev"><span class="lg-swatch"></span> Eléctrico</span>
-            <span class="lg-item lg-ice"><span class="lg-swatch"></span> Combustión</span>
-            <span class="lg-item lg-band"><span class="lg-swatch"></span> Banda de incertidumbre</span>
-            <span class="lg-item lg-be" id="lg-be-item" hidden>
-              <span class="lg-swatch"></span> Break-even
-            </span>
+          <div class="chart-legend" id="chart-legend" aria-label="Leyenda del gráfico">
+            <!-- Items generados dinámicamente por renderChart() -->
           </div>
         </div>
         <p class="chart-caveat">
@@ -629,22 +557,6 @@ const kwhEfectivoIni =
     const focusKeyStr = (k: FocusKey) => `${k.tren}:${k.slug}`;
     const isFocus = (tren: 'BEV'|'ICE', slug: string) =>
       state.focus.tren === tren && state.focus.slug === slug;
-
-    // Estado independiente de los mini-sliders de sensibilidad (E7).
-    // Se superponen sobre el escenario principal SIN afectar al lede ni al
-    // gráfico. Cada valor es un delta respecto al baseline actual.
-    const sensState = {
-      kmPct: 20,      // ±% sobre state.km  (−40..+40)
-      kwhDelta: 0.05, // € sobre kwhEfectivo (−0,20..+0,20)
-      pctPts: -20,    // puntos sobre state.pctCasa (−50..+50)
-    };
-
-    // Cache del escenario baseline para recomputar E7 sin rehacer el principal.
-    let baselineCache: {
-      bevInput: any;
-      iceInput: any;
-      ahorroActual: number;
-    } | null = null;
 
     // €/kWh efectivo derivado del mix casa/pública (E1).
     const kwhEfectivo = () =>
@@ -963,9 +875,42 @@ const kwhEfectivoIni =
         tbl.innerHTML = '';
       }
 
-      // Legend "break-even" oculto en el modo multi-select (Sprint 2).
-      const beItem = $('lg-be-item');
-      beItem.setAttribute('hidden', '');
+      // ── Leyenda dinámica: un item por coche, identificación clara ──
+      const legend = $('chart-legend');
+      legend.innerHTML = '';
+
+      for (const c of curvas) {
+        const item = document.createElement('span');
+        item.className = `lg-item lg-${c.tren.toLowerCase()}${c.isFocus ? ' lg-focus' : ''}`;
+        item.setAttribute('data-tren', c.tren);
+        item.setAttribute('data-slug', c.slug);
+
+        const swatch = document.createElement('span');
+        swatch.className = 'lg-swatch';
+        item.appendChild(swatch);
+
+        const label = document.createElement('span');
+        label.className = 'lg-label';
+        label.textContent = c.name;
+        item.appendChild(label);
+
+        if (c.isFocus) {
+          const tag = document.createElement('span');
+          tag.className = 'lg-tag';
+          tag.textContent = 'focus';
+          item.appendChild(tag);
+        }
+
+        legend.appendChild(item);
+      }
+
+      // Banda de incertidumbre (solo si el focus tiene margen).
+      if (focusCurva && focusCurva.margen > 0) {
+        const band = document.createElement('span');
+        band.className = 'lg-item lg-band';
+        band.innerHTML = `<span class="lg-swatch"></span> Banda ±${Math.round(focusCurva.margen * 100)} % (${focusCurva.name})`;
+        legend.appendChild(band);
+      }
     }
 
     // Helper global: rango bajo el TCO grande.
@@ -1146,119 +1091,10 @@ const kwhEfectivoIni =
       // 6) Re-pintar chips (conteo + etiquetas).
       renderChips();
 
-      // 7) Baseline E7: para que la sensibilidad refleje exactamente el
-      //    coche que el usuario está mirando, el baseline arrastra el foco.
-      //    - Si el foco es un BEV → ese BEV vs el ICE más barato de la selección
-      //    - Si el foco es un ICE → el BEV más barato de la selección vs ese ICE
-      //    - Si no hay foco explícito → cheapestBev vs cheapestIce como fallback
-      const focusBevEntry =
-        state.focus?.tren === 'BEV'
-          ? resolvedBev.find((r) => r.slug === state.focus!.slug)
-          : null;
-      const focusIceEntry =
-        state.focus?.tren === 'ICE'
-          ? resolvedIce.find((r) => r.slug === state.focus!.slug)
-          : null;
-      const baseBev = focusBevEntry ?? cheapestBev;
-      const baseIce = focusIceEntry ?? cheapestIce;
-      if (baseBev && baseIce) {
-        const cmp = compararTCO(baseBev.input, baseIce.input, overrides);
-        baselineCache = {
-          bevInput: baseBev.input,
-          iceInput: baseIce.input,
-          ahorroActual: cmp.ahorro_bev_eur,
-        };
-        // Etiqueta del par que se está usando como baseline de sensibilidad:
-        // si el foco es un BEV → ese BEV vs cheapest ICE de la selección, y
-        // viceversa; si no hay foco explícito → cheapest vs cheapest.
-        const bevLabel =
-          focusBevEntry != null
-            ? `${baseBev.meta.name} (en foco)`
-            : `${baseBev.meta.name} (más barato)`;
-        const iceLabel =
-          focusIceEntry != null
-            ? `${baseIce.meta.name} (en foco)`
-            : `${baseIce.meta.name} (más barato)`;
-        $('sens-pair-bev').textContent = bevLabel;
-        $('sens-pair-ice').textContent = iceLabel;
-      } else {
-        baselineCache = null;
-        $('sens-pair-bev').textContent = '—';
-        $('sens-pair-ice').textContent = '—';
-      }
-      recalcSens();
-
-      // 8) Gráfico
+      // 7) Gráfico
       renderChart(curvas);
 
       writeUrl();
-    }
-
-    // ── E7 — Sensibilidad interactiva ──
-    // Recomputa las 3 líneas del aside en función de sensState, usando el
-    // baselineCache ya calculado. No toca lede, gráfico ni breakdown.
-    function recalcSens() {
-      if (!baselineCache) return;
-      const { bevInput, iceInput, ahorroActual } = baselineCache;
-
-      const wiggle = (overrides: { km?: number; kwh?: number; pctCasa?: number }) => {
-        const km = overrides.km ?? state.km;
-        const pctCasa = overrides.pctCasa ?? state.pctCasa;
-        const kwh = overrides.kwh ?? (
-          (pctCasa / 100) * state.kwhCasa +
-          (1 - pctCasa / 100) * state.kwhPublica
-        );
-        const c = compararTCO(bevInput, iceInput, {
-          km_anual: km,
-          horizonte_anios: state.horizonte,
-          precio_kwh_eur: kwh,
-          precio_litro_eur: state.litro,
-        });
-        return c.ahorro_bev_eur;
-      };
-
-      const fmtDelta = (actual: number, nuevo: number) => {
-        const delta = nuevo - actual;
-        const verbo = nuevo >= 0 ? 'ahorras' : 'sobrecuesta';
-        const abs = Math.abs(nuevo);
-        if (Math.abs(delta) < 0.5) {
-          return `${verbo} <strong>${eur(abs)} €</strong> (prácticamente igual)`;
-        }
-        const signoDelta = delta >= 0 ? '+' : '−';
-        return `${verbo} <strong>${eur(abs)} €</strong> (${signoDelta}${eur(Math.abs(delta))} € vs escenario actual)`;
-      };
-
-      const signoPct = (v: number) => (v >= 0 ? '+' : '−');
-      const signoDec = (v: number) =>
-        v >= 0 ? `+${v.toFixed(2).replace('.', ',')}` : `−${Math.abs(v).toFixed(2).replace('.', ',')}`;
-
-      // Km/año.
-      const kmHipo = Math.max(1000, Math.round(state.km * (1 + sensState.kmPct / 100)));
-      const kmAhorro = wiggle({ km: kmHipo });
-      $('sens-km-mul').textContent = `${signoPct(sensState.kmPct)}${Math.abs(sensState.kmPct)} %`;
-      $('sens-km').innerHTML =
-        sensState.kmPct === 0
-          ? `Con tus <strong>${eur(state.km)} km/año</strong> → ${fmtDelta(ahorroActual, kmAhorro)}`
-          : `Si haces <strong>${eur(kmHipo)} km/año</strong> (${signoPct(sensState.kmPct)}${Math.abs(sensState.kmPct)} %) → ${fmtDelta(ahorroActual, kmAhorro)}`;
-
-      // kWh efectivo.
-      const kwhBase = kwhEfectivo();
-      const kwhHipo = Math.max(0.05, kwhBase + sensState.kwhDelta);
-      const kwhAhorro = wiggle({ kwh: kwhHipo });
-      $('sens-kwh-mul').textContent = `${signoDec(sensState.kwhDelta)} €`;
-      $('sens-kwh').innerHTML =
-        sensState.kwhDelta === 0
-          ? `Con el kWh efectivo actual (<strong>${kwhBase.toFixed(3)} €</strong>) → ${fmtDelta(ahorroActual, kwhAhorro)}`
-          : `Si el kWh efectivo vale <strong>${kwhHipo.toFixed(3)} €</strong> (${signoDec(sensState.kwhDelta)} €) → ${fmtDelta(ahorroActual, kwhAhorro)}`;
-
-      // % casa.
-      const pctHipo = Math.min(100, Math.max(0, state.pctCasa + sensState.pctPts));
-      const pctAhorro = wiggle({ pctCasa: pctHipo });
-      $('sens-casa-mul').textContent = `${signoPct(sensState.pctPts)}${Math.abs(sensState.pctPts)} pts`;
-      $('sens-casa').innerHTML =
-        sensState.pctPts === 0
-          ? `Con tu <strong>${state.pctCasa} %</strong> en casa → ${fmtDelta(ahorroActual, pctAhorro)}`
-          : `Si cargas <strong>${pctHipo} %</strong> en casa (${signoPct(sensState.pctPts)}${Math.abs(sensState.pctPts)} pts) → ${fmtDelta(ahorroActual, pctAhorro)}`;
     }
 
     // ── Sprint 2 E2 paso 2B — Bindings chips + combobox + quick-starts ──
@@ -1491,19 +1327,6 @@ const kwhEfectivoIni =
       recalc();
     });
 
-    // ── E7 — Bindings mini-sliders sensibilidad ──
-    ($('sens-km-slider') as HTMLInputElement).addEventListener('input', (e) => {
-      sensState.kmPct = Number((e.target as HTMLInputElement).value);
-      recalcSens();
-    });
-    ($('sens-kwh-slider') as HTMLInputElement).addEventListener('input', (e) => {
-      sensState.kwhDelta = Number((e.target as HTMLInputElement).value);
-      recalcSens();
-    });
-    ($('sens-casa-slider') as HTMLInputElement).addEventListener('input', (e) => {
-      sensState.pctPts = Number((e.target as HTMLInputElement).value);
-      recalcSens();
-    });
 
     $('share-btn').addEventListener('click', async () => {
       writeUrl();
@@ -1694,10 +1517,13 @@ const kwhEfectivoIni =
       border: 1px solid var(--border);
       border-radius: var(--radius);
     }
-    fieldset.ctrl {
-      margin: 0;
+    .ctrl-title {
+      margin: 0 0 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.3;
     }
-    .ctrl legend,
     .ctrl > label:first-child {
       font-size: 0.875rem;
       font-weight: 500;
@@ -1725,11 +1551,8 @@ const kwhEfectivoIni =
       border: 1px solid var(--border);
       border-radius: var(--radius);
     }
-    .ctrl-seleccion legend {
-      font-size: 0.875rem;
-      font-weight: 500;
-      padding: 0 0.25rem;
-      color: var(--text);
+    .ctrl-seleccion > .ctrl-title {
+      margin-bottom: 0.25rem;
     }
     .seleccion-hint {
       font-size: 0.8125rem;
@@ -2030,11 +1853,8 @@ const kwhEfectivoIni =
       border: 1px solid var(--border);
       border-radius: var(--radius);
     }
-    .ctrl-mix legend {
-      font-size: 0.875rem;
-      font-weight: 500;
-      padding: 0 0.25rem;
-      color: var(--text);
+    .ctrl-mix > .ctrl-title {
+      margin-bottom: 0.25rem;
     }
     .mix-presets {
       display: flex;
@@ -2139,108 +1959,6 @@ const kwhEfectivoIni =
       font-family: var(--font-sans);
       font-style: normal;
       font-weight: 500;
-    }
-
-    /* ── E7 — Sensibilidad ── */
-    .sensibilidad {
-      margin: 0 0 clamp(1.5rem, 4vw, 2.5rem);
-      padding: clamp(1rem, 2.5vw, 1.5rem);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--yellow);
-      border-radius: var(--radius);
-      max-width: 780px;
-    }
-    .sensibilidad h3 {
-      margin: 0 0 0.5rem;
-      font-size: 0.9375rem;
-      font-weight: 500;
-      color: var(--text);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-    .sens-intro {
-      margin: 0 0 0.875rem;
-      font-size: 0.875rem;
-      line-height: 1.55;
-      color: var(--text-secondary);
-    }
-    .sens-intro em {
-      font-style: italic;
-      color: var(--text);
-    }
-    .sens-pair {
-      margin: 0 0 1.25rem;
-      padding: 0.625rem 0.875rem;
-      font-size: 0.8125rem;
-      line-height: 1.45;
-      color: var(--text-secondary);
-      background: var(--surface-alt);
-      border-left: 2px solid var(--yellow);
-      border-radius: 4px;
-    }
-    .sens-pair strong {
-      color: var(--text);
-      font-weight: 500;
-    }
-    .sens-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.875rem;
-    }
-    .sens-row {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.375rem;
-      padding: 0.75rem 0.875rem;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: calc(var(--radius) * 0.75);
-    }
-    @media (min-width: 640px) {
-      .sens-row {
-        grid-template-columns: minmax(180px, 240px) 1fr;
-        gap: 1rem;
-        align-items: center;
-      }
-    }
-    .sens-ctrl {
-      display: flex;
-      flex-direction: column;
-      gap: 0.375rem;
-      min-width: 0;
-    }
-    .sens-ctrl label {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 0.5rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-    .sens-ctrl output {
-      font-variant-numeric: tabular-nums;
-      color: var(--text);
-      text-transform: none;
-      letter-spacing: 0;
-      font-weight: 500;
-    }
-    .sens-out {
-      margin: 0;
-      font-size: 0.875rem;
-      line-height: 1.45;
-      color: var(--text-secondary);
-    }
-    .sens-out strong {
-      color: var(--text);
-      font-weight: 500;
-      font-variant-numeric: tabular-nums;
     }
 
     .tco-focus-wrap {
@@ -2506,60 +2224,81 @@ const kwhEfectivoIni =
       font-size: 0.8125rem;
       color: var(--text-secondary);
     }
-    .lg-item {
+    .chart-legend :global(.lg-item) {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       font-variant-numeric: tabular-nums;
     }
-    .lg-swatch {
+    .chart-legend :global(.lg-label) {
+      font-weight: 400;
+    }
+    .chart-legend :global(.lg-focus .lg-label) {
+      font-weight: 600;
+      color: var(--text);
+    }
+    .chart-legend :global(.lg-tag) {
       display: inline-block;
-      width: 18px;
+      margin-left: 0.125rem;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: var(--yellow);
+      color: #111111;
+      border-radius: 3px;
+    }
+    .chart-legend :global(.lg-swatch) {
+      display: inline-block;
+      width: 22px;
       height: 3px;
       border-radius: 2px;
       background: var(--yellow);
+      flex-shrink: 0;
     }
-    .lg-ice .lg-swatch {
+    .chart-legend :global(.lg-focus.lg-bev .lg-swatch) {
+      height: 4px;
+    }
+    .chart-legend :global(.lg-focus.lg-ice .lg-swatch) {
+      height: 4px;
+    }
+    .chart-legend :global(.lg-ice .lg-swatch) {
       background: linear-gradient(
         to right,
         var(--gray-600) 0,
-        var(--gray-600) 5px,
-        transparent 5px,
-        transparent 8px,
-        var(--gray-600) 8px,
-        var(--gray-600) 13px,
-        transparent 13px,
-        transparent 16px,
+        var(--gray-600) 6px,
+        transparent 6px,
+        transparent 10px,
+        var(--gray-600) 10px,
         var(--gray-600) 16px,
-        var(--gray-600) 18px
+        transparent 16px,
+        transparent 20px,
+        var(--gray-600) 20px,
+        var(--gray-600) 22px
       );
     }
-    [data-theme="dark"] .lg-ice .lg-swatch {
+    [data-theme="dark"] .chart-legend :global(.lg-ice .lg-swatch) {
       background: linear-gradient(
         to right,
         var(--gray-300) 0,
-        var(--gray-300) 5px,
-        transparent 5px,
-        transparent 8px,
-        var(--gray-300) 8px,
-        var(--gray-300) 13px,
-        transparent 13px,
-        transparent 16px,
+        var(--gray-300) 6px,
+        transparent 6px,
+        transparent 10px,
+        var(--gray-300) 10px,
         var(--gray-300) 16px,
-        var(--gray-300) 18px
+        transparent 16px,
+        transparent 20px,
+        var(--gray-300) 20px,
+        var(--gray-300) 22px
       );
     }
-    .lg-be .lg-swatch {
-      background: var(--text);
-      height: 12px;
-      width: 2px;
-    }
-    .lg-band .lg-swatch {
+    .chart-legend :global(.lg-band .lg-swatch) {
       height: 10px;
-      width: 18px;
+      width: 22px;
       border-radius: 2px;
       background: var(--yellow);
-      opacity: 0.2;
+      opacity: 0.25;
       border: 1px dashed rgba(245, 197, 24, 0.6);
     }
 
