@@ -60,8 +60,11 @@ function describePatron(curva) {
   if (curva.rentable_desde_inicio && curva.perdida_rentabilidad_anio != null) {
     return `RENTABLE HASTA ${curva.perdida_rentabilidad_anio.toFixed(1)}y`;
   }
-  if (!curva.rentable_desde_inicio && curva.breakeven_anio != null && curva.breakeven_anio > 0 && curva.rentable_al_final) {
-    return `BREAK-EVEN ${curva.breakeven_anio.toFixed(1)}y`;
+  // Break-even >= 0: incluye el caso breakeven=0 (empate en el minuto cero,
+  // rentable desde el primer instante posterior). Sin el ">= 0" el iX2 con
+  // baseline unificado se clasificaba erróneamente como "NUNCA RENTABLE".
+  if (!curva.rentable_desde_inicio && curva.breakeven_anio != null && curva.breakeven_anio >= 0 && curva.rentable_al_final) {
+    return curva.breakeven_anio === 0 ? 'SIEMPRE RENTABLE' : `BREAK-EVEN ${curva.breakeven_anio.toFixed(1)}y`;
   }
   return 'NUNCA RENTABLE';
 }

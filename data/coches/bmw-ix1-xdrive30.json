@@ -616,8 +616,8 @@
       "valor": 0.2,
       "fuente_tipo": "mercado_agregado_ajustado",
       "fuente_fecha": "2026-04-13",
-      "verificado": true,
-      "confianza": "media",
+      "verificado": false,
+      "confianza": "baja",
       "unidad": "fracción",
       "fuente_detalle": "BMW Premium Selection + Coches.net abril 2026 — muestra iX1 2023 real: media 46.593€ con ~11k km (depreciación ~13% pero sesgada por km bajo). Ajustado al perfil enchufa2 15.000 km/año → 45k km: +7 pp por sobre-kilometraje → ~20%",
       "notas": "Muestra n=91 anuncios Coches.net. Modelo premium con bajo stock nuevo → depreciación menor que ICE equivalente (X1 sDrive18i=28%). Revisar 2026-Q4 con muestra ≥40k km."
@@ -699,7 +699,7 @@
     "tco_poblado": true,
     "tco_activo_en_calculadora": false,
     "tco_estado": "borrador",
-    "tco_confianza_general": "media",
-    "tco_revision_requerida": "3 cotizaciones específicas seguro iX1 + muestra depreciación con ≥40k km (revisar 2026-Q4)"
+    "tco_confianza_general": "baja",
+    "tco_revision_requerida": "Baseline compartido con iX2 (misma plataforma UKL2/FAAR). y3 tiene muestra Coches.net n=91 pero ajustada +7pp por km bajo; y5 es proyección. Seguro y mantenimiento por confirmar Fase D 2026-Q2. Tras el incidente del artículo 008 se unificaron baselines con iX2 para evitar divergencias sin evidencia."
   }
 }
