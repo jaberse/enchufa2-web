@@ -1,0 +1,284 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+---
+
+<ArticleLayout
+  title="El escalón del Plan Auto+: qué cambia al cruzar 45.000 €"
+  description="El Plan Auto+ se apaga de golpe a los 45.000 € sin IVA. Cómo funciona el escalón, por qué el iX1 y el iX2 son el caso de libro, y cómo negociarlo."
+  readingTime="8 min de lectura"
+  publishDate="Abril 2026"
+  references="3 referencias"
+>
+
+  <p class="article-deck">El Plan Auto+ no es una curva: es un escalón. Por debajo de 45.000 € sin IVA, un eléctrico ensamblado en la UE con batería UE puede recibir hasta 4.050 € de ayuda estatal. Un euro por encima, recibe cero. Explicamos la mecánica exacta, por qué el BMW iX1 y el iX2 — mecánicamente el mismo coche — acaban en lados opuestos del escalón, y cómo negociar un descuento que cruce el umbral a la baja.</p>
+
+  <div class="article-stats">
+    <div class="stat">
+      <span class="stat-value">4.050 €</span>
+      <span class="stat-label">Ayuda Plan Auto+ que pierde un modelo ensamblado en UE con batería UE al cruzar 45.000 € sin IVA</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">45.000 €</span>
+      <span class="stat-label">Umbral duro del tramo Económico EEE (sin IVA). Función escalón, no rampa</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">4.291 €</span>
+      <span class="stat-label">Diferencia de PVP con IVA entre BMW iX1 y iX2: misma plataforma, distinto tramo de ayuda</span>
+    </div>
+  </div>
+
+  <div class="tldr">
+    <strong>Resumen rápido</strong>
+    <ul>
+      <li><strong>El escalón existe.</strong> Por debajo de 45.000 € sin IVA un BEV puede cobrar hasta 4.050 € de ayuda (4.500 € si además cuesta menos de 35.000 € sin IVA). Por encima, la ayuda cae a cero de golpe. No hay degradación lineal: es una función escalón definida en el Anexo I del Real Decreto del Plan Auto+.</li>
+      <li><strong>Traducido a PVP con IVA, el umbral está en ~54.450 €.</strong> Un coche a 53.999 € con IVA puede cobrar ayuda; uno a 54.501 €, no. La diferencia de 500 € en precio marcado se convierte en hasta 4.050 € de ayuda perdida.</li>
+      <li><strong>BMW iX1 vs iX2: caso de libro.</strong> Comparten plataforma UKL2, motor, batería de 64,7 kWh NMC y fábrica (Regensburg). Separados por 4.291 € de PVP con IVA, uno cruza el umbral y el otro no. Uno cobra 4.050 € y el otro 0.</li>
+      <li><strong>Jugada pragmática.</strong> Si el PVP sin IVA del coche que te interesa cae entre 45.500 € y 48.500 €, pedir 1.000–3.000 € de descuento para bajar del umbral puede devolverte hasta 2× ese descuento en ayuda recuperada.</li>
+      <li><strong>No te damos un TCO puntual a 5 años.</strong> La ayuda del Plan Auto+ es una cifra dura del BOE. Lo que viene después — depreciación, seguro, mantenimiento proyectados a 5 años — no lo es. Para eso está nuestra <a href="/calculadora-tco">calculadora TCO</a>, que muestra bandas de incertidumbre explícitas (±0 % / ±8 % / ±15 %) según la confianza de cada dato.</li>
+    </ul>
+  </div>
+
+  <figure>
+    <img
+      src="/articulos/escalon-plan-auto-45k/hero.webp"
+      alt="Coche eléctrico cargando en un concesionario, ilustrando el momento de compra y la ayuda del Plan Auto+"
+      width="1600"
+      height="900"
+      loading="eager"
+    />
+    <figcaption>El momento de firmar el contrato es donde el escalón del Plan Auto+ se hace visible: los 4.050 € aparecen o desaparecen del ticket dependiendo de si el PVP sin IVA está en un lado u otro del umbral.</figcaption>
+  </figure>
+
+  <hr />
+
+  <h2>01 — La fórmula EEE y los 4.500 € máximos</h2>
+
+  <p>El Plan Auto+ sustituyó al MOVES III el 1 de enero de 2026 con un presupuesto de 400 millones de euros para vehículos eléctricos <sup>[1]</sup>. A diferencia de MOVES III, la ayuda <strong>no es una cantidad fija</strong>: se calcula con la fórmula <strong>EEE</strong> — Eléctrico, Económico, Europeo — que va sumando tramos según cuatro criterios binarios <sup>[2]</sup>:</p>
+
+  <div class="comparison-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Tramo</th>
+          <th>Criterio</th>
+          <th style="text-align: right;">Importe máximo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Eléctrico</strong></td>
+          <td>Ser BEV puro (batería pura, sin motor térmico)</td>
+          <td style="text-align: right;">2.250 €</td>
+        </tr>
+        <tr>
+          <td><strong>Económico (tramo A)</strong></td>
+          <td>PVP &lt; 35.000 € sin IVA</td>
+          <td style="text-align: right;">1.125 €</td>
+        </tr>
+        <tr>
+          <td><strong>Económico (tramo B)</strong></td>
+          <td>PVP 35.000 – 45.000 € sin IVA</td>
+          <td style="text-align: right;">675 €</td>
+        </tr>
+        <tr>
+          <td><strong>Europeo (ensamblaje)</strong></td>
+          <td>Ensamblaje final del vehículo en la UE</td>
+          <td style="text-align: right;">675 €</td>
+        </tr>
+        <tr>
+          <td><strong>Europeo (batería)</strong></td>
+          <td>Pack de batería ensamblado en la UE</td>
+          <td style="text-align: right;">450 €</td>
+        </tr>
+        <tr>
+          <td colspan="2"><strong>Ayuda máxima acumulable (BEV &lt; 35k, ensamblado UE, batería UE)</strong></td>
+          <td style="text-align: right; font-weight: 700;">4.500 €</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>El tramo Eléctrico es obligatorio (si no es BEV puro no hay ayuda), y los dos tramos Europeos se cobran por separado según dónde se ensamble el coche y dónde se ensamble el pack de batería. Un BEV europeo con batería europea que cueste menos de 35.000 € sin IVA cobra el máximo, 4.500 €. Entre 35.000 y 45.000 €, la ayuda cae a 4.050 € porque se pierden 450 € del tramo Económico-A.</p>
+
+  <p>Hasta aquí la mecánica es lineal-a-trozos. Donde deja de serlo es justo al cruzar los 45.000 €.</p>
+
+  <h2>02 — El umbral duro a 45.000 €: por qué es escalón, no rampa</h2>
+
+  <p>Por encima de 45.000 € sin IVA, el tramo Económico vale <strong>cero</strong>. Y aquí viene la parte contraintuitiva: por la redacción del Real Decreto, cuando el tramo Económico cae a cero, <em>se pierde el derecho al Plan Auto+ completo</em> — no solo los 675 € del tramo. La ayuda cae a cero entera <sup>[3]</sup>. No es una degradación proporcional; es una condición de elegibilidad.</p>
+
+  <p>La consecuencia práctica: la diferencia entre un PVP sin IVA de 44.999 € y uno de 45.100 € son <strong>101 €</strong> de precio marcado, pero <strong>hasta 4.050 €</strong> de ayuda. Dicho en IVA con la conversión al 21 %, la frontera cae en <strong>54.449 € con IVA</strong>. Un coche a 53.999 € con IVA todavía cobra ayuda; uno a 54.499 € con IVA, probablemente sí (depende del desglose exacto del fabricante al BOE); uno a 54.501 €, ya no.</p>
+
+  <div class="comparison-table">
+    <h3 style="margin: 0 0 1rem;">Cómo se comporta la ayuda del Plan Auto+ alrededor del umbral</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>PVP sin IVA</th>
+          <th style="text-align: right;">Tramo económico</th>
+          <th style="text-align: right;">Ayuda máx. posible*</th>
+          <th style="text-align: right;">Precio con IVA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>34.000 €</td>
+          <td style="text-align: right;">1.125 €</td>
+          <td style="text-align: right;">4.500 €</td>
+          <td style="text-align: right;">41.140 €</td>
+        </tr>
+        <tr>
+          <td>36.000 €</td>
+          <td style="text-align: right;">675 €</td>
+          <td style="text-align: right;">4.050 €</td>
+          <td style="text-align: right;">43.560 €</td>
+        </tr>
+        <tr>
+          <td>44.000 €</td>
+          <td style="text-align: right;">675 €</td>
+          <td style="text-align: right;">4.050 €</td>
+          <td style="text-align: right;">53.240 €</td>
+        </tr>
+        <tr style="background: rgba(245,197,24,0.12);">
+          <td>45.000 €</td>
+          <td style="text-align: right;">675 €</td>
+          <td style="text-align: right;">4.050 €</td>
+          <td style="text-align: right;">54.450 €</td>
+        </tr>
+        <tr style="background: rgba(220,53,69,0.08);">
+          <td>45.100 €</td>
+          <td style="text-align: right;">0 €</td>
+          <td style="text-align: right;">0 €</td>
+          <td style="text-align: right;">54.571 €</td>
+        </tr>
+        <tr>
+          <td>48.000 €</td>
+          <td style="text-align: right;">0 €</td>
+          <td style="text-align: right;">0 €</td>
+          <td style="text-align: right;">58.080 €</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="ev-table-note" style="margin-top: 0.75rem; font-size: 0.8125rem; color: var(--gray-600);">*Ayuda máxima: BEV ensamblado en UE con pack de batería UE. Ayuda real publicada en el contrato; en concesionario se aplica como descuento directo.</p>
+  </div>
+
+  <p>Entre la fila amarilla y la roja, 100 € de PVP sin IVA valen 4.050 € de ayuda. En el lenguaje de la economía del bienestar esto se llama <em>notch</em> — una discontinuidad en la función de coste. Cuando aparece un <em>notch</em> en un impuesto o subsidio, la teoría predice dos cosas: que los agentes racionales se agrupan justo por debajo del umbral, y que los que no pueden hacerlo pagan una "multa" desproporcionada al paso del escalón. En abril de 2026 esas dos cosas están ocurriendo en el mercado español del coche eléctrico.</p>
+
+  <blockquote>
+    <p>Pedir a Mercedes o BMW que bajen un coche 2.000 € para cruzar el umbral no es pedir una promoción: es pedirles que participen en el mercado al que el programa de ayuda está dirigido.</p>
+  </blockquote>
+
+  <h2>03 — iX1 vs iX2: gemelos separados por una línea administrativa</h2>
+
+  <p>La forma más clara de ver el <em>notch</em> en acción es comparar dos coches que son, mecánicamente, el mismo producto. El BMW iX1 xDrive30 y el iX2 xDrive30 comparten plataforma UKL2, tren motriz (tracción total eléctrica, 313 CV), batería de 64,7 kWh de química NMC, fábrica (Regensburg), garantía y homologación. El iX2 es la variante <em>SUV coupé</em>: el chasis es algo más largo, el techo 6 cm más bajo, y la práctica totalidad del resto del coche es idéntica <sup>[4]</sup>.</p>
+
+  <figure>
+    <img
+      src="/articulos/escalon-plan-auto-45k/escalon-plan-auto-ix1-ix2.webp"
+      alt="BMW iX1 y iX2 aparcados, dos variantes del mismo vehículo separadas por el umbral de ayuda del Plan Auto+"
+      width="1600"
+      height="1067"
+      loading="lazy"
+    />
+    <figcaption>El iX1 y el iX2 son el mismo coche en términos de hardware. En términos de ayuda estatal, no lo son. Foto: reutilizada de nuestra guía de subvenciones (<a href="/articulos/subvenciones-ayudas-ev-2026">ver artículo</a>).</figcaption>
+  </figure>
+
+  <p>La diferencia de PVP entre ambos es 4.291 € con IVA: el iX1 cuesta 53.600 € con IVA (44.298 € sin IVA), el iX2 cuesta 57.891 € con IVA (47.844 € sin IVA) <sup>[4]</sup>. Son un 8 % de PVP de diferencia. Pero esos 4.291 € son exactamente los que hacen que el iX1 quede por debajo del umbral y el iX2 por encima.</p>
+
+  <div class="comparison-table">
+    <h3 style="margin: 0 0 1rem;">BMW iX1 xDrive30 vs BMW iX2 xDrive30</h3>
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th style="text-align: right;">iX1 xDrive30</th>
+          <th style="text-align: right;">iX2 xDrive30</th>
+          <th style="text-align: right;">Diferencia</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>PVP con IVA</td>
+          <td style="text-align: right;">53.600 €</td>
+          <td style="text-align: right;">57.891 €</td>
+          <td style="text-align: right;">+4.291 €</td>
+        </tr>
+        <tr>
+          <td>PVP sin IVA</td>
+          <td style="text-align: right;">44.298 €</td>
+          <td style="text-align: right;">47.844 €</td>
+          <td style="text-align: right;">+3.546 €</td>
+        </tr>
+        <tr>
+          <td>Tramo Económico</td>
+          <td style="text-align: right; color: var(--yellow);"><strong>B (675 €)</strong></td>
+          <td style="text-align: right; color: #c44;"><strong>Fuera</strong></td>
+          <td style="text-align: right;">—</td>
+        </tr>
+        <tr style="background: rgba(245,197,24,0.12);">
+          <td><strong>Plan Auto+ efectivo</strong></td>
+          <td style="text-align: right;"><strong>4.050 €</strong></td>
+          <td style="text-align: right;"><strong>0 €</strong></td>
+          <td style="text-align: right;"><strong>−4.050 €</strong></td>
+        </tr>
+        <tr>
+          <td>Precio neto tras ayuda</td>
+          <td style="text-align: right;">49.550 €</td>
+          <td style="text-align: right;">57.891 €</td>
+          <td style="text-align: right;">+8.341 €</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="ev-table-note" style="margin-top: 0.75rem; font-size: 0.8125rem; color: var(--gray-600);">PVP oficiales BMW España, abril 2026. Ayuda calculada con EEE asumiendo ensamblaje UE (Regensburg) y pack batería UE (planta BMW Leipzig/Munich).</p>
+  </div>
+
+  <p>Repasemos despacio la fila "Precio neto tras ayuda": sobre una diferencia de PVP de 4.291 €, el precio efectivo para el comprador pasa a ser <strong>8.341 €</strong> más alto en el iX2. Casi el doble. Ese ~100 % de amplificación es el escalón. No es un efecto compuesto de depreciación o de seguro: es puro Plan Auto+, puro BOE, cifra del concesionario.</p>
+
+  <p>Lo que <em>no</em> estamos diciendo en este artículo — y esta es una diferencia importante respecto a la versión anterior que retiramos — es qué pasa después de la compra. Cuánto acaba costando cada uno a 3, 5 o 10 años depende de la depreciación, el seguro, el mantenimiento y el uso real. Esos cuatro factores tienen incertidumbre, y nuestra <a href="/calculadora-tco">calculadora TCO</a> los muestra como bandas (±0 % con confianza alta, ±8 % con media, ±15 % con baja) para que veáis el rango en lugar de un punto falso <sup>[5]</sup>.</p>
+
+  <h2>04 — Tres jugadas para cruzar el umbral a la baja</h2>
+
+  <p>Si el coche que te interesa tiene un PVP sin IVA en la zona crítica — digamos entre 45.500 € y 48.500 € — hay tres jugadas que, en abril de 2026, pueden cambiar la ecuación financiera de la compra. Las tres son pragmáticas, no especulativas.</p>
+
+  <h3>Opción A — Pedir descuento al concesionario (1.000–3.000 €)</h3>
+
+  <p>Esta es la más directa. Los concesionarios españoles de marcas premium tienen margen comercial habitual del 3–5 % del PVP, y en campañas de cierre de trimestre o sobre stock pueden aplicar descuentos sin demasiada resistencia. Si tu coche está 2.000 € sin IVA por encima del umbral, lo que realmente estás pidiendo es un descuento de ~2.420 € con IVA — y lo que estás recuperando es la ayuda completa del Plan Auto+, 4.050 € si el modelo es ensamblado en UE con batería UE. El ratio de rentabilidad del descuento es del orden de 2× para el comprador. Si el concesionario la puede aplicar, aceptarla es siempre mejor que no hacerlo.</p>
+
+  <h3>Opción B — Elegir variante base en lugar de paquete de equipamiento</h3>
+
+  <p>Muchos eléctricos premium tienen una versión "base" por debajo del umbral y una con paquete "Executive", "Progressive" o "M Sport" que la cruza. Ese paquete suele costar entre 1.500 € y 4.000 € y añade elementos que en su mayoría son cosméticos: llantas mayores, tapicería, techo panorámico, ambiente interior. Comprar la variante base y añadir post-venta solo lo que sea imprescindible mantiene el coche en el tramo de ayuda.</p>
+
+  <p>Nota de economía del bienestar: este es el efecto secundario típico de los <em>notches</em>. Los programas con umbral duro empujan la demanda hacia el equipamiento básico y frenan la subida del contenido medio del coche. Es coste muerto para el consumidor — pero solo si el fabricante no responde ajustando la gama.</p>
+
+  <h3>Opción C — Saltar al modelo hermano justo por debajo</h3>
+
+  <p>Si el iX2 no cabe, el iX1 sí. Si el EQA 250+ no cabe, el Kia EV3 Long Range, el Škoda Elroq 60 y el Hyundai Kona Electric 65 — todos con PVP sin IVA cómodamente bajo 40.000 € — ofrecen autonomía, consumo y equipamiento base equiparables, con precio neto tras ayuda entre 8.000 € y 15.000 € más bajo. No son marcas premium alemanas, pero ese es precisamente el punto: el Plan Auto+ no es neutral entre fabricantes. Los grupos que han ajustado sus gamas españolas a los umbrales (Hyundai, Kia, Škoda, Stellantis, Renault) compiten hoy por precio efectivo tras ayuda. Los que no lo han hecho quedan fuera del cálculo racional para un comprador que hace las cuentas.</p>
+
+  <h2>05 — Por qué este artículo es más corto que su primera versión</h2>
+
+  <p>Publicamos una primera versión de este análisis el 15 de abril de 2026 y lo retiramos el mismo día. El motivo: incluía tablas de coste total de propiedad a 5 años con cifras puntuales al euro (por ejemplo, "el iX2 cuesta 16.170 € más que el iX1 a 5 años") que <em>no</em> estaban sostenidas por los datos que nuestro pipeline tenía en ese momento. Los 4.050 € del Plan Auto+ sí están sostenidos — es una cifra del BOE, verificable al céntimo. Los otros ~12.000 € venían de proyecciones de depreciación con nivel de confianza media o baja en los <code>specs_tco</code>, sin margen de error declarado en el texto. Estábamos publicando un rango disfrazado de punto.</p>
+
+  <p>La lección la escribimos en una nueva sección §8 de <a href="https://github.com/jaberse/enchufa2-web/blob/main/docs/metodologia-tco.md">docs/metodologia-tco.md</a>: los artículos de enchufa2 nunca citan el output de la calculadora TCO como un punto cuando los inputs tienen confianza media o baja. Citan rango, o escenarios, o no lo citan. Esta versión cita solo lo que es duro: la mecánica del Plan Auto+ y el salto efectivo en el precio de compra. Para el resto — depreciación, TCO a 5 años, ahorro total — dejamos que hables directamente con la <a href="/calculadora-tco">calculadora</a>, que ahora muestra la banda de incertidumbre propia de cada par.</p>
+
+  <p>Si te parece un principio excesivo para un blog de coches, es porque la mayoría de los blogs de coches no lo aplican. Nosotros lo aprendimos por las malas hace seis horas.</p>
+
+  <hr />
+
+  <div class="references">
+    <h2>Referencias</h2>
+    <p><sup>[1]</sup> <strong>Plan Auto+ 2026</strong> — Programa de Incentivos para la Adquisición de Vehículos Eléctricos, MITECO, vigente desde 1 de enero de 2026 con presupuesto inicial de 400 millones de euros. Ver desarrollo completo en nuestra guía <a href="/articulos/subvenciones-ayudas-ev-2026">Subvenciones y ayudas para coches eléctricos en España (2026)</a>.</p>
+    <p><sup>[2]</sup> <strong>Fórmula EEE (Eléctrico, Económico, Europeo)</strong> — MITECO / ANFAC, criterios binarios acumulables descritos en el Anexo I del Real Decreto. Verificado contra <code>data/plan_auto_data.json</code> de enchufa2 (61 modelos con PVP, país de ensamblaje y origen de pack de batería cotejados con fuentes oficiales de fabricante).</p>
+    <p><sup>[3]</sup> <strong>Umbral de 45.000 € sin IVA</strong> — Condición de elegibilidad (no degradación proporcional) expresada en el Anexo I. Confirmado por los ejemplos resueltos en la sede electrónica del programa.</p>
+    <p><sup>[4]</sup> <strong>PVP y especificaciones BMW iX1/iX2 xDrive30</strong> — Configurador oficial BMW España, abril 2026. Ambos comparten plataforma UKL2/FAAR, motor eléctrico trasero + delantero (313 CV combinados), batería 64,7 kWh NMC y ensamblaje en Regensburg.</p>
+    <p><sup>[5]</sup> <strong>Metodología TCO y bandas de incertidumbre</strong> — <code>docs/metodologia-tco.md</code> §4 (alta = ±0 %, media = ±8 %, baja = ±15 %) y §8 (regla editorial: nunca punto sin rango cuando al menos una de las cuatro confianzas críticas — depreciación, mantenimiento, seguro, consumo — no es alta). Implementada en <code>/calculadora-tco</code> desde el 15 de abril de 2026.</p>
+  </div>
+
+  <div class="related-articles">
+    <h2>Artículos relacionados</h2>
+    <ul>
+      <li><a href="/articulos/subvenciones-ayudas-ev-2026">Subvenciones y ayudas para coches eléctricos en España (2026)</a></li>
+      <li><a href="/articulos/coste-real-electrico">El coste real de un eléctrico: combustible, mantenimiento y TCO</a></li>
+      <li><a href="/calculadora-tco">Calculadora TCO de enchufa2 (versión beta)</a></li>
+    </ul>
+  </div>
+
+</ArticleLayout>
