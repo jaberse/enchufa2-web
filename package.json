@@ -8,6 +8,7 @@
     "data:upgrade": "node scripts/data-pipeline/upgrade.mjs",
     "data:audit": "node scripts/data-pipeline/audit.mjs",
     "data:tco-audit": "node scripts/data-pipeline/tco-audit.mjs",
+    "data:tco-sanity": "node scripts/data-pipeline/tco-sanity-check.mjs",
     "test:tco": "node --test src/lib/tco/calculadora.test.mjs",
     "data:set": "node scripts/data-pipeline/set-field.mjs",
     "data:walkback": "node scripts/data-pipeline/walkback.mjs",

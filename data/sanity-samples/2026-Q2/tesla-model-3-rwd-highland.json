@@ -1,0 +1,16 @@
+{
+  "slug": "tesla-model-3-rwd-highland",
+  "pvp_nuevo_ref_eur": 42990,
+  "fecha_recogida": "2026-04-15",
+  "fuente_url": "https://www.autoscout24.es/lst/tesla/model-3",
+  "fuente_tipo": "autoscout24",
+  "notas": "Smoke test D5 — muestras placeholder. Reemplazar con scraping real antes del cierre de trimestre.",
+  "samples": [
+    { "anio_matriculacion": 2023, "km": 42000, "precio_eur": 29500 },
+    { "anio_matriculacion": 2023, "km": 51000, "precio_eur": 28800 },
+    { "anio_matriculacion": 2023, "km": 38000, "precio_eur": 29900 },
+    { "anio_matriculacion": 2021, "km": 68000, "precio_eur": 24200 },
+    { "anio_matriculacion": 2021, "km": 82000, "precio_eur": 22900 },
+    { "anio_matriculacion": 2021, "km": 59000, "precio_eur": 24800 }
+  ]
+}

@@ -227,13 +227,16 @@ El script se ejecuta antes de cada push a `data/coches/**` y antes de publicar c
 
 Cada trimestre (Q1/Q2/Q3/Q4) se ejecuta una pasada de **sanity check** de muestras reales:
 
-1. Scraping Autoscout24.es de los 20 modelos top con ≥2 años de mercado (pipeline ya probado, Chrome MCP + JS extraction).
-2. Se calcula la depreciación implícita observada vs la que tenemos en el JSON.
-3. Si el gap es <10%, se deja tal cual y se anota la fecha de validación.
-4. Si el gap es ≥10%, se recalibra el factor del §5.1 correspondiente y se revisan los modelos afectados.
+1. Scraping Autoscout24.es de los 20 modelos top con ≥2 años de mercado (pipeline ya probado, Chrome MCP + JS extraction). Las muestras se guardan en `data/sanity-samples/YYYY-Qn/<slug>.json` con el formato documentado en `data/sanity-samples/README.md`.
+2. Se ejecuta `npm run data:tco-sanity` (script `scripts/data-pipeline/tco-sanity-check.mjs`). El script calcula la retención mediana por edad, interpola y3 e y5, y compara con los anclajes actuales de `data/coches/<slug>.json` — **sin modificar ningún JSON**.
+3. Clasificación del gap observado vs actual:
+   - **OK** (gap <10 %) → anclaje validado, se anota la fecha de validación.
+   - **WATCH** (10–20 %) → revisar en la próxima pasada, no bloquea publicación pero se deja anotado.
+   - **FLAG** (gap ≥20 %) → recalibrar el factor §5.1 afectado y revisar los modelos hermanos intra-plataforma (§6).
+4. Si hay al menos un FLAG el script sale con código 1, de modo que puede cablearse a CI para prevenir regresiones de calidad en los JSON.
 5. Las cotizaciones de seguro del perfil estándar se rotan al mismo ritmo — 3 modelos por trimestre pasan de `estimacion_bev_sobre_ice` a `tres_cotizaciones_reales`.
 
-**La recogida de muestras nunca reemplaza al método.** Es un control de calidad. El método sigue siendo el que se describe en §2.
+**La recogida de muestras nunca reemplaza al método.** Es un control de calidad. Para patchear anclajes con muestras reales (flujo explícito de recalibración del piloto) se usa `scripts/data-pipeline/ingest-samples-cochesnet.mjs`, nunca `tco-sanity-check.mjs`. El método sigue siendo el que se describe en §2.
 
 ---
 
