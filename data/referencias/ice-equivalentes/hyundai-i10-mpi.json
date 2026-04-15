@@ -10,7 +10,11 @@
   "combustible": "gasolina",
   "uso": "referencia_tco_benchmark_segmento",
   "equivalente_ev_id": null,
-  "benchmark_para": ["dacia-spring-essential", "byd-dolphin-surf-comfort", "citroen-e-c3-you"],
+  "benchmark_para": [
+    "dacia-spring-essential",
+    "byd-dolphin-surf-comfort",
+    "citroen-e-c3-you"
+  ],
   "specs": {
     "carroceria": {
       "valor": "Utilitario 5p",
@@ -31,11 +35,40 @@
       "verificado": true,
       "fuente_detalle": "Hyundai España — ficha i10 2026"
     },
-    "cilindrada_cc": { "valor": 998, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "cc" },
-    "n_cilindros": { "valor": 3, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
-    "potencia_kw": { "valor": 49, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "kW" },
-    "potencia_cv": { "valor": 67, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "CV" },
-    "par_nm": { "valor": 96, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "Nm" },
+    "cilindrada_cc": {
+      "valor": 998,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "cc"
+    },
+    "n_cilindros": {
+      "valor": 3,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "potencia_kw": {
+      "valor": 49,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "kW"
+    },
+    "potencia_cv": {
+      "valor": 67,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "CV"
+    },
+    "par_nm": {
+      "valor": 96,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "Nm"
+    },
     "transmision": {
       "valor": "Manual 5 velocidades",
       "fuente_tipo": "fabricante",
@@ -50,19 +83,94 @@
       "unidad": "L/100km",
       "fuente_detalle": "WLTP combinado — Hyundai España"
     },
-    "emisiones_co2_wltp_g_km": { "valor": 112, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "g/km" },
-    "normativa_emisiones": { "valor": "Euro 6", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
-    "distintivo_dgt": { "valor": "C", "fuente_tipo": "DGT", "fuente_fecha": "2026-04-14", "verificado": true },
-    "aceleracion_0_100_s": { "valor": 14.6, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "s" },
-    "velocidad_max_kmh": { "valor": 156, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "km/h" },
-    "largo_mm": { "valor": 3670, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
-    "ancho_mm": { "valor": 1680, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
-    "alto_mm": { "valor": 1500, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
-    "batalla_mm": { "valor": 2425, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
-    "peso_kg": { "valor": 1012, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "kg" },
-    "plazas": { "valor": 5, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
-    "maletero_l": { "valor": 252, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "L" },
-    "deposito_combustible_l": { "valor": 36, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "L" },
+    "emisiones_co2_wltp_g_km": {
+      "valor": 112,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "g/km"
+    },
+    "normativa_emisiones": {
+      "valor": "Euro 6",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "distintivo_dgt": {
+      "valor": "C",
+      "fuente_tipo": "DGT",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "aceleracion_0_100_s": {
+      "valor": 14.6,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "s"
+    },
+    "velocidad_max_kmh": {
+      "valor": 156,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "km/h"
+    },
+    "largo_mm": {
+      "valor": 3670,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "ancho_mm": {
+      "valor": 1680,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "alto_mm": {
+      "valor": 1500,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "batalla_mm": {
+      "valor": 2425,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "peso_kg": {
+      "valor": 1012,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "kg"
+    },
+    "plazas": {
+      "valor": 5,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "maletero_l": {
+      "valor": 252,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "L"
+    },
+    "deposito_combustible_l": {
+      "valor": 36,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "L"
+    },
     "autonomia_wltp_km_derivada": {
       "valor": 735,
       "fuente_tipo": "calculado",
@@ -80,9 +188,23 @@
       "fuente_detalle": "PVP lista 2026 estimado Hyundai España — Essence sin promoción (rango típico 15.000-16.000€).",
       "confianza": "media"
     },
-    "pvp_fecha": { "valor": "2026-04-14", "fuente_tipo": "distribuidor", "verificado": false },
-    "pais_fabricacion": { "valor": "Turquía (Izmit)", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
-    "plataforma": { "valor": "Hyundai K1 BA", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "pvp_fecha": {
+      "valor": "2026-04-14",
+      "fuente_tipo": "distribuidor",
+      "verificado": false
+    },
+    "pais_fabricacion": {
+      "valor": "Turquía (Izmit)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "plataforma": {
+      "valor": "Hyundai K1 BA",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
     "garantia_vehiculo_anos": {
       "valor": 5,
       "fuente_tipo": "fabricante",
@@ -91,9 +213,25 @@
       "unidad": "años",
       "fuente_detalle": "Hyundai 5 años / kilometraje ilimitado"
     },
-    "fecha_lanzamiento_es": { "valor": "2020", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "notas": "3ª gen (AI3), facelift 2023" },
-    "model_year": { "valor": "2026", "fuente_tipo": "distribuidor", "fuente_fecha": "2026-04-14", "verificado": true },
-    "estado_comercial": { "valor": "a la venta", "fuente_tipo": "distribuidor", "fuente_fecha": "2026-04-14", "verificado": true }
+    "fecha_lanzamiento_es": {
+      "valor": "2020",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "notas": "3ª gen (AI3), facelift 2023"
+    },
+    "model_year": {
+      "valor": "2026",
+      "fuente_tipo": "distribuidor",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "estado_comercial": {
+      "valor": "a la venta",
+      "fuente_tipo": "distribuidor",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    }
   },
   "specs_tco": {
     "depreciacion_y3_pct": {
@@ -171,7 +309,9 @@
     "tco_poblado": true,
     "tco_activo_en_calculadora": false,
     "tco_estado": "borrador",
-    "tco_confianza_general": "media",
-    "tco_revision_requerida": "PVP lista 2026 Hyundai España oficial + muestra Coches.net i10 2023 45k km + 3 cotizaciones seguro"
+    "tco_confianza_general": "baja",
+    "tco_revision_requerida": "PVP lista 2026 Hyundai España oficial + muestra Coches.net i10 2023 45k km + 3 cotizaciones seguro",
+    "tco_confianza_congelada_fecha": "2026-04-15",
+    "tco_confianza_congelada_motivo": "Higiene abril 2026 — pendiente verificar PVPs, 3 cotizaciones seguro reales y cuota de revisión Ganvam"
   }
 }

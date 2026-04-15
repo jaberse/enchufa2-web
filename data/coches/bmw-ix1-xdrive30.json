@@ -700,6 +700,8 @@
     "tco_activo_en_calculadora": false,
     "tco_estado": "borrador",
     "tco_confianza_general": "baja",
-    "tco_revision_requerida": "Baseline compartido con iX2 (misma plataforma UKL2/FAAR). y3 tiene muestra Coches.net n=91 pero ajustada +7pp por km bajo; y5 es proyección. Seguro y mantenimiento por confirmar Fase D 2026-Q2. Tras el incidente del artículo 008 se unificaron baselines con iX2 para evitar divergencias sin evidencia."
+    "tco_revision_requerida": "Baseline compartido con iX2 (misma plataforma UKL2/FAAR). y3 tiene muestra Coches.net n=91 pero ajustada +7pp por km bajo; y5 es proyección. Seguro y mantenimiento por confirmar Fase D 2026-Q2. Tras el incidente del artículo 008 se unificaron baselines con iX2 para evitar divergencias sin evidencia.",
+    "tco_confianza_congelada_fecha": "2026-04-15",
+    "tco_confianza_congelada_motivo": "Higiene abril 2026 — pendiente verificar PVPs, 3 cotizaciones seguro reales y cuota de revisión Ganvam"
   }
 }

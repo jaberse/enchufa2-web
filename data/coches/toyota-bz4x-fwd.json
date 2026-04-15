@@ -622,8 +622,10 @@
     "tco_poblado": true,
     "tco_activo_en_calculadora": false,
     "tco_estado": "borrador",
-    "tco_confianza_general": "media",
-    "tco_revision_requerida": "Muestra Coches.net 2023-2024 con 30-45k km + 3 cotizaciones seguro específicas + tarifa oficial mantenimiento marca 2026"
+    "tco_confianza_general": "baja",
+    "tco_revision_requerida": "Muestra Coches.net 2023-2024 con 30-45k km + 3 cotizaciones seguro específicas + tarifa oficial mantenimiento marca 2026",
+    "tco_confianza_congelada_fecha": "2026-04-15",
+    "tco_confianza_congelada_motivo": "Higiene abril 2026 — pendiente verificar PVPs, 3 cotizaciones seguro reales y cuota de revisión Ganvam"
   },
   "specs_tco": {
     "depreciacion_y3_pct": {

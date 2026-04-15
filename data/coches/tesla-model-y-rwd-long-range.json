@@ -800,7 +800,9 @@
     "tco_poblado": true,
     "tco_activo_en_calculadora": false,
     "tco_estado": "borrador",
-    "tco_confianza_general": "media",
-    "tco_revision_requerida": "Muestra Coches.net Model Y RWD Long Range 2023 con 45k km + 3 cotizaciones seguro específicas + confirmación ayuda Plan Auto+ (actualmente 0€, Model Y Shanghai no elegible UE)"
+    "tco_confianza_general": "baja",
+    "tco_revision_requerida": "Muestra Coches.net Model Y RWD Long Range 2023 con 45k km + 3 cotizaciones seguro específicas + confirmación ayuda Plan Auto+ (actualmente 0€, Model Y Shanghai no elegible UE)",
+    "tco_confianza_congelada_fecha": "2026-04-15",
+    "tco_confianza_congelada_motivo": "Higiene abril 2026 — pendiente verificar PVPs, 3 cotizaciones seguro reales y cuota de revisión Ganvam"
   }
 }

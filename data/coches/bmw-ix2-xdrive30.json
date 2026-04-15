@@ -619,7 +619,9 @@
     "tco_activo_en_calculadora": false,
     "tco_estado": "borrador",
     "tco_confianza_general": "baja",
-    "tco_revision_requerida": "Baseline compartido con iX1 (misma plataforma UKL2/FAAR). Pendiente muestra Coches.net específica iX2 ≥30k km + 3 cotizaciones seguro con perfil estándar + tarifa oficial mantenimiento marca 2026. Fase D 2026-Q2."
+    "tco_revision_requerida": "Baseline compartido con iX1 (misma plataforma UKL2/FAAR). Pendiente muestra Coches.net específica iX2 ≥30k km + 3 cotizaciones seguro con perfil estándar + tarifa oficial mantenimiento marca 2026. Fase D 2026-Q2.",
+    "tco_confianza_congelada_fecha": "2026-04-15",
+    "tco_confianza_congelada_motivo": "Higiene abril 2026 — pendiente verificar PVPs, 3 cotizaciones seguro reales y cuota de revisión Ganvam"
   },
   "specs_tco": {
     "depreciacion_y3_pct": {

@@ -683,6 +683,9 @@
   "meta": {
     "fecha_actualizacion": "2026-04-05",
     "estado": "pendiente",
-    "notas_my": null
+    "notas_my": null,
+    "tco_confianza_general": "baja",
+    "tco_confianza_congelada_fecha": "2026-04-15",
+    "tco_confianza_congelada_motivo": "Higiene abril 2026 — pendiente verificar PVPs, 3 cotizaciones seguro reales y cuota de revisión Ganvam"
   }
 }

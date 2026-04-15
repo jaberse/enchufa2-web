@@ -682,7 +682,9 @@
     "tco_poblado": true,
     "tco_activo_en_calculadora": false,
     "tco_estado": "borrador",
-    "tco_confianza_general": "media-baja",
-    "tco_revision_requerida": "Datos de depreciación del ë-C3 son proyecciones (confianza baja) hasta que el mercado de segunda mano madure en 2027. Mantenimiento pendiente de tarifa oficial Citroën. Seguro pendiente de cotización específica (actualmente agregado de mercado EV)."
+    "tco_confianza_general": "baja",
+    "tco_revision_requerida": "Datos de depreciación del ë-C3 son proyecciones (confianza baja) hasta que el mercado de segunda mano madure en 2027. Mantenimiento pendiente de tarifa oficial Citroën. Seguro pendiente de cotización específica (actualmente agregado de mercado EV).",
+    "tco_confianza_congelada_fecha": "2026-04-15",
+    "tco_confianza_congelada_motivo": "Higiene abril 2026 — pendiente verificar PVPs, 3 cotizaciones seguro reales y cuota de revisión Ganvam"
   }
 }

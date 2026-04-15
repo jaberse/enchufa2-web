@@ -307,7 +307,7 @@
       "notas": "Se tomará del archivo de parámetros del calculador (no específico del modelo). Referencia abril 2026: ~1.55 €/L gasolina 95."
     },
     "consumo_real_factor": {
-      "valor": 1.10,
+      "valor": 1.1,
       "fuente_tipo": "investigacion_web",
       "fuente_fecha": "2024-10-01",
       "fuente_detalle": "ICCT Real-World Fuel Consumption gap 2024 — gasolina moderna ~10% sobre WLTP",
@@ -326,7 +326,9 @@
     "tco_poblado": true,
     "tco_activo_en_calculadora": false,
     "tco_estado": "borrador",
-    "tco_confianza_general": "alta-media",
-    "tco_revision_requerida": "Depreciación 5 años con muestra reducida y sesgada. Mantenimiento verificado con Carwow España/Stellantis. Seguro pendiente de 3 cotizaciones específicas (actualmente valor agregado Rastreator)."
+    "tco_confianza_general": "baja",
+    "tco_revision_requerida": "Depreciación 5 años con muestra reducida y sesgada. Mantenimiento verificado con Carwow España/Stellantis. Seguro pendiente de 3 cotizaciones específicas (actualmente valor agregado Rastreator).",
+    "tco_confianza_congelada_fecha": "2026-04-15",
+    "tco_confianza_congelada_motivo": "Higiene abril 2026 — pendiente verificar PVPs, 3 cotizaciones seguro reales y cuota de revisión Ganvam"
   }
 }

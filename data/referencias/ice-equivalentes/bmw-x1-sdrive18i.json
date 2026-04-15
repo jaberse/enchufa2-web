@@ -285,9 +285,21 @@
       "fuente_detalle": "Mediana de 3 cotizaciones: Allianz Direct 317€, Direct Seguros 455€, Rastreator media BMW X1 990€ → mediana 594€",
       "notas": "Perfil estándar enchufa2 (40 años, 15 años carnet, zona media, todo riesgo franquicia 500€). Pendiente: 3 cotizaciones específicas con mismo perfil.",
       "seguro_cotizaciones": [
-        { "aseguradora": "Allianz Direct", "prima_eur": 317, "fuente_fecha": "2026-04-13" },
-        { "aseguradora": "Direct Seguros", "prima_eur": 455, "fuente_fecha": "2026-04-13" },
-        { "aseguradora": "Rastreator (media X1)", "prima_eur": 990, "fuente_fecha": "2026-04-13" }
+        {
+          "aseguradora": "Allianz Direct",
+          "prima_eur": 317,
+          "fuente_fecha": "2026-04-13"
+        },
+        {
+          "aseguradora": "Direct Seguros",
+          "prima_eur": 455,
+          "fuente_fecha": "2026-04-13"
+        },
+        {
+          "aseguradora": "Rastreator (media X1)",
+          "prima_eur": 990,
+          "fuente_fecha": "2026-04-13"
+        }
       ]
     },
     "precio_combustible_eur_l": {
@@ -317,7 +329,9 @@
     "tco_poblado": true,
     "tco_activo_en_calculadora": false,
     "tco_estado": "borrador",
-    "tco_confianza_general": "media",
-    "tco_revision_requerida": "Cotización específica seguro X1 sDrive18i perfil enchufa2 + cotización BMW Service Inclusive X1 Next 5y/75k km"
+    "tco_confianza_general": "baja",
+    "tco_revision_requerida": "Cotización específica seguro X1 sDrive18i perfil enchufa2 + cotización BMW Service Inclusive X1 Next 5y/75k km",
+    "tco_confianza_congelada_fecha": "2026-04-15",
+    "tco_confianza_congelada_motivo": "Higiene abril 2026 — pendiente verificar PVPs, 3 cotizaciones seguro reales y cuota de revisión Ganvam"
   }
 }

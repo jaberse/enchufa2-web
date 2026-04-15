@@ -148,24 +148,41 @@ const kwhEfectivoIni =
 >
   <Header />
 
-  <main id="main" class="calc-tco">
-    <section class="hero">
-      <p class="eyebrow">Herramienta · beta</p>
-      <h1>Calculadora TCO</h1>
-      <p class="deck">
-        Cuánto cuesta <em>de verdad</em> un coche eléctrico en España comparado
-        con su equivalente de combustión. Fórmula canónica ICCT: depreciación,
-        energía, mantenimiento, seguro, impuestos y ayudas — validada contra
-        tres pilotos manuales.
-      </p>
-      <div class="beta-warn" role="note">
-        <strong>Beta v0.3</strong> — selección libre de hasta 4 eléctricos y
-        4 de combustión del catálogo v1 ({ALL_BEVS.length} BEV · {ALL_ICES.length} ICE).
-        Datos con <code>confianza=media</code> hasta calibrar depreciación
-        con muestras reales de Coches.net y cotizaciones de seguro específicas.
-        <a href="#metodologia">Ver metodología</a>.
-      </div>
-    </section>
+  <!-- Hero band: alineado con patrón .hero-band del comparador -->
+  <div class="hero-band" aria-hidden="true">
+    <img
+      src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1600&q=80&auto=format"
+      alt=""
+      loading="eager"
+    />
+  </div>
+
+  <main id="main">
+    <section class="calc-section">
+      <div class="calc-outer">
+
+        <!-- Intro card (rounded top overlaps hero-band, comparador style) -->
+        <div class="calc-intro">
+          <div class="calc-intro-inner">
+            <p class="eyebrow">Herramienta · beta</p>
+            <h1>Calculadora <em>TCO</em></h1>
+            <p class="deck">
+              Cuánto cuesta <em>de verdad</em> un coche eléctrico en España
+              comparado con su equivalente de combustión. Fórmula canónica
+              ICCT: depreciación, energía, mantenimiento, seguro, impuestos
+              y ayudas — validada contra tres pilotos manuales.
+            </p>
+            <div class="beta-warn" role="note">
+              <strong>Beta v0.3 · datos en revisión</strong> — todos los
+              modelos están temporalmente marcados con
+              <code>confianza=baja</code> mientras verificamos PVPs oficiales,
+              obtenemos tres cotizaciones de seguro reales por segmento y
+              calibramos las curvas de depreciación contra Ganvam. Úsala como
+              orientación, no como decisión de compra. Revisión prevista: fin
+              de abril 2026. <a href="#metodologia">Ver metodología</a>.
+            </div>
+          </div>
+        </div>
 
     <!-- ────────── CONTROLES ────────── -->
     <section class="controles" aria-labelledby="h-controles">
@@ -373,6 +390,10 @@ const kwhEfectivoIni =
           Esta es la <em>tuya</em>: mueve los tres supuestos clave para ver
           cómo se desplaza el ahorro sin tocar el escenario principal.
         </p>
+        <p class="sens-pair" id="sens-pair" aria-live="polite">
+          Comparando <strong id="sens-pair-bev">—</strong> vs
+          <strong id="sens-pair-ice">—</strong>
+        </p>
         <ul class="sens-list">
           <li class="sens-row">
             <div class="sens-ctrl">
@@ -545,6 +566,9 @@ const kwhEfectivoIni =
         parámetros son editables en esta página.
       </p>
     </section>
+
+      </div><!-- /.calc-outer -->
+    </section><!-- /.calc-section -->
   </main>
 
   <Footer />
@@ -1122,11 +1146,21 @@ const kwhEfectivoIni =
       // 6) Re-pintar chips (conteo + etiquetas).
       renderChips();
 
-      // 7) Baseline E7: usa el focus BEV vs el focus ICE si existen
-      //    ambos (para que la sensibilidad sea una comparación válida).
-      //    Si no, usa cheapestBev/cheapestIce como proxy.
-      const baseBev = cheapestBev;
-      const baseIce = cheapestIce;
+      // 7) Baseline E7: para que la sensibilidad refleje exactamente el
+      //    coche que el usuario está mirando, el baseline arrastra el foco.
+      //    - Si el foco es un BEV → ese BEV vs el ICE más barato de la selección
+      //    - Si el foco es un ICE → el BEV más barato de la selección vs ese ICE
+      //    - Si no hay foco explícito → cheapestBev vs cheapestIce como fallback
+      const focusBevEntry =
+        state.focus?.tren === 'BEV'
+          ? resolvedBev.find((r) => r.slug === state.focus!.slug)
+          : null;
+      const focusIceEntry =
+        state.focus?.tren === 'ICE'
+          ? resolvedIce.find((r) => r.slug === state.focus!.slug)
+          : null;
+      const baseBev = focusBevEntry ?? cheapestBev;
+      const baseIce = focusIceEntry ?? cheapestIce;
       if (baseBev && baseIce) {
         const cmp = compararTCO(baseBev.input, baseIce.input, overrides);
         baselineCache = {
@@ -1134,8 +1168,23 @@ const kwhEfectivoIni =
           iceInput: baseIce.input,
           ahorroActual: cmp.ahorro_bev_eur,
         };
+        // Etiqueta del par que se está usando como baseline de sensibilidad:
+        // si el foco es un BEV → ese BEV vs cheapest ICE de la selección, y
+        // viceversa; si no hay foco explícito → cheapest vs cheapest.
+        const bevLabel =
+          focusBevEntry != null
+            ? `${baseBev.meta.name} (en foco)`
+            : `${baseBev.meta.name} (más barato)`;
+        const iceLabel =
+          focusIceEntry != null
+            ? `${baseIce.meta.name} (en foco)`
+            : `${baseIce.meta.name} (más barato)`;
+        $('sens-pair-bev').textContent = bevLabel;
+        $('sens-pair-ice').textContent = iceLabel;
       } else {
         baselineCache = null;
+        $('sens-pair-bev').textContent = '—';
+        $('sens-pair-ice').textContent = '—';
       }
       recalcSens();
 
@@ -1500,12 +1549,7 @@ const kwhEfectivoIni =
   </script>
 
   <style>
-    .calc-tco {
-      padding: var(--section-pad) var(--page-gutter);
-      max-width: var(--max-w);
-      margin: 0 auto;
-      color: var(--text);
-    }
+    main { color: var(--text); }
 
     .sr-only {
       position: absolute;
@@ -1519,24 +1563,80 @@ const kwhEfectivoIni =
       border: 0;
     }
 
-    /* ── Hero ── */
-    .hero {
+    /* ══ Hero band (patrón comparador) ══ */
+    .hero-band {
+      position: relative;
+      width: 100%;
+      height: clamp(200px, 30vh, 360px);
+      overflow: hidden;
+      background: var(--black);
+    }
+    .hero-band img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 40%;
+      display: block;
+    }
+    .hero-band::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      background: linear-gradient(to bottom, transparent 40%, rgba(17,17,17,.15) 70%, rgba(17,17,17,.5) 100%);
+      pointer-events: none;
+    }
+    [data-theme="dark"] .hero-band::after {
+      background: linear-gradient(to bottom, transparent 40%, rgba(13,15,20,.2) 70%, rgba(13,15,20,.7) 100%);
+    }
+    @media (max-width: 720px) {
+      .hero-band { height: clamp(140px, 24vw, 220px); }
+    }
+
+    /* ══ Section / outer / intro (patrón comparador) ══ */
+    .calc-section {
+      position: relative;
+      z-index: 10;
+      margin-top: -4rem;
+    }
+    .calc-outer {
+      max-width: var(--max-w);
+      margin-inline: auto;
+      padding-inline: var(--page-gutter);
+      padding-bottom: clamp(2rem, 4vw, 3rem);
+    }
+    @media (max-width: 720px) {
+      .calc-section { margin-top: -2rem; }
+    }
+
+    .calc-intro {
+      background: var(--bg);
+      border-radius: var(--radius) var(--radius) 0 0;
+      margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    }
+    .calc-intro-inner {
       max-width: 780px;
-      margin-bottom: clamp(2rem, 5vw, 4rem);
+      padding: clamp(1.75rem, 4vw, 2.5rem) clamp(1.25rem, 3vw, 2rem);
     }
     .eyebrow {
       font-size: 0.75rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-bottom: 1rem;
+      margin: 0 0 1rem;
     }
-    .hero h1 {
+    .calc-intro-inner h1 {
       font-size: clamp(2.25rem, 6vw, 4rem);
       font-weight: 300;
       letter-spacing: -0.02em;
       line-height: 1.05;
-      margin-bottom: 1rem;
+      margin: 0 0 1rem;
+    }
+    .calc-intro-inner h1 em {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--yellow);
     }
     .deck {
       font-family: var(--font-serif);
@@ -1567,11 +1667,11 @@ const kwhEfectivoIni =
 
     /* ── Controles ── */
     .controles {
+      /* Wrapper invisible — las subtarjetas internas (.ctrl-seleccion,
+         .ctrl-mix, .ctrl) son el único nivel de chrome. Elimina el
+         anidamiento card-in-card que rompía la jerarquía visual y
+         desalineaba el bloque del resto de la web. */
       margin-bottom: clamp(2rem, 5vw, 3.5rem);
-      padding: clamp(1.5rem, 3vw, 2rem);
-      background: var(--surface-alt);
-      border-radius: var(--radius);
-      border: 1px solid var(--border-subtle);
     }
     .ctrl-grid {
       display: grid;
@@ -1588,11 +1688,13 @@ const kwhEfectivoIni =
     .ctrl {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.625rem;
+      padding: 1rem 1.125rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
     }
     fieldset.ctrl {
-      border: none;
-      padding: 0;
       margin: 0;
     }
     .ctrl legend,
@@ -2066,6 +2168,20 @@ const kwhEfectivoIni =
     .sens-intro em {
       font-style: italic;
       color: var(--text);
+    }
+    .sens-pair {
+      margin: 0 0 1.25rem;
+      padding: 0.625rem 0.875rem;
+      font-size: 0.8125rem;
+      line-height: 1.45;
+      color: var(--text-secondary);
+      background: var(--surface-alt);
+      border-left: 2px solid var(--yellow);
+      border-radius: 4px;
+    }
+    .sens-pair strong {
+      color: var(--text);
+      font-weight: 500;
     }
     .sens-list {
       list-style: none;

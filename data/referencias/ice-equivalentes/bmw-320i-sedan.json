@@ -10,7 +10,12 @@
   "combustible": "gasolina",
   "uso": "referencia_tco_benchmark_segmento",
   "equivalente_ev_id": null,
-  "benchmark_para": ["tesla-model-3-rwd-highland", "tesla-model-3-long-range-awd-highland", "polestar-2-long-range-single-motor", "bmw-i4-edrive40"],
+  "benchmark_para": [
+    "tesla-model-3-rwd-highland",
+    "tesla-model-3-long-range-awd-highland",
+    "polestar-2-long-range-single-motor",
+    "bmw-i4-edrive40"
+  ],
   "specs": {
     "carroceria": {
       "valor": "Berlina",
@@ -233,7 +238,7 @@
   },
   "specs_tco": {
     "depreciacion_y3_pct": {
-      "valor": 0.30,
+      "valor": 0.3,
       "fuente_tipo": "curva_depreciacion_ajustada",
       "fuente_fecha": "2026-04-13",
       "verificado": false,
@@ -311,7 +316,9 @@
     "tco_poblado": true,
     "tco_activo_en_calculadora": false,
     "tco_estado": "borrador",
-    "tco_confianza_general": "media",
-    "tco_revision_requerida": "Muestra real Coches.net 320i 2023 con 45k km + 3 cotizaciones específicas seguro"
+    "tco_confianza_general": "baja",
+    "tco_revision_requerida": "Muestra real Coches.net 320i 2023 con 45k km + 3 cotizaciones específicas seguro",
+    "tco_confianza_congelada_fecha": "2026-04-15",
+    "tco_confianza_congelada_motivo": "Higiene abril 2026 — pendiente verificar PVPs, 3 cotizaciones seguro reales y cuota de revisión Ganvam"
   }
 }

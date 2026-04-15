@@ -10,10 +10,25 @@
   "combustible": "gasolina MHEV 48V",
   "uso": "referencia_tco_benchmark_segmento",
   "equivalente_ev_id": null,
-  "benchmark_para": ["tesla-model-y-rwd-long-range", "byd-seal-awd-excellence", "bmw-ix3-xdrive50", "mercedes-eqa-250+"],
+  "benchmark_para": [
+    "tesla-model-y-rwd-long-range",
+    "byd-seal-awd-excellence",
+    "bmw-ix3-xdrive50",
+    "mercedes-eqa-250+"
+  ],
   "specs": {
-    "carroceria": { "valor": "SUV medio 5p", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
-    "traccion": { "valor": "AWD (xDrive)", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "carroceria": {
+      "valor": "SUV medio 5p",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "traccion": {
+      "valor": "AWD (xDrive)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
     "motor_tipo": {
       "valor": "2.0 TwinPower Turbo, 4 cilindros en línea, mild hybrid 48V",
       "fuente_tipo": "fabricante",
@@ -21,12 +36,47 @@
       "verificado": true,
       "fuente_detalle": "BMW España — ficha X3 G45 2026"
     },
-    "cilindrada_cc": { "valor": 1998, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "cc" },
-    "n_cilindros": { "valor": 4, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
-    "potencia_kw": { "valor": 153, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "kW", "notas": "Potencia combinada sistema mild hybrid (motor térmico + booster eléctrico 48V)" },
-    "potencia_cv": { "valor": 208, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "CV" },
-    "par_nm": { "valor": 330, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "Nm" },
-    "transmision": { "valor": "Automática Steptronic 8 velocidades (conversor par)", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "cilindrada_cc": {
+      "valor": 1998,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "cc"
+    },
+    "n_cilindros": {
+      "valor": 4,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "potencia_kw": {
+      "valor": 153,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "kW",
+      "notas": "Potencia combinada sistema mild hybrid (motor térmico + booster eléctrico 48V)"
+    },
+    "potencia_cv": {
+      "valor": 208,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "CV"
+    },
+    "par_nm": {
+      "valor": 330,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "Nm"
+    },
+    "transmision": {
+      "valor": "Automática Steptronic 8 velocidades (conversor par)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
     "consumo_wltp_l100km": {
       "valor": 7.9,
       "fuente_tipo": "fabricante",
@@ -35,19 +85,95 @@
       "unidad": "L/100km",
       "fuente_detalle": "WLTP combinado — BMW España"
     },
-    "emisiones_co2_wltp_g_km": { "valor": 179, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "g/km" },
-    "normativa_emisiones": { "valor": "Euro 6", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
-    "distintivo_dgt": { "valor": "ECO", "fuente_tipo": "DGT", "fuente_fecha": "2026-04-14", "verificado": true, "notas": "Distintivo ECO por MHEV 48V" },
-    "aceleracion_0_100_s": { "valor": 7.8, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "s" },
-    "velocidad_max_kmh": { "valor": 215, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "km/h" },
-    "largo_mm": { "valor": 4755, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
-    "ancho_mm": { "valor": 1920, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
-    "alto_mm": { "valor": 1660, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
-    "batalla_mm": { "valor": 2865, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
-    "peso_kg": { "valor": 1860, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "kg" },
-    "plazas": { "valor": 5, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
-    "maletero_l": { "valor": 570, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "L" },
-    "deposito_combustible_l": { "valor": 65, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "L" },
+    "emisiones_co2_wltp_g_km": {
+      "valor": 179,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "g/km"
+    },
+    "normativa_emisiones": {
+      "valor": "Euro 6",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "distintivo_dgt": {
+      "valor": "ECO",
+      "fuente_tipo": "DGT",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "notas": "Distintivo ECO por MHEV 48V"
+    },
+    "aceleracion_0_100_s": {
+      "valor": 7.8,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "s"
+    },
+    "velocidad_max_kmh": {
+      "valor": 215,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "km/h"
+    },
+    "largo_mm": {
+      "valor": 4755,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "ancho_mm": {
+      "valor": 1920,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "alto_mm": {
+      "valor": 1660,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "batalla_mm": {
+      "valor": 2865,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "peso_kg": {
+      "valor": 1860,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "kg"
+    },
+    "plazas": {
+      "valor": 5,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "maletero_l": {
+      "valor": 570,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "L"
+    },
+    "deposito_combustible_l": {
+      "valor": 65,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "L"
+    },
     "autonomia_wltp_km_derivada": {
       "valor": 823,
       "fuente_tipo": "calculado",
@@ -65,9 +191,23 @@
       "fuente_detalle": "PVP lista xDrive20i 2026 BMW España (rango típico 62.000-64.500€ configuración básica).",
       "confianza": "media"
     },
-    "pvp_fecha": { "valor": "2026-04-14", "fuente_tipo": "distribuidor", "verificado": false },
-    "pais_fabricacion": { "valor": "EE.UU. (Spartanburg, SC)", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
-    "plataforma": { "valor": "CLAR (Cluster Architecture, BMW Group)", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "pvp_fecha": {
+      "valor": "2026-04-14",
+      "fuente_tipo": "distribuidor",
+      "verificado": false
+    },
+    "pais_fabricacion": {
+      "valor": "EE.UU. (Spartanburg, SC)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "plataforma": {
+      "valor": "CLAR (Cluster Architecture, BMW Group)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
     "garantia_vehiculo_anos": {
       "valor": 2,
       "fuente_tipo": "fabricante",
@@ -76,9 +216,25 @@
       "unidad": "años",
       "fuente_detalle": "BMW España — 2 años legal, extensible con BMW Service Inclusive"
     },
-    "fecha_lanzamiento_es": { "valor": "2024", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "notas": "4ª gen G45, lanzada 2024" },
-    "model_year": { "valor": "2026", "fuente_tipo": "distribuidor", "fuente_fecha": "2026-04-14", "verificado": true },
-    "estado_comercial": { "valor": "a la venta", "fuente_tipo": "distribuidor", "fuente_fecha": "2026-04-14", "verificado": true }
+    "fecha_lanzamiento_es": {
+      "valor": "2024",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "notas": "4ª gen G45, lanzada 2024"
+    },
+    "model_year": {
+      "valor": "2026",
+      "fuente_tipo": "distribuidor",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "estado_comercial": {
+      "valor": "a la venta",
+      "fuente_tipo": "distribuidor",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    }
   },
   "specs_tco": {
     "depreciacion_y3_pct": {
@@ -101,7 +257,7 @@
       "fuente_detalle": "Proyección: y3=32% + ~4,7%/año → ~46% a 5 años. Consistente con X1 sDrive18i (42%) + 4pp por mayor depreciación absoluta en segmento premium gasolina."
     },
     "depreciacion_y10_pct": {
-      "valor": 0.70,
+      "valor": 0.7,
       "fuente_tipo": "curva_depreciacion_sectorial",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
@@ -154,7 +310,9 @@
     "tco_poblado": true,
     "tco_activo_en_calculadora": false,
     "tco_estado": "borrador",
-    "tco_confianza_general": "media",
-    "tco_revision_requerida": "PVP lista 2026 oficial + muestra Coches.net X3 xDrive20i G45 + 3 cotizaciones seguro"
+    "tco_confianza_general": "baja",
+    "tco_revision_requerida": "PVP lista 2026 oficial + muestra Coches.net X3 xDrive20i G45 + 3 cotizaciones seguro",
+    "tco_confianza_congelada_fecha": "2026-04-15",
+    "tco_confianza_congelada_motivo": "Higiene abril 2026 — pendiente verificar PVPs, 3 cotizaciones seguro reales y cuota de revisión Ganvam"
   }
 }

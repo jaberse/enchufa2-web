@@ -817,7 +817,9 @@
     "tco_poblado": true,
     "tco_activo_en_calculadora": false,
     "tco_estado": "borrador",
-    "tco_confianza_general": "media",
-    "tco_revision_requerida": "Muestra Coches.net RWD Highland específica 2026-Q4 + confirmación ayuda Plan Auto+ 3.375€ por tramo exacto (ensamblaje no UE)"
+    "tco_confianza_general": "baja",
+    "tco_revision_requerida": "Muestra Coches.net RWD Highland específica 2026-Q4 + confirmación ayuda Plan Auto+ 3.375€ por tramo exacto (ensamblaje no UE)",
+    "tco_confianza_congelada_fecha": "2026-04-15",
+    "tco_confianza_congelada_motivo": "Higiene abril 2026 — pendiente verificar PVPs, 3 cotizaciones seguro reales y cuota de revisión Ganvam"
   }
 }

@@ -10,10 +10,24 @@
   "combustible": "gasolina/GLP bifuel",
   "uso": "referencia_tco_benchmark_segmento",
   "equivalente_ev_id": null,
-  "benchmark_para": ["renault-5-e-tech-comfort-range", "citroen-e-c3-you", "byd-dolphin-60kwh"],
+  "benchmark_para": [
+    "renault-5-e-tech-comfort-range",
+    "citroen-e-c3-you",
+    "byd-dolphin-60kwh"
+  ],
   "specs": {
-    "carroceria": { "valor": "Utilitario 5p", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
-    "traccion": { "valor": "FWD", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "carroceria": {
+      "valor": "Utilitario 5p",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "traccion": {
+      "valor": "FWD",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
     "motor_tipo": {
       "valor": "1.0 TCe turbo, 3 cilindros en línea, bifuel gasolina/GLP",
       "fuente_tipo": "fabricante",
@@ -21,12 +35,46 @@
       "verificado": true,
       "fuente_detalle": "Dacia España — ficha Sandero 2026"
     },
-    "cilindrada_cc": { "valor": 999, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "cc" },
-    "n_cilindros": { "valor": 3, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
-    "potencia_kw": { "valor": 74, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "kW" },
-    "potencia_cv": { "valor": 100, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "CV" },
-    "par_nm": { "valor": 170, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "Nm" },
-    "transmision": { "valor": "Manual 6 velocidades", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "cilindrada_cc": {
+      "valor": 999,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "cc"
+    },
+    "n_cilindros": {
+      "valor": 3,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "potencia_kw": {
+      "valor": 74,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "kW"
+    },
+    "potencia_cv": {
+      "valor": 100,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "CV"
+    },
+    "par_nm": {
+      "valor": 170,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "Nm"
+    },
+    "transmision": {
+      "valor": "Manual 6 velocidades",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
     "consumo_wltp_l100km": {
       "valor": 5.7,
       "fuente_tipo": "fabricante",
@@ -35,19 +83,96 @@
       "unidad": "L/100km",
       "fuente_detalle": "WLTP combinado gasolina — Dacia España. GLP ~7,0 L/100km equiv."
     },
-    "emisiones_co2_wltp_g_km": { "valor": 129, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "g/km" },
-    "normativa_emisiones": { "valor": "Euro 6", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
-    "distintivo_dgt": { "valor": "ECO", "fuente_tipo": "DGT", "fuente_fecha": "2026-04-14", "verificado": true, "notas": "Distintivo ECO por bifuel GLP" },
-    "aceleracion_0_100_s": { "valor": 11.7, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "s" },
-    "velocidad_max_kmh": { "valor": 182, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "km/h" },
-    "largo_mm": { "valor": 4088, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
-    "ancho_mm": { "valor": 1848, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
-    "alto_mm": { "valor": 1499, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
-    "batalla_mm": { "valor": 2604, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "mm" },
-    "peso_kg": { "valor": 1153, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "kg" },
-    "plazas": { "valor": 5, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
-    "maletero_l": { "valor": 328, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "L" },
-    "deposito_combustible_l": { "valor": 50, "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "unidad": "L", "notas": "50 L gasolina + depósito GLP ~40 L (autonomía combinada ~1.400 km)" },
+    "emisiones_co2_wltp_g_km": {
+      "valor": 129,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "g/km"
+    },
+    "normativa_emisiones": {
+      "valor": "Euro 6",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "distintivo_dgt": {
+      "valor": "ECO",
+      "fuente_tipo": "DGT",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "notas": "Distintivo ECO por bifuel GLP"
+    },
+    "aceleracion_0_100_s": {
+      "valor": 11.7,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "s"
+    },
+    "velocidad_max_kmh": {
+      "valor": 182,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "km/h"
+    },
+    "largo_mm": {
+      "valor": 4088,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "ancho_mm": {
+      "valor": 1848,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "alto_mm": {
+      "valor": 1499,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "batalla_mm": {
+      "valor": 2604,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "mm"
+    },
+    "peso_kg": {
+      "valor": 1153,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "kg"
+    },
+    "plazas": {
+      "valor": 5,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "maletero_l": {
+      "valor": 328,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "L"
+    },
+    "deposito_combustible_l": {
+      "valor": 50,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "unidad": "L",
+      "notas": "50 L gasolina + depósito GLP ~40 L (autonomía combinada ~1.400 km)"
+    },
     "autonomia_wltp_km_derivada": {
       "valor": 877,
       "fuente_tipo": "calculado",
@@ -65,9 +190,23 @@
       "fuente_detalle": "PVP promoción Dacia España 2026 Expression TCe 100 ECO-G (rango típico 14.500-16.000€).",
       "confianza": "media"
     },
-    "pvp_fecha": { "valor": "2026-04-14", "fuente_tipo": "distribuidor", "verificado": false },
-    "pais_fabricacion": { "valor": "Rumanía (Mioveni)", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
-    "plataforma": { "valor": "Renault CMF-B", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true },
+    "pvp_fecha": {
+      "valor": "2026-04-14",
+      "fuente_tipo": "distribuidor",
+      "verificado": false
+    },
+    "pais_fabricacion": {
+      "valor": "Rumanía (Mioveni)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "plataforma": {
+      "valor": "Renault CMF-B",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
     "garantia_vehiculo_anos": {
       "valor": 3,
       "fuente_tipo": "fabricante",
@@ -76,13 +215,29 @@
       "unidad": "años",
       "fuente_detalle": "Dacia España — 3 años / 100.000 km"
     },
-    "fecha_lanzamiento_es": { "valor": "2021", "fuente_tipo": "fabricante", "fuente_fecha": "2026-04-14", "verificado": true, "notas": "3ª gen DJF, facelift 2024" },
-    "model_year": { "valor": "2026", "fuente_tipo": "distribuidor", "fuente_fecha": "2026-04-14", "verificado": true },
-    "estado_comercial": { "valor": "a la venta", "fuente_tipo": "distribuidor", "fuente_fecha": "2026-04-14", "verificado": true }
+    "fecha_lanzamiento_es": {
+      "valor": "2021",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true,
+      "notas": "3ª gen DJF, facelift 2024"
+    },
+    "model_year": {
+      "valor": "2026",
+      "fuente_tipo": "distribuidor",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    },
+    "estado_comercial": {
+      "valor": "a la venta",
+      "fuente_tipo": "distribuidor",
+      "fuente_fecha": "2026-04-14",
+      "verificado": true
+    }
   },
   "specs_tco": {
     "depreciacion_y3_pct": {
-      "valor": 0.30,
+      "valor": 0.3,
       "fuente_tipo": "curva_depreciacion_sectorial",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
@@ -137,7 +292,7 @@
       "notas": "Gasolina SP95 del parámetro estándar; nota: GLP ~0,95€/L pero TCO calcula contra gasolina por defecto."
     },
     "consumo_real_factor": {
-      "valor": 1.10,
+      "valor": 1.1,
       "fuente_tipo": "investigacion_web",
       "fuente_fecha": "2024-10-01",
       "fuente_detalle": "ICCT gap 2024 — turbo-gasolina pequeño mass-market ~8-13% sobre WLTP.",
@@ -155,7 +310,9 @@
     "tco_poblado": true,
     "tco_activo_en_calculadora": false,
     "tco_estado": "borrador",
-    "tco_confianza_general": "media",
-    "tco_revision_requerida": "PVP lista oficial Dacia España + muestra Coches.net Sandero 2023 + 3 cotizaciones seguro"
+    "tco_confianza_general": "baja",
+    "tco_revision_requerida": "PVP lista oficial Dacia España + muestra Coches.net Sandero 2023 + 3 cotizaciones seguro",
+    "tco_confianza_congelada_fecha": "2026-04-15",
+    "tco_confianza_congelada_motivo": "Higiene abril 2026 — pendiente verificar PVPs, 3 cotizaciones seguro reales y cuota de revisión Ganvam"
   }
 }
