@@ -625,7 +625,7 @@
   "specs_tco": {
     "depreciacion_y3_pct": {
       "valor": 0.42,
-      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -635,7 +635,7 @@
     },
     "depreciacion_y5_pct": {
       "valor": 0.56,
-      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -644,7 +644,7 @@
     },
     "depreciacion_y10_pct": {
       "valor": 0.78,
-      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "baja",
@@ -664,7 +664,7 @@
     },
     "seguro_anual_eur": {
       "valor": 610,
-      "fuente_tipo": "estimacion_sectorial",
+      "fuente_tipo": "estimacion_bev_sobre_ice",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -682,7 +682,7 @@
     },
     "consumo_real_factor": {
       "valor": 1.15,
-      "fuente_tipo": "investigacion_web",
+      "fuente_tipo": "ev_database",
       "fuente_fecha": "2025-01-15",
       "fuente_detalle": "EV Database 2025 — Atto 3 Comfort 60.5 kWh: 16.7 WLTP → ~19.2 kWh/100km real. Factor 1.15 por SUV alto con consumo alto en autopista.",
       "verificado": true,

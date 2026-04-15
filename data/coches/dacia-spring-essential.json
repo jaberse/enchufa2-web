@@ -711,8 +711,8 @@
   },
   "specs_tco": {
     "depreciacion_y3_pct": {
-      "valor": 0.40,
-      "fuente_tipo": "curva_depreciacion_sectorial",
+      "valor": 0.4,
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -722,7 +722,7 @@
     },
     "depreciacion_y5_pct": {
       "valor": 0.55,
-      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -731,7 +731,7 @@
     },
     "depreciacion_y10_pct": {
       "valor": 0.76,
-      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "baja",
@@ -751,7 +751,7 @@
     },
     "seguro_anual_eur": {
       "valor": 380,
-      "fuente_tipo": "estimacion_sectorial",
+      "fuente_tipo": "estimacion_bev_sobre_ice",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -768,8 +768,8 @@
       "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
     },
     "consumo_real_factor": {
-      "valor": 1.20,
-      "fuente_tipo": "investigacion_web",
+      "valor": 1.2,
+      "fuente_tipo": "ev_database",
       "fuente_fecha": "2024-10-01",
       "fuente_detalle": "EV Database + informes usuarios — Spring Essential 25 kWh: 13.7 WLTP → ~16.4 kWh/100km real. Factor 1.20 alto por aerodinámica limitada y velocidad máxima 125 km/h que penaliza en autopista.",
       "verificado": true,

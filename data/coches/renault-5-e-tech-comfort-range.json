@@ -617,7 +617,7 @@
   "specs_tco": {
     "depreciacion_y3_pct": {
       "valor": 0.36,
-      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -626,8 +626,8 @@
       "notas": "Revisar con muestra Coches.net ampliada en 2027-Q2."
     },
     "depreciacion_y5_pct": {
-      "valor": 0.50,
-      "fuente_tipo": "curva_depreciacion_ajustada",
+      "valor": 0.5,
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -635,8 +635,8 @@
       "fuente_detalle": "Proyección: y3=36% + ~7.0%/año = ~50% a 5 años. Alineado con curva sectorial BEV segmento B."
     },
     "depreciacion_y10_pct": {
-      "valor": 0.70,
-      "fuente_tipo": "curva_depreciacion_ajustada",
+      "valor": 0.7,
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "baja",
@@ -656,7 +656,7 @@
     },
     "seguro_anual_eur": {
       "valor": 520,
-      "fuente_tipo": "estimacion_sectorial",
+      "fuente_tipo": "estimacion_bev_sobre_ice",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -674,7 +674,7 @@
     },
     "consumo_real_factor": {
       "valor": 1.18,
-      "fuente_tipo": "investigacion_web",
+      "fuente_tipo": "ev_database",
       "fuente_fecha": "2024-10-01",
       "fuente_detalle": "EV Database 2025 — Renault 5 Comfort Range 52 kWh: 15.2 WLTP → ~17.9 kWh/100km real. Factor 1.18 por formato utilitario alto.",
       "verificado": true,

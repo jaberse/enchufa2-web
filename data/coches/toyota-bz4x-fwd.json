@@ -628,7 +628,7 @@
   "specs_tco": {
     "depreciacion_y3_pct": {
       "valor": 0.38,
-      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -638,7 +638,7 @@
     },
     "depreciacion_y5_pct": {
       "valor": 0.52,
-      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -647,7 +647,7 @@
     },
     "depreciacion_y10_pct": {
       "valor": 0.74,
-      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "baja",
@@ -667,7 +667,7 @@
     },
     "seguro_anual_eur": {
       "valor": 680,
-      "fuente_tipo": "estimacion_sectorial",
+      "fuente_tipo": "estimacion_bev_sobre_ice",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -685,7 +685,7 @@
     },
     "consumo_real_factor": {
       "valor": 1.2,
-      "fuente_tipo": "investigacion_web",
+      "fuente_tipo": "ev_database",
       "fuente_fecha": "2025-01-15",
       "fuente_detalle": "EV Database 2025 — bZ4X FWD 64 kWh útil: 14.0 WLTP → ~16.8 kWh/100km real. Factor 1.20 por gap WLTP/real conocido de bZ4X (peor del segmento C-SUV).",
       "verificado": true,

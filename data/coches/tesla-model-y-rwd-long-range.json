@@ -715,7 +715,7 @@
   "specs_tco": {
     "depreciacion_y3_pct": {
       "valor": 0.3,
-      "fuente_tipo": "mercado_agregado",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -725,7 +725,7 @@
     },
     "depreciacion_y5_pct": {
       "valor": 0.44,
-      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -735,7 +735,7 @@
     },
     "depreciacion_y10_pct": {
       "valor": 0.62,
-      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "baja",
@@ -745,7 +745,7 @@
     },
     "mantenimiento_anual_eur": {
       "valor": 95,
-      "fuente_tipo": "dato_real_usuario",
+      "fuente_tipo": "fabricante",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -756,7 +756,7 @@
     },
     "seguro_anual_eur": {
       "valor": 820,
-      "fuente_tipo": "estimacion_sectorial",
+      "fuente_tipo": "estimacion_bev_sobre_ice",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -774,7 +774,7 @@
     },
     "consumo_real_factor": {
       "valor": 1.13,
-      "fuente_tipo": "investigacion_web",
+      "fuente_tipo": "ev_database",
       "fuente_fecha": "2024-10-01",
       "fuente_detalle": "EV Database + ICCT gap 2024 — Tesla Model Y RWD: 12.7 WLTP → ~14.4 kWh/100km real. Cd 0.23 + SUV silhouette + RWD eficiente. Ligeramente peor que Model 3 (1.12) por formato SUV.",
       "verificado": true,

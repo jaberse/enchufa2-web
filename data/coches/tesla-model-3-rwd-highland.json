@@ -715,7 +715,7 @@
   "specs_tco": {
     "depreciacion_y3_pct": {
       "valor": 0.32,
-      "fuente_tipo": "mercado_agregado",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-13",
       "verificado": true,
       "confianza": "media",
@@ -725,7 +725,7 @@
     },
     "depreciacion_y5_pct": {
       "valor": 0.45,
-      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-13",
       "verificado": false,
       "confianza": "media",
@@ -735,7 +735,7 @@
     },
     "depreciacion_y10_pct": {
       "valor": 0.62,
-      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-13",
       "verificado": false,
       "confianza": "baja",
@@ -745,7 +745,7 @@
     },
     "mantenimiento_anual_eur": {
       "valor": 90,
-      "fuente_tipo": "dato_real_usuario",
+      "fuente_tipo": "plan_hermano_fabricante",
       "fuente_fecha": "2026-04-13",
       "verificado": true,
       "confianza": "alta",
@@ -756,7 +756,7 @@
     },
     "seguro_anual_eur": {
       "valor": 700,
-      "fuente_tipo": "comparador_agregado",
+      "fuente_tipo": "estimacion_bev_sobre_ice",
       "fuente_fecha": "2026-04-13",
       "verificado": true,
       "confianza": "media",
@@ -764,9 +764,21 @@
       "fuente_detalle": "Media 915€ reportada por comparadores (RapidSecur, Kelisto, Caser, Arpem). Mediana ajustada ~700€ tras excluir outliers jóvenes (1.498€) y franquicias altas (321€).",
       "notas": "Perfil estándar enchufa2 (40 años, 15 años carnet, zona media, TR franquicia 500€). Prima Tesla ligeramente superior a ICE equivalente por coste reparación y piezas específicas.",
       "seguro_cotizaciones": [
-        { "aseguradora": "RapidSecur (media)", "prima_eur": 915, "fuente_fecha": "2026-04-13" },
-        { "aseguradora": "Allianz/Direct (franquicia alta)", "prima_eur": 335, "fuente_fecha": "2026-04-13" },
-        { "aseguradora": "MAPFRE/Caser (premium)", "prima_eur": 857, "fuente_fecha": "2026-04-13" }
+        {
+          "aseguradora": "RapidSecur (media)",
+          "prima_eur": 915,
+          "fuente_fecha": "2026-04-13"
+        },
+        {
+          "aseguradora": "Allianz/Direct (franquicia alta)",
+          "prima_eur": 335,
+          "fuente_fecha": "2026-04-13"
+        },
+        {
+          "aseguradora": "MAPFRE/Caser (premium)",
+          "prima_eur": 857,
+          "fuente_fecha": "2026-04-13"
+        }
       ]
     },
     "precio_electricidad_eur_kwh": {
@@ -778,7 +790,7 @@
     },
     "consumo_real_factor": {
       "valor": 1.12,
-      "fuente_tipo": "investigacion_web",
+      "fuente_tipo": "ev_database",
       "fuente_fecha": "2024-10-01",
       "fuente_detalle": "EV Database + reportes reales usuarios Model 3 Highland RWD: 13.2 WLTP → ~14.8 kWh/100km real. Factor 1.12 gracias a aerodinámica Cd 0.219 + RWD eficiente + pack LFP 60 kWh.",
       "verificado": true,

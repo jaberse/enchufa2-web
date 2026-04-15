@@ -643,7 +643,7 @@
     },
     "depreciacion_y10_pct": {
       "valor": 0.67,
-      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "baja",
@@ -679,7 +679,7 @@
     },
     "consumo_real_factor": {
       "valor": 1.16,
-      "fuente_tipo": "investigacion_web",
+      "fuente_tipo": "ev_database",
       "fuente_fecha": "2025-01-15",
       "fuente_detalle": "EV Database 2025 — iX2 xDrive30 64.8 kWh útil: 16.3 WLTP → ~18.9 kWh/100km real. Factor 1.16 por SAC coupé AWD.",
       "verificado": true,

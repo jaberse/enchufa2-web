@@ -625,7 +625,7 @@
   "specs_tco": {
     "depreciacion_y3_pct": {
       "valor": 0.38,
-      "fuente_tipo": "curva_depreciacion_sectorial",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -635,7 +635,7 @@
     },
     "depreciacion_y5_pct": {
       "valor": 0.52,
-      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -644,7 +644,7 @@
     },
     "depreciacion_y10_pct": {
       "valor": 0.72,
-      "fuente_tipo": "curva_depreciacion_ajustada",
+      "fuente_tipo": "ganvam_segmento",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "baja",
@@ -664,7 +664,7 @@
     },
     "seguro_anual_eur": {
       "valor": 430,
-      "fuente_tipo": "estimacion_sectorial",
+      "fuente_tipo": "estimacion_bev_sobre_ice",
       "fuente_fecha": "2026-04-14",
       "verificado": false,
       "confianza": "media",
@@ -682,7 +682,7 @@
     },
     "consumo_real_factor": {
       "valor": 1.17,
-      "fuente_tipo": "investigacion_web",
+      "fuente_tipo": "ev_database",
       "fuente_fecha": "2025-01-15",
       "fuente_detalle": "EV Database 2025 — Inster Long Range 49 kWh: 14.9 WLTP → ~17.4 kWh/100km real. Factor 1.17 por utilitario alto (SUV crossover).",
       "verificado": true,
