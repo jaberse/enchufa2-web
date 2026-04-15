@@ -159,9 +159,10 @@ const kwhEfectivoIni =
         tres pilotos manuales.
       </p>
       <div class="beta-warn" role="note">
-        <strong>Beta v0.2</strong> — {payload.length} pares del Top {payload.length} ya disponibles.
-        Datos con <code>confianza=media</code> hasta calibrar depreciación con
-        muestras reales de Coches.net y cotizaciones de seguro específicas.
+        <strong>Beta v0.3</strong> — selección libre de hasta 4 eléctricos y
+        4 de combustión del catálogo v1 ({ALL_BEVS.length} BEV · {ALL_ICES.length} ICE).
+        Datos con <code>confianza=media</code> hasta calibrar depreciación
+        con muestras reales de Coches.net y cotizaciones de seguro específicas.
         <a href="#metodologia">Ver metodología</a>.
       </div>
     </section>
@@ -1581,7 +1582,8 @@ const kwhEfectivoIni =
       .ctrl-grid {
         grid-template-columns: 1fr 1fr;
       }
-      .ctrl-par { grid-column: 1 / -1; }
+      .ctrl-seleccion,
+      .ctrl-mix { grid-column: 1 / -1; }
     }
     .ctrl {
       display: flex;
