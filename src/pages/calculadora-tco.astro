@@ -56,8 +56,8 @@ const PARES = [
 const DEFAULT_SLUG = 'tesla-model-3-rwd-highland';
 
 // Construir payload para el cliente: por cada par, los inputs BEV + ICE
-// en cada horizonte disponible (3 y 5 años en todos los casos).
-const HORIZONTES_DISPONIBLES = [3, 5];
+// en cada horizonte disponible (2..10 años, para el slider E6a).
+const HORIZONTES_DISPONIBLES = [2, 3, 4, 5, 6, 7, 8, 10];
 
 const payload = PARES.map((par) => {
   const bevJson = dataFile(`data/coches/${par.slug}.json`);
@@ -79,12 +79,22 @@ const payload = PARES.map((par) => {
   };
 });
 
+// Defaults del bloque "Tu uso" — E1 + E6a.
+// Precios kWh split en casa (PVPC valle) y pública (mix AC lenta + DC rápida).
+const PRECIO_KWH_CASA_DEFAULT = 0.12;     // PVPC valle medio 2026 (€/kWh).
+const PRECIO_KWH_PUBLICA_DEFAULT = 0.45;  // Media ponderada AC/DC red pública.
+const PCT_CASA_DEFAULT = 70;              // 70 % casa / 30 % pública.
+const HORIZONTE_DEFAULT = 5;
+
 const parInicial =
   payload.find((p) => p.slug === DEFAULT_SLUG) ?? payload[0];
 const pilotosValidados = payload.filter((p) => p.piloto);
-const iniH = 5;
+const iniH = HORIZONTE_DEFAULT;
 const iniBev = parInicial.horizontes[iniH].bev;
 const iniIce = parInicial.horizontes[iniH].ice;
+const kwhEfectivoIni =
+  (PCT_CASA_DEFAULT / 100) * PRECIO_KWH_CASA_DEFAULT +
+  (1 - PCT_CASA_DEFAULT / 100) * PRECIO_KWH_PUBLICA_DEFAULT;
 ---
 
 <Layout
@@ -138,18 +148,26 @@ const iniIce = parInicial.horizontes[iniH].ice;
           </div>
         </fieldset>
 
-        <!-- Horizonte -->
-        <fieldset class="ctrl">
-          <legend>Horizonte</legend>
-          <div class="pills" role="radiogroup" aria-label="Años de propiedad">
-            {HORIZONTES_DISPONIBLES.map((h) => (
-              <label class="pill">
-                <input type="radio" name="horizonte" value={h} checked={h === iniH} />
-                <span>{h} años</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
+        <!-- Horizonte (E6a — slider libre 2-10) -->
+        <div class="ctrl">
+          <label for="horizonte">
+            Horizonte
+            <output id="horizonte-out">{iniH} años</output>
+          </label>
+          <input
+            id="horizonte"
+            type="range"
+            min="2"
+            max="10"
+            step="1"
+            value={iniH}
+            list="horizonte-ticks"
+          />
+          <datalist id="horizonte-ticks">
+            {HORIZONTES_DISPONIBLES.map((h) => <option value={h}></option>)}
+          </datalist>
+          <span class="ctrl-hint">De 2 a 10 años de tenencia. Por encima de 5 la banda se amplía: y10 es siempre confianza baja.</span>
+        </div>
 
         <!-- Km/año -->
         <div class="ctrl">
@@ -167,22 +185,69 @@ const iniIce = parInicial.horizontes[iniH].ice;
           />
         </div>
 
-        <!-- Precio electricidad -->
-        <div class="ctrl">
-          <label for="kwh">
-            Precio electricidad
-            <output id="kwh-out">{PARAMS_ENCHUFA2_ESTANDAR.precio_kwh_eur.toFixed(2)} €/kWh</output>
+        <!-- ── E1 — Mix de carga casa/pública ── -->
+        <fieldset class="ctrl ctrl-mix">
+          <legend>Cómo cargas habitualmente</legend>
+          <div class="mix-presets" role="group" aria-label="Perfiles de carga predefinidos">
+            <button type="button" class="mix-preset" data-pct="90">Casa 90 %</button>
+            <button type="button" class="mix-preset" data-pct="70">Mixto 70 %</button>
+            <button type="button" class="mix-preset" data-pct="20">Sin garaje 20 %</button>
+          </div>
+          <label for="pct-casa" class="mix-label">
+            % carga en casa
+            <output id="pct-casa-out">{PCT_CASA_DEFAULT} %</output>
           </label>
           <input
-            id="kwh"
+            id="pct-casa"
             type="range"
-            min="0.08"
-            max="0.55"
-            step="0.01"
-            value={PARAMS_ENCHUFA2_ESTANDAR.precio_kwh_eur}
+            min="0"
+            max="100"
+            step="5"
+            value={PCT_CASA_DEFAULT}
+            aria-describedby="pct-casa-hint"
           />
-          <span class="ctrl-hint">Default mix enchufa2: 70 % casa PVPC valle + 30 % pública</span>
-        </div>
+          <span class="ctrl-hint" id="pct-casa-hint">
+            Palanca #1 del TCO eléctrico: quien carga casi todo en casa ahorra
+            mucho más que quien depende de pública, aunque el coche sea el mismo.
+          </span>
+
+          <div class="mix-prices">
+            <div class="mix-price">
+              <label for="kwh-casa">
+                €/kWh en casa
+                <output id="kwh-casa-out">{PRECIO_KWH_CASA_DEFAULT.toFixed(2)} €</output>
+              </label>
+              <input
+                id="kwh-casa"
+                type="range"
+                min="0.05"
+                max="0.25"
+                step="0.01"
+                value={PRECIO_KWH_CASA_DEFAULT}
+              />
+              <span class="ctrl-hint">PVPC valle medio 2026: ~0,12 €/kWh</span>
+            </div>
+            <div class="mix-price">
+              <label for="kwh-publica">
+                €/kWh en pública
+                <output id="kwh-publica-out">{PRECIO_KWH_PUBLICA_DEFAULT.toFixed(2)} €</output>
+              </label>
+              <input
+                id="kwh-publica"
+                type="range"
+                min="0.20"
+                max="0.80"
+                step="0.01"
+                value={PRECIO_KWH_PUBLICA_DEFAULT}
+              />
+              <span class="ctrl-hint">Media ponderada AC lenta + DC rápida</span>
+            </div>
+          </div>
+          <p class="kwh-efectivo" aria-live="polite">
+            Precio medio efectivo:
+            <strong id="kwh-efectivo-out">{kwhEfectivoIni.toFixed(3)} €/kWh</strong>
+          </p>
+        </fieldset>
 
         <!-- Precio gasolina -->
         <div class="ctrl">
@@ -219,6 +284,22 @@ const iniIce = parInicial.horizontes[iniH].ice;
       <h2 id="h-resultado" class="sr-only">Resultado</h2>
 
       <p class="lede" id="lede">Cargando…</p>
+
+      <!-- ── E7 — Sensibilidad a inputs del usuario ── -->
+      <aside class="sensibilidad" aria-labelledby="h-sensibilidad">
+        <h3 id="h-sensibilidad">¿Y si te equivocas en los inputs?</h3>
+        <p class="sens-intro">
+          El rango que aparece junto al TCO es <em>nuestra</em> incertidumbre
+          metodológica. Lo que sigue es la <em>tuya</em>: cuánto se mueve el
+          ahorro si alguno de los supuestos clave no es exactamente el que has
+          metido.
+        </p>
+        <ul class="sens-list">
+          <li id="sens-km">—</li>
+          <li id="sens-kwh">—</li>
+          <li id="sens-casa">—</li>
+        </ul>
+      </aside>
 
       <div class="tco-grid">
         <article class="tco-card tco-bev">
@@ -384,14 +465,33 @@ const iniIce = parInicial.horizontes[iniH].ice;
       document.getElementById(id) as T;
 
     const DEFAULT_SLUG = 'tesla-model-3-rwd-highland';
+    const HORIZONTES_VALIDOS = [2, 3, 4, 5, 6, 7, 8, 10];
     const state = {
       slug:
         PAYLOAD.find((p) => p.slug === DEFAULT_SLUG)?.slug ?? PAYLOAD[0].slug,
-      horizonte: 5 as 3 | 5,
+      horizonte: 5,                 // 2..10 (E6a)
       km: 15000,
-      kwh: 0.17,
+      pctCasa: 70,                  // 0..100 (E1)
+      kwhCasa: 0.12,                // €/kWh PVPC valle (E1)
+      kwhPublica: 0.45,             // €/kWh pública media AC+DC (E1)
       litro: 1.55,
       ayuda: true,
+    };
+
+    // €/kWh efectivo derivado del mix casa/pública (E1).
+    const kwhEfectivo = () =>
+      (state.pctCasa / 100) * state.kwhCasa +
+      (1 - state.pctCasa / 100) * state.kwhPublica;
+
+    // Snap del horizonte al valor válido más cercano (para que 9 → 10, etc.).
+    const snapHorizonte = (h: number) => {
+      let best = HORIZONTES_VALIDOS[0];
+      let dist = Math.abs(h - best);
+      for (const v of HORIZONTES_VALIDOS) {
+        const d = Math.abs(h - v);
+        if (d < dist) { best = v; dist = d; }
+      }
+      return best;
     };
 
     // Lee URL querystring si existe
@@ -400,11 +500,23 @@ const iniIce = parInicial.horizontes[iniH].ice;
       const slug = p.get('m');
       if (slug && PAYLOAD.some((x) => x.slug === slug)) state.slug = slug;
       const h = Number(p.get('h'));
-      if (h === 3 || h === 5) state.horizonte = h;
+      if (h >= 2 && h <= 10) state.horizonte = snapHorizonte(h);
       const k = Number(p.get('km'));
       if (k >= 5000 && k <= 40000) state.km = k;
-      const e = Number(p.get('kwh'));
-      if (e >= 0.08 && e <= 0.55) state.kwh = e;
+      // Retrocompatibilidad: si llega `kwh` (legacy v0.2), lo usamos como
+      // media efectiva y reconstruimos un split plausible (pct=70).
+      const eLegacy = Number(p.get('kwh'));
+      if (eLegacy >= 0.08 && eLegacy <= 0.55) {
+        state.pctCasa = 70;
+        state.kwhCasa = Math.max(0.05, Math.min(0.25, eLegacy * 0.7));
+        state.kwhPublica = Math.max(0.20, Math.min(0.80, eLegacy * 1.7));
+      }
+      const pc = Number(p.get('pc'));
+      if (pc >= 0 && pc <= 100) state.pctCasa = pc;
+      const kc = Number(p.get('kc'));
+      if (kc >= 0.05 && kc <= 0.25) state.kwhCasa = kc;
+      const kp = Number(p.get('kp'));
+      if (kp >= 0.2 && kp <= 0.8) state.kwhPublica = kp;
       const g = Number(p.get('l'));
       if (g >= 1.2 && g <= 2) state.litro = g;
       if (p.get('a') === '0') state.ayuda = false;
@@ -415,7 +527,9 @@ const iniIce = parInicial.horizontes[iniH].ice;
       p.set('m', state.slug);
       p.set('h', String(state.horizonte));
       p.set('km', String(state.km));
-      p.set('kwh', state.kwh.toFixed(2));
+      p.set('pc', String(state.pctCasa));
+      p.set('kc', state.kwhCasa.toFixed(2));
+      p.set('kp', state.kwhPublica.toFixed(2));
       p.set('l', state.litro.toFixed(2));
       if (!state.ayuda) p.set('a', '0');
       history.replaceState(null, '', `?${p.toString()}`);
@@ -467,7 +581,7 @@ const iniIce = parInicial.horizontes[iniH].ice;
       const curva = curvaTCO(bevInput, iceInput, {
         km_anual: state.km,
         horizonte_anios: state.horizonte,
-        precio_kwh_eur: state.kwh,
+        precio_kwh_eur: kwhEfectivo(),
         precio_litro_eur: state.litro,
       }, { horizonte_max: state.horizonte, granularidad_anios: 0.25 });
 
@@ -656,7 +770,7 @@ const iniIce = parInicial.horizontes[iniH].ice;
 
     function recalc() {
       const par = currentPar();
-      const fixtures = par.horizontes[state.horizonte];
+      const fixtures = par.horizontes[state.horizonte] ?? par.horizontes[5];
       const bevInput = { ...fixtures.bev };
       if (!state.ayuda || !par.ayuda_disponible) bevInput.ayuda_eur = 0;
       const iceInput = fixtures.ice;
@@ -664,7 +778,7 @@ const iniIce = parInicial.horizontes[iniH].ice;
       const cmp = compararTCO(bevInput, iceInput, {
         km_anual: state.km,
         horizonte_anios: state.horizonte,
-        precio_kwh_eur: state.kwh,
+        precio_kwh_eur: kwhEfectivo(),
         precio_litro_eur: state.litro,
       });
 
@@ -748,6 +862,45 @@ const iniIce = parInicial.horizontes[iniH].ice;
         `<strong>${eur(abs)} €</strong> (${pct.toFixed(1)} %) ` +
         `frente al <strong>${par.iceName}</strong>.${rangoLede}`;
 
+      // ── E7 — Sensibilidad a inputs del usuario ──
+      // Reproducimos el cálculo con perturbaciones en km, precio kWh y
+      // % carga casa para mostrar cómo se mueve el ahorro total.
+      const ahorroActual = cmp.ahorro_bev_eur;
+      const wiggle = (overrides: { km?: number; kwh?: number; pctCasa?: number }) => {
+        const km = overrides.km ?? state.km;
+        const pctCasa = overrides.pctCasa ?? state.pctCasa;
+        const kwh = overrides.kwh ?? (
+          (pctCasa / 100) * state.kwhCasa +
+          (1 - pctCasa / 100) * state.kwhPublica
+        );
+        const c = compararTCO(bevInput, iceInput, {
+          km_anual: km,
+          horizonte_anios: state.horizonte,
+          precio_kwh_eur: kwh,
+          precio_litro_eur: state.litro,
+        });
+        return c.ahorro_bev_eur;
+      };
+
+      const fmtDelta = (actual: number, nuevo: number) => {
+        const delta = nuevo - actual;
+        const verbo = nuevo >= 0 ? 'ahorras' : 'sobrecuesta';
+        const abs = Math.abs(nuevo);
+        const signoDelta = delta >= 0 ? '+' : '−';
+        return `${verbo} <strong>${eur(abs)} €</strong> (${signoDelta}${eur(Math.abs(delta))} € vs escenario actual)`;
+      };
+
+      const kmUp = wiggle({ km: Math.round(state.km * 1.20) });
+      const kwhUp = wiggle({ kwh: kwhEfectivo() + 0.05 });
+      const pctDown = wiggle({ pctCasa: Math.max(0, state.pctCasa - 20) });
+
+      $('sens-km').innerHTML =
+        `Si haces <strong>${eur(Math.round(state.km * 1.20))} km/año</strong> (+20 %) → ${fmtDelta(ahorroActual, kmUp)}`;
+      $('sens-kwh').innerHTML =
+        `Si el kWh efectivo sube <strong>+0,05 €</strong> (p. ej. subida PVPC) → ${fmtDelta(ahorroActual, kwhUp)}`;
+      $('sens-casa').innerHTML =
+        `Si solo cargas <strong>${Math.max(0, state.pctCasa - 20)} %</strong> en casa (−20 puntos) → ${fmtDelta(ahorroActual, pctDown)}`;
+
       // Gráfico
       renderChart(bevInput, iceInput);
 
@@ -774,12 +927,13 @@ const iniIce = parInicial.horizontes[iniH].ice;
       });
     });
 
-    document.querySelectorAll<HTMLInputElement>('input[name="horizonte"]').forEach((r) => {
-      r.addEventListener('change', () => {
-        if (!r.checked) return;
-        state.horizonte = Number(r.value) as 3 | 5;
-        recalc();
-      });
+    ($('horizonte') as HTMLInputElement).addEventListener('input', (e) => {
+      const raw = Number((e.target as HTMLInputElement).value);
+      state.horizonte = snapHorizonte(raw);
+      // Snap visual del slider al valor válido.
+      (e.target as HTMLInputElement).value = String(state.horizonte);
+      $('horizonte-out').textContent = `${state.horizonte} año${state.horizonte === 1 ? '' : 's'}`;
+      recalc();
     });
 
     ($('km') as HTMLInputElement).addEventListener('input', (e) => {
@@ -788,10 +942,40 @@ const iniIce = parInicial.horizontes[iniH].ice;
       recalc();
     });
 
-    ($('kwh') as HTMLInputElement).addEventListener('input', (e) => {
-      state.kwh = Number((e.target as HTMLInputElement).value);
-      $('kwh-out').textContent = `${state.kwh.toFixed(2)} €/kWh`;
+    // ── E1 — mix casa/pública ──
+    const refreshKwhEfectivo = () => {
+      $('kwh-efectivo-out').textContent = `${kwhEfectivo().toFixed(3)} €/kWh`;
+    };
+    ($('pct-casa') as HTMLInputElement).addEventListener('input', (e) => {
+      state.pctCasa = Number((e.target as HTMLInputElement).value);
+      $('pct-casa-out').textContent = `${state.pctCasa} %`;
+      refreshKwhEfectivo();
       recalc();
+    });
+    ($('kwh-casa') as HTMLInputElement).addEventListener('input', (e) => {
+      state.kwhCasa = Number((e.target as HTMLInputElement).value);
+      $('kwh-casa-out').textContent = `${state.kwhCasa.toFixed(2)} €`;
+      refreshKwhEfectivo();
+      recalc();
+    });
+    ($('kwh-publica') as HTMLInputElement).addEventListener('input', (e) => {
+      state.kwhPublica = Number((e.target as HTMLInputElement).value);
+      $('kwh-publica-out').textContent = `${state.kwhPublica.toFixed(2)} €`;
+      refreshKwhEfectivo();
+      recalc();
+    });
+    document.querySelectorAll<HTMLButtonElement>('.mix-preset').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const pct = Number(btn.dataset.pct);
+        if (!Number.isFinite(pct)) return;
+        state.pctCasa = pct;
+        ($('pct-casa') as HTMLInputElement).value = String(pct);
+        $('pct-casa-out').textContent = `${pct} %`;
+        document.querySelectorAll('.mix-preset').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        refreshKwhEfectivo();
+        recalc();
+      });
     });
 
     ($('litro') as HTMLInputElement).addEventListener('input', (e) => {
@@ -829,17 +1013,24 @@ const iniIce = parInicial.horizontes[iniH].ice;
       ) as HTMLInputElement | null)?.click();
       // click() dispara change → recalc, pero también reescribe ayuda.
       // Reinicializamos todos los campos tras leer la URL.
-      const hInput = document.querySelector(
-        `input[name="horizonte"][value="${state.horizonte}"]`,
-      ) as HTMLInputElement | null;
-      if (hInput) hInput.checked = true;
+      ($('horizonte') as HTMLInputElement).value = String(state.horizonte);
       ($('km') as HTMLInputElement).value = String(state.km);
-      ($('kwh') as HTMLInputElement).value = String(state.kwh);
+      ($('pct-casa') as HTMLInputElement).value = String(state.pctCasa);
+      ($('kwh-casa') as HTMLInputElement).value = String(state.kwhCasa);
+      ($('kwh-publica') as HTMLInputElement).value = String(state.kwhPublica);
       ($('litro') as HTMLInputElement).value = String(state.litro);
       ($('ayuda') as HTMLInputElement).checked = state.ayuda;
+      $('horizonte-out').textContent = `${state.horizonte} años`;
       $('km-out').textContent = `${eur(state.km)} km`;
-      $('kwh-out').textContent = `${state.kwh.toFixed(2)} €/kWh`;
+      $('pct-casa-out').textContent = `${state.pctCasa} %`;
+      $('kwh-casa-out').textContent = `${state.kwhCasa.toFixed(2)} €`;
+      $('kwh-publica-out').textContent = `${state.kwhPublica.toFixed(2)} €`;
       $('litro-out').textContent = `${state.litro.toFixed(2)} €/L`;
+      $('kwh-efectivo-out').textContent = `${kwhEfectivo().toFixed(3)} €/kWh`;
+      // Marca el preset activo si coincide.
+      document.querySelectorAll<HTMLButtonElement>('.mix-preset').forEach((b) => {
+        b.classList.toggle('active', Number(b.dataset.pct) === state.pctCasa);
+      });
     }
 
     readUrl();
@@ -1097,6 +1288,106 @@ const iniIce = parInicial.horizontes[iniH].ice;
       cursor: not-allowed;
     }
 
+    /* ── E1 — Mix de carga casa/pública ── */
+    .ctrl-mix {
+      gap: 0.75rem;
+      padding: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .ctrl-mix legend {
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0 0.25rem;
+      color: var(--text);
+    }
+    .mix-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+    }
+    .mix-preset {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8125rem;
+      font-weight: 400;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-secondary);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: border-color 0.2s var(--ease-out-expo),
+                  background 0.2s var(--ease-out-expo),
+                  color 0.2s var(--ease-out-expo);
+    }
+    .mix-preset:hover {
+      border-color: var(--gray-300);
+      color: var(--text);
+    }
+    .mix-preset.active {
+      background: var(--black);
+      color: var(--white);
+      border-color: var(--black);
+    }
+    [data-theme="dark"] .mix-preset.active {
+      background: var(--yellow);
+      color: var(--black);
+      border-color: var(--yellow);
+    }
+    .mix-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+    }
+    .mix-label output {
+      font-variant-numeric: tabular-nums;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    .mix-prices {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      padding-top: 0.5rem;
+      border-top: 1px dashed var(--border);
+    }
+    @media (min-width: 540px) {
+      .mix-prices { grid-template-columns: 1fr 1fr; }
+    }
+    .mix-price {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+    .mix-price label {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+    .mix-price output {
+      font-variant-numeric: tabular-nums;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    .kwh-efectivo {
+      margin: 0;
+      padding-top: 0.5rem;
+      border-top: 1px dashed var(--border);
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+    }
+    .kwh-efectivo strong {
+      color: var(--text);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
     /* ── Resultado ── */
     .resultado {
       margin-bottom: clamp(2rem, 5vw, 3.5rem);
@@ -1114,6 +1405,62 @@ const iniIce = parInicial.horizontes[iniH].ice;
       font-family: var(--font-sans);
       font-style: normal;
       font-weight: 500;
+    }
+
+    /* ── E7 — Sensibilidad ── */
+    .sensibilidad {
+      margin: 0 0 clamp(1.5rem, 4vw, 2.5rem);
+      padding: clamp(1rem, 2.5vw, 1.5rem);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--yellow);
+      border-radius: var(--radius);
+      max-width: 780px;
+    }
+    .sensibilidad h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .sens-intro {
+      margin: 0 0 0.875rem;
+      font-size: 0.875rem;
+      line-height: 1.55;
+      color: var(--text-secondary);
+    }
+    .sens-intro em {
+      font-style: italic;
+      color: var(--text);
+    }
+    .sens-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .sens-list li {
+      font-size: 0.875rem;
+      line-height: 1.45;
+      color: var(--text-secondary);
+      padding-left: 1rem;
+      position: relative;
+    }
+    .sens-list li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--yellow);
+      font-weight: 500;
+    }
+    .sens-list li strong {
+      color: var(--text);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
     }
 
     .tco-grid {
