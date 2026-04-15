@@ -53,8 +53,6 @@ const PARES = [
   };
 });
 
-const DEFAULT_SLUG = 'tesla-model-3-rwd-highland';
-
 // Construir payload para el cliente: por cada par, los inputs BEV + ICE
 // en cada horizonte disponible (2..10 años, para el slider E6a).
 const HORIZONTES_DISPONIBLES = [2, 3, 4, 5, 6, 7, 8, 10];
@@ -137,12 +135,8 @@ const PRECIO_KWH_PUBLICA_DEFAULT = 0.45;  // Media ponderada AC/DC red pública.
 const PCT_CASA_DEFAULT = 70;              // 70 % casa / 30 % pública.
 const HORIZONTE_DEFAULT = 5;
 
-const parInicial =
-  payload.find((p) => p.slug === DEFAULT_SLUG) ?? payload[0];
 const pilotosValidados = payload.filter((p) => p.piloto);
 const iniH = HORIZONTE_DEFAULT;
-const iniBev = parInicial.horizontes[iniH].bev;
-const iniIce = parInicial.horizontes[iniH].ice;
 const kwhEfectivoIni =
   (PCT_CASA_DEFAULT / 100) * PRECIO_KWH_CASA_DEFAULT +
   (1 - PCT_CASA_DEFAULT / 100) * PRECIO_KWH_PUBLICA_DEFAULT;
@@ -177,25 +171,59 @@ const kwhEfectivoIni =
       <h2 id="h-controles" class="sr-only">Parámetros</h2>
 
       <div class="ctrl-grid">
-        <!-- Selector de par -->
-        <fieldset class="ctrl ctrl-par">
-          <legend>Coche a analizar</legend>
-          <div class="par-opts" role="radiogroup" aria-label="Elige el modelo BEV">
-            {payload.map((par, i) => (
-              <label class="par-opt" data-slug={par.slug}>
+        <!-- Selector multi-coche (Sprint 2 E2 paso 2B) -->
+        <fieldset class="ctrl ctrl-seleccion">
+          <legend>Coches a analizar</legend>
+          <p class="seleccion-hint">
+            Empieza con un par rápido o añade hasta 4 eléctricos y 4 de
+            combustión para comparar. Haz clic en un coche de la lista —
+            o en una línea del gráfico — para ver su desglose.
+          </p>
+
+          <div class="quick-starts" role="group" aria-label="Pares rápidos">
+            <span class="qs-label">Empieza con:</span>
+            <button type="button" class="qs-btn" data-bev="dacia-spring-essential" data-ice="hyundai-i10-mpi">A · Urbano barato</button>
+            <button type="button" class="qs-btn" data-bev="renault-5-e-tech-comfort-range" data-ice="dacia-sandero-tce">B · Utilitario</button>
+            <button type="button" class="qs-btn" data-bev="hyundai-kona-electric-65-kwh" data-ice="volkswagen-tiguan-tsi">C-SUV · Mainstream</button>
+            <button type="button" class="qs-btn" data-bev="tesla-model-3-rwd-highland" data-ice="bmw-320i-sedan">D · Berlina premium</button>
+            <button type="button" class="qs-btn" data-bev="tesla-model-y-rwd-long-range" data-ice="bmw-x3-xdrive20i">D-SUV · Familiar</button>
+          </div>
+
+          <div class="seleccion-grid">
+            <div class="seleccion-col" data-tren="BEV">
+              <p class="col-head"><span class="col-dot col-dot-bev" aria-hidden="true"></span> Eléctricos <span class="col-count" id="bev-count">0 / 4</span></p>
+              <div class="chips" id="chips-bev" role="list" aria-label="Eléctricos seleccionados"></div>
+              <div class="chips-combo">
                 <input
-                  type="radio"
-                  name="par"
-                  value={par.slug}
-                  checked={par.slug === parInicial.slug}
+                  type="text"
+                  id="combo-bev"
+                  class="combo-input"
+                  placeholder="Añadir eléctrico…"
+                  autocomplete="off"
+                  aria-label="Buscar eléctrico para añadir"
+                  aria-autocomplete="list"
+                  aria-controls="suggest-bev"
                 />
-                <img src={par.foto} alt={par.bevName} loading="lazy" width="120" height="72" />
-                <div class="par-opt-txt">
-                  <span class="par-opt-name">{par.bevName}</span>
-                  <span class="par-opt-sub">{par.comparacion}</span>
-                </div>
-              </label>
-            ))}
+                <ul class="chips-suggest" id="suggest-bev" role="listbox" hidden></ul>
+              </div>
+            </div>
+            <div class="seleccion-col" data-tren="ICE">
+              <p class="col-head"><span class="col-dot col-dot-ice" aria-hidden="true"></span> Combustión <span class="col-count" id="ice-count">0 / 4</span></p>
+              <div class="chips" id="chips-ice" role="list" aria-label="Combustión seleccionados"></div>
+              <div class="chips-combo">
+                <input
+                  type="text"
+                  id="combo-ice"
+                  class="combo-input"
+                  placeholder="Añadir combustión…"
+                  autocomplete="off"
+                  aria-label="Buscar combustión para añadir"
+                  aria-autocomplete="list"
+                  aria-controls="suggest-ice"
+                />
+                <ul class="chips-suggest" id="suggest-ice" role="listbox" hidden></ul>
+              </div>
+            </div>
           </div>
         </fieldset>
 
@@ -317,13 +345,13 @@ const kwhEfectivoIni =
           <span class="ctrl-hint">MITECO abril 2026</span>
         </div>
 
-        <!-- Plan Auto+ -->
-        <div class="ctrl ctrl-check" id="ctrl-ayuda" data-has-ayuda={parInicial.ayuda_disponible}>
+        <!-- Plan Auto+ (global: aplica a todos los BEVs elegibles) -->
+        <div class="ctrl ctrl-check" id="ctrl-ayuda">
           <label>
-            <input type="checkbox" id="ayuda" checked={parInicial.ayuda_disponible} />
+            <input type="checkbox" id="ayuda" checked />
             <span>
-              Aplicar Plan Auto+
-              <output id="ayuda-out">{parInicial.ayuda_disponible ? `(${parInicial.ayuda_eur.toLocaleString('es-ES')} €)` : '(no elegible)'}</output>
+              Aplicar Plan Auto+ cuando sea elegible
+              <output id="ayuda-out">(Eléctrico · Económico · Europeo)</output>
             </span>
           </label>
         </div>
@@ -399,39 +427,23 @@ const kwhEfectivoIni =
         </ul>
       </aside>
 
-      <div class="tco-grid">
-        <article class="tco-card tco-bev">
+      <div class="tco-focus-wrap">
+        <article class="tco-card tco-focus" id="tco-focus" data-tren="BEV" aria-live="polite">
           <header>
-            <p class="tco-tren">Eléctrico</p>
-            <h3 id="bev-name">{parInicial.bevName}</h3>
+            <p class="tco-tren" id="focus-tren">Eléctrico</p>
+            <h3 id="focus-name">—</h3>
+            <p class="focus-hint">Haz clic en otro coche (chip o línea del gráfico) para cambiar el desglose.</p>
           </header>
-          <p class="tco-big"><span id="bev-tco">—</span> €</p>
-          <p class="tco-range" id="bev-range">—</p>
-          <p class="tco-sub"><span id="bev-kmkm">—</span> €/km · <span id="bev-horizonte">—</span> años</p>
+          <p class="tco-big"><span id="focus-tco">—</span> €</p>
+          <p class="tco-range" id="focus-range">—</p>
+          <p class="tco-sub"><span id="focus-kmkm">—</span> €/km · <span id="focus-horizonte">—</span> años</p>
           <dl class="tco-breakdown">
-            <dt>Depreciación <span class="conf-dot" id="bev-dep-conf" aria-hidden="true"></span></dt><dd><span id="bev-dep">—</span> €</dd>
-            <dt>Energía <span class="conf-dot" id="bev-ene-conf" aria-hidden="true"></span></dt><dd><span id="bev-ene">—</span> €</dd>
-            <dt>Mantenimiento <span class="conf-dot" id="bev-man-conf" aria-hidden="true"></span></dt><dd><span id="bev-man">—</span> €</dd>
-            <dt>Seguro <span class="conf-dot" id="bev-seg-conf" aria-hidden="true"></span></dt><dd><span id="bev-seg">—</span> €</dd>
-            <dt>Impuestos</dt><dd><span id="bev-imp">—</span> €</dd>
-            <dt>Ayudas</dt><dd>− <span id="bev-ayu">—</span> €</dd>
-          </dl>
-        </article>
-
-        <article class="tco-card tco-ice">
-          <header>
-            <p class="tco-tren">Combustión</p>
-            <h3 id="ice-name">{parInicial.iceName}</h3>
-          </header>
-          <p class="tco-big"><span id="ice-tco">—</span> €</p>
-          <p class="tco-range" id="ice-range">—</p>
-          <p class="tco-sub"><span id="ice-kmkm">—</span> €/km · <span id="ice-horizonte">—</span> años</p>
-          <dl class="tco-breakdown">
-            <dt>Depreciación <span class="conf-dot" id="ice-dep-conf" aria-hidden="true"></span></dt><dd><span id="ice-dep">—</span> €</dd>
-            <dt>Energía <span class="conf-dot" id="ice-ene-conf" aria-hidden="true"></span></dt><dd><span id="ice-ene">—</span> €</dd>
-            <dt>Mantenimiento <span class="conf-dot" id="ice-man-conf" aria-hidden="true"></span></dt><dd><span id="ice-man">—</span> €</dd>
-            <dt>Seguro <span class="conf-dot" id="ice-seg-conf" aria-hidden="true"></span></dt><dd><span id="ice-seg">—</span> €</dd>
-            <dt>Impuestos</dt><dd><span id="ice-imp">—</span> €</dd>
+            <dt>Depreciación <span class="conf-dot" id="focus-dep-conf" aria-hidden="true"></span></dt><dd><span id="focus-dep">—</span> €</dd>
+            <dt>Energía <span class="conf-dot" id="focus-ene-conf" aria-hidden="true"></span></dt><dd><span id="focus-ene">—</span> €</dd>
+            <dt>Mantenimiento <span class="conf-dot" id="focus-man-conf" aria-hidden="true"></span></dt><dd><span id="focus-man">—</span> €</dd>
+            <dt>Seguro <span class="conf-dot" id="focus-seg-conf" aria-hidden="true"></span></dt><dd><span id="focus-seg">—</span> €</dd>
+            <dt>Impuestos</dt><dd><span id="focus-imp">—</span> €</dd>
+            <dt id="focus-ayu-dt" hidden>Ayudas</dt><dd id="focus-ayu-dd" hidden>− <span id="focus-ayu">—</span> €</dd>
           </dl>
         </article>
       </div>
@@ -544,7 +556,7 @@ const kwhEfectivoIni =
 
   <!-- Lógica interactiva (auto-bundled por Astro) -->
   <script>
-    import { calcularTCO, compararTCO, curvaTCO } from '../lib/tco/calculadora.mjs';
+    import { calcularTCO, compararTCO, curvaUnTren } from '../lib/tco/calculadora.mjs';
 
     const eur = (n: number) =>
       new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 }).format(n);
@@ -562,25 +574,24 @@ const kwhEfectivoIni =
     (window as any).__e2_all_bevs = ALL_BEVS;
     (window as any).__e2_all_ices = ALL_ICES;
 
-    const payloadEl = document.getElementById('tco-payload')!;
-    const PAYLOAD = JSON.parse(payloadEl.textContent ?? '[]') as Array<{
-      slug: string;
-      etiqueta: string;
-      bevName: string;
-      iceName: string;
-      ayuda_disponible: boolean;
-      ayuda_eur: number;
-      horizontes: Record<string, { bev: any; ice: any }>;
-    }>;
+    // NOTE: El payload legacy (tco-payload) se mantiene en el SSR por
+    // compatibilidad con URLs antiguas (?m=slug), pero el UI Sprint 2 ya
+    // no lo consume. Todo el estado se lee de ALL_BEVS / ALL_ICES.
 
     const $ = <T extends HTMLElement = HTMLElement>(id: string) =>
       document.getElementById(id) as T;
 
-    const DEFAULT_SLUG = 'tesla-model-3-rwd-highland';
+    const DEFAULT_BEV = 'tesla-model-3-rwd-highland';
+    const DEFAULT_ICE = 'bmw-320i-sedan';
     const HORIZONTES_VALIDOS = [2, 3, 4, 5, 6, 7, 8, 10];
+    const MAX_POR_TREN = 4;
+
+    type FocusKey = { tren: 'BEV' | 'ICE'; slug: string };
+
     const state = {
-      slug:
-        PAYLOAD.find((p) => p.slug === DEFAULT_SLUG)?.slug ?? PAYLOAD[0].slug,
+      bevSlugs: [DEFAULT_BEV] as string[],
+      iceSlugs: [DEFAULT_ICE] as string[],
+      focus: { tren: 'BEV', slug: DEFAULT_BEV } as FocusKey,
       horizonte: 5,                 // 2..10 (E6a)
       km: 15000,
       pctCasa: 70,                  // 0..100 (E1)
@@ -589,6 +600,10 @@ const kwhEfectivoIni =
       litro: 1.55,
       ayuda: true,
     };
+
+    const focusKeyStr = (k: FocusKey) => `${k.tren}:${k.slug}`;
+    const isFocus = (tren: 'BEV'|'ICE', slug: string) =>
+      state.focus.tren === tren && state.focus.slug === slug;
 
     // Estado independiente de los mini-sliders de sensibilidad (E7).
     // Se superponen sobre el escenario principal SIN afectar al lede ni al
@@ -622,11 +637,57 @@ const kwhEfectivoIni =
       return best;
     };
 
+    const bevSlugSet = new Set(ALL_BEVS.map((b) => b.slug));
+    const iceSlugSet = new Set(ALL_ICES.map((c) => c.slug));
+
     // Lee URL querystring si existe
     function readUrl() {
       const p = new URLSearchParams(location.search);
-      const slug = p.get('m');
-      if (slug && PAYLOAD.some((x) => x.slug === slug)) state.slug = slug;
+
+      // Sprint 2: multi-select via ?bev=a,b&ice=c,d&f=BEV:a
+      const bevParam = p.get('bev');
+      if (bevParam) {
+        const slugs = bevParam
+          .split(',')
+          .filter((s) => bevSlugSet.has(s))
+          .slice(0, MAX_POR_TREN);
+        if (slugs.length) state.bevSlugs = slugs;
+      } else {
+        // Retrocompat: ?m=slug → carga ese BEV (y mantiene el ICE default).
+        const legacy = p.get('m');
+        if (legacy && bevSlugSet.has(legacy)) state.bevSlugs = [legacy];
+      }
+
+      const iceParam = p.get('ice');
+      if (iceParam) {
+        const slugs = iceParam
+          .split(',')
+          .filter((s) => iceSlugSet.has(s))
+          .slice(0, MAX_POR_TREN);
+        if (slugs.length) state.iceSlugs = slugs;
+      }
+
+      const f = p.get('f');
+      if (f) {
+        const [t, s] = f.split(':');
+        if (t === 'BEV' && s && state.bevSlugs.includes(s)) {
+          state.focus = { tren: 'BEV', slug: s };
+        } else if (t === 'ICE' && s && state.iceSlugs.includes(s)) {
+          state.focus = { tren: 'ICE', slug: s };
+        }
+      }
+      // Si el focus no es válido, reseteamos al primer BEV (o primer ICE).
+      if (
+        (state.focus.tren === 'BEV' && !state.bevSlugs.includes(state.focus.slug)) ||
+        (state.focus.tren === 'ICE' && !state.iceSlugs.includes(state.focus.slug))
+      ) {
+        if (state.bevSlugs.length) {
+          state.focus = { tren: 'BEV', slug: state.bevSlugs[0] };
+        } else if (state.iceSlugs.length) {
+          state.focus = { tren: 'ICE', slug: state.iceSlugs[0] };
+        }
+      }
+
       const h = Number(p.get('h'));
       if (h >= 2 && h <= 10) state.horizonte = snapHorizonte(h);
       const k = Number(p.get('km'));
@@ -652,7 +713,9 @@ const kwhEfectivoIni =
 
     function writeUrl() {
       const p = new URLSearchParams();
-      p.set('m', state.slug);
+      if (state.bevSlugs.length) p.set('bev', state.bevSlugs.join(','));
+      if (state.iceSlugs.length) p.set('ice', state.iceSlugs.join(','));
+      p.set('f', focusKeyStr(state.focus));
       p.set('h', String(state.horizonte));
       p.set('km', String(state.km));
       p.set('pc', String(state.pctCasa));
@@ -663,8 +726,22 @@ const kwhEfectivoIni =
       history.replaceState(null, '', `?${p.toString()}`);
     }
 
-    function currentPar() {
-      return PAYLOAD.find((x) => x.slug === state.slug)!;
+    // Busca el metadata de un coche en ALL_BEVS/ALL_ICES.
+    function getMeta(tren: 'BEV'|'ICE', slug: string) {
+      return (tren === 'BEV' ? ALL_BEVS : ALL_ICES).find((x) => x.slug === slug);
+    }
+
+    // Construye el input canónico (con ayuda aplicada si corresponde) para un
+    // coche al horizonte actual. Devuelve null si el slug no existe.
+    function getCocheInput(tren: 'BEV'|'ICE', slug: string) {
+      const meta = getMeta(tren, slug);
+      if (!meta) return null;
+      const fix = meta.horizontes[state.horizonte] ?? meta.horizontes[5];
+      const input: any = { ...fix };
+      if (tren === 'BEV') {
+        if (!state.ayuda || !meta.ayuda_disponible) input.ayuda_eur = 0;
+      }
+      return { input, meta };
     }
 
     // ── Gráfico TCO acumulado ──
@@ -699,29 +776,41 @@ const kwhEfectivoIni =
       return n;
     }
 
-    function renderChart(bevInput: any, iceInput: any) {
+    // ── Sprint 2 E2 paso 2B: gráfico N+M ──
+    // Recibe array de curvas (BEV + ICE). Dibuja todas en el mismo espacio,
+    // destacando la que está en focus (línea más gruesa, banda visible y el
+    // color propio de su tren). Las no-focus se dibujan con opacidad reducida.
+    type CurvaData = {
+      tren: 'BEV' | 'ICE';
+      slug: string;
+      name: string;
+      puntos: Array<{ anio: number; tco: number; tco_min: number; tco_max: number }>;
+      margen: number;
+      isFocus: boolean;
+    };
+
+    function renderChart(curvas: CurvaData[]) {
       const svg = $('tco-chart');
       const tbl = $('chart-table') as HTMLTableElement;
 
       // Limpiar
       while (svg.firstChild) svg.removeChild(svg.firstChild);
 
-      const curva = curvaTCO(bevInput, iceInput, {
-        km_anual: state.km,
-        horizonte_anios: state.horizonte,
-        precio_kwh_eur: kwhEfectivo(),
-        precio_litro_eur: state.litro,
-      }, { horizonte_max: state.horizonte, granularidad_anios: 0.25 });
+      if (!curvas.length) {
+        tbl.innerHTML = '';
+        return;
+      }
 
-      const pts = curva.puntos;
       const xMin = 0;
-      const xMax = curva.horizonte_max;
+      const xMax = curvas[0].puntos[curvas[0].puntos.length - 1]?.anio ?? state.horizonte;
 
       let yMin = Infinity;
       let yMax = -Infinity;
-      for (const p of pts) {
-        yMin = Math.min(yMin, p.tco_bev_min, p.tco_ice_min);
-        yMax = Math.max(yMax, p.tco_bev_max, p.tco_ice_max);
+      for (const c of curvas) {
+        for (const p of c.puntos) {
+          yMin = Math.min(yMin, p.tco_min);
+          yMax = Math.max(yMax, p.tco_max);
+        }
       }
       // Colchón visual
       const yRange = yMax - yMin || 1;
@@ -751,7 +840,7 @@ const kwhEfectivoIni =
         }, fmtEur(v)));
       }
 
-      // X ticks (enteros cada año, o cada 0.5 si horizonte ≤ 3)
+      // X ticks
       const paso = xMax <= 3 ? 0.5 : 1;
       for (let t = 0; t <= xMax + 1e-6; t += paso) {
         const xx = x(t);
@@ -774,233 +863,283 @@ const kwhEfectivoIni =
         x1: M.left, x2: M.left + PLOT_W, y1: M.top + PLOT_H, y2: M.top + PLOT_H, class: 'ax-line',
       }));
 
-      // Paths BEV y ICE
-      const pathBev = pts.map((p, i) =>
-        `${i === 0 ? 'M' : 'L'} ${x(p.anio).toFixed(1)} ${y(p.tco_bev).toFixed(1)}`,
-      ).join(' ');
-      const pathIce = pts.map((p, i) =>
-        `${i === 0 ? 'M' : 'L'} ${x(p.anio).toFixed(1)} ${y(p.tco_ice).toFixed(1)}`,
-      ).join(' ');
-
-      // Área BEV (fill suave)
-      const areaBev =
-        `M ${x(pts[0].anio).toFixed(1)} ${y(0).toFixed(1)} ` +
-        pts.map((p) => `L ${x(p.anio).toFixed(1)} ${y(p.tco_bev).toFixed(1)}`).join(' ') +
-        ` L ${x(pts[pts.length - 1].anio).toFixed(1)} ${y(0).toFixed(1)} Z`;
-      svg.appendChild(el('path', { d: areaBev, class: 'curve-bev-fill' }));
-
-      // ── Bandas de incertidumbre (§4 metodología) ──
-      // Dibujamos primero las bandas (fondo) y encima las curvas centrales
-      // para que las líneas queden visibles por delante.
-      const bandPath = (getMin: (p: any) => number, getMax: (p: any) => number) => {
+      const bandPath = (pts: CurvaData['puntos']) => {
         const top = pts.map((p, i) =>
-          `${i === 0 ? 'M' : 'L'} ${x(p.anio).toFixed(1)} ${y(getMax(p)).toFixed(1)}`,
+          `${i === 0 ? 'M' : 'L'} ${x(p.anio).toFixed(1)} ${y(p.tco_max).toFixed(1)}`,
         ).join(' ');
         const bot = [...pts].reverse().map((p) =>
-          `L ${x(p.anio).toFixed(1)} ${y(getMin(p)).toFixed(1)}`,
+          `L ${x(p.anio).toFixed(1)} ${y(p.tco_min).toFixed(1)}`,
         ).join(' ');
         return `${top} ${bot} Z`;
       };
-      if (curva.margen_ice > 0) {
+
+      const linePath = (pts: CurvaData['puntos']) =>
+        pts.map((p, i) =>
+          `${i === 0 ? 'M' : 'L'} ${x(p.anio).toFixed(1)} ${y(p.tco).toFixed(1)}`,
+        ).join(' ');
+
+      // ── Render en 3 capas ──
+      // 1) bandas de focus (fondo)
+      // 2) líneas no-focus (dim)
+      // 3) línea focus (destacada + puntos extremos + label del coche)
+
+      const focusCurva = curvas.find((c) => c.isFocus);
+
+      // 1) Bandas solo para el focus.
+      if (focusCurva && focusCurva.margen > 0) {
         svg.appendChild(el('path', {
-          d: bandPath((p) => p.tco_ice_min, (p) => p.tco_ice_max),
-          class: 'band-ice',
+          d: bandPath(focusCurva.puntos),
+          class: focusCurva.tren === 'BEV' ? 'band-bev' : 'band-ice',
         }));
       }
-      if (curva.margen_bev > 0) {
-        svg.appendChild(el('path', {
-          d: bandPath((p) => p.tco_bev_min, (p) => p.tco_bev_max),
-          class: 'band-bev',
+
+      // 2) Líneas no-focus dim.
+      for (const c of curvas) {
+        if (c.isFocus) continue;
+        const p = el('path', {
+          d: linePath(c.puntos),
+          class: `curve-dim curve-${c.tren.toLowerCase()}`,
+          'data-tren': c.tren,
+          'data-slug': c.slug,
+          tabindex: 0,
+          role: 'button',
+          'aria-label': `${c.name} — clic para ver desglose`,
+        });
+        svg.appendChild(p);
+      }
+
+      // 3) Focus encima, destacado.
+      if (focusCurva) {
+        const p = el('path', {
+          d: linePath(focusCurva.puntos),
+          class: `curve-focus curve-${focusCurva.tren.toLowerCase()}`,
+          'data-tren': focusCurva.tren,
+          'data-slug': focusCurva.slug,
+        });
+        svg.appendChild(p);
+
+        const last = focusCurva.puntos[focusCurva.puntos.length - 1];
+        svg.appendChild(el('circle', {
+          cx: x(last.anio), cy: y(last.tco), r: 4,
+          class: `dot-${focusCurva.tren.toLowerCase()}`,
         }));
       }
 
-      svg.appendChild(el('path', { d: pathIce, class: 'curve-ice' }));
-      svg.appendChild(el('path', { d: pathBev, class: 'curve-bev' }));
+      // Tabla sr-only (accesibilidad): valores anuales del focus.
+      if (focusCurva) {
+        const pts = focusCurva.puntos.filter((p) => p.anio % 1 === 0);
+        tbl.innerHTML =
+          `<caption>Coste acumulado ${focusCurva.name} (€)</caption>` +
+          '<thead><tr><th>Año</th><th>TCO</th></tr></thead>' +
+          '<tbody>' +
+          pts.map((p) => `<tr><td>${p.anio}</td><td>${Math.round(p.tco)}</td></tr>`).join('') +
+          '</tbody>';
+      } else {
+        tbl.innerHTML = '';
+      }
 
-      // Puntos extremos (último)
-      const last = pts[pts.length - 1];
-      svg.appendChild(el('circle', {
-        cx: x(last.anio), cy: y(last.tco_bev), r: 4, class: 'dot-bev',
-      }));
-      svg.appendChild(el('circle', {
-        cx: x(last.anio), cy: y(last.tco_ice), r: 4, class: 'dot-ice',
-      }));
-
-      // ── Marca del gráfico según los 4 casos posibles ──
-      // Elige qué etiqueta mostrar y en qué posición dibujar la línea
-      // vertical que ilustra el cruce, si lo hay. La narrativa cambia:
-      //  · BEV arranca bajo y se mantiene  → "Rentable desde el día 1"
-      //  · BEV arranca bajo pero ICE lo alcanza → "Rentable hasta año X"
-      //    (lo habitual con ayudas en utilitarios donde la ayuda no
-      //    compensa la depreciación mayor del eléctrico)
-      //  · BEV cruza hacia abajo a mitad horizonte → "Break-even año X"
-      //  · BEV siempre más caro → sin marca
+      // Legend "break-even" oculto en el modo multi-select (Sprint 2).
       const beItem = $('lg-be-item');
       beItem.setAttribute('hidden', '');
-
-      const drawPill = (cx: number, label: string) => {
-        const pad = 10;
-        const approxW = label.length * 6.2 + pad * 2;
-        const pillX = Math.min(
-          Math.max(cx - approxW / 2, M.left + 4),
-          M.left + PLOT_W - approxW - 4,
-        );
-        svg.appendChild(el('rect', {
-          x: pillX, y: M.top + 4, width: approxW, height: 20, rx: 10, class: 'be-pill',
-        }));
-        svg.appendChild(el('text', {
-          x: pillX + approxW / 2, y: M.top + 18, class: 'be-label', 'text-anchor': 'middle',
-        }, label));
-        beItem.removeAttribute('hidden');
-      };
-
-      const fmtAnio = (a: number) =>
-        a < 1 ? `${Math.round(a * 12)} meses` : `año ${a.toFixed(1)}`;
-
-      if (curva.rentable_desde_inicio && curva.rentable_al_final &&
-          curva.perdida_rentabilidad_anio == null) {
-        // Caso 1 — rentable todo el horizonte.
-        drawPill(M.left + 100, 'Rentable desde el día 1');
-      } else if (curva.rentable_desde_inicio &&
-                 curva.perdida_rentabilidad_anio != null) {
-        // Caso 2 — rentable al arrancar, ICE la alcanza.
-        const px = x(curva.perdida_rentabilidad_anio);
-        svg.appendChild(el('line', {
-          x1: px, x2: px, y1: M.top, y2: M.top + PLOT_H, class: 'be-line',
-        }));
-        drawPill(px, `Rentable hasta ${fmtAnio(curva.perdida_rentabilidad_anio)}`);
-      } else if (!curva.rentable_desde_inicio &&
-                 curva.breakeven_anio != null &&
-                 curva.breakeven_anio > 0 &&
-                 curva.breakeven_anio <= xMax) {
-        // Caso 3 — cruce clásico hacia el BEV dentro del horizonte.
-        const bx = x(curva.breakeven_anio);
-        svg.appendChild(el('line', {
-          x1: bx, x2: bx, y1: M.top, y2: M.top + PLOT_H, class: 'be-line',
-        }));
-        drawPill(bx, `Break-even: ${fmtAnio(curva.breakeven_anio)}`);
-      }
-      // Caso 4 — BEV siempre más caro: no dibujamos marca.
-
-      // Tabla sr-only (accesibilidad)
-      tbl.innerHTML =
-        '<caption>Coste acumulado anual BEV vs ICE (€)</caption>' +
-        '<thead><tr><th>Año</th><th>Eléctrico</th><th>Combustión</th></tr></thead>' +
-        '<tbody>' +
-        pts
-          .filter((p) => p.anio % 1 === 0)
-          .map((p) =>
-            `<tr><td>${p.anio}</td><td>${Math.round(p.tco_bev)}</td><td>${Math.round(p.tco_ice)}</td></tr>`,
-          )
-          .join('') +
-        '</tbody>';
     }
 
-    function recalc() {
-      const par = currentPar();
-      const fixtures = par.horizontes[state.horizonte] ?? par.horizontes[5];
-      const bevInput = { ...fixtures.bev };
-      if (!state.ayuda || !par.ayuda_disponible) bevInput.ayuda_eur = 0;
-      const iceInput = fixtures.ice;
+    // Helper global: rango bajo el TCO grande.
+    const rangoTxt = (min: number, max: number, margen: number) => {
+      if (margen <= 0) return 'Confianza alta · sin margen';
+      return `entre ${eur(min)} – ${eur(max)} € · ±${Math.round(margen * 100)} %`;
+    };
+    const confDot = (id: string, conf: string | undefined) => {
+      const elNode = $(id);
+      if (!elNode) return;
+      const c = conf || 'alta';
+      elNode.className = `conf-dot conf-${c}`;
+      elNode.title =
+        c === 'alta'
+          ? 'Confianza alta (±0 %)'
+          : c === 'media'
+            ? 'Confianza media (±8 %)'
+            : 'Confianza baja (±15 %)';
+    };
 
-      const cmp = compararTCO(bevInput, iceInput, {
+    function recalc() {
+      // 1) Validar focus: si el coche focus ya no está seleccionado,
+      //    caer al primer BEV (o primer ICE) disponible.
+      if (
+        state.focus.tren === 'BEV' &&
+        !state.bevSlugs.includes(state.focus.slug)
+      ) {
+        if (state.bevSlugs.length) {
+          state.focus = { tren: 'BEV', slug: state.bevSlugs[0] };
+        } else if (state.iceSlugs.length) {
+          state.focus = { tren: 'ICE', slug: state.iceSlugs[0] };
+        }
+      } else if (
+        state.focus.tren === 'ICE' &&
+        !state.iceSlugs.includes(state.focus.slug)
+      ) {
+        if (state.iceSlugs.length) {
+          state.focus = { tren: 'ICE', slug: state.iceSlugs[0] };
+        } else if (state.bevSlugs.length) {
+          state.focus = { tren: 'BEV', slug: state.bevSlugs[0] };
+        }
+      }
+
+      const overrides = {
         km_anual: state.km,
         horizonte_anios: state.horizonte,
         precio_kwh_eur: kwhEfectivo(),
         precio_litro_eur: state.litro,
-      });
-
-      // Nombres
-      $('bev-name').textContent = par.bevName;
-      $('ice-name').textContent = par.iceName;
-      $('bev-horizonte').textContent = String(state.horizonte);
-      $('ice-horizonte').textContent = String(state.horizonte);
-
-      // Helper: render rango bajo el TCO grande.
-      const rangoTxt = (min: number, max: number, margen: number) => {
-        if (margen <= 0) return 'Confianza alta · sin margen';
-        return `entre ${eur(min)} – ${eur(max)} € · ±${Math.round(margen * 100)} %`;
       };
 
-      // Helper: pinta el puntito de confianza (.conf-alta/.conf-media/.conf-baja).
-      const confDot = (id: string, conf: string | undefined) => {
-        const el = $(id);
-        if (!el) return;
-        const c = conf || 'alta';
-        el.className = `conf-dot conf-${c}`;
-        el.title =
-          c === 'alta'
-            ? 'Confianza alta (±0 %)'
-            : c === 'media'
-              ? 'Confianza media (±8 %)'
-              : 'Confianza baja (±15 %)';
+      // 2) Calcular TCO individual y curvas para cada coche seleccionado.
+      type Resolved = {
+        tren: 'BEV' | 'ICE';
+        slug: string;
+        meta: any;
+        input: any;
+        tco: any;
       };
 
-      // BEV breakdown
-      $('bev-tco').textContent = eur(cmp.bev.tco_total_eur);
-      $('bev-range').textContent = rangoTxt(
-        cmp.bev.tco_total_min_eur,
-        cmp.bev.tco_total_max_eur,
-        cmp.bev.margen_pct,
-      );
-      $('bev-kmkm').textContent = eur2(cmp.bev.tco_por_km_eur);
-      $('bev-dep').textContent = eur(cmp.bev.depreciacion_eur);
-      $('bev-ene').textContent = eur(cmp.bev.energia_eur);
-      $('bev-man').textContent = eur(cmp.bev.mantenimiento_eur);
-      $('bev-seg').textContent = eur(cmp.bev.seguro_eur);
-      $('bev-imp').textContent = eur(cmp.bev.impuestos_eur);
-      $('bev-ayu').textContent = eur(cmp.bev.ayudas_eur);
-      confDot('bev-dep-conf', bevInput.confianza_depreciacion);
-      confDot('bev-ene-conf', bevInput.confianza_consumo);
-      confDot('bev-man-conf', bevInput.confianza_mantenimiento);
-      confDot('bev-seg-conf', bevInput.confianza_seguro);
+      const resolvedBev: Resolved[] = state.bevSlugs
+        .map((s) => {
+          const r = getCocheInput('BEV', s);
+          if (!r) return null;
+          const tco = calcularTCO(r.input, overrides);
+          return { tren: 'BEV' as const, slug: s, meta: r.meta, input: r.input, tco };
+        })
+        .filter((x): x is Resolved => !!x);
 
-      // ICE breakdown
-      $('ice-tco').textContent = eur(cmp.ice.tco_total_eur);
-      $('ice-range').textContent = rangoTxt(
-        cmp.ice.tco_total_min_eur,
-        cmp.ice.tco_total_max_eur,
-        cmp.ice.margen_pct,
-      );
-      $('ice-kmkm').textContent = eur2(cmp.ice.tco_por_km_eur);
-      $('ice-dep').textContent = eur(cmp.ice.depreciacion_eur);
-      $('ice-ene').textContent = eur(cmp.ice.energia_eur);
-      $('ice-man').textContent = eur(cmp.ice.mantenimiento_eur);
-      $('ice-seg').textContent = eur(cmp.ice.seguro_eur);
-      $('ice-imp').textContent = eur(cmp.ice.impuestos_eur);
-      confDot('ice-dep-conf', iceInput.confianza_depreciacion);
-      confDot('ice-ene-conf', iceInput.confianza_consumo);
-      confDot('ice-man-conf', iceInput.confianza_mantenimiento);
-      confDot('ice-seg-conf', iceInput.confianza_seguro);
+      const resolvedIce: Resolved[] = state.iceSlugs
+        .map((s) => {
+          const r = getCocheInput('ICE', s);
+          if (!r) return null;
+          const tco = calcularTCO(r.input, overrides);
+          return { tren: 'ICE' as const, slug: s, meta: r.meta, input: r.input, tco };
+        })
+        .filter((x): x is Resolved => !!x);
 
-      // Lede editorial — con rango de ahorro cuando hay incertidumbre.
-      // Rango conservador: (ICE_min − BEV_max) ≤ ahorro ≤ (ICE_max − BEV_min).
-      const ahorroMin = cmp.ice.tco_total_min_eur - cmp.bev.tco_total_max_eur;
-      const ahorroMax = cmp.ice.tco_total_max_eur - cmp.bev.tco_total_min_eur;
-      const sign = cmp.ahorro_bev_eur >= 0 ? 'ahorra' : 'sobrecuesta';
-      const abs = Math.abs(cmp.ahorro_bev_eur);
-      const pct = Math.abs(cmp.ahorro_bev_pct * 100);
-      const tieneMargen = cmp.bev.margen_pct > 0 || cmp.ice.margen_pct > 0;
-      const rangoLede = tieneMargen
-        ? ` <span class="lede-rango">(banda: ${eur(ahorroMin)} € – ${eur(ahorroMax)} €)</span>`
-        : '';
-      $('lede').innerHTML =
-        `A ${state.horizonte} años y ${eur(state.km)} km/año, el ` +
-        `<strong>${par.bevName}</strong> ${sign} ` +
-        `<strong>${eur(abs)} €</strong> (${pct.toFixed(1)} %) ` +
-        `frente al <strong>${par.iceName}</strong>.${rangoLede}`;
+      // 3) Construir curvas para el gráfico (una por coche).
+      const curvas: CurvaData[] = [];
+      for (const r of [...resolvedBev, ...resolvedIce]) {
+        const c = curvaUnTren(r.input, overrides, {
+          horizonte_max: state.horizonte,
+          granularidad_anios: 0.25,
+        });
+        curvas.push({
+          tren: r.tren,
+          slug: r.slug,
+          name: r.meta.name,
+          puntos: c.puntos,
+          margen: c.margen,
+          isFocus: isFocus(r.tren, r.slug),
+        });
+      }
 
-      // Cacheamos baseline para que los mini-sliders de E7 puedan recalcular
-      // sin pasar por todo recalc() otra vez.
-      baselineCache = {
-        bevInput,
-        iceInput,
-        ahorroActual: cmp.ahorro_bev_eur,
-      };
+      // 4) Lede editorial: cheapest BEV vs cheapest ICE.
+      const cheapestBev = resolvedBev.length
+        ? resolvedBev.reduce((a, b) =>
+            a.tco.tco_total_eur <= b.tco.tco_total_eur ? a : b,
+          )
+        : null;
+      const cheapestIce = resolvedIce.length
+        ? resolvedIce.reduce((a, b) =>
+            a.tco.tco_total_eur <= b.tco.tco_total_eur ? a : b,
+          )
+        : null;
+
+      if (cheapestBev && cheapestIce) {
+        const diff = cheapestIce.tco.tco_total_eur - cheapestBev.tco.tco_total_eur;
+        const sign = diff >= 0 ? 'ahorra' : 'sobrecuesta';
+        const abs = Math.abs(diff);
+        const base = Math.min(cheapestBev.tco.tco_total_eur, cheapestIce.tco.tco_total_eur);
+        const pct = base > 0 ? (abs / cheapestIce.tco.tco_total_eur) * 100 : 0;
+        $('lede').innerHTML =
+          `A ${state.horizonte} años y ${eur(state.km)} km/año, el ` +
+          `<strong>${cheapestBev.meta.name}</strong> es el eléctrico más barato ` +
+          `(<strong>${eur(cheapestBev.tco.tco_total_eur)} €</strong>) y el ` +
+          `<strong>${cheapestIce.meta.name}</strong> el combustión más barato ` +
+          `(<strong>${eur(cheapestIce.tco.tco_total_eur)} €</strong>). ` +
+          `El BEV ${sign} <strong>${eur(abs)} €</strong> (${pct.toFixed(1)} %).`;
+      } else if (cheapestBev) {
+        $('lede').innerHTML =
+          `A ${state.horizonte} años y ${eur(state.km)} km/año, el ` +
+          `<strong>${cheapestBev.meta.name}</strong> cuesta ` +
+          `<strong>${eur(cheapestBev.tco.tco_total_eur)} €</strong>. ` +
+          `Añade un coche de combustión para comparar.`;
+      } else if (cheapestIce) {
+        $('lede').innerHTML =
+          `A ${state.horizonte} años y ${eur(state.km)} km/año, el ` +
+          `<strong>${cheapestIce.meta.name}</strong> cuesta ` +
+          `<strong>${eur(cheapestIce.tco.tco_total_eur)} €</strong>. ` +
+          `Añade un eléctrico para comparar.`;
+      } else {
+        $('lede').innerHTML = 'Selecciona al menos un coche para empezar.';
+      }
+
+      // 5) Focus card breakdown.
+      const focusResolved =
+        [...resolvedBev, ...resolvedIce].find((r) =>
+          isFocus(r.tren, r.slug),
+        ) ?? null;
+
+      const focusCard = $('tco-focus');
+      if (focusResolved) {
+        focusCard.dataset.tren = focusResolved.tren;
+        $('focus-tren').textContent =
+          focusResolved.tren === 'BEV' ? 'Eléctrico · en foco' : 'Combustión · en foco';
+        $('focus-name').textContent = focusResolved.meta.name;
+        $('focus-tco').textContent = eur(focusResolved.tco.tco_total_eur);
+        $('focus-range').textContent = rangoTxt(
+          focusResolved.tco.tco_total_min_eur,
+          focusResolved.tco.tco_total_max_eur,
+          focusResolved.tco.margen_pct,
+        );
+        $('focus-kmkm').textContent = eur2(focusResolved.tco.tco_por_km_eur);
+        $('focus-horizonte').textContent = String(state.horizonte);
+        $('focus-dep').textContent = eur(focusResolved.tco.depreciacion_eur);
+        $('focus-ene').textContent = eur(focusResolved.tco.energia_eur);
+        $('focus-man').textContent = eur(focusResolved.tco.mantenimiento_eur);
+        $('focus-seg').textContent = eur(focusResolved.tco.seguro_eur);
+        $('focus-imp').textContent = eur(focusResolved.tco.impuestos_eur);
+        confDot('focus-dep-conf', focusResolved.input.confianza_depreciacion);
+        confDot('focus-ene-conf', focusResolved.input.confianza_consumo);
+        confDot('focus-man-conf', focusResolved.input.confianza_mantenimiento);
+        confDot('focus-seg-conf', focusResolved.input.confianza_seguro);
+        // Fila de ayudas solo si corresponde.
+        const ayuDt = $('focus-ayu-dt');
+        const ayuDd = $('focus-ayu-dd');
+        if (focusResolved.tren === 'BEV' && focusResolved.tco.ayudas_eur > 0) {
+          ayuDt.removeAttribute('hidden');
+          ayuDd.removeAttribute('hidden');
+          $('focus-ayu').textContent = eur(focusResolved.tco.ayudas_eur);
+        } else {
+          ayuDt.setAttribute('hidden', '');
+          ayuDd.setAttribute('hidden', '');
+        }
+      }
+
+      // 6) Re-pintar chips (conteo + etiquetas).
+      renderChips();
+
+      // 7) Baseline E7: usa el focus BEV vs el focus ICE si existen
+      //    ambos (para que la sensibilidad sea una comparación válida).
+      //    Si no, usa cheapestBev/cheapestIce como proxy.
+      const baseBev = cheapestBev;
+      const baseIce = cheapestIce;
+      if (baseBev && baseIce) {
+        const cmp = compararTCO(baseBev.input, baseIce.input, overrides);
+        baselineCache = {
+          bevInput: baseBev.input,
+          iceInput: baseIce.input,
+          ahorroActual: cmp.ahorro_bev_eur,
+        };
+      } else {
+        baselineCache = null;
+      }
       recalcSens();
 
-      // Gráfico
-      renderChart(bevInput, iceInput);
+      // 8) Gráfico
+      renderChart(curvas);
 
       writeUrl();
     }
@@ -1072,24 +1211,169 @@ const kwhEfectivoIni =
           : `Si cargas <strong>${pctHipo} %</strong> en casa (${signoPct(sensState.pctPts)}${Math.abs(sensState.pctPts)} pts) → ${fmtDelta(ahorroActual, pctAhorro)}`;
     }
 
-    // ── Bindings ──
-    document.querySelectorAll<HTMLInputElement>('input[name="par"]').forEach((r) => {
-      r.addEventListener('change', () => {
-        if (!r.checked) return;
-        state.slug = r.value;
-        const par = currentPar();
-        // Ajuste del toggle ayuda
-        const ctrl = $('ctrl-ayuda');
-        const chk = $('ayuda') as HTMLInputElement;
-        ctrl.dataset.hasAyuda = String(par.ayuda_disponible);
-        chk.disabled = !par.ayuda_disponible;
-        chk.checked = par.ayuda_disponible;
-        state.ayuda = par.ayuda_disponible;
-        $('ayuda-out').textContent = par.ayuda_disponible
-          ? `(${eur(par.ayuda_eur)} €)`
-          : '(no elegible)';
+    // ── Sprint 2 E2 paso 2B — Bindings chips + combobox + quick-starts ──
+
+    // Renderiza los chips para ambos trenes a partir del state.
+    function renderChips() {
+      renderChipsFor('BEV');
+      renderChipsFor('ICE');
+      $('bev-count').textContent = `${state.bevSlugs.length} / ${MAX_POR_TREN}`;
+      $('ice-count').textContent = `${state.iceSlugs.length} / ${MAX_POR_TREN}`;
+      // Deshabilita el input del combobox si está lleno.
+      ($('combo-bev') as HTMLInputElement).disabled = state.bevSlugs.length >= MAX_POR_TREN;
+      ($('combo-ice') as HTMLInputElement).disabled = state.iceSlugs.length >= MAX_POR_TREN;
+    }
+
+    function renderChipsFor(tren: 'BEV' | 'ICE') {
+      const container = $(tren === 'BEV' ? 'chips-bev' : 'chips-ice');
+      const slugs = tren === 'BEV' ? state.bevSlugs : state.iceSlugs;
+      container.innerHTML = '';
+      for (const slug of slugs) {
+        const meta = getMeta(tren, slug);
+        if (!meta) continue;
+        const chip = document.createElement('span');
+        chip.className = `chip chip-${tren.toLowerCase()}`;
+        chip.dataset.tren = tren;
+        chip.dataset.slug = slug;
+        chip.setAttribute('role', 'listitem');
+        if (isFocus(tren, slug)) chip.classList.add('chip-focus');
+
+        const nameBtn = document.createElement('button');
+        nameBtn.type = 'button';
+        nameBtn.className = 'chip-name';
+        nameBtn.textContent = meta.name;
+        nameBtn.title = 'Poner en foco';
+        nameBtn.addEventListener('click', () => {
+          state.focus = { tren, slug };
+          recalc();
+        });
+        chip.appendChild(nameBtn);
+
+        // Solo permitimos quitar si queda más de uno en este tren O
+        // si aún queda alguno en el otro tren (nunca dejamos 0 coches).
+        const totalSel = state.bevSlugs.length + state.iceSlugs.length;
+        if (totalSel > 1) {
+          const rm = document.createElement('button');
+          rm.type = 'button';
+          rm.className = 'chip-remove';
+          rm.setAttribute('aria-label', `Quitar ${meta.name}`);
+          rm.textContent = '×';
+          rm.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (tren === 'BEV') {
+              state.bevSlugs = state.bevSlugs.filter((s) => s !== slug);
+            } else {
+              state.iceSlugs = state.iceSlugs.filter((s) => s !== slug);
+            }
+            recalc();
+          });
+          chip.appendChild(rm);
+        }
+        container.appendChild(chip);
+      }
+    }
+
+    // Combobox: filtrado por marca/modelo/variante, excluye ya seleccionados.
+    function buildComboHandlers(tren: 'BEV' | 'ICE') {
+      const input = $(tren === 'BEV' ? 'combo-bev' : 'combo-ice') as HTMLInputElement;
+      const list = $(tren === 'BEV' ? 'suggest-bev' : 'suggest-ice') as HTMLUListElement;
+      const fuente = tren === 'BEV' ? ALL_BEVS : ALL_ICES;
+
+      const filtra = (q: string) => {
+        const qq = q.trim().toLowerCase();
+        const selected = tren === 'BEV' ? state.bevSlugs : state.iceSlugs;
+        return fuente
+          .filter((x) => !selected.includes(x.slug))
+          .filter((x) => !qq || x.name.toLowerCase().includes(qq))
+          .slice(0, 8);
+      };
+
+      const pinta = () => {
+        const items = filtra(input.value);
+        list.innerHTML = '';
+        if (!items.length) {
+          list.hidden = true;
+          return;
+        }
+        for (const it of items) {
+          const li = document.createElement('li');
+          li.className = 'suggest-item';
+          li.setAttribute('role', 'option');
+          li.dataset.slug = it.slug;
+          li.innerHTML =
+            `<span class="suggest-name">${it.name}</span>` +
+            (it.segmento ? `<span class="suggest-seg">${it.segmento}</span>` : '');
+          li.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            addCoche(tren, it.slug);
+            input.value = '';
+            list.hidden = true;
+          });
+          list.appendChild(li);
+        }
+        list.hidden = false;
+      };
+
+      input.addEventListener('input', pinta);
+      input.addEventListener('focus', pinta);
+      input.addEventListener('blur', () => {
+        // Delay para permitir el mousedown.
+        setTimeout(() => { list.hidden = true; }, 150);
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          list.hidden = true;
+          input.blur();
+        } else if (e.key === 'Enter') {
+          const first = list.querySelector<HTMLLIElement>('.suggest-item');
+          if (first && first.dataset.slug) {
+            e.preventDefault();
+            addCoche(tren, first.dataset.slug);
+            input.value = '';
+            list.hidden = true;
+          }
+        }
+      });
+    }
+
+    function addCoche(tren: 'BEV' | 'ICE', slug: string) {
+      const arr = tren === 'BEV' ? state.bevSlugs : state.iceSlugs;
+      if (arr.includes(slug)) return;
+      if (arr.length >= MAX_POR_TREN) return;
+      arr.push(slug);
+      // Primer coche añadido de un tren vacío → lo ponemos en foco.
+      if (arr.length === 1 && state.focus.tren !== tren) {
+        state.focus = { tren, slug };
+      }
+      recalc();
+    }
+
+    buildComboHandlers('BEV');
+    buildComboHandlers('ICE');
+
+    // Quick-starts: sustituyen la selección completa por el par icónico.
+    document.querySelectorAll<HTMLButtonElement>('.qs-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const bev = btn.dataset.bev ?? '';
+        const ice = btn.dataset.ice ?? '';
+        if (!bevSlugSet.has(bev) || !iceSlugSet.has(ice)) return;
+        state.bevSlugs = [bev];
+        state.iceSlugs = [ice];
+        state.focus = { tren: 'BEV', slug: bev };
         recalc();
       });
+    });
+
+    // Chart click → cambiar focus.
+    $('tco-chart').addEventListener('click', (e) => {
+      const target = e.target as Element;
+      const path = target.closest('[data-tren][data-slug]') as HTMLElement | null;
+      if (!path) return;
+      const tren = path.dataset.tren as 'BEV' | 'ICE';
+      const slug = path.dataset.slug as string;
+      if (!tren || !slug) return;
+      state.focus = { tren, slug };
+      recalc();
     });
 
     ($('horizonte') as HTMLInputElement).addEventListener('input', (e) => {
@@ -1151,9 +1435,8 @@ const kwhEfectivoIni =
 
     ($('ayuda') as HTMLInputElement).addEventListener('change', (e) => {
       state.ayuda = (e.target as HTMLInputElement).checked;
-      const par = currentPar();
       $('ayuda-out').textContent = state.ayuda
-        ? `(${eur(par.ayuda_eur)} €)`
+        ? '(Eléctrico · Económico · Europeo)'
         : '(no aplicada)';
       recalc();
     });
@@ -1187,11 +1470,6 @@ const kwhEfectivoIni =
 
     // ── Arranque ──
     function hydrateControls() {
-      (document.querySelector(
-        `input[name="par"][value="${state.slug}"]`,
-      ) as HTMLInputElement | null)?.click();
-      // click() dispara change → recalc, pero también reescribe ayuda.
-      // Reinicializamos todos los campos tras leer la URL.
       ($('horizonte') as HTMLInputElement).value = String(state.horizonte);
       ($('km') as HTMLInputElement).value = String(state.km);
       ($('pct-casa') as HTMLInputElement).value = String(state.pctCasa);
@@ -1206,6 +1484,9 @@ const kwhEfectivoIni =
       $('kwh-publica-out').textContent = `${state.kwhPublica.toFixed(2)} €`;
       $('litro-out').textContent = `${state.litro.toFixed(2)} €/L`;
       $('kwh-efectivo-out').textContent = `${kwhEfectivo().toFixed(3)} €/kWh`;
+      $('ayuda-out').textContent = state.ayuda
+        ? '(Eléctrico · Económico · Europeo)'
+        : '(no aplicada)';
       // Marca el preset activo si coincide.
       document.querySelectorAll<HTMLButtonElement>('.mix-preset').forEach((b) => {
         b.classList.toggle('active', Number(b.dataset.pct) === state.pctCasa);
@@ -1332,58 +1613,228 @@ const kwhEfectivoIni =
       color: var(--text-muted);
     }
 
-    /* Selector par */
-    .par-opts {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.5rem;
-    }
-    @media (min-width: 640px) {
-      .par-opts { grid-template-columns: repeat(3, 1fr); }
-    }
-    .par-opt {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem;
+    /* ── Selector multi-coche (Sprint 2 E2 paso 2B) ── */
+    .ctrl-seleccion {
+      gap: 0.875rem;
+      padding: 1rem;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
+    }
+    .ctrl-seleccion legend {
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0 0.25rem;
+      color: var(--text);
+    }
+    .seleccion-hint {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .quick-starts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+      align-items: center;
+    }
+    .qs-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-right: 0.25rem;
+    }
+    .qs-btn {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8125rem;
+      font-family: inherit;
+      font-weight: 400;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-secondary);
+      border-radius: 999px;
       cursor: pointer;
+      transition: border-color 0.2s var(--ease-out-expo),
+                  background 0.2s var(--ease-out-expo),
+                  color 0.2s var(--ease-out-expo);
+    }
+    .qs-btn:hover {
+      border-color: var(--yellow);
+      color: var(--text);
+    }
+    .seleccion-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.875rem;
+      padding-top: 0.75rem;
+      border-top: 1px dashed var(--border);
+    }
+    @media (min-width: 720px) {
+      .seleccion-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .seleccion-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-width: 0;
+    }
+    .col-head {
+      margin: 0;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .col-count {
+      margin-left: auto;
+      font-weight: 400;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .col-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+    .col-dot-bev { background: var(--yellow); }
+    .col-dot-ice { background: var(--gray-400); }
+
+    /* Chips estilo Gmail */
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+      min-height: 2rem;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.25rem 0.25rem 0.625rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.8125rem;
+      line-height: 1;
+      max-width: 100%;
       transition: border-color 0.2s var(--ease-out-expo),
                   background 0.2s var(--ease-out-expo);
     }
-    .par-opt:hover { border-color: var(--gray-300); }
-    .par-opt input {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
-    .par-opt:has(input:checked) {
-      border-color: var(--yellow);
+    .chip:hover { border-color: var(--gray-300); }
+    .chip-bev { border-left: 3px solid var(--yellow); padding-left: 0.5rem; }
+    .chip-ice { border-left: 3px solid var(--gray-400); padding-left: 0.5rem; }
+    .chip-focus {
       background: var(--yellow-glow);
+      border-color: var(--yellow);
     }
-    .par-opt img {
-      width: 72px;
-      height: auto;
-      aspect-ratio: 16 / 10;
-      object-fit: contain;
-      flex: 0 0 auto;
+    .chip-name {
+      background: none;
+      border: none;
+      padding: 0.125rem 0.25rem;
+      font: inherit;
+      color: var(--text);
+      cursor: pointer;
+      max-width: 20ch;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
-    .par-opt-txt {
-      display: flex;
-      flex-direction: column;
-      gap: 0.125rem;
-      min-width: 0;
+    .chip-name:hover { color: var(--text); }
+    .chip-remove {
+      background: none;
+      border: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 0;
+      transition: background 0.15s, color 0.15s;
     }
-    .par-opt-name {
-      font-size: 0.875rem;
-      font-weight: 500;
+    .chip-remove:hover {
+      background: var(--border);
       color: var(--text);
     }
-    .par-opt-sub {
-      font-size: 0.75rem;
+
+    /* Combobox */
+    .chips-combo {
+      position: relative;
+      margin-top: 0.25rem;
+    }
+    .combo-input {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      font: inherit;
+      font-size: 0.8125rem;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: border-color 0.2s var(--ease-out-expo);
+    }
+    .combo-input::placeholder { color: var(--text-muted); }
+    .combo-input:focus-visible {
+      outline: 2px solid var(--yellow);
+      outline-offset: 2px;
+      border-color: var(--yellow);
+    }
+    .combo-input:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .chips-suggest {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      margin: 0;
+      padding: 0.25rem;
+      list-style: none;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      z-index: 20;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+    .suggest-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      padding: 0.5rem 0.625rem;
+      font-size: 0.8125rem;
+      border-radius: calc(var(--radius) * 0.65);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .suggest-item:hover {
+      background: var(--surface-alt);
+    }
+    .suggest-name {
+      color: var(--text);
+      flex: 1 1 auto;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .suggest-seg {
+      font-size: 0.6875rem;
       color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      flex: 0 0 auto;
     }
 
     /* Pills */
@@ -1674,25 +2125,23 @@ const kwhEfectivoIni =
       font-variant-numeric: tabular-nums;
     }
 
-    .tco-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-    @media (min-width: 720px) {
-      .tco-grid { grid-template-columns: 1fr 1fr; }
+    .tco-focus-wrap {
+      display: block;
     }
     .tco-card {
       padding: clamp(1.25rem, 2.5vw, 2rem);
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: var(--radius);
+      max-width: 680px;
     }
-    .tco-bev {
-      border-left: 3px solid var(--yellow);
-    }
-    .tco-ice {
-      border-left: 3px solid var(--gray-400);
+    .tco-focus[data-tren="BEV"] { border-left: 3px solid var(--yellow); }
+    .tco-focus[data-tren="ICE"] { border-left: 3px solid var(--gray-400); }
+    .focus-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin: 0.375rem 0 0;
+      font-style: italic;
     }
     .tco-card header { margin-bottom: 1rem; }
     .tco-tren {
@@ -1851,17 +2300,33 @@ const kwhEfectivoIni =
       fill: var(--text-muted);
       font-variant-numeric: tabular-nums;
     }
-    #tco-chart :global(.curve-bev) {
+    /* Curvas base — trazo común, el grosor lo aporta focus/dim. */
+    #tco-chart :global(.curve-bev),
+    #tco-chart :global(.curve-ice) {
       fill: none;
-      stroke: var(--yellow);
-      stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
-    #tco-chart :global(.curve-bev-fill) {
-      fill: var(--yellow);
-      fill-opacity: 0.12;
-      stroke: none;
+    #tco-chart :global(.curve-bev) { stroke: var(--yellow); }
+    #tco-chart :global(.curve-ice) {
+      stroke: var(--gray-600);
+      stroke-dasharray: 6 4;
+    }
+    [data-theme="dark"] #tco-chart :global(.curve-ice) { stroke: var(--gray-300); }
+    #tco-chart :global(.curve-focus) {
+      stroke-width: 3;
+    }
+    #tco-chart :global(.curve-dim) {
+      stroke-width: 1.75;
+      opacity: 0.38;
+      cursor: pointer;
+      transition: opacity 0.2s var(--ease-out-expo), stroke-width 0.2s var(--ease-out-expo);
+    }
+    #tco-chart :global(.curve-dim:hover),
+    #tco-chart :global(.curve-dim:focus) {
+      opacity: 0.75;
+      stroke-width: 2.25;
+      outline: none;
     }
     /* Bandas de incertidumbre (§4 metodología). */
     #tco-chart :global(.band-bev) {
@@ -1884,15 +2349,6 @@ const kwhEfectivoIni =
       fill: var(--gray-300);
       stroke: var(--gray-300);
     }
-    #tco-chart :global(.curve-ice) {
-      fill: none;
-      stroke: var(--gray-600);
-      stroke-width: 2;
-      stroke-dasharray: 6 4;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-    [data-theme="dark"] #tco-chart :global(.curve-ice) { stroke: var(--gray-300); }
     #tco-chart :global(.dot-bev) {
       fill: var(--yellow);
       stroke: var(--card-bg);
