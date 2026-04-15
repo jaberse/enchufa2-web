@@ -79,6 +79,57 @@ const payload = PARES.map((par) => {
   };
 });
 
+// ── Sprint 2 E2 — Paso 1: listas completas de candidatos ──
+// El cliente recibe dos listas independientes (BEVs e ICEs) con sus fixtures
+// por horizonte ya resueltos. Sigue coexistiendo con `payload` (pares fijos)
+// para no romper la UI actual; la UI multi-select del paso 2 consumirá estas.
+const bevSlugsUnicos = [...new Set(PARES.map((p) => p.slug))];
+const iceSlugsUnicos = [...new Set(PARES.map((p) => p.iceSlug))];
+
+const ALL_BEVS = bevSlugsUnicos.map((slug) => {
+  const json = dataFile(`data/coches/${slug}.json`);
+  const horizontes: Record<number, any> = {};
+  for (const h of HORIZONTES_DISPONIBLES) {
+    horizontes[h] = bevFromJson(json, {
+      horizonte_anios: h,
+      aplicar_ayuda: true,
+    });
+  }
+  const h5 = horizontes[5];
+  return {
+    slug,
+    marca: json.marca,
+    modelo: json.modelo,
+    variante: json.variante ?? '',
+    name: `${json.marca} ${json.modelo}${json.variante ? ' ' + json.variante : ''}`,
+    segmento: json.segmento ?? null,
+    foto: `/comparador/${slug}.webp`,
+    horizontes,
+    ayuda_disponible: (h5.ayuda_eur ?? 0) > 0,
+    ayuda_eur: h5.ayuda_eur ?? 0,
+    pvp_eur: h5.pvp_eur ?? null,
+  };
+});
+
+const ALL_ICES = iceSlugsUnicos.map((slug) => {
+  const json = dataFile(`data/referencias/ice-equivalentes/${slug}.json`);
+  const horizontes: Record<number, any> = {};
+  for (const h of HORIZONTES_DISPONIBLES) {
+    horizontes[h] = iceFromJson(json, { horizonte_anios: h });
+  }
+  const h5 = horizontes[5];
+  return {
+    slug,
+    marca: json.marca,
+    modelo: json.modelo,
+    variante: json.variante ?? '',
+    name: `${json.marca} ${json.modelo}${json.variante ? ' ' + json.variante : ''}`.trim(),
+    segmento: json.segmento ?? null,
+    horizontes,
+    pvp_eur: h5.pvp_eur ?? null,
+  };
+});
+
 // Defaults del bloque "Tu uso" — E1 + E6a.
 // Precios kWh split en casa (PVPC valle) y pública (mix AC lenta + DC rápida).
 const PRECIO_KWH_CASA_DEFAULT = 0.12;     // PVPC valle medio 2026 (€/kWh).
@@ -487,6 +538,9 @@ const kwhEfectivoIni =
 
   <!-- Datos server → cliente -->
   <script type="application/json" id="tco-payload" set:html={JSON.stringify(payload)} />
+  <!-- Sprint 2 E2 (paso 1): listas completas de candidatos para multi-select. -->
+  <script type="application/json" id="tco-all-bevs" set:html={JSON.stringify(ALL_BEVS)} />
+  <script type="application/json" id="tco-all-ices" set:html={JSON.stringify(ALL_ICES)} />
 
   <!-- Lógica interactiva (auto-bundled por Astro) -->
   <script>
@@ -496,6 +550,17 @@ const kwhEfectivoIni =
       new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 }).format(n);
     const eur2 = (n: number) =>
       new Intl.NumberFormat('es-ES', { maximumFractionDigits: 3, minimumFractionDigits: 2 }).format(n);
+
+    // Sprint 2 E2 (paso 1): listas completas paralelas. El UI actual no las
+    // usa todavía — las consumirá el multi-select del paso 2. Mantener aquí
+    // garantiza que el build incluya la plomería y se pueda inspeccionar.
+    const allBevsEl = document.getElementById('tco-all-bevs')!;
+    const allIcesEl = document.getElementById('tco-all-ices')!;
+    const ALL_BEVS = JSON.parse(allBevsEl.textContent ?? '[]') as Array<any>;
+    const ALL_ICES = JSON.parse(allIcesEl.textContent ?? '[]') as Array<any>;
+    // Exponemos a window para inspección en DevTools durante el dev de Sprint 2.
+    (window as any).__e2_all_bevs = ALL_BEVS;
+    (window as any).__e2_all_ices = ALL_ICES;
 
     const payloadEl = document.getElementById('tco-payload')!;
     const PAYLOAD = JSON.parse(payloadEl.textContent ?? '[]') as Array<{
