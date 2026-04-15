@@ -227,13 +227,24 @@ function tcoAcumulado(coche, p, t) {
  * @param {InputCoche} ice
  * @param {Partial<import('./params.mjs').TcoParams>} [overrides]
  * @param {{ horizonte_max?: number, granularidad_anios?: number }} [opts]
+ * Cada punto incluye además las bandas de incertidumbre `tco_bev_min/max`
+ * y `tco_ice_min/max` según la metodología TCO §4 (D13): el margen agregado
+ * es el máximo de las confianzas individuales (depreciación, mantenimiento,
+ * seguro, consumo) y se aplica simétricamente en euros alrededor del central.
+ *
  * @returns {{
- *   puntos: Array<{ anio: number, tco_bev: number, tco_ice: number }>,
+ *   puntos: Array<{
+ *     anio: number,
+ *     tco_bev: number, tco_bev_min: number, tco_bev_max: number,
+ *     tco_ice: number, tco_ice_min: number, tco_ice_max: number
+ *   }>,
  *   breakeven_anio: number | null,
  *   perdida_rentabilidad_anio: number | null,
  *   rentable_desde_inicio: boolean,
  *   rentable_al_final: boolean,
  *   horizonte_max: number,
+ *   margen_bev: number,
+ *   margen_ice: number,
  *   params: import('./params.mjs').TcoParams
  * }}
  */
@@ -248,7 +259,21 @@ export function curvaTCO(bev, ice, overrides = {}, opts = {}) {
   const horizonte_max = opts.horizonte_max ?? p.horizonte_anios ?? 5;
   const paso = opts.granularidad_anios ?? 0.25;
 
-  /** @type {Array<{anio:number, tco_bev:number, tco_ice:number}>} */
+  // Margen agregado por tren — máximo de las 4 confianzas (§4 metodología).
+  const margen_bev = Math.max(
+    margenConfianza(bev.confianza_depreciacion ?? 'alta'),
+    margenConfianza(bev.confianza_mantenimiento ?? 'alta'),
+    margenConfianza(bev.confianza_seguro ?? 'alta'),
+    margenConfianza(bev.confianza_consumo ?? 'alta'),
+  );
+  const margen_ice = Math.max(
+    margenConfianza(ice.confianza_depreciacion ?? 'alta'),
+    margenConfianza(ice.confianza_mantenimiento ?? 'alta'),
+    margenConfianza(ice.confianza_seguro ?? 'alta'),
+    margenConfianza(ice.confianza_consumo ?? 'alta'),
+  );
+
+  /** @type {Array<{anio:number, tco_bev:number, tco_bev_min:number, tco_bev_max:number, tco_ice:number, tco_ice_min:number, tco_ice_max:number}>} */
   const puntos = [];
   let breakeven_anio = null;
   let perdida_rentabilidad_anio = null;
@@ -260,7 +285,20 @@ export function curvaTCO(bev, ice, overrides = {}, opts = {}) {
     const t = i * paso;
     const tco_bev = tcoAcumulado(bev, p, t);
     const tco_ice = tcoAcumulado(ice, p, t);
-    puntos.push({ anio: t, tco_bev, tco_ice });
+    // Banda simétrica en euros: central ± |central|·margen.
+    // Para tco_bev negativo en t=0 (efecto ayuda), esto ensancha la banda
+    // hacia ambos lados de forma visualmente simétrica.
+    const db = Math.abs(tco_bev) * margen_bev;
+    const di = Math.abs(tco_ice) * margen_ice;
+    puntos.push({
+      anio: t,
+      tco_bev,
+      tco_bev_min: tco_bev - db,
+      tco_bev_max: tco_bev + db,
+      tco_ice,
+      tco_ice_min: tco_ice - di,
+      tco_ice_max: tco_ice + di,
+    });
 
     // t=0: solo es "rentable desde el inicio" si el BEV arranca
     // ESTRICTAMENTE por debajo del ICE (efecto ayuda Plan Auto+). Un
@@ -306,6 +344,8 @@ export function curvaTCO(bev, ice, overrides = {}, opts = {}) {
     rentable_desde_inicio,
     rentable_al_final,
     horizonte_max,
+    margen_bev,
+    margen_ice,
     params: p,
   };
 }
