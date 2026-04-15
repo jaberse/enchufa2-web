@@ -11,7 +11,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { calcularTCO, compararTCO, curvaTCO, depreciacionFraccion } from './calculadora.mjs';
+import {
+  calcularTCO,
+  compararTCO,
+  curvaTCO,
+  curvaUnTren,
+  depreciacionFraccion,
+} from './calculadora.mjs';
 import { bevFromJson, iceFromJson } from './resolver.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -460,4 +466,83 @@ test('curvaTCO — empate en t=0 sin ayuda y BEV siempre más caro → sin break
   assert.equal(c.breakeven_anio, null);
   assert.equal(c.rentable_al_final, false);
   assert.equal(c.perdida_rentabilidad_anio, null, 'No ha habido rentabilidad que perder');
+});
+
+// ── curvaUnTren — Sprint 2 E2 paso 2A ─────────────────────────────────
+// Curva TCO individual por coche (soporte N×M en la calculadora).
+
+test('curvaUnTren — BEV: t=0 arranca en -ayuda, monotonía y consistencia con curvaTCO', () => {
+  const bev = bevFromJson(
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/coches/tesla-model-3-rwd-highland.json'), 'utf8')),
+    { horizonte_anios: 5, aplicar_ayuda: true },
+  );
+  const ice = iceFromJson(
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/ice-equivalentes/bmw-320i-sedan.json'), 'utf8')),
+    { horizonte_anios: 5 },
+  );
+
+  const cu = curvaUnTren(bev, {}, { horizonte_max: 5, granularidad_anios: 0.25 });
+  assert.equal(cu.tren, 'BEV');
+  assert.equal(cu.puntos[0].tco, -(bev.ayuda_eur ?? 0),
+    'BEV arranca en −ayuda en t=0');
+  for (let i = 1; i < cu.puntos.length; i++) {
+    assert.ok(
+      cu.puntos[i].tco >= cu.puntos[i - 1].tco - 0.5,
+      `puntos[${i}] no debería decrecer respecto al anterior`,
+    );
+  }
+
+  // Consistencia con curvaTCO: el campo tco_bev del combo debe coincidir
+  // con el tco del unitario para los mismos puntos.
+  const cc = curvaTCO(bev, ice, {}, { horizonte_max: 5, granularidad_anios: 0.25 });
+  assert.equal(cu.puntos.length, cc.puntos.length);
+  for (let i = 0; i < cu.puntos.length; i++) {
+    assert.ok(
+      Math.abs(cu.puntos[i].tco - cc.puntos[i].tco_bev) < EUR,
+      `tco BEV debe coincidir entre curvaUnTren y curvaTCO en i=${i}`,
+    );
+  }
+});
+
+test('curvaUnTren — ICE: t=0 arranca en 0 € (sin ayuda)', () => {
+  const ice = iceFromJson(
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/ice-equivalentes/volkswagen-tiguan-tsi.json'), 'utf8')),
+    { horizonte_anios: 5 },
+  );
+  const cu = curvaUnTren(ice, {}, { horizonte_max: 5 });
+  assert.equal(cu.tren, 'ICE');
+  assert.equal(cu.puntos[0].tco, 0);
+  // Banda simétrica en euros: tco_min ≤ tco ≤ tco_max.
+  for (const p of cu.puntos) {
+    assert.ok(p.tco_min <= p.tco, 'tco_min debe ser ≤ tco');
+    assert.ok(p.tco_max >= p.tco, 'tco_max debe ser ≥ tco');
+  }
+});
+
+test('curvaUnTren — margen heredado del peor de las 4 confianzas (§4 metodología)', () => {
+  // Fabricamos un coche sintético con 3 altas y 1 baja para verificar
+  // que el margen agregado es el peor.
+  const bevSintetico = {
+    tren: 'BEV',
+    pvp_eur: 40000,
+    ayuda_eur: 0,
+    consumo_wltp: 15,
+    consumo_real_factor: 1.15,
+    depreciacion_pct: 40,
+    mantenimiento_anual_eur: 300,
+    seguro_anual_eur: 600,
+    confianza_depreciacion: 'alta',
+    confianza_mantenimiento: 'alta',
+    confianza_seguro: 'baja',   // <- la peor
+    confianza_consumo: 'alta',
+  };
+  const cu = curvaUnTren(bevSintetico, {}, { horizonte_max: 5 });
+  assert.equal(cu.margen, 0.15, 'Debe usar el margen de confianza baja (0,15)');
+});
+
+test('curvaUnTren — rechaza tren inválido', () => {
+  assert.throws(
+    () => curvaUnTren({ tren: 'HEV', pvp_eur: 30000 }, {}, {}),
+    /tren debe ser/,
+  );
 });

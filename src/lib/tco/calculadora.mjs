@@ -349,3 +349,66 @@ export function curvaTCO(bev, ice, overrides = {}, opts = {}) {
     params: p,
   };
 }
+
+/**
+ * Curva TCO acumulado para UN SOLO coche (BEV o ICE). Versión desacoplada de
+ * `curvaTCO` para soportar comparaciones N×M donde el usuario elige varios
+ * candidatos por tren y el frontend necesita una curva independiente por
+ * modelo. No detecta cruces — esa lógica se aplica, si procede, a nivel
+ * agregado (envolventes inferiores por tren) en la UI.
+ *
+ * Cada punto incluye banda simétrica en euros según §4 de la metodología:
+ * margen agregado = max de las 4 confianzas (depreciación, mantenimiento,
+ * seguro, consumo).
+ *
+ * @param {import('./calculadora.mjs').InputCoche} coche
+ * @param {Partial<import('./params.mjs').TcoParams>} [overrides]
+ * @param {{ horizonte_max?: number, granularidad_anios?: number }} [opts]
+ * @returns {{
+ *   tren: 'BEV' | 'ICE',
+ *   puntos: Array<{ anio: number, tco: number, tco_min: number, tco_max: number }>,
+ *   horizonte_max: number,
+ *   margen: number,
+ *   params: import('./params.mjs').TcoParams
+ * }}
+ */
+export function curvaUnTren(coche, overrides = {}, opts = {}) {
+  if (coche.tren !== 'BEV' && coche.tren !== 'ICE') {
+    throw new Error(
+      `curvaUnTren: coche.tren debe ser 'BEV' o 'ICE' (recibido: ${coche.tren})`,
+    );
+  }
+  const p = { ...PARAMS_ENCHUFA2_ESTANDAR, ...overrides };
+  const horizonte_max = opts.horizonte_max ?? p.horizonte_anios ?? 5;
+  const paso = opts.granularidad_anios ?? 0.25;
+
+  const margen = Math.max(
+    margenConfianza(coche.confianza_depreciacion ?? 'alta'),
+    margenConfianza(coche.confianza_mantenimiento ?? 'alta'),
+    margenConfianza(coche.confianza_seguro ?? 'alta'),
+    margenConfianza(coche.confianza_consumo ?? 'alta'),
+  );
+
+  /** @type {Array<{anio:number, tco:number, tco_min:number, tco_max:number}>} */
+  const puntos = [];
+  const n = Math.round(horizonte_max / paso);
+  for (let i = 0; i <= n; i++) {
+    const t = i * paso;
+    const tco = tcoAcumulado(coche, p, t);
+    const d = Math.abs(tco) * margen;
+    puntos.push({
+      anio: t,
+      tco,
+      tco_min: tco - d,
+      tco_max: tco + d,
+    });
+  }
+
+  return {
+    tren: coche.tren,
+    puntos,
+    horizonte_max,
+    margen,
+    params: p,
+  };
+}
