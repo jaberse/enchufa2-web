@@ -148,72 +148,190 @@ const kwhEfectivoIni =
 >
   <Header />
 
-  <!-- Hero band: alineado con patrón .hero-band del comparador -->
-  <div class="hero-band" aria-hidden="true">
-    <img
-      src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1600&q=80&auto=format"
-      alt=""
-      loading="eager"
-    />
-  </div>
-
   <main id="main">
+    <!-- ══ HERO narrativo: cat-block pattern (patrón home / guías) ══ -->
+    <section class="calc-hero" aria-labelledby="h-hero">
+      <div class="calc-hero-band">
+        <img
+          src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1800&q=80&auto=format"
+          alt=""
+          loading="eager"
+        />
+        <div class="calc-hero-overlay">
+          <div class="calc-hero-inner">
+            <p class="calc-hero-eyebrow">Herramienta · beta</p>
+            <h1 id="h-hero" class="calc-hero-question">
+              ¿Cuánto cuesta <em>de verdad</em><br />
+              un coche eléctrico?
+            </h1>
+            <p class="calc-hero-deck">
+              Precio de compra, depreciación, energía, mantenimiento, seguro,
+              impuestos y Plan Auto+ — todo en un solo número, a 5 años, para
+              cualquier coche del Top 20. Elige un escenario y empieza.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="calc-section">
       <div class="calc-outer">
 
-        <!-- Intro card (rounded top overlaps hero-band, comparador style) -->
-        <div class="calc-intro">
-          <div class="calc-intro-inner">
-            <p class="eyebrow">Herramienta · beta</p>
-            <h1>Calculadora <em>TCO</em></h1>
-            <p class="deck">
-              Cuánto cuesta <em>de verdad</em> un coche eléctrico en España
-              comparado con su equivalente de combustión. Fórmula canónica
-              ICCT: depreciación, energía, mantenimiento, seguro, impuestos
-              y ayudas — validada contra tres pilotos manuales.
+        <!-- ══ ESCENARIOS EDITORIALES — 5 arranques rápidos con foto ══ -->
+        <section class="escenarios reveal" aria-labelledby="h-escenarios">
+          <div class="escenarios-head">
+            <p class="eyebrow">Empieza por un escenario</p>
+            <h2 id="h-escenarios">
+              Cinco comparativas <em>icónicas</em>
+            </h2>
+            <p class="escenarios-sub">
+              Cada escenario carga una pareja BEV↔ICE de referencia por segmento.
+              Después puedes añadir hasta 4 coches de cada tren y ajustar tu uso.
             </p>
-            <div class="beta-warn" role="note">
-              <strong>Beta · datos en revisión</strong> — todos los modelos
-              están temporalmente marcados con <code>confianza=baja</code>
-              mientras verificamos PVPs oficiales, obtenemos tres cotizaciones
-              de seguro reales por segmento y calibramos las curvas de
-              depreciación contra Ganvam. Úsala como orientación, no como
-              decisión de compra. <a href="#metodologia">Ver metodología</a>.
-            </div>
           </div>
+          <div class="escenarios-grid">
+            <button
+              type="button"
+              class="escenario-card"
+              data-scenario="a"
+              data-bev="dacia-spring-essential"
+              data-ice="hyundai-i10-mpi"
+              style={`--card-photo: url('/comparador/dacia-spring-essential.webp')`}
+            >
+              <span class="escenario-num">01</span>
+              <span class="escenario-tag">Segmento A · Urbano</span>
+              <span class="escenario-title">Dacia Spring<br /><em>vs</em> Hyundai i10</span>
+              <span class="escenario-footer">
+                <span class="escenario-hint">El BEV más barato de España</span>
+                <span class="escenario-arrow" aria-hidden="true">→</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              class="escenario-card"
+              data-scenario="b"
+              data-bev="renault-5-e-tech-comfort-range"
+              data-ice="dacia-sandero-tce"
+              style={`--card-photo: url('/comparador/renault-5-e-tech-comfort-range.webp')`}
+            >
+              <span class="escenario-num">02</span>
+              <span class="escenario-tag">Segmento B · Utilitario</span>
+              <span class="escenario-title">Renault 5 E-Tech<br /><em>vs</em> Sandero TCe</span>
+              <span class="escenario-footer">
+                <span class="escenario-hint">Made in Palencia contra GLP</span>
+                <span class="escenario-arrow" aria-hidden="true">→</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              class="escenario-card"
+              data-scenario="c-suv"
+              data-bev="hyundai-kona-electric-65-kwh"
+              data-ice="volkswagen-tiguan-tsi"
+              style={`--card-photo: url('/comparador/hyundai-kona-electric-65-kwh.webp')`}
+            >
+              <span class="escenario-num">03</span>
+              <span class="escenario-tag">C-SUV · Mainstream</span>
+              <span class="escenario-title">Hyundai Kona 65<br /><em>vs</em> VW Tiguan</span>
+              <span class="escenario-footer">
+                <span class="escenario-hint">El mejor ratio TCO del catálogo</span>
+                <span class="escenario-arrow" aria-hidden="true">→</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              class="escenario-card"
+              data-scenario="d"
+              data-bev="tesla-model-3-rwd-highland"
+              data-ice="bmw-320i-sedan"
+              style={`--card-photo: url('/comparador/tesla-model-3-rwd-highland.webp')`}
+            >
+              <span class="escenario-num">04</span>
+              <span class="escenario-tag">Segmento D · Berlina premium</span>
+              <span class="escenario-title">Tesla Model 3<br /><em>vs</em> BMW 320i</span>
+              <span class="escenario-footer">
+                <span class="escenario-hint">Ahorro icónico: ~47 % a 5 años</span>
+                <span class="escenario-arrow" aria-hidden="true">→</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              class="escenario-card"
+              data-scenario="d-suv"
+              data-bev="tesla-model-y-rwd-long-range"
+              data-ice="bmw-x3-xdrive20i"
+              style={`--card-photo: url('/comparador/tesla-model-y-rwd-long-range.webp')`}
+            >
+              <span class="escenario-num">05</span>
+              <span class="escenario-tag">D-SUV · Familiar</span>
+              <span class="escenario-title">Tesla Model Y<br /><em>vs</em> BMW X3</span>
+              <span class="escenario-footer">
+                <span class="escenario-hint">Premium familiar · 42 % de ahorro</span>
+                <span class="escenario-arrow" aria-hidden="true">→</span>
+              </span>
+            </button>
+          </div>
+          <!-- Toast de confirmación/undo al cargar un escenario -->
+          <div class="escenario-toast" id="escenario-toast" role="status" aria-live="polite" hidden>
+            <span class="toast-icon" aria-hidden="true">✓</span>
+            <span class="toast-text" id="toast-text">Escenario cargado</span>
+            <button type="button" class="toast-undo" id="toast-undo" hidden>Deshacer</button>
+          </div>
+        </section>
+
+        <!-- Beta warn (discreto, sólo debajo de escenarios) -->
+        <div class="beta-warn reveal" role="note">
+          <strong>Beta · datos en revisión</strong> — los PVPs oficiales, las
+          3 cotizaciones de seguro reales y la depreciación contra Ganvam se
+          están calibrando. Úsala como orientación, no como decisión de compra.
+          <a href="#metodologia">Ver metodología</a>.
         </div>
 
     <!-- ────────── CONTROLES ────────── -->
-    <section class="controles" aria-labelledby="h-controles">
-      <h2 id="h-controles" class="sr-only">Parámetros</h2>
+    <section class="controles reveal" aria-labelledby="h-controles">
+      <h2 id="h-controles" class="section-head">
+        <span class="section-num">02 — Ajusta</span>
+        Tu escenario, <em>a tu medida</em>
+      </h2>
+      <p class="section-sub">
+        Añade hasta 4 eléctricos y 4 de combustión. Haz clic en una fila de la
+        tabla — o en una línea del gráfico — para ver su desglose completo.
+      </p>
 
       <div class="ctrl-grid">
         <!-- Selector multi-coche (Sprint 2 E2 paso 2B) -->
         <div class="ctrl ctrl-seleccion" role="group" aria-label="Coches a analizar">
           <div class="seleccion-head">
             <p class="ctrl-title">Coches a analizar</p>
-            <div class="modo-toggle" role="radiogroup" aria-label="Modo de comparación">
-              <button type="button" class="modo-btn is-active" data-modo="listas" role="radio" aria-checked="true">
-                Listas paralelas
-              </button>
-              <button type="button" class="modo-btn" data-modo="pares" role="radio" aria-checked="false">
-                Pares BEV ↔ ICE
-              </button>
+            <!-- Pair-switch inline: aparece sólo cuando N(BEV)==N(ICE)>=2. -->
+            <div class="pair-switch" id="pair-switch" hidden>
+              <label class="pair-switch-lbl">
+                <input type="checkbox" id="pair-switch-input" />
+                <span class="pair-switch-track" aria-hidden="true"></span>
+                <span class="pair-switch-text">
+                  Emparejar 1↔1
+                  <span class="pair-switch-hint">Compara BEV[i] con ICE[i] en vez de todos contra todos</span>
+                </span>
+              </label>
+            </div>
+            <!-- Hidden legacy modo-toggle (kept so existing script bindings don't crash). -->
+            <div class="modo-toggle sr-only" role="radiogroup" aria-label="Modo de comparación" aria-hidden="true">
+              <button type="button" class="modo-btn is-active" data-modo="listas" role="radio" aria-checked="true" tabindex="-1">Listas paralelas</button>
+              <button type="button" class="modo-btn" data-modo="pares" role="radio" aria-checked="false" tabindex="-1">Pares BEV ↔ ICE</button>
             </div>
           </div>
           <p class="seleccion-hint" id="seleccion-hint">
-            Empieza con un par rápido o añade hasta 4 eléctricos y 4 de
-            combustión para comparar. Haz clic en un coche de la lista —
-            o en una línea del gráfico — para ver su desglose.
+            Tienes un par activo. Añade más coches desde los buscadores para
+            comparar hasta 4 vs 4 a la vez.
           </p>
 
-          <div class="quick-starts" role="group" aria-label="Pares rápidos">
-            <span class="qs-label">Empieza con:</span>
-            <button type="button" class="qs-btn" data-bev="dacia-spring-essential" data-ice="hyundai-i10-mpi">A · Urbano barato</button>
-            <button type="button" class="qs-btn" data-bev="renault-5-e-tech-comfort-range" data-ice="dacia-sandero-tce">B · Utilitario</button>
-            <button type="button" class="qs-btn" data-bev="hyundai-kona-electric-65-kwh" data-ice="volkswagen-tiguan-tsi">C-SUV · Mainstream</button>
-            <button type="button" class="qs-btn" data-bev="tesla-model-3-rwd-highland" data-ice="bmw-320i-sedan">D · Berlina premium</button>
-            <button type="button" class="qs-btn" data-bev="tesla-model-y-rwd-long-range" data-ice="bmw-x3-xdrive20i">D-SUV · Familiar</button>
+          <!-- Legacy quick-starts hidden — los escenarios editoriales arriba ya cubren este rol. -->
+          <div class="quick-starts sr-only" role="group" aria-label="Pares rápidos" aria-hidden="true">
+            <button type="button" class="qs-btn" data-bev="dacia-spring-essential" data-ice="hyundai-i10-mpi" tabindex="-1">A</button>
+            <button type="button" class="qs-btn" data-bev="renault-5-e-tech-comfort-range" data-ice="dacia-sandero-tce" tabindex="-1">B</button>
+            <button type="button" class="qs-btn" data-bev="hyundai-kona-electric-65-kwh" data-ice="volkswagen-tiguan-tsi" tabindex="-1">C</button>
+            <button type="button" class="qs-btn" data-bev="tesla-model-3-rwd-highland" data-ice="bmw-320i-sedan" tabindex="-1">D</button>
+            <button type="button" class="qs-btn" data-bev="tesla-model-y-rwd-long-range" data-ice="bmw-x3-xdrive20i" tabindex="-1">D2</button>
           </div>
 
           <div class="seleccion-grid">
@@ -386,9 +504,42 @@ const kwhEfectivoIni =
     </section>
 
     <!-- ────────── RESULTADO ────────── -->
-    <section class="resultado" aria-labelledby="h-resultado" aria-live="polite">
-      <h2 id="h-resultado" class="sr-only">Resultado</h2>
+    <section class="resultado reveal" aria-labelledby="h-resultado" aria-live="polite">
+      <h2 id="h-resultado" class="section-head">
+        <span class="section-num">03 — Resultado</span>
+        El <em>veredicto</em>, a {HORIZONTE_DEFAULT} años
+      </h2>
 
+      <!-- Hero KPIs: 3 tarjetas grandes con los números que importan. -->
+      <div class="kpi-hero" id="kpi-hero" aria-live="polite">
+        <div class="kpi-card kpi-winner" id="kpi-winner">
+          <p class="kpi-label">Mejor TCO</p>
+          <p class="kpi-name" id="kpi-winner-name">—</p>
+          <p class="kpi-value">
+            <span class="kpi-num" id="kpi-winner-tco">—</span>
+            <span class="kpi-unit">€</span>
+          </p>
+          <p class="kpi-meta" id="kpi-winner-meta">—</p>
+        </div>
+        <div class="kpi-card kpi-savings" id="kpi-savings">
+          <p class="kpi-label">Ahorro frente al peor</p>
+          <p class="kpi-value">
+            <span class="kpi-num" id="kpi-savings-eur">—</span>
+            <span class="kpi-unit">€</span>
+          </p>
+          <p class="kpi-meta" id="kpi-savings-meta">—</p>
+        </div>
+        <div class="kpi-card kpi-breakeven" id="kpi-breakeven">
+          <p class="kpi-label">Break-even BEV ↔ ICE</p>
+          <p class="kpi-value">
+            <span class="kpi-num" id="kpi-breakeven-val">—</span>
+            <span class="kpi-unit" id="kpi-breakeven-unit">años</span>
+          </p>
+          <p class="kpi-meta" id="kpi-breakeven-meta">—</p>
+        </div>
+      </div>
+
+      <!-- Lede narrativo (más pequeño ahora, complementa el KPI hero). -->
       <p class="lede" id="lede">Cargando…</p>
 
       <!-- Tabla comparativa: resultado principal. Una fila por coche,
@@ -809,6 +960,11 @@ const kwhEfectivoIni =
     };
     let chartStateRef: ChartState | null = null;
 
+    // Flag de primera renderización: las curvas sólo se animan la primera
+    // vez que el gráfico aparece en pantalla. En recalculaciones posteriores
+    // (cambios de slider) no queremos el "dibujo" distraiga.
+    let chartFirstRender = true;
+
     function renderChart(curvas: CurvaData[], breakevens: BreakevenInfo[] | BreakevenInfo | null = null) {
       // Back-compat: aceptar un único break-even o un array. Internamente
       // usamos siempre un array.
@@ -827,6 +983,31 @@ const kwhEfectivoIni =
         tbl.innerHTML = '';
         return;
       }
+
+      // ── Defs: gradient bajo la curva focus (fill suave) ──
+      const focusForDefs = curvas.find((c) => c.isFocus);
+      const defs = el('defs', {});
+      if (focusForDefs) {
+        const gradId = 'tco-grad-focus';
+        const grad = el('linearGradient', {
+          id: gradId,
+          x1: '0', y1: '0', x2: '0', y2: '1',
+        });
+        const stop1 = el('stop', {
+          offset: '0%',
+          'stop-color': focusForDefs.color,
+          'stop-opacity': '0.28',
+        });
+        const stop2 = el('stop', {
+          offset: '100%',
+          'stop-color': focusForDefs.color,
+          'stop-opacity': '0',
+        });
+        grad.appendChild(stop1);
+        grad.appendChild(stop2);
+        defs.appendChild(grad);
+      }
+      svg.appendChild(defs);
 
       const xMin = 0;
       const xMax = curvas[0].puntos[curvas[0].puntos.length - 1]?.anio ?? state.horizonte;
@@ -913,15 +1094,36 @@ const kwhEfectivoIni =
 
       const focusCurva = curvas.find((c) => c.isFocus);
 
+      // 0) Área con gradient bajo la curva focus — capa más profunda.
+      //    Path cerrado: de p0 bajando al eje X, siguiendo los puntos, y
+      //    cerrando al borde derecho en y=baseline. Sólo para el focus para
+      //    no ensuciar visualmente cuando hay N coches.
+      if (focusCurva) {
+        const pts = focusCurva.puntos;
+        const baseline = M.top + PLOT_H;
+        const areaTop = pts
+          .map((p, i) => `${i === 0 ? 'M' : 'L'} ${x(p.anio).toFixed(1)} ${y(p.tco).toFixed(1)}`)
+          .join(' ');
+        const lastX = x(pts[pts.length - 1].anio).toFixed(1);
+        const firstX = x(pts[0].anio).toFixed(1);
+        const areaPath = `${areaTop} L ${lastX} ${baseline} L ${firstX} ${baseline} Z`;
+        svg.appendChild(el('path', {
+          d: areaPath,
+          class: 'curve-area',
+          fill: 'url(#tco-grad-focus)',
+          stroke: 'none',
+        }));
+      }
+
       // 1) Banda solo para el focus (ruido visual controlado).
       if (focusCurva && focusCurva.margen > 0) {
         svg.appendChild(el('path', {
           d: bandPath(focusCurva.puntos),
           class: 'band',
           fill: focusCurva.color,
-          'fill-opacity': '0.16',
+          'fill-opacity': '0.10',
           stroke: focusCurva.color,
-          'stroke-opacity': '0.35',
+          'stroke-opacity': '0.32',
           'stroke-width': '0.75',
           'stroke-dasharray': '2 3',
         }));
@@ -945,11 +1147,15 @@ const kwhEfectivoIni =
         svg.appendChild(el('path', attrs));
       }
 
-      // 3) Focus encima, destacado.
+      // 3) Focus encima, destacado. Primera renderización → animación de
+      //    "dibujado" con stroke-dasharray (solo BEV, porque ICE usa dashes
+      //    permanentes para su semántica visual).
       if (focusCurva) {
+        const shouldAnimate = chartFirstRender && focusCurva.tren === 'BEV';
+        const animClass = shouldAnimate ? ' curve-anim' : '';
         const attrs: Record<string, string | number> = {
           d: linePath(focusCurva.puntos),
-          class: `curve curve-focus curve-${focusCurva.tren.toLowerCase()}`,
+          class: `curve curve-focus curve-${focusCurva.tren.toLowerCase()}${animClass}`,
           stroke: focusCurva.color,
           fill: 'none',
           'data-tren': focusCurva.tren,
@@ -985,6 +1191,27 @@ const kwhEfectivoIni =
         svg.appendChild(el('line', {
           x1: bx, x2: bx, y1: M.top, y2: M.top + PLOT_H,
           class: 'be-line',
+        }));
+
+        // Círculo pulsante sobre el eje X — ancla visual del cruce.
+        // Dos círculos: uno estático (fondo amarillo) y otro con animación
+        // de halo que se expande. Sólo para el primer break-even en listas;
+        // en pares lo añadimos también pero sin halo para no ser ruidoso.
+        const beaconCy = M.top + PLOT_H;
+        if (i === 0 || beList.length === 1) {
+          svg.appendChild(el('circle', {
+            cx: bx, cy: beaconCy, r: 7,
+            class: 'be-beacon-halo',
+            fill: 'var(--yellow)',
+            'fill-opacity': '0.35',
+          }));
+        }
+        svg.appendChild(el('circle', {
+          cx: bx, cy: beaconCy, r: 4,
+          class: 'be-beacon',
+          fill: 'var(--yellow)',
+          stroke: 'var(--card-bg, #fff)',
+          'stroke-width': '1.5',
         }));
 
         const label = breakeven.rentableDesdeInicio
@@ -1097,6 +1324,9 @@ const kwhEfectivoIni =
           ` Banda ±${Math.round(focusCurva.margen * 100)} % (${focusCurva.name})`;
         legend.appendChild(band);
       }
+
+      // Primera render completada.
+      chartFirstRender = false;
     }
 
     // Helper global: rango bajo el TCO grande.
@@ -1394,6 +1624,13 @@ const kwhEfectivoIni =
         calcBE(cheapestBev, cheapestIce);
       }
 
+      // 6.5) Actualizar KPI hero (mejor TCO, ahorro, break-even).
+      updateKpiHero([...resolvedBev, ...resolvedIce], breakevens);
+
+      // 6.6) Pair-switch visibility: se muestra sólo cuando tiene sentido
+      //      comparar 1↔1 (mismo número de BEV que ICE, y al menos 2).
+      updatePairSwitch(resolvedBev.length, resolvedIce.length);
+
       // 7) Re-pintar chips (conteo + etiquetas).
       renderChips();
 
@@ -1404,6 +1641,133 @@ const kwhEfectivoIni =
       renderChart(curvas, breakevens);
 
       writeUrl();
+    }
+
+    // ── KPI hero: los 3 números que el usuario escanea primero ─────────
+    // Mejor TCO · Ahorro vs peor · Break-even (si existe).
+    function updateKpiHero(
+      all: Array<{ tren: 'BEV' | 'ICE'; slug: string; meta: any; tco: any }>,
+      breakevens: BreakevenInfo[],
+    ) {
+      const winnerNameEl = $('kpi-winner-name');
+      const winnerTcoEl = $('kpi-winner-tco');
+      const winnerMetaEl = $('kpi-winner-meta');
+      const savEurEl = $('kpi-savings-eur');
+      const savMetaEl = $('kpi-savings-meta');
+      const beValEl = $('kpi-breakeven-val');
+      const beUnitEl = $('kpi-breakeven-unit');
+      const beMetaEl = $('kpi-breakeven-meta');
+      const winnerCard = $('kpi-winner');
+      const savCard = $('kpi-savings');
+      const beCard = $('kpi-breakeven');
+
+      if (!all.length) {
+        winnerNameEl.textContent = '—';
+        winnerTcoEl.textContent = '—';
+        winnerMetaEl.textContent = 'Selecciona coches arriba';
+        savEurEl.textContent = '—';
+        savMetaEl.textContent = '—';
+        beValEl.textContent = '—';
+        beMetaEl.textContent = '—';
+        winnerCard.dataset.tren = '';
+        return;
+      }
+
+      // 1) Mejor TCO del conjunto.
+      const sorted = [...all].sort(
+        (a, b) => a.tco.tco_total_eur - b.tco.tco_total_eur,
+      );
+      const winner = sorted[0];
+      winnerCard.dataset.tren = winner.tren;
+      winnerNameEl.textContent = winner.meta.name;
+      animateNumber(winnerTcoEl, winner.tco.tco_total_eur, eur);
+      winnerMetaEl.textContent =
+        `${winner.tren === 'BEV' ? 'Eléctrico' : 'Combustión'} · ` +
+        `${eur2(winner.tco.tco_por_km_eur)} €/km · ${state.horizonte} años`;
+
+      // 2) Ahorro frente al peor del mismo ranking.
+      if (sorted.length >= 2) {
+        const worst = sorted[sorted.length - 1];
+        const diff = worst.tco.tco_total_eur - winner.tco.tco_total_eur;
+        const pct = worst.tco.tco_total_eur > 0
+          ? (diff / worst.tco.tco_total_eur) * 100
+          : 0;
+        animateNumber(savEurEl, diff, eur);
+        savMetaEl.innerHTML =
+          `<strong>${pct.toFixed(1)} %</strong> menos que <em>${worst.meta.name}</em>`;
+        savCard.dataset.state = 'ok';
+      } else {
+        savEurEl.textContent = '—';
+        savMetaEl.textContent = 'Añade un segundo coche para ver el ahorro';
+        savCard.dataset.state = 'empty';
+      }
+
+      // 3) Break-even.
+      if (breakevens.length) {
+        // Si hay más de uno (modo pares), mostramos el más temprano.
+        const be = [...breakevens].sort((a, b) => a.anio - b.anio)[0];
+        if (be.rentableDesdeInicio) {
+          beValEl.textContent = '0';
+          beUnitEl.textContent = 'años';
+          beMetaEl.textContent = 'El eléctrico es más barato desde el día 1';
+        } else {
+          const anios = be.anio;
+          beValEl.textContent = anios % 1 === 0
+            ? String(anios)
+            : anios.toFixed(1);
+          beUnitEl.textContent = anios === 1 ? 'año' : 'años';
+          beMetaEl.innerHTML =
+            `<em>${be.bevName}</em> pasa a costar menos que <em>${be.iceName}</em>`;
+        }
+        beCard.dataset.state = 'ok';
+      } else {
+        beValEl.textContent = '—';
+        beUnitEl.textContent = '';
+        beMetaEl.textContent = 'Sin cruce en el horizonte elegido';
+        beCard.dataset.state = 'empty';
+      }
+    }
+
+    // Pequeño tween numérico para que el KPI se sienta vivo sin ser ruidoso.
+    function animateNumber(
+      target: HTMLElement,
+      to: number,
+      fmt: (n: number) => string,
+    ) {
+      const prev = Number(target.dataset.v ?? '0');
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      target.dataset.v = String(to);
+      if (reduced || Math.abs(to - prev) < 1) {
+        target.textContent = fmt(to);
+        return;
+      }
+      const start = performance.now();
+      const dur = 420;
+      const step = (now: number) => {
+        const t = Math.min(1, (now - start) / dur);
+        const ease = 1 - Math.pow(1 - t, 3);
+        target.textContent = fmt(prev + (to - prev) * ease);
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+
+    // Pair-switch: visible sólo si counts BEV == ICE y >= 2.
+    // Refleja state.modo en el checkbox sin tocar el legacy toggle.
+    function updatePairSwitch(nBev: number, nIce: number) {
+      const wrap = document.getElementById('pair-switch') as HTMLElement | null;
+      const input = document.getElementById('pair-switch-input') as HTMLInputElement | null;
+      if (!wrap || !input) return;
+      if (nBev === nIce && nBev >= 2) {
+        wrap.hidden = false;
+        input.checked = state.modo === 'pares';
+      } else {
+        wrap.hidden = true;
+        // Si salimos de la zona válida, forzamos listas (sin loops: comprobamos).
+        if (state.modo === 'pares' && (nBev !== nIce || nBev < 2)) {
+          state.modo = 'listas';
+        }
+      }
     }
 
     // ── Tabla comparativa (Fase B) ──────────────────────────────────────
@@ -1789,6 +2153,93 @@ const kwhEfectivoIni =
       });
     });
 
+    // ── Escenarios editoriales (photo cards) + toast undo ──
+    type EscenarioSnapshot = {
+      bevSlugs: string[];
+      iceSlugs: string[];
+      focus: FocusKey;
+    };
+    let escenarioPrev: EscenarioSnapshot | null = null;
+    let toastHideTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const showToast = (text: string, withUndo: boolean) => {
+      const toast = document.getElementById('escenario-toast');
+      const txt = document.getElementById('toast-text');
+      const undo = document.getElementById('toast-undo');
+      if (!toast || !txt || !undo) return;
+      txt.textContent = text;
+      if (withUndo) undo.removeAttribute('hidden');
+      else undo.setAttribute('hidden', '');
+      toast.removeAttribute('hidden');
+      // Reflow + add is-visible for CSS transition.
+      void toast.offsetWidth;
+      toast.classList.add('is-visible');
+      if (toastHideTimer) clearTimeout(toastHideTimer);
+      toastHideTimer = setTimeout(() => {
+        toast.classList.remove('is-visible');
+        setTimeout(() => toast.setAttribute('hidden', ''), 300);
+      }, 4000);
+    };
+
+    document.querySelectorAll<HTMLButtonElement>('.escenario-card').forEach((card) => {
+      card.addEventListener('click', () => {
+        const bev = card.dataset.bev ?? '';
+        const ice = card.dataset.ice ?? '';
+        if (!bevSlugSet.has(bev) || !iceSlugSet.has(ice)) return;
+        // Snapshot previo para deshacer.
+        escenarioPrev = {
+          bevSlugs: [...state.bevSlugs],
+          iceSlugs: [...state.iceSlugs],
+          focus: { ...state.focus },
+        };
+        state.bevSlugs = [bev];
+        state.iceSlugs = [ice];
+        state.focus = { tren: 'BEV', slug: bev };
+        state.modo = 'listas';
+        // Feedback visual: pulso amarillo en la tarjeta.
+        card.classList.remove('is-pulse');
+        void card.offsetWidth;
+        card.classList.add('is-pulse');
+        // Scroll suave al resultado después de cargar.
+        const title = card.querySelector('.escenario-title')?.textContent?.replace(/\s+/g, ' ').trim() ?? 'escenario';
+        showToast(`Escenario cargado · ${title}`, true);
+        recalc();
+        // Delay para que la tabla ya esté renderizada.
+        setTimeout(() => {
+          const target = document.getElementById('h-resultado');
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 120);
+      });
+    });
+
+    document.getElementById('toast-undo')?.addEventListener('click', () => {
+      if (!escenarioPrev) return;
+      state.bevSlugs = [...escenarioPrev.bevSlugs];
+      state.iceSlugs = [...escenarioPrev.iceSlugs];
+      state.focus = { ...escenarioPrev.focus };
+      escenarioPrev = null;
+      const toast = document.getElementById('escenario-toast');
+      if (toast) {
+        toast.classList.remove('is-visible');
+        setTimeout(() => toast.setAttribute('hidden', ''), 200);
+      }
+      recalc();
+    });
+
+    // ── Pair-switch inline (reemplaza modo-toggle) ──
+    document.getElementById('pair-switch-input')?.addEventListener('change', (e) => {
+      const checked = (e.target as HTMLInputElement).checked;
+      state.modo = checked ? 'pares' : 'listas';
+      // Mantenemos el legacy modo-btn sync (aria-checked/is-active) para que
+      // nada en el script antiguo se sienta incoherente si lo inspecciona.
+      document.querySelectorAll<HTMLButtonElement>('.modo-btn').forEach((b) => {
+        const isActive = b.dataset.modo === state.modo;
+        b.classList.toggle('is-active', isActive);
+        b.setAttribute('aria-checked', isActive ? 'true' : 'false');
+      });
+      recalc();
+    });
+
     // Chart click → cambiar focus.
     $('tco-chart').addEventListener('click', (e) => {
       const target = e.target as Element;
@@ -2118,6 +2569,26 @@ const kwhEfectivoIni =
       }
     }
     safeInit();
+
+    // ── Scroll reveal (patrón home/guías) ────────────────────────────────
+    // Elementos con .reveal entran con fade+lift cuando aparecen en viewport.
+    (function setupReveal() {
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const nodes = document.querySelectorAll<HTMLElement>('.reveal');
+      if (reduced || !('IntersectionObserver' in window)) {
+        nodes.forEach((n) => n.classList.add('is-visible'));
+        return;
+      }
+      const io = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
+        }
+      }, { rootMargin: '0px 0px -80px 0px', threshold: 0.08 });
+      nodes.forEach((n) => io.observe(n));
+    })();
   </script>
 
   <style>
@@ -3446,9 +3917,599 @@ const kwhEfectivoIni =
       line-height: 1.5;
     }
 
+    /* ═══════════════════════════════════════════════════════════════════
+       REDISEÑO WOW (abril 2026) — nuevas secciones
+       ═══════════════════════════════════════════════════════════════════ */
+
+    /* ── Hero cat-block narrativo ─────────────────────────────────── */
+    .calc-hero {
+      position: relative;
+      background: var(--black);
+    }
+    .calc-hero-band {
+      position: relative;
+      width: 100%;
+      height: clamp(340px, 52vh, 540px);
+      overflow: hidden;
+    }
+    .calc-hero-band img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 45%;
+      transform: scale(1.02);
+      transition: transform 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .calc-hero:hover .calc-hero-band img { transform: scale(1.05); }
+    .calc-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        rgba(17, 17, 17, 0.82) 0%,
+        rgba(17, 17, 17, 0.65) 40%,
+        rgba(17, 17, 17, 0.25) 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      z-index: 2;
+    }
+    .calc-hero-inner {
+      max-width: var(--max-w);
+      width: 100%;
+      margin-inline: auto;
+      padding: clamp(2rem, 5vw, 4rem) var(--page-gutter);
+      color: var(--white);
+    }
+    .calc-hero-eyebrow {
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      opacity: 0.7;
+      margin: 0 0 0.9rem;
+    }
+    .calc-hero-question {
+      font-size: clamp(2rem, 5.2vw, 4rem);
+      font-weight: 200;
+      letter-spacing: -0.03em;
+      line-height: 1.02;
+      margin: 0 0 1.1rem;
+      max-width: 900px;
+    }
+    .calc-hero-question em {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--yellow);
+    }
+    .calc-hero-deck {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(1.05rem, 2vw, 1.375rem);
+      line-height: 1.45;
+      max-width: 640px;
+      opacity: 0.88;
+      margin: 0;
+    }
+    @media (max-width: 720px) {
+      .calc-hero-band { height: clamp(280px, 62vw, 400px); }
+      .calc-hero-overlay {
+        background: linear-gradient(
+          180deg,
+          rgba(17, 17, 17, 0.35) 0%,
+          rgba(17, 17, 17, 0.75) 60%,
+          rgba(17, 17, 17, 0.92) 100%
+        );
+      }
+    }
+
+    /* Ajustar calc-section: ya no solapa con hero-band, se apila normal. */
+    .calc-section {
+      position: relative;
+      z-index: auto;
+      margin-top: 0;
+    }
+    .calc-outer { padding-top: clamp(2rem, 4vw, 3rem); }
+    .calc-intro { display: none; }
+
+    /* ── Sección heading genérico (02 — / 03 —) ─────────────────────── */
+    .section-head {
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 200;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      margin: 0 0 0.35rem;
+    }
+    .section-head em {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--yellow);
+    }
+    .section-num {
+      display: block;
+      font-family: var(--font-sans);
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
+    }
+    .section-sub {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(1rem, 1.6vw, 1.15rem);
+      color: var(--text-secondary);
+      line-height: 1.55;
+      max-width: 680px;
+      margin: 0 0 1.5rem;
+    }
+
+    /* ── Escenarios editoriales: 5 fotocards (guide-card style) ───── */
+    .escenarios {
+      margin-bottom: clamp(2.5rem, 6vw, 4rem);
+    }
+    .escenarios-head {
+      max-width: 780px;
+      margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+    }
+    .escenarios-head .eyebrow {
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      margin: 0 0 0.75rem;
+    }
+    .escenarios-head h2 {
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 200;
+      letter-spacing: -0.025em;
+      line-height: 1.08;
+      margin: 0 0 0.9rem;
+    }
+    .escenarios-head h2 em {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--yellow);
+    }
+    .escenarios-sub {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(1rem, 1.5vw, 1.125rem);
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .escenarios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.875rem;
+    }
+    @media (min-width: 1100px) {
+      .escenarios-grid { grid-template-columns: repeat(5, 1fr); }
+    }
+    .escenario-card {
+      all: unset;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      aspect-ratio: 4 / 5;
+      border-radius: 10px;
+      overflow: hidden;
+      padding: 1.25rem 1.1rem;
+      color: var(--white);
+      background-color: var(--gray-100);
+      background-image: var(--card-photo);
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  box-shadow 0.3s ease;
+      box-shadow: 0 2px 6px rgba(17, 17, 17, 0.08);
+    }
+    .escenario-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(17, 17, 17, 0.25) 0%,
+        rgba(17, 17, 17, 0.55) 55%,
+        rgba(17, 17, 17, 0.88) 100%
+      );
+      z-index: 1;
+      transition: opacity 0.35s ease;
+    }
+    .escenario-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      transition: border-color 0.25s ease;
+      pointer-events: none;
+      z-index: 3;
+    }
+    .escenario-card > * { position: relative; z-index: 2; }
+    .escenario-card:hover,
+    .escenario-card:focus-visible {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 32px rgba(17, 17, 17, 0.22);
+    }
+    .escenario-card:hover::after,
+    .escenario-card:focus-visible::after {
+      border-color: var(--yellow);
+    }
+    .escenario-card.is-pulse::after {
+      animation: escPulse 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes escPulse {
+      0% { border-color: var(--yellow); box-shadow: 0 0 0 0 rgba(245, 197, 24, 0.55); }
+      100% { border-color: transparent; box-shadow: 0 0 0 18px rgba(245, 197, 24, 0); }
+    }
+    .escenario-num {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+    .escenario-tag {
+      margin-top: 0.45rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      opacity: 0.85;
+    }
+    .escenario-title {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      font-size: clamp(1.15rem, 1.7vw, 1.4rem);
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+    }
+    .escenario-title em {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--yellow);
+      opacity: 0.9;
+    }
+    .escenario-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.85rem;
+      gap: 0.5rem;
+    }
+    .escenario-hint {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 0.82rem;
+      opacity: 0.88;
+      line-height: 1.25;
+    }
+    .escenario-arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--yellow);
+      color: var(--black);
+      font-weight: 500;
+      font-size: 1rem;
+      flex-shrink: 0;
+      transition: transform 0.25s ease;
+    }
+    .escenario-card:hover .escenario-arrow,
+    .escenario-card:focus-visible .escenario-arrow {
+      transform: translateX(3px);
+    }
+
+    /* ── Toast escenario cargado ───────────────────────────────────── */
+    .escenario-toast {
+      position: fixed;
+      bottom: clamp(1rem, 3vw, 1.5rem);
+      left: 50%;
+      transform: translate(-50%, 16px);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.9rem;
+      padding: 0.8rem 1.1rem 0.8rem 1rem;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 100px;
+      box-shadow: 0 10px 32px rgba(17, 17, 17, 0.25);
+      font-size: 0.9rem;
+      z-index: 40;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .escenario-toast.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+    .toast-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--yellow);
+      color: var(--black);
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+    .toast-undo {
+      all: unset;
+      cursor: pointer;
+      padding: 0.35rem 0.75rem;
+      border-radius: 100px;
+      background: rgba(255, 255, 255, 0.1);
+      font-size: 0.82rem;
+      color: var(--yellow);
+      transition: background 0.2s ease;
+    }
+    .toast-undo:hover,
+    .toast-undo:focus-visible { background: rgba(255, 255, 255, 0.2); }
+
+    /* ── Pair-switch inline ─────────────────────────────────────────── */
+    .pair-switch { flex-shrink: 0; }
+    .pair-switch-lbl {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      line-height: 1.25;
+      color: var(--text-secondary);
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      background: var(--gray-100);
+      border: 1px solid var(--border);
+      transition: background 0.2s ease;
+    }
+    [data-theme="dark"] .pair-switch-lbl {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .pair-switch-lbl:hover { background: var(--surface-alt); }
+    .pair-switch-lbl input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .pair-switch-track {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      border-radius: 10px;
+      background: var(--gray-400);
+      transition: background 0.2s ease;
+      flex-shrink: 0;
+    }
+    .pair-switch-track::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--white);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    }
+    .pair-switch-lbl input:checked + .pair-switch-track { background: var(--yellow); }
+    .pair-switch-lbl input:checked + .pair-switch-track::after { transform: translateX(16px); }
+    .pair-switch-lbl input:focus-visible + .pair-switch-track {
+      outline: 2px solid var(--yellow);
+      outline-offset: 2px;
+    }
+    .pair-switch-text {
+      display: inline-flex;
+      flex-direction: column;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .pair-switch-hint {
+      font-weight: 400;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+      font-family: var(--font-serif);
+      font-style: italic;
+    }
+
+    /* ── KPI hero (3 big cards) ─────────────────────────────────────── */
+    .kpi-hero {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.875rem;
+      margin: 1.5rem 0 2rem;
+    }
+    @media (min-width: 720px) {
+      .kpi-hero { grid-template-columns: repeat(3, 1fr); }
+    }
+    .kpi-card {
+      position: relative;
+      padding: 1.5rem 1.4rem 1.4rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--gray-400);
+      transition: background 0.3s ease;
+    }
+    .kpi-winner { background: linear-gradient(135deg, var(--surface) 0%, rgba(245, 197, 24, 0.08) 100%); }
+    .kpi-winner::before { background: var(--yellow); }
+    .kpi-winner[data-tren="BEV"]::before { background: var(--yellow); }
+    .kpi-winner[data-tren="ICE"]::before { background: var(--black); }
+    .kpi-savings::before { background: #3F7D58; }
+    .kpi-savings[data-state="empty"]::before { background: var(--gray-400); }
+    .kpi-breakeven::before { background: #8F3985; }
+    .kpi-breakeven[data-state="empty"]::before { background: var(--gray-400); }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(17, 17, 17, 0.08);
+    }
+    .kpi-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin: 0 0 0.65rem;
+    }
+    .kpi-name {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.2;
+      margin: 0 0 0.5rem;
+      min-height: 1.2rem;
+    }
+    .kpi-value {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 200;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: var(--text);
+      margin: 0.25rem 0 0.75rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .kpi-num { font-weight: 300; }
+    .kpi-unit {
+      font-size: 0.6em;
+      font-weight: 300;
+      color: var(--text-muted);
+      letter-spacing: 0;
+    }
+    .kpi-meta {
+      font-size: 0.82rem;
+      font-family: var(--font-serif);
+      font-style: italic;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      margin: 0;
+      min-height: 1.2em;
+    }
+    .kpi-meta em {
+      font-style: italic;
+      color: var(--text);
+      font-weight: 400;
+    }
+    .kpi-meta strong {
+      font-family: var(--font-sans);
+      font-style: normal;
+      font-weight: 500;
+      color: var(--yellow-text, var(--text));
+    }
+
+    /* Lede queda secundario al KPI hero. */
+    .resultado .lede {
+      margin-top: 0;
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+
+    /* ── Chart enhancements: gradient area, animación, pulse ─────── */
+    .curve-area {
+      pointer-events: none;
+    }
+    .curve-anim {
+      stroke-dasharray: 2000;
+      stroke-dashoffset: 2000;
+      animation: curveDraw 1.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+    }
+    @keyframes curveDraw {
+      to { stroke-dashoffset: 0; }
+    }
+    .be-beacon-halo {
+      transform-origin: center;
+      transform-box: fill-box;
+      animation: bePulse 2s ease-out infinite;
+    }
+    @keyframes bePulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      70% { transform: scale(2.2); opacity: 0; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+    .be-beacon {
+      transform-origin: center;
+      transform-box: fill-box;
+      animation: beCore 2s ease-in-out infinite;
+    }
+    @keyframes beCore {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    /* ── Reveal on scroll (patrón home) ───────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Hide legacy modo-toggle & quick-starts completely ───────── */
+    .modo-toggle.sr-only,
+    .quick-starts.sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Ajuste: .beta-warn standalone después de escenarios */
+    .beta-warn {
+      margin: 0 0 clamp(2rem, 4vw, 3rem);
+      padding: 0.9rem 1.1rem;
+      border-left: 3px solid var(--yellow);
+      background: var(--yellow-glow);
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      border-radius: 0 6px 6px 0;
+    }
+    .beta-warn strong { color: var(--text); }
+    .beta-warn a { color: var(--text); text-decoration: underline; }
+
     /* ── Reduced motion ── */
     @media (prefers-reduced-motion: reduce) {
       * { transition: none !important; animation: none !important; }
+      .curve-anim { stroke-dasharray: none; stroke-dashoffset: 0; }
+      .reveal { opacity: 1; transform: none; }
     }
   </style>
 </Layout>
