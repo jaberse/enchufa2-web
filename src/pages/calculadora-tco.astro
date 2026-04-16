@@ -1821,22 +1821,43 @@ const kwhEfectivoIni =
       to: number,
       fmt: (n: number) => string,
     ) {
-      const prev = Number(target.dataset.v ?? '0');
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // Si había un RAF anterior en curso, cancélalo para evitar que dos
+      // animaciones compitan por textContent y lo dejen a medias.
+      const prevRaf = Number(target.dataset.rafId ?? '0');
+      if (prevRaf) {
+        cancelAnimationFrame(prevRaf);
+        target.dataset.rafId = '0';
+      }
+
+      // prev puede venir como '' o como el placeholder '—' si el markup no
+      // lleva dataset.v. Normalizamos a 0 en ese caso.
+      const raw = target.dataset.v;
+      const prev = raw == null || raw === '' ? 0 : Number(raw);
+      const prevNum = Number.isFinite(prev) ? prev : 0;
+
       target.dataset.v = String(to);
-      if (reduced || Math.abs(to - prev) < 1) {
+
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced || Math.abs(to - prevNum) < 1) {
         target.textContent = fmt(to);
         return;
       }
+
       const start = performance.now();
       const dur = 420;
       const step = (now: number) => {
         const t = Math.min(1, (now - start) / dur);
         const ease = 1 - Math.pow(1 - t, 3);
-        target.textContent = fmt(prev + (to - prev) * ease);
-        if (t < 1) requestAnimationFrame(step);
+        if (t < 1) {
+          target.textContent = fmt(prevNum + (to - prevNum) * ease);
+          target.dataset.rafId = String(requestAnimationFrame(step));
+        } else {
+          // Aseguramos que el estado final sea siempre exacto.
+          target.textContent = fmt(to);
+          target.dataset.rafId = '0';
+        }
       };
-      requestAnimationFrame(step);
+      target.dataset.rafId = String(requestAnimationFrame(step));
     }
 
     // Pair-switch: visible sólo si counts BEV == ICE y >= 2.
@@ -2907,8 +2928,9 @@ const kwhEfectivoIni =
       outline: 2px solid var(--yellow);
       outline-offset: 2px;
     }
-    /* Pareja badge en fila de la tabla (solo visible en modo pares). */
-    .row-pair {
+    /* Pareja badge en fila de la tabla (solo visible en modo pares).
+       Creado por JS → :global() para evitar el scoping de Astro. */
+    :global(.row-pair) {
       font-size: 0.625rem;
       letter-spacing: 0.06em;
       text-transform: uppercase;
@@ -3003,14 +3025,15 @@ const kwhEfectivoIni =
     .col-dot-bev { background: var(--yellow); }
     .col-dot-ice { background: var(--gray-400); }
 
-    /* Chips estilo Gmail */
+    /* Chips estilo Gmail. Los .chip/.chip-name/.chip-remove se crean por JS →
+       los envolvemos con :global() para saltarnos el scoping de Astro. */
     .chips {
       display: flex;
       flex-wrap: wrap;
       gap: 0.375rem;
       min-height: 2rem;
     }
-    .chip {
+    :global(.chip) {
       display: inline-flex;
       align-items: center;
       gap: 0.25rem;
@@ -3024,13 +3047,13 @@ const kwhEfectivoIni =
       transition: border-color 0.2s var(--ease-out-expo),
                   background 0.2s var(--ease-out-expo);
     }
-    .chip:hover { border-color: var(--gray-300); }
+    :global(.chip:hover) { border-color: var(--gray-300); }
     /* Color del border-left lo aplica el JS inline (paleta por slot). */
-    .chip-focus {
+    :global(.chip-focus) {
       background: var(--yellow-glow);
       border-color: var(--yellow);
     }
-    .chip-name {
+    :global(.chip-name) {
       background: none;
       border: none;
       padding: 0.125rem 0.25rem;
@@ -3042,8 +3065,8 @@ const kwhEfectivoIni =
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .chip-name:hover { color: var(--text); }
-    .chip-remove {
+    :global(.chip-name:hover) { color: var(--text); }
+    :global(.chip-remove) {
       background: none;
       border: none;
       width: 20px;
@@ -3059,7 +3082,7 @@ const kwhEfectivoIni =
       padding: 0;
       transition: background 0.15s, color 0.15s;
     }
-    .chip-remove:hover {
+    :global(.chip-remove:hover) {
       background: var(--border);
       color: var(--text);
     }
@@ -3106,7 +3129,8 @@ const kwhEfectivoIni =
       max-height: 280px;
       overflow-y: auto;
     }
-    .suggest-item {
+    /* Autocomplete items — todo el <li class="suggest-item"> se crea por JS. */
+    :global(.suggest-item) {
       display: flex;
       align-items: baseline;
       gap: 0.5rem;
@@ -3116,17 +3140,17 @@ const kwhEfectivoIni =
       cursor: pointer;
       transition: background 0.12s;
     }
-    .suggest-item:hover {
+    :global(.suggest-item:hover) {
       background: var(--surface-alt);
     }
-    .suggest-name {
+    :global(.suggest-name) {
       color: var(--text);
       flex: 1 1 auto;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .suggest-seg {
+    :global(.suggest-seg) {
       font-size: 0.6875rem;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -3403,25 +3427,39 @@ const kwhEfectivoIni =
       font-size: 0.875rem;
       font-variant-numeric: tabular-nums;
     }
-    .tco-results-table th,
-    .tco-results-table td {
+    /* IMPORTANTE: tbody tr/td y todas las clases .cell-*/.row-* se crean
+       dinámicamente con document.createElement(). Astro scoped CSS no les
+       inyecta el atributo data-astro-cid-*, así que los selectores que les
+       apunten deben ir envueltos en :global() para que los estilos apliquen
+       en producción. No tocar sin comprobar la build en Cloudflare.
+
+       NOTA: el wrapper :global(td) con un único elemento bare no lo procesa
+       bien el compilador de Astro en algunos casos, así que separamos th y
+       td en reglas independientes para evitar el bug. */
+    .tco-results-table th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .tco-results-table :global(td) {
       padding: 0.75rem 1rem;
       text-align: left;
       vertical-align: middle;
       white-space: nowrap;
     }
     .tco-results-table th.num,
-    .tco-results-table td.num {
+    .tco-results-table :global(td.num) {
       text-align: right;
     }
     /* Primera columna con un poco más de respiración: aloja dot + nombre +
        badge tren + (opcional) badge pareja. */
     .tco-results-table th:first-child,
-    .tco-results-table td:first-child {
+    .tco-results-table :global(td:first-child) {
       padding-left: 1.125rem;
     }
     .tco-results-table th:last-child,
-    .tco-results-table td:last-child {
+    .tco-results-table :global(td:last-child) {
       padding-right: 1.125rem;
     }
     .tco-results-table thead th {
@@ -3452,42 +3490,42 @@ const kwhEfectivoIni =
     .tco-results-table thead th[aria-sort="descending"]::after {
       content: ' ▾';
     }
-    .tco-results-table tbody tr {
+    .tco-results-table tbody :global(tr) {
       border-top: 1px solid var(--border);
       cursor: pointer;
       transition: background 0.15s ease;
     }
-    .tco-results-table tbody tr:hover {
+    .tco-results-table tbody :global(tr:hover) {
       background: var(--gray-100);
     }
-    [data-theme="dark"] .tco-results-table tbody tr:hover {
+    [data-theme="dark"] .tco-results-table tbody :global(tr:hover) {
       background: rgba(255, 255, 255, 0.04);
     }
-    .tco-results-table tbody tr.row-focus {
+    .tco-results-table tbody :global(tr.row-focus) {
       background: rgba(245, 197, 24, 0.08);
     }
-    .tco-results-table tbody tr.row-focus .cell-name {
+    .tco-results-table tbody :global(tr.row-focus .cell-name) {
       font-weight: 500;
     }
-    .tco-results-table tbody tr:focus-visible {
+    .tco-results-table tbody :global(tr:focus-visible) {
       outline: 2px solid var(--yellow);
       outline-offset: -2px;
     }
-    .cell-name {
+    :global(.cell-name) {
       display: flex;
       align-items: center;
       gap: 0.625rem;
       min-width: 240px;
       max-width: 340px;
     }
-    .row-dot {
+    :global(.row-dot) {
       display: inline-block;
       width: 18px;
       height: 4px;
       border-radius: 2px;
       flex-shrink: 0;
     }
-    .row-name {
+    :global(.row-name) {
       flex: 1 1 auto;
       min-width: 0;           /* imprescindible para que el text-overflow
                                  funcione dentro de un flex item */
@@ -3495,7 +3533,7 @@ const kwhEfectivoIni =
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .row-tren {
+    :global(.row-tren) {
       font-size: 0.625rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -3505,29 +3543,29 @@ const kwhEfectivoIni =
       flex-shrink: 0;
       margin-left: 0.125rem;   /* respiro adicional entre nombre y badge */
     }
-    .row-tren-bev {
+    :global(.row-tren-bev) {
       background: var(--yellow);
       color: var(--black);
     }
-    .row-tren-ice {
+    :global(.row-tren-ice) {
       background: var(--gray-100);
       color: var(--text-muted);
       border: 1px solid var(--border);
     }
-    [data-theme="dark"] .row-tren-ice {
+    [data-theme="dark"] :global(.row-tren-ice) {
       background: rgba(255, 255, 255, 0.06);
     }
-    .cell-tco {
+    :global(.cell-tco) {
       font-weight: 500;
       /* Apila dos líneas (TCO + delta) con separación clara y alineación a
          la derecha. Padding-block reducido para que la celda no se estire
          verticalmente en filas sin delta. */
       line-height: 1.25;
     }
-    .cell-tco-main {
+    :global(.cell-tco-main) {
       display: block;
     }
-    .cell-tco-delta {
+    :global(.cell-tco-delta) {
       display: block;
       margin-top: 0.2rem;
       font-size: 0.72rem;
@@ -3535,11 +3573,11 @@ const kwhEfectivoIni =
       color: var(--text-muted);
       letter-spacing: 0.01em;
     }
-    .cell-tco-delta.d-pos { color: #b23838; }
-    .cell-tco-delta.d-neg { color: #2b7a3e; }
-    [data-theme="dark"] .cell-tco-delta.d-pos { color: #e77b7b; }
-    [data-theme="dark"] .cell-tco-delta.d-neg { color: #7bd699; }
-    .cell-empty {
+    :global(.cell-tco-delta.d-pos) { color: #b23838; }
+    :global(.cell-tco-delta.d-neg) { color: #2b7a3e; }
+    [data-theme="dark"] :global(.cell-tco-delta.d-pos) { color: #e77b7b; }
+    [data-theme="dark"] :global(.cell-tco-delta.d-neg) { color: #7bd699; }
+    :global(.cell-empty) {
       color: var(--text-muted);
     }
 
@@ -3664,8 +3702,10 @@ const kwhEfectivoIni =
       font-weight: 500;
       text-align: right;
     }
-    /* Puntito de confianza por partida. */
-    .conf-dot {
+    /* Puntito de confianza por partida. Algunos se pintan en markup estático
+       (focus card), otros los crea JS en updateFocusCard → :global() garantiza
+       que el color se aplique en ambos casos. */
+    :global(.conf-dot) {
       display: inline-block;
       width: 8px;
       height: 8px;
@@ -3675,9 +3715,9 @@ const kwhEfectivoIni =
       vertical-align: middle;
       cursor: help;
     }
-    .conf-dot.conf-alta { background: #3aaa3a; border-color: #3aaa3a; }
-    .conf-dot.conf-media { background: var(--yellow); border-color: var(--yellow); }
-    .conf-dot.conf-baja { background: #d97706; border-color: #d97706; }
+    :global(.conf-dot.conf-alta) { background: #3aaa3a; border-color: #3aaa3a; }
+    :global(.conf-dot.conf-media) { background: var(--yellow); border-color: var(--yellow); }
+    :global(.conf-dot.conf-baja) { background: #d97706; border-color: #d97706; }
     /* Lede con rango de ahorro. */
     .lede-rango {
       font-size: 0.8125rem;
@@ -3788,31 +3828,32 @@ const kwhEfectivoIni =
       display: grid;
       gap: 0.25rem;
     }
-    .tt-row {
+    /* Filas del tooltip — todo el <li> se crea dinámicamente en renderChart. */
+    :global(.tt-row) {
       display: grid;
       grid-template-columns: 14px 1fr auto;
       gap: 0.5rem;
       align-items: center;
       font-variant-numeric: tabular-nums;
     }
-    .tt-row-focus .tt-name,
-    .tt-row-focus .tt-val {
+    :global(.tt-row-focus .tt-name),
+    :global(.tt-row-focus .tt-val) {
       font-weight: 500;
       color: var(--text);
     }
-    .tt-dot {
+    :global(.tt-dot) {
       display: inline-block;
       width: 14px;
       height: 3px;
       border-radius: 1.5px;
     }
-    .tt-name {
+    :global(.tt-name) {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       color: var(--text-secondary, var(--text-muted));
     }
-    .tt-val {
+    :global(.tt-val) {
       color: var(--text);
       font-weight: 500;
       white-space: nowrap;
