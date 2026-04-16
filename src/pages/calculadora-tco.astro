@@ -523,6 +523,7 @@ const kwhEfectivoIni =
         </div>
         <div class="kpi-card kpi-savings" id="kpi-savings">
           <p class="kpi-label">Ahorro frente al peor</p>
+          <p class="kpi-name" id="kpi-savings-name">—</p>
           <p class="kpi-value">
             <span class="kpi-num" id="kpi-savings-eur">—</span>
             <span class="kpi-unit">€</span>
@@ -530,7 +531,8 @@ const kwhEfectivoIni =
           <p class="kpi-meta" id="kpi-savings-meta">—</p>
         </div>
         <div class="kpi-card kpi-breakeven" id="kpi-breakeven">
-          <p class="kpi-label">Break-even BEV ↔ ICE</p>
+          <p class="kpi-label">Break-even</p>
+          <p class="kpi-name" id="kpi-breakeven-name">—</p>
           <p class="kpi-value">
             <span class="kpi-num" id="kpi-breakeven-val">—</span>
             <span class="kpi-unit" id="kpi-breakeven-unit">años</span>
@@ -714,10 +716,21 @@ const kwhEfectivoIni =
   <script>
     import { calcularTCO, compararTCO, curvaUnTren, curvaTCO } from '../lib/tco/calculadora.mjs';
 
+    // `useGrouping: 'always'` fuerza el separador de millares también en
+    // números de 4 cifras (en es-ES por defecto "8055" sale sin punto; con
+    // always queda "8.055"). Evita que la tabla se vea como un muro de
+    // dígitos sin respirar.
     const eur = (n: number) =>
-      new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 }).format(n);
+      new Intl.NumberFormat('es-ES', {
+        maximumFractionDigits: 0,
+        useGrouping: 'always' as any,
+      }).format(n);
     const eur2 = (n: number) =>
-      new Intl.NumberFormat('es-ES', { maximumFractionDigits: 3, minimumFractionDigits: 2 }).format(n);
+      new Intl.NumberFormat('es-ES', {
+        maximumFractionDigits: 3,
+        minimumFractionDigits: 2,
+        useGrouping: 'always' as any,
+      }).format(n);
 
     // Sprint 2 E2 (paso 1): listas completas paralelas. El UI actual no las
     // usa todavía — las consumirá el multi-select del paso 2. Mantener aquí
@@ -1645,6 +1658,15 @@ const kwhEfectivoIni =
 
     // ── KPI hero: los 3 números que el usuario escanea primero ─────────
     // Mejor TCO · Ahorro vs peor · Break-even (si existe).
+    // Usamos nombre corto (marca + modelo) para que no desborde la tarjeta.
+    function shortName(meta: any): string {
+      if (!meta) return '—';
+      if (meta.marca && meta.modelo) return `${meta.marca} ${meta.modelo}`;
+      // Fallback: primeras 2 palabras del name.
+      const parts = (meta.name ?? '').split(/\s+/);
+      return parts.slice(0, 2).join(' ') || '—';
+    }
+
     function updateKpiHero(
       all: Array<{ tren: 'BEV' | 'ICE'; slug: string; meta: any; tco: any }>,
       breakevens: BreakevenInfo[],
@@ -1652,8 +1674,10 @@ const kwhEfectivoIni =
       const winnerNameEl = $('kpi-winner-name');
       const winnerTcoEl = $('kpi-winner-tco');
       const winnerMetaEl = $('kpi-winner-meta');
+      const savNameEl = $('kpi-savings-name');
       const savEurEl = $('kpi-savings-eur');
       const savMetaEl = $('kpi-savings-meta');
+      const beNameEl = $('kpi-breakeven-name');
       const beValEl = $('kpi-breakeven-val');
       const beUnitEl = $('kpi-breakeven-unit');
       const beMetaEl = $('kpi-breakeven-meta');
@@ -1665,8 +1689,10 @@ const kwhEfectivoIni =
         winnerNameEl.textContent = '—';
         winnerTcoEl.textContent = '—';
         winnerMetaEl.textContent = 'Selecciona coches arriba';
+        if (savNameEl) savNameEl.textContent = '—';
         savEurEl.textContent = '—';
         savMetaEl.textContent = '—';
+        if (beNameEl) beNameEl.textContent = '—';
         beValEl.textContent = '—';
         beMetaEl.textContent = '—';
         winnerCard.dataset.tren = '';
@@ -1679,7 +1705,8 @@ const kwhEfectivoIni =
       );
       const winner = sorted[0];
       winnerCard.dataset.tren = winner.tren;
-      winnerNameEl.textContent = winner.meta.name;
+      winnerNameEl.textContent = shortName(winner.meta);
+      winnerNameEl.title = winner.meta.name;
       animateNumber(winnerTcoEl, winner.tco.tco_total_eur, eur);
       winnerMetaEl.textContent =
         `${winner.tren === 'BEV' ? 'Eléctrico' : 'Combustión'} · ` +
@@ -1692,39 +1719,99 @@ const kwhEfectivoIni =
         const pct = worst.tco.tco_total_eur > 0
           ? (diff / worst.tco.tco_total_eur) * 100
           : 0;
+        if (savNameEl) {
+          savNameEl.textContent = shortName(winner.meta);
+          savNameEl.title = winner.meta.name;
+        }
         animateNumber(savEurEl, diff, eur);
         savMetaEl.innerHTML =
-          `<strong>${pct.toFixed(1)} %</strong> menos que <em>${worst.meta.name}</em>`;
+          `<strong>${pct.toFixed(1).replace('.', ',')} %</strong> menos que <em>${shortName(worst.meta)}</em>`;
         savCard.dataset.state = 'ok';
       } else {
+        if (savNameEl) savNameEl.textContent = '—';
         savEurEl.textContent = '—';
         savMetaEl.textContent = 'Añade un segundo coche para ver el ahorro';
         savCard.dataset.state = 'empty';
       }
 
       // 3) Break-even.
+      //    Regla de coherencia: sólo afirmamos "desde el día 1" si el BEV más
+      //    barato del conjunto es de verdad el ganador global. Si el ganador
+      //    global es ICE no podemos decir que el eléctrico "sea más barato
+      //    desde el día 1" — sería falso y rompería con el KPI de al lado.
+      const cheapestBev = sorted.find((x) => x.tren === 'BEV') ?? null;
+      const cheapestIce = sorted.find((x) => x.tren === 'ICE') ?? null;
+      const bevGlobalWin =
+        !!cheapestBev &&
+        !!cheapestIce &&
+        cheapestBev.tco.tco_total_eur < cheapestIce.tco.tco_total_eur;
+
       if (breakevens.length) {
-        // Si hay más de uno (modo pares), mostramos el más temprano.
         const be = [...breakevens].sort((a, b) => a.anio - b.anio)[0];
-        if (be.rentableDesdeInicio) {
+        if (be.rentableDesdeInicio && bevGlobalWin) {
+          if (beNameEl) {
+            beNameEl.textContent = shortName(cheapestBev!.meta);
+            beNameEl.title = cheapestBev!.meta.name;
+          }
           beValEl.textContent = '0';
           beUnitEl.textContent = 'años';
-          beMetaEl.textContent = 'El eléctrico es más barato desde el día 1';
+          beMetaEl.innerHTML =
+            `<em>${shortName(cheapestBev!.meta)}</em> ya es más barato desde el día 1`;
+          beCard.dataset.state = 'ok';
+        } else if (be.rentableDesdeInicio && !bevGlobalWin) {
+          // El BEV gana a su pareja pero otro ICE del conjunto está por delante.
+          if (beNameEl) {
+            beNameEl.textContent = shortName(cheapestIce!.meta);
+            beNameEl.title = cheapestIce!.meta.name;
+          }
+          beValEl.textContent = '—';
+          beUnitEl.textContent = '';
+          beMetaEl.innerHTML =
+            `<em>${shortName(cheapestIce!.meta)}</em> queda por delante en el conjunto`;
+          beCard.dataset.state = 'empty';
         } else {
           const anios = be.anio;
+          if (beNameEl) {
+            beNameEl.textContent = shortName({ name: be.bevName });
+            beNameEl.title = be.bevName;
+          }
           beValEl.textContent = anios % 1 === 0
             ? String(anios)
-            : anios.toFixed(1);
+            : anios.toFixed(1).replace('.', ',');
           beUnitEl.textContent = anios === 1 ? 'año' : 'años';
           beMetaEl.innerHTML =
-            `<em>${be.bevName}</em> pasa a costar menos que <em>${be.iceName}</em>`;
+            `pasa a costar menos que <em>${shortName({ name: be.iceName })}</em>`;
+          beCard.dataset.state = 'ok';
         }
-        beCard.dataset.state = 'ok';
       } else {
-        beValEl.textContent = '—';
-        beUnitEl.textContent = '';
-        beMetaEl.textContent = 'Sin cruce en el horizonte elegido';
-        beCard.dataset.state = 'empty';
+        // Sin cruce en el horizonte — distinguimos quién manda.
+        if (bevGlobalWin) {
+          if (beNameEl) {
+            beNameEl.textContent = shortName(cheapestBev!.meta);
+            beNameEl.title = cheapestBev!.meta.name;
+          }
+          beValEl.textContent = '0';
+          beUnitEl.textContent = 'años';
+          beMetaEl.innerHTML =
+            `<em>${shortName(cheapestBev!.meta)}</em> lidera sin necesidad de cruce`;
+          beCard.dataset.state = 'ok';
+        } else if (cheapestIce) {
+          if (beNameEl) {
+            beNameEl.textContent = shortName(cheapestIce.meta);
+            beNameEl.title = cheapestIce.meta.name;
+          }
+          beValEl.textContent = '—';
+          beUnitEl.textContent = '';
+          beMetaEl.innerHTML =
+            `<em>${shortName(cheapestIce.meta)}</em> mantiene la ventaja`;
+          beCard.dataset.state = 'empty';
+        } else {
+          if (beNameEl) beNameEl.textContent = '—';
+          beValEl.textContent = '—';
+          beUnitEl.textContent = '';
+          beMetaEl.textContent = 'Sin cruce en el horizonte elegido';
+          beCard.dataset.state = 'empty';
+        }
       }
     }
 
@@ -3281,7 +3368,7 @@ const kwhEfectivoIni =
 
     /* ── Tabla comparativa ─────────────────────────────────────────── */
     .tco-table-wrap {
-      margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+      margin-bottom: clamp(0.875rem, 2vw, 1.25rem);
     }
     .tco-table-head {
       display: flex;
@@ -3311,13 +3398,14 @@ const kwhEfectivoIni =
     }
     .tco-results-table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
       font-size: 0.875rem;
       font-variant-numeric: tabular-nums;
     }
     .tco-results-table th,
     .tco-results-table td {
-      padding: 0.625rem 0.75rem;
+      padding: 0.75rem 1rem;
       text-align: left;
       vertical-align: middle;
       white-space: nowrap;
@@ -3325,6 +3413,16 @@ const kwhEfectivoIni =
     .tco-results-table th.num,
     .tco-results-table td.num {
       text-align: right;
+    }
+    /* Primera columna con un poco más de respiración: aloja dot + nombre +
+       badge tren + (opcional) badge pareja. */
+    .tco-results-table th:first-child,
+    .tco-results-table td:first-child {
+      padding-left: 1.125rem;
+    }
+    .tco-results-table th:last-child,
+    .tco-results-table td:last-child {
+      padding-right: 1.125rem;
     }
     .tco-results-table thead th {
       background: var(--gray-100);
@@ -3378,8 +3476,9 @@ const kwhEfectivoIni =
     .cell-name {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      min-width: 220px;
+      gap: 0.625rem;
+      min-width: 240px;
+      max-width: 340px;
     }
     .row-dot {
       display: inline-block;
@@ -3390,17 +3489,21 @@ const kwhEfectivoIni =
     }
     .row-name {
       flex: 1 1 auto;
+      min-width: 0;           /* imprescindible para que el text-overflow
+                                 funcione dentro de un flex item */
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .row-tren {
       font-size: 0.625rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 3px;
       font-weight: 500;
       flex-shrink: 0;
+      margin-left: 0.125rem;   /* respiro adicional entre nombre y badge */
     }
     .row-tren-bev {
       background: var(--yellow);
@@ -3416,15 +3519,21 @@ const kwhEfectivoIni =
     }
     .cell-tco {
       font-weight: 500;
+      /* Apila dos líneas (TCO + delta) con separación clara y alineación a
+         la derecha. Padding-block reducido para que la celda no se estire
+         verticalmente en filas sin delta. */
+      line-height: 1.25;
     }
     .cell-tco-main {
       display: block;
     }
     .cell-tco-delta {
       display: block;
-      font-size: 0.75rem;
+      margin-top: 0.2rem;
+      font-size: 0.72rem;
       font-weight: 400;
       color: var(--text-muted);
+      letter-spacing: 0.01em;
     }
     .cell-tco-delta.d-pos { color: #b23838; }
     .cell-tco-delta.d-neg { color: #2b7a3e; }
@@ -3436,7 +3545,7 @@ const kwhEfectivoIni =
 
     /* ── Focus card como <details> colapsable ───────────────────────── */
     .tco-focus-details {
-      margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+      margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       background: var(--card-bg);
@@ -3595,14 +3704,14 @@ const kwhEfectivoIni =
 
     /* ── Gráfico TCO acumulado ── */
     .tco-chart-fig {
-      margin: clamp(1.5rem, 4vw, 2.5rem) 0 0;
+      margin: clamp(0.875rem, 2.5vw, 1.5rem) 0 0;
       padding: clamp(1.25rem, 2.5vw, 2rem);
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: var(--radius);
     }
     .tco-chart-fig figcaption {
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
     }
     .tco-chart-fig h3 {
       font-size: 1.125rem;
@@ -4334,8 +4443,8 @@ const kwhEfectivoIni =
     .kpi-hero {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 0.875rem;
-      margin: 1.5rem 0 2rem;
+      gap: 0.75rem;
+      margin: 0.875rem 0 1rem;
     }
     @media (min-width: 720px) {
       .kpi-hero { grid-template-columns: repeat(3, 1fr); }
@@ -4380,23 +4489,28 @@ const kwhEfectivoIni =
       margin: 0 0 0.65rem;
     }
     .kpi-name {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 400;
       color: var(--text);
       line-height: 1.2;
-      margin: 0 0 0.5rem;
+      margin: 0 0 0.35rem;
       min-height: 1.2rem;
+      /* Truncar nombres largos a 1 línea con puntos suspensivos: la kpi-card
+         tiene un ancho fijo y un V8 Essence de 7 palabras no cabe. */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .kpi-value {
-      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-size: clamp(1.85rem, 4.5vw, 2.9rem);
       font-weight: 200;
       letter-spacing: -0.03em;
       line-height: 1;
       color: var(--text);
-      margin: 0.25rem 0 0.75rem;
+      margin: 0.2rem 0 0.55rem;
       display: flex;
       align-items: baseline;
-      gap: 0.4rem;
+      gap: 0.35rem;
       font-variant-numeric: tabular-nums;
     }
     .kpi-num { font-weight: 300; }
@@ -4411,9 +4525,16 @@ const kwhEfectivoIni =
       font-family: var(--font-serif);
       font-style: italic;
       color: var(--text-secondary);
-      line-height: 1.4;
+      line-height: 1.35;
       margin: 0;
       min-height: 1.2em;
+      /* 2 líneas máximo con ellipsis al final — evita que un nombre largo
+         en el meta ("44,2 % menos que Volkswagen Tiguan 1.5 eTSI...") rompa
+         la tarjeta estirándola verticalmente. */
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     .kpi-meta em {
       font-style: italic;
@@ -4429,7 +4550,7 @@ const kwhEfectivoIni =
 
     /* Lede queda secundario al KPI hero. */
     .resultado .lede {
-      margin-top: 0;
+      margin: 0 0 0.875rem;
       font-size: 1rem;
       color: var(--text-secondary);
     }
