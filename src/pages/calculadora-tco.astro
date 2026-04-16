@@ -173,13 +173,12 @@ const kwhEfectivoIni =
               y ayudas — validada contra tres pilotos manuales.
             </p>
             <div class="beta-warn" role="note">
-              <strong>Beta v0.3 · datos en revisión</strong> — todos los
-              modelos están temporalmente marcados con
-              <code>confianza=baja</code> mientras verificamos PVPs oficiales,
-              obtenemos tres cotizaciones de seguro reales por segmento y
-              calibramos las curvas de depreciación contra Ganvam. Úsala como
-              orientación, no como decisión de compra. Revisión prevista: fin
-              de abril 2026. <a href="#metodologia">Ver metodología</a>.
+              <strong>Beta · datos en revisión</strong> — todos los modelos
+              están temporalmente marcados con <code>confianza=baja</code>
+              mientras verificamos PVPs oficiales, obtenemos tres cotizaciones
+              de seguro reales por segmento y calibramos las curvas de
+              depreciación contra Ganvam. Úsala como orientación, no como
+              decisión de compra. <a href="#metodologia">Ver metodología</a>.
             </div>
           </div>
         </div>
@@ -191,8 +190,18 @@ const kwhEfectivoIni =
       <div class="ctrl-grid">
         <!-- Selector multi-coche (Sprint 2 E2 paso 2B) -->
         <div class="ctrl ctrl-seleccion" role="group" aria-label="Coches a analizar">
-          <p class="ctrl-title">Coches a analizar</p>
-          <p class="seleccion-hint">
+          <div class="seleccion-head">
+            <p class="ctrl-title">Coches a analizar</p>
+            <div class="modo-toggle" role="radiogroup" aria-label="Modo de comparación">
+              <button type="button" class="modo-btn is-active" data-modo="listas" role="radio" aria-checked="true">
+                Listas paralelas
+              </button>
+              <button type="button" class="modo-btn" data-modo="pares" role="radio" aria-checked="false">
+                Pares BEV ↔ ICE
+              </button>
+            </div>
+          </div>
+          <p class="seleccion-hint" id="seleccion-hint">
             Empieza con un par rápido o añade hasta 4 eléctricos y 4 de
             combustión para comparar. Haz clic en un coche de la lista —
             o en una línea del gráfico — para ver su desglose.
@@ -382,26 +391,66 @@ const kwhEfectivoIni =
 
       <p class="lede" id="lede">Cargando…</p>
 
-      <div class="tco-focus-wrap">
-        <article class="tco-card tco-focus" id="tco-focus" data-tren="BEV" aria-live="polite">
-          <header>
-            <p class="tco-tren" id="focus-tren">Eléctrico</p>
-            <h3 id="focus-name">—</h3>
-            <p class="focus-hint">Haz clic en otro coche (chip o línea del gráfico) para cambiar el desglose.</p>
-          </header>
-          <p class="tco-big"><span id="focus-tco">—</span> €</p>
-          <p class="tco-range" id="focus-range">—</p>
-          <p class="tco-sub"><span id="focus-kmkm">—</span> €/km · <span id="focus-horizonte">—</span> años</p>
-          <dl class="tco-breakdown">
-            <dt>Depreciación <span class="conf-dot" id="focus-dep-conf" aria-hidden="true"></span></dt><dd><span id="focus-dep">—</span> €</dd>
-            <dt>Energía <span class="conf-dot" id="focus-ene-conf" aria-hidden="true"></span></dt><dd><span id="focus-ene">—</span> €</dd>
-            <dt>Mantenimiento <span class="conf-dot" id="focus-man-conf" aria-hidden="true"></span></dt><dd><span id="focus-man">—</span> €</dd>
-            <dt>Seguro <span class="conf-dot" id="focus-seg-conf" aria-hidden="true"></span></dt><dd><span id="focus-seg">—</span> €</dd>
-            <dt>Impuestos</dt><dd><span id="focus-imp">—</span> €</dd>
-            <dt id="focus-ayu-dt" hidden>Ayudas</dt><dd id="focus-ayu-dd" hidden>− <span id="focus-ayu">—</span> €</dd>
-          </dl>
-        </article>
+      <!-- Tabla comparativa: resultado principal. Una fila por coche,
+           ordenable por cualquier columna. -->
+      <div class="tco-table-wrap" aria-labelledby="tabla-title">
+        <div class="tco-table-head">
+          <h3 id="tabla-title">Ranking TCO</h3>
+          <p class="tco-table-sub" id="tco-table-sub">
+            Ordenado por coste total. Clic en una cabecera para reordenar,
+            clic en una fila para ver su desglose completo abajo.
+          </p>
+        </div>
+        <div class="tco-table-scroll">
+          <table class="tco-results-table" id="tco-table" aria-label="Ranking de coches por TCO">
+            <thead>
+              <tr>
+                <th scope="col" data-sort="name">Coche</th>
+                <th scope="col" data-sort="tco" class="num" aria-sort="ascending">TCO total</th>
+                <th scope="col" data-sort="kmkm" class="num">€/km</th>
+                <th scope="col" data-sort="dep" class="num">Depreciación</th>
+                <th scope="col" data-sort="ene" class="num">Energía</th>
+                <th scope="col" data-sort="man" class="num">Mant.</th>
+                <th scope="col" data-sort="seg" class="num">Seguro</th>
+                <th scope="col" data-sort="imp" class="num">Impuestos</th>
+                <th scope="col" data-sort="ayu" class="num">Ayuda</th>
+              </tr>
+            </thead>
+            <tbody id="tco-table-body">
+              <!-- Filas generadas por renderTable() -->
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      <!-- Desglose del coche en foco — colapsable, secundario a la tabla. -->
+      <details class="tco-focus-details" id="tco-focus-details">
+        <summary>
+          <span class="focus-summary-label">Desglose del coche en foco</span>
+          <span class="focus-summary-name" id="focus-summary-name">—</span>
+          <span class="focus-summary-chev" aria-hidden="true">▾</span>
+        </summary>
+        <div class="tco-focus-wrap">
+          <article class="tco-card tco-focus" id="tco-focus" data-tren="BEV" aria-live="polite">
+            <header>
+              <p class="tco-tren" id="focus-tren">Eléctrico</p>
+              <h3 id="focus-name">—</h3>
+              <p class="focus-hint">Clic en otra fila de la tabla o en un chip para cambiar el desglose.</p>
+            </header>
+            <p class="tco-big"><span id="focus-tco">—</span> €</p>
+            <p class="tco-range" id="focus-range">—</p>
+            <p class="tco-sub"><span id="focus-kmkm">—</span> €/km · <span id="focus-horizonte">—</span> años</p>
+            <dl class="tco-breakdown">
+              <dt>Depreciación <span class="conf-dot" id="focus-dep-conf" aria-hidden="true"></span></dt><dd><span id="focus-dep">—</span> €</dd>
+              <dt>Energía <span class="conf-dot" id="focus-ene-conf" aria-hidden="true"></span></dt><dd><span id="focus-ene">—</span> €</dd>
+              <dt>Mantenimiento <span class="conf-dot" id="focus-man-conf" aria-hidden="true"></span></dt><dd><span id="focus-man">—</span> €</dd>
+              <dt>Seguro <span class="conf-dot" id="focus-seg-conf" aria-hidden="true"></span></dt><dd><span id="focus-seg">—</span> €</dd>
+              <dt>Impuestos</dt><dd><span id="focus-imp">—</span> €</dd>
+              <dt id="focus-ayu-dt" hidden>Ayudas</dt><dd id="focus-ayu-dd" hidden>− <span id="focus-ayu">—</span> €</dd>
+            </dl>
+          </article>
+        </div>
+      </details>
 
       <!-- Gráfico TCO acumulado BEV vs ICE -->
       <figure class="tco-chart-fig" aria-labelledby="chart-title">
@@ -431,6 +480,11 @@ const kwhEfectivoIni =
             </desc>
             <!-- Contenido renderizado por JS -->
           </svg>
+          <!-- Tooltip del gráfico (absolute, lo posiciona JS en mousemove). -->
+          <div class="chart-tooltip" id="chart-tooltip" role="tooltip" aria-hidden="true">
+            <div class="tt-year" id="tt-year"></div>
+            <ul class="tt-list" id="tt-list"></ul>
+          </div>
           <table class="sr-only" id="chart-table" aria-label="Datos del gráfico"></table>
           <div class="chart-legend" id="chart-legend" aria-label="Leyenda del gráfico">
             <!-- Items generados dinámicamente por renderChart() -->
@@ -501,15 +555,13 @@ const kwhEfectivoIni =
 
   <Footer />
 
-  <!-- Datos server → cliente -->
-  <script type="application/json" id="tco-payload" set:html={JSON.stringify(payload)} />
-  <!-- Sprint 2 E2 (paso 1): listas completas de candidatos para multi-select. -->
+  <!-- Datos server → cliente: listas completas de candidatos para multi-select. -->
   <script type="application/json" id="tco-all-bevs" set:html={JSON.stringify(ALL_BEVS)} />
   <script type="application/json" id="tco-all-ices" set:html={JSON.stringify(ALL_ICES)} />
 
   <!-- Lógica interactiva (auto-bundled por Astro) -->
   <script>
-    import { calcularTCO, compararTCO, curvaUnTren } from '../lib/tco/calculadora.mjs';
+    import { calcularTCO, compararTCO, curvaUnTren, curvaTCO } from '../lib/tco/calculadora.mjs';
 
     const eur = (n: number) =>
       new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 }).format(n);
@@ -523,13 +575,9 @@ const kwhEfectivoIni =
     const allIcesEl = document.getElementById('tco-all-ices')!;
     const ALL_BEVS = JSON.parse(allBevsEl.textContent ?? '[]') as Array<any>;
     const ALL_ICES = JSON.parse(allIcesEl.textContent ?? '[]') as Array<any>;
-    // Exponemos a window para inspección en DevTools durante el dev de Sprint 2.
+    // Exponemos a window para inspección en DevTools.
     (window as any).__e2_all_bevs = ALL_BEVS;
     (window as any).__e2_all_ices = ALL_ICES;
-
-    // NOTE: El payload legacy (tco-payload) se mantiene en el SSR por
-    // compatibilidad con URLs antiguas (?m=slug), pero el UI Sprint 2 ya
-    // no lo consume. Todo el estado se lee de ALL_BEVS / ALL_ICES.
 
     const $ = <T extends HTMLElement = HTMLElement>(id: string) =>
       document.getElementById(id) as T;
@@ -539,7 +587,16 @@ const kwhEfectivoIni =
     const HORIZONTES_VALIDOS = [2, 3, 4, 5, 6, 7, 8, 10];
     const MAX_POR_TREN = 4;
 
+    // Paleta por slot (0..3). El slot 0 siempre es el amarillo enchufa2, que
+    // en BEV sale sólido y en ICE discontinuo: así el usuario identifica el
+    // coche por color y el tren por la forma. Los tonos 1..3 son desaturados
+    // para no competir con la identidad amarilla.
+    const PALETA_SLOT = ['#F5C518', '#111111', '#8F3985', '#1F7A8C'];
+    const colorSlot = (idx: number) => PALETA_SLOT[idx % PALETA_SLOT.length];
+
     type FocusKey = { tren: 'BEV' | 'ICE'; slug: string };
+
+    type Modo = 'listas' | 'pares';
 
     const state = {
       bevSlugs: [DEFAULT_BEV] as string[],
@@ -552,6 +609,7 @@ const kwhEfectivoIni =
       kwhPublica: 0.45,             // €/kWh pública media AC+DC (E1)
       litro: 1.55,
       ayuda: true,
+      modo: 'listas' as Modo,       // Fase B.5: 'listas' (paralelo) | 'pares' (BEV[i]↔ICE[i])
     };
 
     const focusKeyStr = (k: FocusKey) => `${k.tren}:${k.slug}`;
@@ -646,6 +704,7 @@ const kwhEfectivoIni =
       const g = Number(p.get('l'));
       if (g >= 1.2 && g <= 2) state.litro = g;
       if (p.get('a') === '0') state.ayuda = false;
+      if (p.get('mo') === 'pares') state.modo = 'pares';
     }
 
     function writeUrl() {
@@ -660,6 +719,7 @@ const kwhEfectivoIni =
       p.set('kp', state.kwhPublica.toFixed(2));
       p.set('l', state.litro.toFixed(2));
       if (!state.ayuda) p.set('a', '0');
+      if (state.modo === 'pares') p.set('mo', 'pares');
       history.replaceState(null, '', `?${p.toString()}`);
     }
 
@@ -721,12 +781,42 @@ const kwhEfectivoIni =
       tren: 'BEV' | 'ICE';
       slug: string;
       name: string;
+      color: string;
       puntos: Array<{ anio: number; tco: number; tco_min: number; tco_max: number }>;
       margen: number;
       isFocus: boolean;
     };
 
-    function renderChart(curvas: CurvaData[]) {
+    type BreakevenInfo = {
+      anio: number;
+      bevName: string;
+      iceName: string;
+      rentableDesdeInicio: boolean;
+    };
+
+    // Estado publicado por renderChart() para que el handler de tooltip
+    // pueda interpolar valores sin redibujar todo en cada mousemove.
+    type ChartState = {
+      curvas: CurvaData[];
+      xMin: number;
+      xMax: number;
+      plotLeft: number;
+      plotTop: number;
+      plotW: number;
+      plotH: number;
+      xFn: (a: number) => number;
+      yFn: (t: number) => number;
+    };
+    let chartStateRef: ChartState | null = null;
+
+    function renderChart(curvas: CurvaData[], breakevens: BreakevenInfo[] | BreakevenInfo | null = null) {
+      // Back-compat: aceptar un único break-even o un array. Internamente
+      // usamos siempre un array.
+      const beList: BreakevenInfo[] = Array.isArray(breakevens)
+        ? breakevens
+        : breakevens
+          ? [breakevens]
+          : [];
       const svg = $('tco-chart');
       const tbl = $('chart-table') as HTMLTableElement;
 
@@ -815,52 +905,129 @@ const kwhEfectivoIni =
           `${i === 0 ? 'M' : 'L'} ${x(p.anio).toFixed(1)} ${y(p.tco).toFixed(1)}`,
         ).join(' ');
 
-      // ── Render en 3 capas ──
-      // 1) bandas de focus (fondo)
-      // 2) líneas no-focus (dim)
-      // 3) línea focus (destacada + puntos extremos + label del coche)
+      // ── Render en 4 capas ──
+      // 1) banda del focus (fondo)
+      // 2) líneas no-focus (dim) — color por slot, sólido BEV / discontinuo ICE
+      // 3) línea focus (destacada, mismo color por slot)
+      // 4) punto final de CADA curva (facilita identificación)
 
       const focusCurva = curvas.find((c) => c.isFocus);
 
-      // 1) Bandas solo para el focus.
+      // 1) Banda solo para el focus (ruido visual controlado).
       if (focusCurva && focusCurva.margen > 0) {
         svg.appendChild(el('path', {
           d: bandPath(focusCurva.puntos),
-          class: focusCurva.tren === 'BEV' ? 'band-bev' : 'band-ice',
+          class: 'band',
+          fill: focusCurva.color,
+          'fill-opacity': '0.16',
+          stroke: focusCurva.color,
+          'stroke-opacity': '0.35',
+          'stroke-width': '0.75',
+          'stroke-dasharray': '2 3',
         }));
       }
 
       // 2) Líneas no-focus dim.
       for (const c of curvas) {
         if (c.isFocus) continue;
-        const p = el('path', {
+        const attrs: Record<string, string | number> = {
           d: linePath(c.puntos),
-          class: `curve-dim curve-${c.tren.toLowerCase()}`,
+          class: `curve curve-dim curve-${c.tren.toLowerCase()}`,
+          stroke: c.color,
+          fill: 'none',
           'data-tren': c.tren,
           'data-slug': c.slug,
           tabindex: 0,
           role: 'button',
           'aria-label': `${c.name} — clic para ver desglose`,
-        });
-        svg.appendChild(p);
+        };
+        if (c.tren === 'ICE') attrs['stroke-dasharray'] = '6 4';
+        svg.appendChild(el('path', attrs));
       }
 
       // 3) Focus encima, destacado.
       if (focusCurva) {
-        const p = el('path', {
+        const attrs: Record<string, string | number> = {
           d: linePath(focusCurva.puntos),
-          class: `curve-focus curve-${focusCurva.tren.toLowerCase()}`,
+          class: `curve curve-focus curve-${focusCurva.tren.toLowerCase()}`,
+          stroke: focusCurva.color,
+          fill: 'none',
           'data-tren': focusCurva.tren,
           'data-slug': focusCurva.slug,
-        });
-        svg.appendChild(p);
+        };
+        if (focusCurva.tren === 'ICE') attrs['stroke-dasharray'] = '6 4';
+        svg.appendChild(el('path', attrs));
+      }
 
-        const last = focusCurva.puntos[focusCurva.puntos.length - 1];
+      // 4) Puntos finales de todas las curvas (ayuda a identificar cada línea
+      //    por su color al llegar al borde derecho).
+      for (const c of curvas) {
+        const last = c.puntos[c.puntos.length - 1];
         svg.appendChild(el('circle', {
-          cx: x(last.anio), cy: y(last.tco), r: 4,
-          class: `dot-${focusCurva.tren.toLowerCase()}`,
+          cx: x(last.anio),
+          cy: y(last.tco),
+          r: c.isFocus ? 4.5 : 3,
+          fill: c.color,
+          stroke: 'var(--card-bg)',
+          'stroke-width': 1.5,
+          'data-tren': c.tren,
+          'data-slug': c.slug,
         }));
       }
+
+      // 5) Break-even(s). En modo 'listas' habrá como mucho uno (BEV más
+      //    barato ↔ ICE más barato). En modo 'pares', uno por pareja
+      //    posicional cuyo cruce ocurra dentro del horizonte. Las pills
+      //    se apilan en filas para no superponerse cuando hay varias.
+      beList.forEach((breakeven, i) => {
+        if (!breakeven || breakeven.anio < 0 || breakeven.anio > xMax + 1e-6) return;
+        const bx = x(breakeven.anio);
+        svg.appendChild(el('line', {
+          x1: bx, x2: bx, y1: M.top, y2: M.top + PLOT_H,
+          class: 'be-line',
+        }));
+
+        const label = breakeven.rentableDesdeInicio
+          ? (beList.length > 1 ? `P${i + 1} · ventaja día 1` : 'Ventaja BEV desde el día 1')
+          : breakeven.anio < 1
+            ? `${beList.length > 1 ? `P${i + 1} · ` : 'Break-even · '}${(breakeven.anio * 12).toFixed(0)} m`
+            : `${beList.length > 1 ? `P${i + 1} · ` : 'Break-even · '}${breakeven.anio.toFixed(breakeven.anio % 1 === 0 ? 0 : 1)} a`;
+
+        // Pill en fila apilada según índice, para evitar solapes con N>1.
+        const approxW = 9 + label.length * 6.2;
+        const pillY = M.top + 4 + i * 22;
+        const pillX = Math.max(
+          M.left + 4,
+          Math.min(M.left + PLOT_W - approxW - 4, bx - approxW / 2),
+        );
+        svg.appendChild(el('rect', {
+          x: pillX, y: pillY, width: approxW, height: 20, rx: 10, ry: 10,
+          class: 'be-pill',
+        }));
+        svg.appendChild(el('text', {
+          x: pillX + approxW / 2, y: pillY + 14,
+          class: 'be-label',
+          'text-anchor': 'middle',
+        }, label));
+      });
+
+      // Overlay invisible para capturar hover/mousemove sobre todo el área
+      // del plot. Se dibuja al final (última capa) para que reciba los
+      // eventos por encima de curvas y grid.
+      const overlay = el('rect', {
+        x: M.left, y: M.top, width: PLOT_W, height: PLOT_H,
+        fill: 'transparent', class: 'chart-overlay',
+        'aria-hidden': 'true',
+      });
+      svg.appendChild(overlay);
+
+      // Publica el estado del gráfico para el handler de tooltip.
+      chartStateRef = {
+        curvas,
+        xMin, xMax,
+        plotLeft: M.left, plotTop: M.top, plotW: PLOT_W, plotH: PLOT_H,
+        xFn: x, yFn: y,
+      };
 
       // Tabla sr-only (accesibilidad): valores anuales del focus.
       if (focusCurva) {
@@ -875,18 +1042,30 @@ const kwhEfectivoIni =
         tbl.innerHTML = '';
       }
 
-      // ── Leyenda dinámica: un item por coche, identificación clara ──
+      // ── Leyenda dinámica: un item por coche + tren. Clickable para cambiar
+      //    foco. El swatch tiene el color del coche + forma según el tren
+      //    (sólido = BEV, discontinuo = ICE). Coincide con lo pintado en el
+      //    gráfico, así no hay ambigüedad aunque haya 4 BEVs seleccionados.
       const legend = $('chart-legend');
       legend.innerHTML = '';
 
       for (const c of curvas) {
-        const item = document.createElement('span');
+        const item = document.createElement('button');
+        item.type = 'button';
         item.className = `lg-item lg-${c.tren.toLowerCase()}${c.isFocus ? ' lg-focus' : ''}`;
         item.setAttribute('data-tren', c.tren);
         item.setAttribute('data-slug', c.slug);
+        item.title = `${c.tren === 'BEV' ? 'Eléctrico' : 'Combustión'} · clic para ver desglose`;
 
         const swatch = document.createElement('span');
         swatch.className = 'lg-swatch';
+        // Sólido para BEV, patrón repetitivo para ICE. Mismo color por slot.
+        if (c.tren === 'BEV') {
+          swatch.style.background = c.color;
+        } else {
+          swatch.style.background =
+            `repeating-linear-gradient(to right, ${c.color} 0 6px, transparent 6px 10px)`;
+        }
         item.appendChild(swatch);
 
         const label = document.createElement('span');
@@ -897,18 +1076,25 @@ const kwhEfectivoIni =
         if (c.isFocus) {
           const tag = document.createElement('span');
           tag.className = 'lg-tag';
-          tag.textContent = 'focus';
+          tag.textContent = 'en foco';
           item.appendChild(tag);
         }
+
+        item.addEventListener('click', () => {
+          state.focus = { tren: c.tren, slug: c.slug };
+          recalc();
+        });
 
         legend.appendChild(item);
       }
 
-      // Banda de incertidumbre (solo si el focus tiene margen).
+      // Banda de incertidumbre en la leyenda, solo si el focus tiene margen.
       if (focusCurva && focusCurva.margen > 0) {
         const band = document.createElement('span');
         band.className = 'lg-item lg-band';
-        band.innerHTML = `<span class="lg-swatch"></span> Banda ±${Math.round(focusCurva.margen * 100)} % (${focusCurva.name})`;
+        band.innerHTML =
+          `<span class="lg-swatch" style="background:${focusCurva.color};opacity:.25;border:1px dashed ${focusCurva.color}"></span>` +
+          ` Banda ±${Math.round(focusCurva.margen * 100)} % (${focusCurva.name})`;
         legend.appendChild(band);
       }
     }
@@ -988,22 +1174,44 @@ const kwhEfectivoIni =
         })
         .filter((x): x is Resolved => !!x);
 
-      // 3) Construir curvas para el gráfico (una por coche).
+      // 3) Construir curvas para el gráfico (una por coche, color por slot).
+      //
+      // En modo 'listas': BEV y ICE usan slots independientes, cada tren con
+      //   su propia escala de colores (BEV #0..#3 y ICE #0..#3).
+      // En modo 'pares': BEV[i] y ICE[i] comparten el mismo slot (mismo
+      //   color), así la pareja se identifica por color + forma (BEV sólido,
+      //   ICE discontinuo). El emparejamiento es posicional.
       const curvas: CurvaData[] = [];
-      for (const r of [...resolvedBev, ...resolvedIce]) {
+      resolvedBev.forEach((r, idx) => {
         const c = curvaUnTren(r.input, overrides, {
           horizonte_max: state.horizonte,
           granularidad_anios: 0.25,
         });
         curvas.push({
-          tren: r.tren,
+          tren: 'BEV',
           slug: r.slug,
           name: r.meta.name,
+          color: colorSlot(idx),
           puntos: c.puntos,
           margen: c.margen,
-          isFocus: isFocus(r.tren, r.slug),
+          isFocus: isFocus('BEV', r.slug),
         });
-      }
+      });
+      resolvedIce.forEach((r, idx) => {
+        const c = curvaUnTren(r.input, overrides, {
+          horizonte_max: state.horizonte,
+          granularidad_anios: 0.25,
+        });
+        curvas.push({
+          tren: 'ICE',
+          slug: r.slug,
+          name: r.meta.name,
+          color: colorSlot(idx),
+          puntos: c.puntos,
+          margen: c.margen,
+          isFocus: isFocus('ICE', r.slug),
+        });
+      });
 
       // 4) Lede editorial: cheapest BEV vs cheapest ICE.
       const cheapestBev = resolvedBev.length
@@ -1017,19 +1225,77 @@ const kwhEfectivoIni =
           )
         : null;
 
-      if (cheapestBev && cheapestIce) {
+      // Lede multi-coche: en lugar de hablar sólo del más barato, narra el
+      // ranking de cada tren (top-3) y cuantifica el delta BEV↔ICE contra
+      // el coche rival más caro (que es el que importa cuando decides si el
+      // eléctrico "gana" al peor escenario de combustión).
+      const topBev = [...resolvedBev].sort(
+        (a, b) => a.tco.tco_total_eur - b.tco.tco_total_eur,
+      );
+      const topIce = [...resolvedIce].sort(
+        (a, b) => a.tco.tco_total_eur - b.tco.tco_total_eur,
+      );
+      const fmtRanking = (items: Resolved[]) =>
+        items
+          .slice(0, 3)
+          .map(
+            (r, i) =>
+              `${i + 1}. <strong>${r.meta.name}</strong> ` +
+              `(${eur(r.tco.tco_total_eur)} €)`,
+          )
+          .join(' · ');
+
+      if (state.modo === 'pares' && resolvedBev.length && resolvedIce.length) {
+        // Modo pares: narrar cada pareja posicional (BEV[i] ↔ ICE[i]).
+        const pairs: Array<{
+          bev: Resolved;
+          ice: Resolved;
+          diff: number;
+          pct: number;
+        }> = [];
+        const n = Math.min(resolvedBev.length, resolvedIce.length);
+        for (let i = 0; i < n; i++) {
+          const bev = resolvedBev[i];
+          const ice = resolvedIce[i];
+          const diff = ice.tco.tco_total_eur - bev.tco.tco_total_eur;
+          const pct = ice.tco.tco_total_eur > 0
+            ? Math.abs(diff) / ice.tco.tco_total_eur * 100
+            : 0;
+          pairs.push({ bev, ice, diff, pct });
+        }
+        const intro =
+          `A ${state.horizonte} años y ${eur(state.km)} km/año, por parejas:`;
+        const items = pairs.map((p, i) => {
+          const sign = p.diff >= 0 ? 'ahorra' : 'sobrecuesta';
+          return `<span class="lede-ranking">` +
+            `<span class="lede-ranking-label">Pareja ${i + 1}:</span> ` +
+            `<strong>${p.bev.meta.name}</strong> vs ` +
+            `<strong>${p.ice.meta.name}</strong> — el BEV ${sign} ` +
+            `<strong>${eur(Math.abs(p.diff))} €</strong> ` +
+            `(${p.pct.toFixed(1)} %)` +
+            `</span>`;
+        });
+        const leftover = Math.abs(resolvedBev.length - resolvedIce.length);
+        const tail = leftover > 0
+          ? `<span class="lede-ranking lede-ranking-muted">+${leftover} coche(s) sin pareja asignada</span>`
+          : '';
+        $('lede').innerHTML = [intro, ...items, tail].filter(Boolean).join(' ');
+      } else if (cheapestBev && cheapestIce) {
         const diff = cheapestIce.tco.tco_total_eur - cheapestBev.tco.tco_total_eur;
         const sign = diff >= 0 ? 'ahorra' : 'sobrecuesta';
         const abs = Math.abs(diff);
-        const base = Math.min(cheapestBev.tco.tco_total_eur, cheapestIce.tco.tco_total_eur);
-        const pct = base > 0 ? (abs / cheapestIce.tco.tco_total_eur) * 100 : 0;
-        $('lede').innerHTML =
-          `A ${state.horizonte} años y ${eur(state.km)} km/año, el ` +
-          `<strong>${cheapestBev.meta.name}</strong> es el eléctrico más barato ` +
-          `(<strong>${eur(cheapestBev.tco.tco_total_eur)} €</strong>) y el ` +
-          `<strong>${cheapestIce.meta.name}</strong> el combustión más barato ` +
-          `(<strong>${eur(cheapestIce.tco.tco_total_eur)} €</strong>). ` +
-          `El BEV ${sign} <strong>${eur(abs)} €</strong> (${pct.toFixed(1)} %).`;
+        const pct =
+          cheapestIce.tco.tco_total_eur > 0
+            ? (abs / cheapestIce.tco.tco_total_eur) * 100
+            : 0;
+        const parts: string[] = [
+          `A ${state.horizonte} años y ${eur(state.km)} km/año, el eléctrico ` +
+            `más barato ${sign} <strong>${eur(abs)} €</strong> ` +
+            `(${pct.toFixed(1)} %) frente al combustión más barato.`,
+          `<span class="lede-ranking"><span class="lede-ranking-label">Eléctricos:</span> ${fmtRanking(topBev)}${resolvedBev.length > 3 ? ` · +${resolvedBev.length - 3}` : ''}</span>`,
+          `<span class="lede-ranking"><span class="lede-ranking-label">Combustión:</span> ${fmtRanking(topIce)}${resolvedIce.length > 3 ? ` · +${resolvedIce.length - 3}` : ''}</span>`,
+        ];
+        $('lede').innerHTML = parts.join(' ');
       } else if (cheapestBev) {
         $('lede').innerHTML =
           `A ${state.horizonte} años y ${eur(state.km)} km/año, el ` +
@@ -1046,6 +1312,16 @@ const kwhEfectivoIni =
         $('lede').innerHTML = 'Selecciona al menos un coche para empezar.';
       }
 
+      // Actualiza subtítulo y nombre del summary del details.
+      const tablaSub = $('tco-table-sub');
+      if (tablaSub) {
+        tablaSub.textContent =
+          `${resolvedBev.length + resolvedIce.length} coches · horizonte ${state.horizonte} años · ` +
+          `${eur(state.km)} km/año. Clic en una cabecera para reordenar, ` +
+          `clic en una fila para verla en detalle.`;
+      }
+      $('lede').classList.remove('lede-error');
+
       // 5) Focus card breakdown.
       const focusResolved =
         [...resolvedBev, ...resolvedIce].find((r) =>
@@ -1053,11 +1329,13 @@ const kwhEfectivoIni =
         ) ?? null;
 
       const focusCard = $('tco-focus');
+      const focusSummaryName = document.getElementById('focus-summary-name');
       if (focusResolved) {
         focusCard.dataset.tren = focusResolved.tren;
         $('focus-tren').textContent =
           focusResolved.tren === 'BEV' ? 'Eléctrico · en foco' : 'Combustión · en foco';
         $('focus-name').textContent = focusResolved.meta.name;
+        if (focusSummaryName) focusSummaryName.textContent = focusResolved.meta.name;
         $('focus-tco').textContent = eur(focusResolved.tco.tco_total_eur);
         $('focus-range').textContent = rangoTxt(
           focusResolved.tco.tco_total_min_eur,
@@ -1088,14 +1366,267 @@ const kwhEfectivoIni =
         }
       }
 
-      // 6) Re-pintar chips (conteo + etiquetas).
+      // 6) Break-even. En modo 'listas' calculamos solo BEV más barato ↔
+      //    ICE más barato (el par que narra el lede). En modo 'pares'
+      //    calculamos un break-even por cada pareja posicional.
+      const breakevens: BreakevenInfo[] = [];
+      const calcBE = (bev: Resolved, ice: Resolved) => {
+        const bevInput = { ...bev.input, tren: 'BEV' as const };
+        const iceInput = { ...ice.input, tren: 'ICE' as const };
+        const cv = curvaTCO(bevInput, iceInput, overrides, {
+          horizonte_max: state.horizonte,
+          granularidad_anios: 0.25,
+        });
+        if (cv.breakeven_anio !== null && cv.breakeven_anio <= state.horizonte) {
+          breakevens.push({
+            anio: cv.breakeven_anio,
+            bevName: bev.meta.name,
+            iceName: ice.meta.name,
+            rentableDesdeInicio: cv.rentable_desde_inicio,
+          });
+        }
+      };
+
+      if (state.modo === 'pares' && resolvedBev.length && resolvedIce.length) {
+        const n = Math.min(resolvedBev.length, resolvedIce.length);
+        for (let i = 0; i < n; i++) calcBE(resolvedBev[i], resolvedIce[i]);
+      } else if (cheapestBev && cheapestIce) {
+        calcBE(cheapestBev, cheapestIce);
+      }
+
+      // 7) Re-pintar chips (conteo + etiquetas).
       renderChips();
 
-      // 7) Gráfico
-      renderChart(curvas);
+      // 8) Tabla comparativa (resultado principal).
+      renderTable([...resolvedBev, ...resolvedIce], curvas);
+
+      // 9) Gráfico
+      renderChart(curvas, breakevens);
 
       writeUrl();
     }
+
+    // ── Tabla comparativa (Fase B) ──────────────────────────────────────
+    // Estado de ordenación persistente entre recalc(). Por defecto TCO asc.
+    type TableSort = {
+      key: 'name' | 'tco' | 'kmkm' | 'dep' | 'ene' | 'man' | 'seg' | 'imp' | 'ayu';
+      dir: 'asc' | 'desc';
+    };
+    let tableSort: TableSort = { key: 'tco', dir: 'asc' };
+
+    function renderTable(items: Array<{
+      tren: 'BEV' | 'ICE';
+      slug: string;
+      meta: any;
+      input: any;
+      tco: any;
+    }>, curvas: CurvaData[]) {
+      const tbody = $('tco-table-body');
+      const thead = document.querySelectorAll<HTMLTableCellElement>(
+        '#tco-table thead th',
+      );
+      if (!tbody) return;
+
+      // Mapa slug→color: el color lo decide el gráfico (por slot dentro del
+      // tren). Aquí lo reutilizamos para que la fila casse visualmente con
+      // la curva y el chip.
+      const colorBySlug = new Map<string, string>();
+      curvas.forEach((c) => {
+        colorBySlug.set(`${c.tren}:${c.slug}`, c.color);
+      });
+
+      // Extraer valor por columna.
+      const value = (r: typeof items[number], k: TableSort['key']) => {
+        switch (k) {
+          case 'name':
+            return r.meta.name.toLowerCase();
+          case 'tco':
+            return r.tco.tco_total_eur;
+          case 'kmkm':
+            return r.tco.tco_por_km_eur;
+          case 'dep':
+            return r.tco.depreciacion_eur;
+          case 'ene':
+            return r.tco.energia_eur;
+          case 'man':
+            return r.tco.mantenimiento_eur;
+          case 'seg':
+            return r.tco.seguro_eur;
+          case 'imp':
+            return r.tco.impuestos_eur;
+          case 'ayu':
+            return r.tren === 'BEV' ? r.tco.ayudas_eur ?? 0 : 0;
+        }
+      };
+
+      const sorted = [...items].sort((a, b) => {
+        const va = value(a, tableSort.key);
+        const vb = value(b, tableSort.key);
+        if (va < vb) return tableSort.dir === 'asc' ? -1 : 1;
+        if (va > vb) return tableSort.dir === 'asc' ? 1 : -1;
+        return 0;
+      });
+
+      // Baseline para el delta de la columna TCO: el BEV más barato.
+      const bevMin = items
+        .filter((r) => r.tren === 'BEV')
+        .reduce<number | null>(
+          (m, r) => (m === null || r.tco.tco_total_eur < m ? r.tco.tco_total_eur : m),
+          null,
+        );
+
+      // En pares mode, calcular el índice de pareja de cada coche por su
+      // posición dentro de su tren (BEV[i] ↔ ICE[i]).
+      const pairIdxFor = new Map<string, number>();
+      if (state.modo === 'pares') {
+        const bevOrder = state.bevSlugs;
+        const iceOrder = state.iceSlugs;
+        const n = Math.min(bevOrder.length, iceOrder.length);
+        for (let i = 0; i < n; i++) {
+          pairIdxFor.set(`BEV:${bevOrder[i]}`, i);
+          pairIdxFor.set(`ICE:${iceOrder[i]}`, i);
+        }
+      }
+
+      // Render filas.
+      tbody.innerHTML = '';
+      sorted.forEach((r) => {
+        const key = `${r.tren}:${r.slug}`;
+        const isF = isFocus(r.tren, r.slug);
+        const color = colorBySlug.get(key) ?? 'var(--gray-400)';
+        const tr = document.createElement('tr');
+        tr.dataset.tren = r.tren;
+        tr.dataset.slug = r.slug;
+        if (isF) tr.classList.add('row-focus');
+        tr.setAttribute('role', 'button');
+        tr.setAttribute('tabindex', '0');
+        tr.setAttribute(
+          'aria-label',
+          `${r.meta.name} — ${eur(r.tco.tco_total_eur)} euros · clic para ver desglose`,
+        );
+
+        // Columna 1: marcador de color + nombre + badge tren + badge pareja.
+        const tdName = document.createElement('td');
+        tdName.className = 'cell-name';
+        const dot = document.createElement('span');
+        dot.className = 'row-dot';
+        dot.style.background =
+          r.tren === 'BEV'
+            ? color
+            : `repeating-linear-gradient(to right, ${color} 0 6px, transparent 6px 10px)`;
+        tdName.appendChild(dot);
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'row-name';
+        nameSpan.textContent = r.meta.name;
+        tdName.appendChild(nameSpan);
+        const trenBadge = document.createElement('span');
+        trenBadge.className = `row-tren row-tren-${r.tren.toLowerCase()}`;
+        trenBadge.textContent = r.tren === 'BEV' ? 'BEV' : 'ICE';
+        tdName.appendChild(trenBadge);
+        const pIdx = pairIdxFor.get(key);
+        if (state.modo === 'pares' && pIdx !== undefined) {
+          const pairBadge = document.createElement('span');
+          pairBadge.className = 'row-pair';
+          pairBadge.textContent = `Pareja ${pIdx + 1}`;
+          tdName.appendChild(pairBadge);
+        }
+        tr.appendChild(tdName);
+
+        // Columna 2: TCO total + delta vs BEV más barato.
+        const tdTco = document.createElement('td');
+        tdTco.className = 'num cell-tco';
+        const tcoMain = document.createElement('span');
+        tcoMain.className = 'cell-tco-main';
+        tcoMain.textContent = `${eur(r.tco.tco_total_eur)} €`;
+        tdTco.appendChild(tcoMain);
+        if (bevMin !== null) {
+          const delta = r.tco.tco_total_eur - bevMin;
+          if (Math.abs(delta) > 1) {
+            const deltaSpan = document.createElement('span');
+            deltaSpan.className = `cell-tco-delta ${delta >= 0 ? 'd-pos' : 'd-neg'}`;
+            deltaSpan.textContent = `${delta >= 0 ? '+' : '−'}${eur(Math.abs(delta))} €`;
+            tdTco.appendChild(deltaSpan);
+          }
+        }
+        tr.appendChild(tdTco);
+
+        // Resto de columnas numéricas.
+        const numCells: Array<[string, number | null]> = [
+          ['kmkm', r.tco.tco_por_km_eur],
+          ['dep', r.tco.depreciacion_eur],
+          ['ene', r.tco.energia_eur],
+          ['man', r.tco.mantenimiento_eur],
+          ['seg', r.tco.seguro_eur],
+          ['imp', r.tco.impuestos_eur],
+          ['ayu', r.tren === 'BEV' ? r.tco.ayudas_eur ?? 0 : null],
+        ];
+        numCells.forEach(([key, val]) => {
+          const td = document.createElement('td');
+          td.className = `num cell-${key}`;
+          if (val === null) {
+            td.textContent = '—';
+            td.classList.add('cell-empty');
+          } else if (key === 'kmkm') {
+            td.textContent = `${eur2(val)} €`;
+          } else if (key === 'ayu' && val === 0) {
+            td.textContent = '—';
+            td.classList.add('cell-empty');
+          } else {
+            td.textContent = `${key === 'ayu' ? '−' : ''}${eur(val)} €`;
+          }
+          tr.appendChild(td);
+        });
+
+        // Click o Enter sobre la fila: pasa a foco ese coche.
+        const activate = () => {
+          state.focus = { tren: r.tren, slug: r.slug };
+          recalc();
+        };
+        tr.addEventListener('click', activate);
+        tr.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            activate();
+          }
+        });
+
+        tbody.appendChild(tr);
+      });
+
+      // Estado visual de ordenación en las cabeceras.
+      thead.forEach((th) => {
+        const k = th.dataset.sort as TableSort['key'] | undefined;
+        if (!k) return;
+        if (k === tableSort.key) {
+          th.setAttribute('aria-sort', tableSort.dir === 'asc' ? 'ascending' : 'descending');
+        } else {
+          th.removeAttribute('aria-sort');
+        }
+      });
+    }
+
+    // Click en cabecera: cambia la clave de orden (o invierte dir si ya era esa).
+    document.querySelectorAll<HTMLTableCellElement>('#tco-table thead th').forEach((th) => {
+      const key = th.dataset.sort as TableSort['key'] | undefined;
+      if (!key) return;
+      th.setAttribute('tabindex', '0');
+      th.setAttribute('role', 'button');
+      const toggle = () => {
+        if (tableSort.key === key) {
+          tableSort.dir = tableSort.dir === 'asc' ? 'desc' : 'asc';
+        } else {
+          tableSort = { key, dir: key === 'name' ? 'asc' : 'asc' };
+        }
+        recalc();
+      };
+      th.addEventListener('click', toggle);
+      th.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggle();
+        }
+      });
+    });
 
     // ── Sprint 2 E2 paso 2B — Bindings chips + combobox + quick-starts ──
 
@@ -1114,14 +1645,22 @@ const kwhEfectivoIni =
       const container = $(tren === 'BEV' ? 'chips-bev' : 'chips-ice');
       const slugs = tren === 'BEV' ? state.bevSlugs : state.iceSlugs;
       container.innerHTML = '';
-      for (const slug of slugs) {
+      slugs.forEach((slug, idx) => {
         const meta = getMeta(tren, slug);
-        if (!meta) continue;
+        if (!meta) return;
+        const color = colorSlot(idx);
         const chip = document.createElement('span');
         chip.className = `chip chip-${tren.toLowerCase()}`;
         chip.dataset.tren = tren;
         chip.dataset.slug = slug;
         chip.setAttribute('role', 'listitem');
+        // Barrita de color a la izquierda: misma paleta que el gráfico. Sólido
+        // para BEV, repite patrón para ICE (consistencia visual con las curvas).
+        chip.style.borderLeft = `3px solid ${color}`;
+        chip.style.paddingLeft = '0.5rem';
+        if (tren === 'ICE') {
+          chip.style.borderLeftStyle = 'dashed';
+        }
         if (isFocus(tren, slug)) chip.classList.add('chip-focus');
 
         const nameBtn = document.createElement('button');
@@ -1156,7 +1695,7 @@ const kwhEfectivoIni =
           chip.appendChild(rm);
         }
         container.appendChild(chip);
-      }
+      });
     }
 
     // Combobox: filtrado por marca/modelo/variante, excluye ya seleccionados.
@@ -1262,6 +1801,172 @@ const kwhEfectivoIni =
       recalc();
     });
 
+    // ── Tooltip del gráfico ──────────────────────────────────────────
+    // Sobre el overlay (último layer del SVG) seguimos la posición del
+    // ratón, interpolamos el TCO de cada curva en ese año, pintamos una
+    // línea vertical con puntos por coche, y rellenamos el tooltip DOM.
+    (function setupChartTooltip() {
+      const chart = document.getElementById('tco-chart') as SVGSVGElement | null;
+      const tooltip = document.getElementById('chart-tooltip') as HTMLElement | null;
+      const tYear = document.getElementById('tt-year') as HTMLElement | null;
+      const tList = document.getElementById('tt-list') as HTMLElement | null;
+      const wrap = chart?.parentElement as HTMLElement | null;
+      if (!chart || !tooltip || !tYear || !tList || !wrap) return;
+
+      // Namespace SVG para el cursor (se limpia en cada mousemove).
+      const SVGNS = 'http://www.w3.org/2000/svg';
+      let cursorGroup: SVGGElement | null = null;
+
+      const clearCursor = () => {
+        if (cursorGroup && cursorGroup.parentNode) {
+          cursorGroup.parentNode.removeChild(cursorGroup);
+        }
+        cursorGroup = null;
+      };
+
+      // Interpolación lineal de TCO en un año dado a partir de los puntos.
+      const interp = (pts: Array<{ anio: number; tco: number }>, a: number) => {
+        if (!pts.length) return null;
+        if (a <= pts[0].anio) return pts[0].tco;
+        if (a >= pts[pts.length - 1].anio) return pts[pts.length - 1].tco;
+        for (let i = 1; i < pts.length; i++) {
+          if (pts[i].anio >= a) {
+            const p0 = pts[i - 1];
+            const p1 = pts[i];
+            const t = (a - p0.anio) / (p1.anio - p0.anio || 1);
+            return p0.tco + (p1.tco - p0.tco) * t;
+          }
+        }
+        return pts[pts.length - 1].tco;
+      };
+
+      // Convierte un evento de puntero a coords SVG (viewBox) usando CTM.
+      const svgPoint = (evt: MouseEvent | PointerEvent) => {
+        const pt = chart.createSVGPoint();
+        pt.x = evt.clientX;
+        pt.y = evt.clientY;
+        const ctm = chart.getScreenCTM();
+        if (!ctm) return null;
+        return pt.matrixTransform(ctm.inverse());
+      };
+
+      const hide = () => {
+        tooltip.classList.remove('is-visible');
+        tooltip.setAttribute('aria-hidden', 'true');
+        clearCursor();
+      };
+
+      chart.addEventListener('mousemove', (evt) => {
+        const st = chartStateRef;
+        if (!st || !st.curvas.length) return hide();
+
+        const p = svgPoint(evt);
+        if (!p) return;
+
+        // Dentro del área de plot?
+        if (p.x < st.plotLeft || p.x > st.plotLeft + st.plotW ||
+            p.y < st.plotTop || p.y > st.plotTop + st.plotH) {
+          return hide();
+        }
+
+        // SVG x → año
+        const xRange = st.xMax - st.xMin || 1;
+        const anio = st.xMin + ((p.x - st.plotLeft) / st.plotW) * xRange;
+
+        // Interpolar TCO de cada curva y construir lista.
+        const rows = st.curvas.map((c) => {
+          const t = interp(c.puntos, anio);
+          return { tren: c.tren, slug: c.slug, name: c.name, color: c.color, tco: t ?? 0, isFocus: c.isFocus };
+        }).sort((a, b) => a.tco - b.tco);
+
+        // Redibujar cursor (línea vertical + dots).
+        clearCursor();
+        cursorGroup = document.createElementNS(SVGNS, 'g');
+        cursorGroup.setAttribute('class', 'chart-cursor');
+        cursorGroup.setAttribute('aria-hidden', 'true');
+
+        const line = document.createElementNS(SVGNS, 'line');
+        line.setAttribute('x1', String(p.x));
+        line.setAttribute('x2', String(p.x));
+        line.setAttribute('y1', String(st.plotTop));
+        line.setAttribute('y2', String(st.plotTop + st.plotH));
+        line.setAttribute('class', 'cursor-line');
+        cursorGroup.appendChild(line);
+
+        for (const r of rows) {
+          const cy = st.yFn(r.tco);
+          const dot = document.createElementNS(SVGNS, 'circle');
+          dot.setAttribute('cx', String(p.x));
+          dot.setAttribute('cy', String(cy));
+          dot.setAttribute('r', r.isFocus ? '5' : '3.5');
+          dot.setAttribute('fill', r.color);
+          dot.setAttribute('stroke', 'var(--card-bg, #fff)');
+          dot.setAttribute('stroke-width', '1.5');
+          dot.setAttribute('class', 'cursor-dot');
+          cursorGroup.appendChild(dot);
+        }
+        chart.appendChild(cursorGroup);
+
+        // Rellenar tooltip DOM.
+        const anioLabel = anio >= 1
+          ? `Año ${anio.toFixed(anio % 1 === 0 ? 0 : 1)}`
+          : `Mes ${(anio * 12).toFixed(0)}`;
+        tYear.textContent = anioLabel;
+        tList.innerHTML = '';
+        rows.forEach((r) => {
+          const li = document.createElement('li');
+          li.className = 'tt-row' + (r.isFocus ? ' tt-row-focus' : '');
+          const dot = document.createElement('span');
+          dot.className = 'tt-dot';
+          if (r.tren === 'BEV') {
+            dot.style.background = r.color;
+          } else {
+            dot.style.background =
+              `repeating-linear-gradient(to right, ${r.color} 0 4px, transparent 4px 7px)`;
+          }
+          const name = document.createElement('span');
+          name.className = 'tt-name';
+          name.textContent = r.name;
+          const val = document.createElement('span');
+          val.className = 'tt-val';
+          val.textContent = `${eur(r.tco)} €`;
+          li.appendChild(dot);
+          li.appendChild(name);
+          li.appendChild(val);
+          tList.appendChild(li);
+        });
+
+        // Posicionar tooltip: coord SVG → % del contenedor.
+        // El SVG ocupa todo wrap (con padding-bottom para aspect), así que
+        // usamos offsetWidth/offsetHeight.
+        const rect = chart.getBoundingClientRect();
+        const wrapRect = wrap.getBoundingClientRect();
+        const relX = evt.clientX - wrapRect.left;
+        const relY = evt.clientY - wrapRect.top;
+
+        // Por defecto a la derecha del cursor; si se sale, a la izquierda.
+        tooltip.classList.add('is-visible');
+        tooltip.setAttribute('aria-hidden', 'false');
+        tooltip.style.visibility = 'hidden';  // medir sin parpadeo
+        const ttW = tooltip.offsetWidth;
+        const ttH = tooltip.offsetHeight;
+        let left = relX + 14;
+        if (left + ttW > wrapRect.width - 4) left = relX - ttW - 14;
+        if (left < 4) left = 4;
+        let top = relY - ttH / 2;
+        if (top < 4) top = 4;
+        if (top + ttH > wrapRect.height - 4) top = wrapRect.height - ttH - 4;
+        tooltip.style.left = `${left}px`;
+        tooltip.style.top = `${top}px`;
+        tooltip.style.visibility = 'visible';
+
+        void rect; // silencia TS si no se usa
+      });
+
+      chart.addEventListener('mouseleave', hide);
+      chart.addEventListener('blur', hide, true);
+    })();
+
     ($('horizonte') as HTMLInputElement).addEventListener('input', (e) => {
       const raw = Number((e.target as HTMLInputElement).value);
       state.horizonte = snapHorizonte(raw);
@@ -1364,11 +2069,55 @@ const kwhEfectivoIni =
       document.querySelectorAll<HTMLButtonElement>('.mix-preset').forEach((b) => {
         b.classList.toggle('active', Number(b.dataset.pct) === state.pctCasa);
       });
+      // Toggle de modo (listas/pares).
+      document.querySelectorAll<HTMLButtonElement>('.modo-btn').forEach((b) => {
+        const on = b.dataset.modo === state.modo;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+      // Hint contextual según modo.
+      const hint = document.getElementById('seleccion-hint');
+      if (hint) {
+        hint.textContent = state.modo === 'pares'
+          ? 'Modo pares: cada eléctrico se empareja con el combustión de la misma posición (BEV #1 ↔ ICE #1, BEV #2 ↔ ICE #2, …). Cada pareja comparte color y tiene su propio break-even.'
+          : 'Empieza con un par rápido o añade hasta 4 eléctricos y 4 de combustión. Haz clic en un coche (chip, fila o línea) para ver su desglose.';
+      }
+      document.body.dataset.tcoModo = state.modo;
     }
 
-    readUrl();
-    hydrateControls();
-    recalc();
+    // Click en el toggle de modo.
+    document.querySelectorAll<HTMLButtonElement>('.modo-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const m = btn.dataset.modo as Modo | undefined;
+        if (!m || m === state.modo) return;
+        state.modo = m;
+        hydrateControls();
+        recalc();
+      });
+    });
+
+    // Fallback visible si la inicialización revienta: en lugar de dejar
+    // "Cargando…" pegado, muestra un error accionable en el lede y deja
+    // traza en consola. No afecta a handlers posteriores de sliders/chips.
+    function safeInit() {
+      try {
+        readUrl();
+        hydrateControls();
+        recalc();
+      } catch (err) {
+        console.error('[calculadora-tco] Fallo al inicializar:', err);
+        const lede = document.getElementById('lede');
+        if (lede) {
+          lede.innerHTML =
+            'No hemos podido calcular este escenario. ' +
+            '<a href="?">Vuelve al escenario por defecto</a> ' +
+            'o recarga la página. Si el problema persiste, escríbenos a ' +
+            '<a href="mailto:hola@enchufa2.com">hola@enchufa2.com</a>.';
+          lede.classList.add('lede-error');
+        }
+      }
+    }
+    safeInit();
   </script>
 
   <style>
@@ -1554,6 +2303,70 @@ const kwhEfectivoIni =
     .ctrl-seleccion > .ctrl-title {
       margin-bottom: 0.25rem;
     }
+    .seleccion-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.25rem;
+    }
+    .seleccion-head .ctrl-title { margin: 0; }
+    .modo-toggle {
+      display: inline-flex;
+      background: var(--gray-100);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+    }
+    [data-theme="dark"] .modo-toggle {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .modo-btn {
+      appearance: none;
+      border: none;
+      background: transparent;
+      padding: 0.375rem 0.875rem;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: background 0.18s ease, color 0.18s ease;
+      white-space: nowrap;
+    }
+    .modo-btn:hover { color: var(--text); }
+    .modo-btn.is-active {
+      background: var(--black);
+      color: var(--white);
+    }
+    [data-theme="dark"] .modo-btn.is-active {
+      background: var(--yellow);
+      color: var(--black);
+    }
+    .modo-btn:focus-visible {
+      outline: 2px solid var(--yellow);
+      outline-offset: 2px;
+    }
+    /* Pareja badge en fila de la tabla (solo visible en modo pares). */
+    .row-pair {
+      font-size: 0.625rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 500;
+      background: var(--yellow);
+      color: var(--black);
+      flex-shrink: 0;
+    }
+    /* Ajustes del lede en modo pares. */
+    .lede-ranking-muted {
+      opacity: 0.7;
+      font-style: italic;
+    }
+
     .seleccion-hint {
       font-size: 0.8125rem;
       color: var(--text-muted);
@@ -1654,8 +2467,7 @@ const kwhEfectivoIni =
                   background 0.2s var(--ease-out-expo);
     }
     .chip:hover { border-color: var(--gray-300); }
-    .chip-bev { border-left: 3px solid var(--yellow); padding-left: 0.5rem; }
-    .chip-ice { border-left: 3px solid var(--gray-400); padding-left: 0.5rem; }
+    /* Color del border-left lo aplica el JS inline (paleta por slot). */
     .chip-focus {
       background: var(--yellow-glow);
       border-color: var(--yellow);
@@ -1960,6 +2772,247 @@ const kwhEfectivoIni =
       font-style: normal;
       font-weight: 500;
     }
+    .lede-error {
+      font-family: var(--font-sans);
+      font-style: normal;
+      font-size: 1rem;
+      line-height: 1.55;
+      padding: 1rem 1.25rem;
+      border-left: 3px solid var(--yellow);
+      background: var(--gray-100);
+      color: var(--text);
+    }
+    [data-theme="dark"] .lede-error {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .lede-error a { color: var(--text); text-decoration: underline; }
+
+    /* Lede multi-coche: ranking breve debajo del titular principal. */
+    .lede-ranking {
+      display: block;
+      font-family: var(--font-sans);
+      font-style: normal;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+    .lede-ranking-label {
+      font-weight: 500;
+      color: var(--text);
+      margin-right: 0.25rem;
+    }
+    .lede-ranking strong {
+      color: var(--text);
+      font-weight: 500;
+      font-family: var(--font-sans);
+    }
+
+    /* ── Tabla comparativa ─────────────────────────────────────────── */
+    .tco-table-wrap {
+      margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+    }
+    .tco-table-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+    .tco-table-head h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      margin: 0;
+    }
+    .tco-table-sub {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      margin: 0;
+      flex: 1 1 280px;
+    }
+    .tco-table-scroll {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card-bg);
+    }
+    .tco-results-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .tco-results-table th,
+    .tco-results-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .tco-results-table th.num,
+    .tco-results-table td.num {
+      text-align: right;
+    }
+    .tco-results-table thead th {
+      background: var(--gray-100);
+      border-bottom: 1px solid var(--border);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    [data-theme="dark"] .tco-results-table thead th {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .tco-results-table thead th:hover {
+      color: var(--text);
+    }
+    .tco-results-table thead th[aria-sort]::after {
+      content: ' ▴';
+      font-size: 0.625rem;
+      color: var(--yellow);
+    }
+    .tco-results-table thead th[aria-sort="descending"]::after {
+      content: ' ▾';
+    }
+    .tco-results-table tbody tr {
+      border-top: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .tco-results-table tbody tr:hover {
+      background: var(--gray-100);
+    }
+    [data-theme="dark"] .tco-results-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .tco-results-table tbody tr.row-focus {
+      background: rgba(245, 197, 24, 0.08);
+    }
+    .tco-results-table tbody tr.row-focus .cell-name {
+      font-weight: 500;
+    }
+    .tco-results-table tbody tr:focus-visible {
+      outline: 2px solid var(--yellow);
+      outline-offset: -2px;
+    }
+    .cell-name {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 220px;
+    }
+    .row-dot {
+      display: inline-block;
+      width: 18px;
+      height: 4px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .row-name {
+      flex: 1 1 auto;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .row-tren {
+      font-size: 0.625rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+    .row-tren-bev {
+      background: var(--yellow);
+      color: var(--black);
+    }
+    .row-tren-ice {
+      background: var(--gray-100);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    [data-theme="dark"] .row-tren-ice {
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .cell-tco {
+      font-weight: 500;
+    }
+    .cell-tco-main {
+      display: block;
+    }
+    .cell-tco-delta {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+    .cell-tco-delta.d-pos { color: #b23838; }
+    .cell-tco-delta.d-neg { color: #2b7a3e; }
+    [data-theme="dark"] .cell-tco-delta.d-pos { color: #e77b7b; }
+    [data-theme="dark"] .cell-tco-delta.d-neg { color: #7bd699; }
+    .cell-empty {
+      color: var(--text-muted);
+    }
+
+    /* ── Focus card como <details> colapsable ───────────────────────── */
+    .tco-focus-details {
+      margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card-bg);
+      overflow: hidden;
+    }
+    .tco-focus-details > summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 0.875rem 1.125rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9375rem;
+      user-select: none;
+    }
+    .tco-focus-details > summary::-webkit-details-marker { display: none; }
+    .tco-focus-details > summary:focus-visible {
+      outline: 2px solid var(--yellow);
+      outline-offset: -2px;
+    }
+    .focus-summary-label {
+      color: var(--text-muted);
+      font-size: 0.8125rem;
+    }
+    .focus-summary-name {
+      color: var(--text);
+      font-weight: 500;
+      flex: 1 1 auto;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .focus-summary-chev {
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+    }
+    .tco-focus-details[open] .focus-summary-chev {
+      transform: rotate(180deg);
+    }
+    .tco-focus-details > .tco-focus-wrap {
+      padding: 0 1.125rem 1.125rem;
+    }
+    .tco-focus-details > .tco-focus-wrap .tco-card {
+      border: none;
+      background: transparent;
+      padding: 0;
+    }
 
     .tco-focus-wrap {
       display: block;
@@ -2098,12 +3151,91 @@ const kwhEfectivoIni =
     }
     .chart-wrap {
       width: 100%;
+      position: relative;
     }
     #tco-chart {
       width: 100%;
       height: auto;
       display: block;
       overflow: visible;
+    }
+    #tco-chart :global(.chart-overlay) {
+      cursor: crosshair;
+    }
+    #tco-chart :global(.cursor-line) {
+      stroke: var(--text-muted);
+      stroke-width: 1;
+      stroke-dasharray: 3 3;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+    #tco-chart :global(.cursor-dot) {
+      pointer-events: none;
+    }
+    .chart-tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8125rem;
+      min-width: 200px;
+      max-width: 280px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      opacity: 0;
+      transition: opacity 0.12s ease;
+      z-index: 10;
+    }
+    [data-theme="dark"] .chart-tooltip {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+    .chart-tooltip.is-visible { opacity: 1; }
+    .tt-year {
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.375rem;
+      padding-bottom: 0.375rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .tt-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 0.25rem;
+    }
+    .tt-row {
+      display: grid;
+      grid-template-columns: 14px 1fr auto;
+      gap: 0.5rem;
+      align-items: center;
+      font-variant-numeric: tabular-nums;
+    }
+    .tt-row-focus .tt-name,
+    .tt-row-focus .tt-val {
+      font-weight: 500;
+      color: var(--text);
+    }
+    .tt-dot {
+      display: inline-block;
+      width: 14px;
+      height: 3px;
+      border-radius: 1.5px;
+    }
+    .tt-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-secondary, var(--text-muted));
+    }
+    .tt-val {
+      color: var(--text);
+      font-weight: 500;
+      white-space: nowrap;
     }
     /* Clases aplicadas a nodos SVG creados por JS (createElementNS).
        Astro no añade data-astro-cid a nodos dinámicos, así que
@@ -2136,66 +3268,27 @@ const kwhEfectivoIni =
       fill: var(--text-muted);
       font-variant-numeric: tabular-nums;
     }
-    /* Curvas base — trazo común, el grosor lo aporta focus/dim. */
-    #tco-chart :global(.curve-bev),
-    #tco-chart :global(.curve-ice) {
-      fill: none;
+    /* Curvas base — el color y el stroke-dasharray los aplica el JS inline
+       (paleta por slot). Aquí solo controlamos forma, grosor y opacidad. */
+    #tco-chart :global(.curve) {
       stroke-linecap: round;
       stroke-linejoin: round;
     }
-    #tco-chart :global(.curve-bev) { stroke: var(--yellow); }
-    #tco-chart :global(.curve-ice) {
-      stroke: var(--gray-600);
-      stroke-dasharray: 6 4;
-    }
-    [data-theme="dark"] #tco-chart :global(.curve-ice) { stroke: var(--gray-300); }
     #tco-chart :global(.curve-focus) {
       stroke-width: 3;
     }
     #tco-chart :global(.curve-dim) {
       stroke-width: 1.75;
-      opacity: 0.38;
+      opacity: 0.55;
       cursor: pointer;
       transition: opacity 0.2s var(--ease-out-expo), stroke-width 0.2s var(--ease-out-expo);
     }
     #tco-chart :global(.curve-dim:hover),
     #tco-chart :global(.curve-dim:focus) {
-      opacity: 0.75;
+      opacity: 0.85;
       stroke-width: 2.25;
       outline: none;
     }
-    /* Bandas de incertidumbre (§4 metodología). */
-    #tco-chart :global(.band-bev) {
-      fill: var(--yellow);
-      fill-opacity: 0.18;
-      stroke: var(--yellow);
-      stroke-opacity: 0.35;
-      stroke-width: 0.75;
-      stroke-dasharray: 2 3;
-    }
-    #tco-chart :global(.band-ice) {
-      fill: var(--gray-600);
-      fill-opacity: 0.1;
-      stroke: var(--gray-600);
-      stroke-opacity: 0.3;
-      stroke-width: 0.75;
-      stroke-dasharray: 2 3;
-    }
-    [data-theme="dark"] #tco-chart :global(.band-ice) {
-      fill: var(--gray-300);
-      stroke: var(--gray-300);
-    }
-    #tco-chart :global(.dot-bev) {
-      fill: var(--yellow);
-      stroke: var(--card-bg);
-      stroke-width: 1.5;
-    }
-    #tco-chart :global(.dot-ice) {
-      fill: var(--gray-600);
-      stroke: var(--card-bg);
-      stroke-width: 1.5;
-    }
-    [data-theme="dark"] #tco-chart :global(.dot-ice) { fill: var(--gray-300); }
     #tco-chart :global(.be-line) {
       stroke: var(--text);
       stroke-width: 1;
@@ -2224,15 +3317,33 @@ const kwhEfectivoIni =
       font-size: 0.8125rem;
       color: var(--text-secondary);
     }
+    /* Leyenda: botones clickables que ponen el coche en foco. El color y el
+       patrón (sólido BEV / discontinuo ICE) los aplica el JS inline al swatch. */
     .chart-legend :global(.lg-item) {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      font: inherit;
+      font-size: 0.8125rem;
       font-variant-numeric: tabular-nums;
+      background: none;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 0.15s var(--ease-out-expo),
+                  border-color 0.15s var(--ease-out-expo);
     }
-    .chart-legend :global(.lg-label) {
-      font-weight: 400;
+    .chart-legend :global(.lg-item:hover) {
+      background: var(--surface);
+      border-color: var(--border);
     }
+    .chart-legend :global(.lg-item:focus-visible) {
+      outline: 2px solid var(--yellow);
+      outline-offset: 2px;
+    }
+    .chart-legend :global(.lg-label) { font-weight: 400; }
     .chart-legend :global(.lg-focus .lg-label) {
       font-weight: 600;
       color: var(--text);
@@ -2245,61 +3356,29 @@ const kwhEfectivoIni =
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      background: var(--yellow);
-      color: #111111;
+      background: var(--black);
+      color: var(--white);
       border-radius: 3px;
+    }
+    [data-theme="dark"] .chart-legend :global(.lg-tag) {
+      background: var(--yellow);
+      color: var(--black);
     }
     .chart-legend :global(.lg-swatch) {
       display: inline-block;
       width: 22px;
       height: 3px;
       border-radius: 2px;
-      background: var(--yellow);
       flex-shrink: 0;
+      /* background viene inline desde JS */
     }
-    .chart-legend :global(.lg-focus.lg-bev .lg-swatch) {
+    .chart-legend :global(.lg-focus .lg-swatch) {
       height: 4px;
-    }
-    .chart-legend :global(.lg-focus.lg-ice .lg-swatch) {
-      height: 4px;
-    }
-    .chart-legend :global(.lg-ice .lg-swatch) {
-      background: linear-gradient(
-        to right,
-        var(--gray-600) 0,
-        var(--gray-600) 6px,
-        transparent 6px,
-        transparent 10px,
-        var(--gray-600) 10px,
-        var(--gray-600) 16px,
-        transparent 16px,
-        transparent 20px,
-        var(--gray-600) 20px,
-        var(--gray-600) 22px
-      );
-    }
-    [data-theme="dark"] .chart-legend :global(.lg-ice .lg-swatch) {
-      background: linear-gradient(
-        to right,
-        var(--gray-300) 0,
-        var(--gray-300) 6px,
-        transparent 6px,
-        transparent 10px,
-        var(--gray-300) 10px,
-        var(--gray-300) 16px,
-        transparent 16px,
-        transparent 20px,
-        var(--gray-300) 20px,
-        var(--gray-300) 22px
-      );
     }
     .chart-legend :global(.lg-band .lg-swatch) {
       height: 10px;
       width: 22px;
       border-radius: 2px;
-      background: var(--yellow);
-      opacity: 0.25;
-      border: 1px dashed rgba(245, 197, 24, 0.6);
     }
 
     .share {
