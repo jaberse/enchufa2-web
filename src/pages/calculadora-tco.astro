@@ -200,7 +200,10 @@ const kwhEfectivoIni =
             >
               <span class="escenario-num">01</span>
               <span class="escenario-tag">Segmento A · Urbano</span>
-              <span class="escenario-title">Dacia Spring<br /><em>vs</em> Hyundai i10</span>
+              <span class="escenario-title">
+                <span class="escenario-title-main">Dacia Spring</span>
+                <span class="escenario-title-vs"><em>vs</em> Hyundai i10</span>
+              </span>
               <span class="escenario-footer">
                 <span class="escenario-hint">El BEV más barato de España</span>
                 <span class="escenario-arrow" aria-hidden="true">→</span>
@@ -216,7 +219,10 @@ const kwhEfectivoIni =
             >
               <span class="escenario-num">02</span>
               <span class="escenario-tag">Segmento B · Utilitario</span>
-              <span class="escenario-title">Renault 5 E-Tech<br /><em>vs</em> Sandero TCe</span>
+              <span class="escenario-title">
+                <span class="escenario-title-main">Renault 5 E-Tech</span>
+                <span class="escenario-title-vs"><em>vs</em> Sandero TCe</span>
+              </span>
               <span class="escenario-footer">
                 <span class="escenario-hint">Made in Palencia contra GLP</span>
                 <span class="escenario-arrow" aria-hidden="true">→</span>
@@ -232,7 +238,10 @@ const kwhEfectivoIni =
             >
               <span class="escenario-num">03</span>
               <span class="escenario-tag">C-SUV · Mainstream</span>
-              <span class="escenario-title">Hyundai Kona 65<br /><em>vs</em> VW Tiguan</span>
+              <span class="escenario-title">
+                <span class="escenario-title-main">Hyundai Kona 65</span>
+                <span class="escenario-title-vs"><em>vs</em> VW Tiguan</span>
+              </span>
               <span class="escenario-footer">
                 <span class="escenario-hint">El mejor ratio TCO del catálogo</span>
                 <span class="escenario-arrow" aria-hidden="true">→</span>
@@ -248,7 +257,10 @@ const kwhEfectivoIni =
             >
               <span class="escenario-num">04</span>
               <span class="escenario-tag">Segmento D · Berlina premium</span>
-              <span class="escenario-title">Tesla Model 3<br /><em>vs</em> BMW 320i</span>
+              <span class="escenario-title">
+                <span class="escenario-title-main">Tesla Model 3</span>
+                <span class="escenario-title-vs"><em>vs</em> BMW 320i</span>
+              </span>
               <span class="escenario-footer">
                 <span class="escenario-hint">Ahorro icónico: ~47 % a 5 años</span>
                 <span class="escenario-arrow" aria-hidden="true">→</span>
@@ -264,7 +276,10 @@ const kwhEfectivoIni =
             >
               <span class="escenario-num">05</span>
               <span class="escenario-tag">D-SUV · Familiar</span>
-              <span class="escenario-title">Tesla Model Y<br /><em>vs</em> BMW X3</span>
+              <span class="escenario-title">
+                <span class="escenario-title-main">Tesla Model Y</span>
+                <span class="escenario-title-vs"><em>vs</em> BMW X3</span>
+              </span>
               <span class="escenario-footer">
                 <span class="escenario-hint">Premium familiar · 42 % de ahorro</span>
                 <span class="escenario-arrow" aria-hidden="true">→</span>
@@ -3338,7 +3353,8 @@ const kwhEfectivoIni =
 
     /* ── Resultado ── */
     .resultado {
-      margin-bottom: clamp(2rem, 5vw, 3.5rem);
+      /* Antes hasta 3.5rem; reducido para compactar el ritmo vertical. */
+      margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
     }
     .lede {
       font-family: var(--font-serif);
@@ -3346,7 +3362,7 @@ const kwhEfectivoIni =
       font-size: clamp(1.25rem, 2.5vw, 1.75rem);
       line-height: 1.35;
       color: var(--text);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;         /* antes 1.5rem */
       max-width: 780px;
     }
     .lede strong {
@@ -4199,13 +4215,14 @@ const kwhEfectivoIni =
       margin: 0 0 1.5rem;
     }
 
-    /* ── Escenarios editoriales: 5 fotocards (guide-card style) ───── */
+    /* ── Escenarios editoriales: fotocards (guide-card style) ───── */
     .escenarios {
-      margin-bottom: clamp(2.5rem, 6vw, 4rem);
+      /* Antes hasta 4rem, provocaba un hueco enorme hasta la siguiente sección. */
+      margin-bottom: clamp(1.75rem, 3.5vw, 2.5rem);
     }
     .escenarios-head {
       max-width: 780px;
-      margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+      margin-bottom: clamp(1rem, 2vw, 1.5rem);
     }
     .escenarios-head .eyebrow {
       font-size: 0.7rem;
@@ -4236,13 +4253,18 @@ const kwhEfectivoIni =
       line-height: 1.5;
       margin: 0;
     }
+    /* Grid de escenarios: 1 col móvil · 2 tablet · 3 desktop.
+       Antes era 5 en desktop, producía tarjetas apretadas con foto diminuta. */
     .escenarios-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 0.875rem;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 720px) {
+      .escenarios-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (min-width: 1100px) {
-      .escenarios-grid { grid-template-columns: repeat(5, 1fr); }
+      .escenarios-grid { grid-template-columns: repeat(3, 1fr); }
     }
     .escenario-card {
       all: unset;
@@ -4250,10 +4272,10 @@ const kwhEfectivoIni =
       position: relative;
       display: flex;
       flex-direction: column;
-      aspect-ratio: 4 / 5;
-      border-radius: 10px;
+      aspect-ratio: 4 / 3;         /* más ancho → foto luce; antes 4/5 */
+      border-radius: 14px;
       overflow: hidden;
-      padding: 1.25rem 1.1rem;
+      padding: 1.4rem 1.35rem;
       color: var(--white);
       background-color: var(--gray-100);
       background-image: var(--card-photo);
@@ -4263,25 +4285,33 @@ const kwhEfectivoIni =
                   box-shadow 0.3s ease;
       box-shadow: 0 2px 6px rgba(17, 17, 17, 0.08);
     }
+    /* Overlay: foto visible arriba, oscurecimiento solo en la zona de texto.
+       Antes el gradient era 25% → 88% sobre toda la tarjeta, matando la foto. */
     .escenario-card::before {
       content: '';
       position: absolute;
       inset: 0;
       background: linear-gradient(
         180deg,
-        rgba(17, 17, 17, 0.25) 0%,
-        rgba(17, 17, 17, 0.55) 55%,
-        rgba(17, 17, 17, 0.88) 100%
+        rgba(17, 17, 17, 0) 0%,
+        rgba(17, 17, 17, 0) 35%,
+        rgba(17, 17, 17, 0.55) 70%,
+        rgba(17, 17, 17, 0.85) 100%
       );
       z-index: 1;
       transition: opacity 0.35s ease;
+    }
+    /* Gradient lateral suave para legibilidad del eyebrow arriba a la izquierda. */
+    .escenario-card > .escenario-num,
+    .escenario-card > .escenario-tag {
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
     }
     .escenario-card::after {
       content: '';
       position: absolute;
       inset: 0;
       border: 2px solid transparent;
-      border-radius: 10px;
+      border-radius: 14px;
       transition: border-color 0.25s ease;
       pointer-events: none;
       z-index: 3;
@@ -4304,59 +4334,73 @@ const kwhEfectivoIni =
       100% { border-color: transparent; box-shadow: 0 0 0 18px rgba(245, 197, 24, 0); }
     }
     .escenario-num {
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       font-weight: 500;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      opacity: 0.7;
-    }
-    .escenario-tag {
-      margin-top: 0.45rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
       opacity: 0.85;
     }
+    .escenario-tag {
+      margin-top: 0.4rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      opacity: 0.95;
+    }
+    /* Título reestructurado: main + vs en líneas separadas con jerarquía clara. */
     .escenario-title {
       margin-top: auto;
       padding-top: 1.5rem;
-      font-size: clamp(1.15rem, 1.7vw, 1.4rem);
-      font-weight: 300;
-      letter-spacing: -0.01em;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
       line-height: 1.15;
     }
-    .escenario-title em {
+    .escenario-title-main {
+      font-size: clamp(1.3rem, 2vw, 1.65rem);
+      font-weight: 400;
+      letter-spacing: -0.015em;
+    }
+    .escenario-title-vs {
+      font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+      font-weight: 300;
+      opacity: 0.85;
+      letter-spacing: -0.005em;
+    }
+    .escenario-title-vs em {
       font-family: var(--font-serif);
       font-style: italic;
       font-weight: 400;
       color: var(--yellow);
-      opacity: 0.9;
+      margin-right: 0.25rem;
     }
     .escenario-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 0.85rem;
-      gap: 0.5rem;
+      margin-top: 0.9rem;
+      gap: 0.75rem;
     }
     .escenario-hint {
       font-family: var(--font-serif);
       font-style: italic;
-      font-size: 0.82rem;
-      opacity: 0.88;
-      line-height: 1.25;
+      font-size: 0.95rem;        /* antes 0.82 — casi ilegible */
+      opacity: 0.95;
+      line-height: 1.3;
+      flex: 1 1 auto;
+      min-width: 0;
     }
     .escenario-arrow {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: var(--yellow);
       color: var(--black);
       font-weight: 500;
-      font-size: 1rem;
+      font-size: 1.05rem;
       flex-shrink: 0;
       transition: transform 0.25s ease;
     }
