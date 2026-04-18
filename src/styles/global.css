@@ -6,6 +6,8 @@
   --white:    #FAFAF8;
   --yellow:   #F5C518;
   --yellow-glow: rgba(245,197,24,0.15);
+  --phev-green: #3E7C5A;
+  --phev-green-glow: rgba(62,124,90,0.12);
   --cream:    #F8F6F1;
   --gray-50:  #F2F1ED;
   --gray-100: #E8E7E3;
@@ -35,6 +37,7 @@
   --font-serif: 'Instrument Serif', Georgia, serif;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-in-out:   cubic-bezier(0.65, 0, 0.35, 1);
 
   --section-pad: clamp(5rem, 10vw, 9rem);
@@ -64,6 +67,7 @@
   --card-bg:  #141414;
   --yellow-text: #F5C518;
   --yellow-glow: rgba(245,197,24,0.10);
+  --phev-green-glow: rgba(62,124,90,0.18);
 }
 
 /* ─────────────────────────────────────────────
