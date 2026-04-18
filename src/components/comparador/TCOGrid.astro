@@ -1,29 +1,31 @@
 ---
 // src/components/comparador/TCOGrid.astro
-// Grid responsive para N tarjetas TCO. Usa auto-fit + minmax para que con
-// 4 tarjetas haga 4 columnas en desktop y se replieguen a 2 en tablet y 1
-// en móvil sin media queries explícitas.
-//
-// Pensado para recibir TCOCard como slot.
+// Grid de tarjetas TCO — portado del .tcogrid de directionA.css.
+// Usa `repeat(var(--cols), minmax(0, 1fr))` para que 4 tarjetas ocupen
+// exactamente 4 columnas (sin expansión) y se repliegue a 2 en tablet y 1
+// en móvil.
+
+interface Props {
+  cols?: number;
+}
+
+const { cols = 4 } = Astro.props;
 ---
-<div class="tco-grid">
+
+<div class="tcogrid" style={`--cols: ${cols};`}>
   <slot />
 </div>
 
 <style>
-  .tco-grid {
+  .tcogrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: clamp(1rem, 1.5vw, 1.5rem);
-    align-items: stretch;
-    max-width: var(--max-w);
-    margin-inline: auto;
-    padding-inline: var(--page-gutter);
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: 1rem;
   }
-  @media (min-width: 1200px) {
-    .tco-grid {
-      /* Forzar 4 columnas cuando haya espacio, sin que se estire 1/2/3. */
-      grid-template-columns: repeat(4, 1fr);
-    }
+  @media (max-width: 960px) {
+    .tcogrid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .tcogrid { grid-template-columns: 1fr; }
   }
 </style>

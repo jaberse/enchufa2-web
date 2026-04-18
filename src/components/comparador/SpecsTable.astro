@@ -1,0 +1,291 @@
+---
+// src/components/comparador/SpecsTable.astro
+// Tabla de especificaciones — portada de SpecsTableA del export DirectionA.
+// Grid: 1 columna label de 180px + N columnas coche con minmax(0, 1fr).
+// Header con thumb + tren + marca + variante serif, resto de filas con
+// celda "mejor" resaltada en amarillo (fondo yellow-glow + subrayado).
+//
+// Se alimenta de la slice `catalogoSpecs` generada por loader.mjs. El
+// catálogo es BEV-only por ahora (63 modelos); cuando entren ICEs, las
+// columnas funcionarán igual y se elegirá el mejor entre ambos trenes.
+
+import type { Slot } from './GarageChipsRow.astro';
+
+export interface SpecsCar {
+  slug: string;
+  marca: string;
+  modelo: string;
+  variante: string;
+  foto: string;
+  tren: 'BEV' | 'PHEV' | 'HEV' | 'MHEV' | 'ICE';
+  pvp_eur: number | null;
+  potencia_cv: number | null;
+  autonomia_wltp_km: number | null;
+  consumo_wltp_kwh100km: number | null;
+  bateria_neta_kwh: number | null;
+  carga_dc_max_kw: number | null;
+  t_10_80_min: number | null;
+  maletero_l: number | null;
+  largo_mm: number | null;
+  plazas: number | null;
+}
+
+interface Props {
+  /** Longitud 4. Puede contener null para huecos vacíos. */
+  cars: (SpecsCar | null)[];
+}
+
+const { cars } = Astro.props;
+const cols = cars.length;
+const valid = cars.filter((c): c is SpecsCar => c != null);
+
+type Row = {
+  k: string;
+  label: string;
+  pick: (c: SpecsCar) => number | null;
+  fmt: (v: number) => string;
+  lowerBetter?: boolean;
+};
+
+const num = (v: number, d = 0) =>
+  new Intl.NumberFormat('es-ES', {
+    minimumFractionDigits: d,
+    maximumFractionDigits: d,
+  }).format(v);
+
+const fmtEur = (n: number) =>
+  new Intl.NumberFormat('es-ES', {
+    style: 'currency',
+    currency: 'EUR',
+    maximumFractionDigits: 0,
+  }).format(Math.round(n));
+
+const ROWS: Row[] = [
+  { k: 'pvp',       label: 'Precio',              pick: c => c.pvp_eur,              fmt: v => fmtEur(v), lowerBetter: true },
+  { k: 'potencia',  label: 'Potencia',            pick: c => c.potencia_cv,          fmt: v => `${num(v)} CV` },
+  { k: 'autonomia', label: 'Autonomía WLTP',      pick: c => c.autonomia_wltp_km,    fmt: v => `${num(v)} km` },
+  { k: 'consumo',   label: 'Consumo WLTP',        pick: c => c.consumo_wltp_kwh100km, fmt: v => `${num(v, 1)} kWh/100`, lowerBetter: true },
+  { k: 'bateria',   label: 'Batería neta',        pick: c => c.bateria_neta_kwh,     fmt: v => `${num(v, 1)} kWh` },
+  { k: 'dc',        label: 'Carga DC pico',       pick: c => c.carga_dc_max_kw,      fmt: v => `${num(v)} kW` },
+  { k: 't1080',     label: 'Carga 10→80%',        pick: c => c.t_10_80_min,          fmt: v => `${num(v)} min`, lowerBetter: true },
+  { k: 'maletero',  label: 'Maletero',            pick: c => c.maletero_l,           fmt: v => `${num(v)} L` },
+  { k: 'largo',     label: 'Longitud',            pick: c => c.largo_mm,             fmt: v => `${num(v / 1000, 2)} m` },
+  { k: 'plazas',    label: 'Plazas',              pick: c => c.plazas,               fmt: v => `${num(v)}` },
+];
+
+function bestOf(row: Row): number | null {
+  const values = valid
+    .map(c => row.pick(c))
+    .filter((v): v is number => v != null && !isNaN(v));
+  if (values.length < 2) return null;
+  return row.lowerBetter ? Math.min(...values) : Math.max(...values);
+}
+---
+
+<div
+  class="stbl"
+  style={`--cols: ${cols};`}
+  data-specs-table
+>
+  <div class="stbl__header">
+    <div class="stbl__labelcol" aria-hidden="true"></div>
+    {cars.map((c, i) => (
+      <div class="stbl__headcell">
+        {c ? (
+          <>
+            <div class="stbl__thumb">
+              <img src={c.foto} alt={`${c.marca} ${c.modelo}`} loading="lazy" />
+            </div>
+            <div class="stbl__headtxt">
+              <span class:list={['badge', `badge--${c.tren.toLowerCase()}`]}>
+                {c.tren === 'BEV' ? 'ELÉCTRICO' : c.tren}
+              </span>
+              <div class="stbl__brand">
+                {c.marca} <span class="stbl__model">{c.modelo}</span>
+              </div>
+              <div class="stbl__variant serif">{c.variante}</div>
+            </div>
+          </>
+        ) : (
+          <div class="stbl__empty">
+            <div class="stbl__emptyPlus" aria-hidden="true">+</div>
+            <div class="stbl__emptyTxt">Añadir coche</div>
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+
+  {ROWS.map(row => {
+    const best = bestOf(row);
+    return (
+      <div class="stbl__row">
+        <div class="stbl__label">{row.label}</div>
+        {cars.map((c, i) => {
+          if (!c) return (
+            <div class="stbl__cell stbl__cell--empty">—</div>
+          );
+          const v = row.pick(c);
+          const isBest = best != null && v === best && valid.length > 1;
+          return (
+            <div class:list={['stbl__cell', 'tabular', isBest && 'stbl__cell--best']}>
+              <span>{v != null ? row.fmt(v) : '—'}</span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  })}
+</div>
+
+<style>
+  .stbl {
+    display: grid;
+    grid-template-columns: 180px repeat(var(--cols), minmax(0, 1fr));
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .stbl__header { display: contents; }
+  .stbl__labelcol {
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .stbl__headcell {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .stbl__thumb {
+    aspect-ratio: 16/9;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stbl__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+  }
+  :global([data-theme='dark']) .stbl__thumb img { mix-blend-mode: normal; }
+
+  .stbl__headtxt { display: flex; flex-direction: column; gap: 0.15rem; }
+  .stbl__brand {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    margin-top: 0.4rem;
+    color: var(--text);
+  }
+  .stbl__model { font-weight: 400; }
+  .stbl__variant {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 0.88rem;
+    color: var(--text-soft);
+  }
+  .serif {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  /* Badge inline por tren */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .badge--bev  { background: var(--yellow); color: var(--black); }
+  .badge--phev { background: var(--phev-green); color: #fff; }
+  .badge--ice  { background: var(--text); color: var(--bg); }
+  .badge--hev,
+  .badge--mhev {
+    background: var(--surface);
+    color: var(--text-soft);
+    box-shadow: inset 0 0 0 1px var(--border-strong);
+  }
+
+  .stbl__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 140px;
+    color: var(--text-mute);
+    font-size: 0.85rem;
+    border: 1px dashed var(--border-strong);
+    border-radius: 6px;
+    background: var(--bg);
+  }
+  .stbl__emptyPlus {
+    font-size: 1.8rem;
+    font-weight: 200;
+    color: var(--text-mute);
+  }
+
+  .stbl__row { display: contents; }
+  .stbl__row > * {
+    border-bottom: 1px solid var(--border);
+    padding: 0.7rem 1rem;
+    font-size: 0.9rem;
+  }
+  .stbl__row:last-of-type > * { border-bottom: 0; }
+  .stbl__label {
+    background: var(--bg);
+    color: var(--text-soft);
+    font-size: 0.82rem;
+  }
+  .stbl__cell {
+    border-left: 1px solid var(--border);
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .stbl__cell--best {
+    background: var(--yellow-glow);
+    color: var(--text);
+    font-weight: 400;
+  }
+  .stbl__cell--best span {
+    border-bottom: 1px solid var(--yellow);
+    padding-bottom: 1px;
+  }
+  .stbl__cell--empty { color: var(--text-mute); }
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 820px) {
+    .stbl {
+      grid-template-columns: 140px repeat(var(--cols), 68vw);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    }
+    .stbl__headcell,
+    .stbl__cell { scroll-snap-align: start; }
+    .stbl__labelcol,
+    .stbl__label {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      background: var(--bg);
+    }
+  }
+</style>

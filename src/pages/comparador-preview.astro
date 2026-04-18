@@ -1,26 +1,37 @@
 ---
 // src/pages/comparador-preview.astro
-// Preview de la nueva experiencia comparador+TCO unificada — fase 2.
-// Snapshot estático con 4 tarjetas preseleccionadas para validar el diseño
-// con Javi en la preview de Cloudflare antes de promocionar a /comparador.
+// Preview de la nueva experiencia comparador+TCO unificada.
+// Porta la composición DirectionA completa del export de Claude Design:
+//   Header (eyebrow + título serif + toggle) → GarageChipsRow → [ScenarioBar]
+//   → panel Specs (SpecsTable) / panel TCO (SummaryStrip + TCOGrid).
 //
-// Aún sin: modal de selección de garage, scenario bar interactiva, ni
-// switch Specs/TCO con recomputación en cliente. Esos llegan en fase 3.
+// Selección inicial hardcoded con 4 coches que existen en cargarParesTCO()
+// para que la vista TCO renderice cifras reales y la Specs las mismas 4
+// variantes. Al pulsar una tarjeta vacía o el control ↻, el script cliente
+// abre el modal del garaje (fase 3).
 
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ComparadorHeader from '../components/comparador/ComparadorHeader.astro';
-import WinnerBanner from '../components/comparador/WinnerBanner.astro';
+import GarageChipsRow from '../components/comparador/GarageChipsRow.astro';
+import ScenarioBar from '../components/comparador/ScenarioBar.astro';
+import SpecsTable from '../components/comparador/SpecsTable.astro';
+import SummaryStrip from '../components/comparador/SummaryStrip.astro';
 import TCOGrid from '../components/comparador/TCOGrid.astro';
 import TCOCard from '../components/comparador/TCOCard.astro';
-import { cargarParesTCO, PERFIL_ESTANDAR } from '../lib/comparador/loader.mjs';
+import {
+  cargarCatalogoSpecs,
+  cargarParesTCO,
+  PERFIL_ESTANDAR,
+} from '../lib/comparador/loader.mjs';
 import { calcularTCO } from '../lib/tco/calculadora.mjs';
 import '../styles/global.css';
 
+// ──────────────────────────────────────────────────────────────────────
 // Selección narrativa: 4 coches con TCO disponible que cuentan la historia
-// de que el precio no es el TCO. Desde utilitario A (12k€) hasta premium
-// SUV (50k€), con un eléctrico protagonista (Tesla) y su ICE rival.
+// "el precio no es el TCO". Del utilitario A al SUV premium.
+// ──────────────────────────────────────────────────────────────────────
 const SELECCION = [
   'tesla-model-3-rwd-highland',
   'bmw-ix1-xdrive30',
@@ -28,10 +39,17 @@ const SELECCION = [
   'hyundai-inster-long-range',
 ];
 
-const todos = cargarParesTCO();
-const cartas = SELECCION.map((slug) => {
-  const par = todos.find((p) => p.slug === slug);
-  if (!par) throw new Error(`Preview: par no encontrado para ${slug}`);
+const paresTCO = cargarParesTCO();
+const catalogoSpecs = cargarCatalogoSpecs();
+
+const parsSeleccionados = SELECCION.map((slug) => {
+  const p = paresTCO.find((x) => x.slug === slug);
+  if (!p) throw new Error(`Preview: par TCO no encontrado para ${slug}`);
+  return p;
+});
+
+// ── Cálculo TCO (perfil estándar 5 años, 15.000 km/año) ───────────────
+const cartas = parsSeleccionados.map((par) => {
   const bev = par.horizontes[5].bev;
   const ice = par.horizontes[5].ice;
   const brBev = calcularTCO(bev);
@@ -45,101 +63,198 @@ const cartas = SELECCION.map((slug) => {
   };
 });
 
-// Encontrar la carta ganadora del grupo (menor TCO total entre los 4 BEV).
 const totales = cartas.map((c) => c.totalBev);
 const minTotal = Math.min(...totales);
 const ganadoraIdx = totales.indexOf(minTotal);
-const ganadora = cartas[ganadoraIdx];
 
-// Siguiente mejor para el banner.
-const ordenados = [...cartas].sort((a, b) => a.totalBev - b.totalBev);
-const ahorro = ordenados[1].totalBev - ordenados[0].totalBev;
-const siguiente = ordenados[1].par.nombreBev;
+const totalsForStrip = cartas.map((c) => ({
+  id: c.par.slug,
+  nombre: c.par.nombreBev,
+  total: c.totalBev,
+  tren: 'BEV' as const,
+}));
 
-const title = 'Comparador EV — preview Fase 2';
+// ── Slots para la fila de garaje (misma fuente que las tarjetas TCO) ──
+const garageSlots = parsSeleccionados.map((p) => ({
+  slug: p.slug,
+  nombre: `${p.marca} ${p.modelo}`,
+  variante: p.variante,
+  tren: 'BEV' as const,
+  pvp_eur: p.horizontes[5].bev.pvp_eur,
+}));
+
+// ── Specs cars (reutilizan el catálogo completo ya cargado) ───────────
+const specsCars = SELECCION.map((slug) => {
+  const c = catalogoSpecs.find((x) => x.slug === slug);
+  if (!c) throw new Error(`Preview: specs no encontradas para ${slug}`);
+  return c;
+});
+
+// ── Meta del escenario (mismo string que irá dentro de SummaryStrip) ──
+const escenarioMeta = `${PERFIL_ESTANDAR.horizonte_anios} años · ${PERFIL_ESTANDAR.km_anual.toLocaleString('es-ES')} km/año · Madrid`;
+
+const title = 'Comparador EV — preview (DirectionA)';
 const description =
-  'Preview del nuevo comparador unificado con coste total a 5 años y specs técnicas.';
+  'Preview del comparador unificado enchufa2: specs técnicas + coste total a 5 años.';
 ---
 
 <Layout {title} {description}>
   <Header />
   <main id="main">
-    <ComparadorHeader modo="tco" />
+    <!-- Contenedor dirA: max-width + hub-gutter (más estrecho que page-gutter
+         del site para que la tabla respire). -->
+    <div class="dirA">
+      <ComparadorHeader modo="tco" />
 
-    <WinnerBanner
-      ganador={ganadora.par.nombreBev}
-      ahorroEur={ahorro}
-      siguiente={siguiente}
-      escenario={`${PERFIL_ESTANDAR.horizonte_anios} años · ${PERFIL_ESTANDAR.km_anual.toLocaleString('es-ES')} km/año · Madrid`}
-    />
+      <section class="dirA__selectors" aria-label="Selector de coches">
+        <GarageChipsRow slots={garageSlots} />
+      </section>
 
-    <section class="panel" id="panel-tco" role="tabpanel" aria-labelledby="tab-tco">
-      <TCOGrid>
-        {cartas.map((c, i) => (
-          <TCOCard
-            tren="BEV"
-            nombre={`${c.par.marca} ${c.par.modelo}`}
-            variante={c.par.variante}
-            input={c.bev}
-            rivalTotal={c.totalIce}
-            rivalNombre={c.par.nombreIce}
-            isWinner={i === ganadoraIdx}
-            stagger={i}
-            slug={c.par.slug}
-          />
-        ))}
-      </TCOGrid>
-    </section>
-
-    <!-- Stub para el panel Specs — se rellena en fase 3 con SpecsTable. -->
-    <section class="panel" id="panel-specs" role="tabpanel" aria-labelledby="tab-specs" hidden>
-      <div class="panel__stub">
-        <p>Vista Specs técnicas — en construcción.</p>
+      <!-- ScenarioBar solo se muestra en vista TCO (y la ocultamos por CSS
+           según data-mode en .dirA; por defecto arrancamos en modo TCO). -->
+      <div class="dirA__scen" data-show-when-mode="tco">
+        <ScenarioBar
+          kmAnual={PERFIL_ESTANDAR.km_anual}
+          anios={PERFIL_ESTANDAR.horizonte_anios}
+          precioKwhCasa={PERFIL_ESTANDAR.precio_kwh_eur}
+          precioKwhFuera={0.45}
+          pctCasa={80}
+        />
       </div>
-    </section>
 
-    <aside class="meta">
-      <p>
-        Preview en <code>/comparador-preview</code>. Los 4 coches están fijos;
-        en fase 3 llega el selector de garage con modal y la barra de escenario
-        interactiva. Cifras calculadas con el motor TCO canónico del repo.
-      </p>
-    </aside>
+      <!-- ── Panel SPECS ── -->
+      <section
+        class="dirA__panel"
+        id="panel-specs"
+        role="tabpanel"
+        aria-labelledby="tab-specs"
+        data-panel="specs"
+        hidden
+      >
+        <SpecsTable cars={specsCars} />
+      </section>
+
+      <!-- ── Panel TCO ── -->
+      <section
+        class="dirA__panel"
+        id="panel-tco"
+        role="tabpanel"
+        aria-labelledby="tab-tco"
+        data-panel="tco"
+      >
+        <SummaryStrip
+          totals={totalsForStrip}
+          anios={PERFIL_ESTANDAR.horizonte_anios}
+          escenarioMeta={escenarioMeta}
+        />
+
+        <TCOGrid cols={cartas.length}>
+          {cartas.map((c, i) => (
+            <TCOCard
+              tren="BEV"
+              nombre={`${c.par.marca} ${c.par.modelo}`}
+              variante={c.par.variante}
+              input={c.bev}
+              rivalTotal={c.totalIce}
+              rivalNombre={c.par.nombreIce}
+              isWinner={i === ganadoraIdx}
+              stagger={i}
+              slug={c.par.slug}
+            />
+          ))}
+        </TCOGrid>
+      </section>
+
+      <aside class="dirA__note">
+        <p>
+          Preview en <code>/comparador-preview</code>. Los 4 coches están fijos;
+          en fase 3 llega el selector con modal y la barra de escenario
+          interactiva. Cifras calculadas con el motor TCO canónico del repo.
+        </p>
+      </aside>
+    </div>
   </main>
   <Footer />
 </Layout>
 
 <style>
-  .panel {
-    padding: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(3rem, 6vw, 5rem);
-    background: var(--bg);
-  }
-  .panel__stub {
+  .dirA {
     max-width: var(--max-w);
-    margin-inline: auto;
-    padding: 4rem var(--page-gutter);
-    text-align: center;
-    color: var(--text-muted);
-    font-style: italic;
-    font-family: var(--font-serif);
-    font-size: 1.15rem;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 3vw, 2.5rem) var(--hub-gutter) 5rem;
   }
-  .meta {
-    max-width: var(--max-w);
-    margin: 0 auto clamp(3rem, 6vw, 5rem);
-    padding: 1rem var(--page-gutter);
+
+  .dirA__selectors {
+    margin-bottom: 1rem;
+  }
+
+  .dirA__scen { margin-bottom: 0; }
+
+  .dirA__panel {
+    padding: 0;
+    background: transparent;
+  }
+
+  .dirA__note {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
     font-size: 0.82rem;
-    color: var(--text-muted);
+    color: var(--text-mute);
     line-height: 1.6;
   }
-  .meta code {
+  .dirA__note code {
     font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-    background: var(--gray-50);
+    background: var(--surface-alt);
     padding: 0.1rem 0.3rem;
     border-radius: 4px;
     font-size: 0.78rem;
   }
-  :global([data-theme='dark']) .meta code {
-    background: var(--surface-alt);
-  }
 </style>
+
+<script>
+  // Lógica cliente mínima para que el toggle Specs/TCO funcione en el
+  // preview. El comparador final tendrá un script más rico (modal del
+  // garaje, recomputación TCO en vivo, etc.) — fase 3.
+  (function () {
+    const root = document.querySelector('[data-cmp-header]')?.closest('main');
+    if (!root) return;
+
+    const toggle = root.querySelector('[data-cmp-toggle]');
+    const tabs = root.querySelectorAll('[data-cmp-toggle] [role="tab"]');
+    const thumb = root.querySelector('.modetoggle__thumb');
+    const panels = root.querySelectorAll('[data-panel]');
+    const scenSlots = root.querySelectorAll('[data-show-when-mode]');
+
+    function setMode(mode) {
+      tabs.forEach((btn) => {
+        const on = btn.getAttribute('data-mode') === mode;
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+        btn.classList.toggle('is-on', on);
+      });
+      if (thumb) {
+        thumb.style.transform = mode === 'tco' ? 'translateX(100%)' : 'translateX(0)';
+      }
+      panels.forEach((p) => {
+        const show = p.getAttribute('data-panel') === mode;
+        if (show) p.removeAttribute('hidden');
+        else p.setAttribute('hidden', '');
+      });
+      scenSlots.forEach((s) => {
+        const show = s.getAttribute('data-show-when-mode') === mode;
+        s.style.display = show ? '' : 'none';
+      });
+    }
+
+    tabs.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        setMode(btn.getAttribute('data-mode'));
+      });
+    });
+
+    // Estado inicial: lo que diga el primer tab con aria-selected=true.
+    const initial = root.querySelector('[role="tab"][aria-selected="true"]')
+      ?.getAttribute('data-mode') || 'tco';
+    setMode(initial);
+  })();
+</script>

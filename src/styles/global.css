@@ -33,6 +33,13 @@
   --card-bg:  #FFFFFF;
   --yellow-text: #8a6d00;
 
+  /* Aliases del export Claude Design (comparador) — no tocar, los usan
+     los componentes portados de DirectionA sin reescribir clases. */
+  --text-soft:     var(--text-secondary);
+  --text-mute:     var(--text-muted);
+  --border-strong: var(--gray-200);
+  --accent-text:   var(--yellow-text);
+
   --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
   --font-serif: 'Instrument Serif', Georgia, serif;
 
@@ -68,6 +75,10 @@
   --yellow-text: #F5C518;
   --yellow-glow: rgba(245,197,24,0.10);
   --phev-green-glow: rgba(62,124,90,0.18);
+  /* Los aliases heredan automáticamente porque apuntan a tokens semánticos,
+     pero --border-strong se apoya en --gray-200 que no se re-declara en dark.
+     Redefinimos explícitamente para que no se vea pálido. */
+  --border-strong: #3A3A3A;
 }
 
 /* ─────────────────────────────────────────────
