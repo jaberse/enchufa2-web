@@ -1,0 +1,145 @@
+---
+// src/pages/comparador-preview.astro
+// Preview de la nueva experiencia comparador+TCO unificada — fase 2.
+// Snapshot estático con 4 tarjetas preseleccionadas para validar el diseño
+// con Javi en la preview de Cloudflare antes de promocionar a /comparador.
+//
+// Aún sin: modal de selección de garage, scenario bar interactiva, ni
+// switch Specs/TCO con recomputación en cliente. Esos llegan en fase 3.
+
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ComparadorHeader from '../components/comparador/ComparadorHeader.astro';
+import WinnerBanner from '../components/comparador/WinnerBanner.astro';
+import TCOGrid from '../components/comparador/TCOGrid.astro';
+import TCOCard from '../components/comparador/TCOCard.astro';
+import { cargarParesTCO, PERFIL_ESTANDAR } from '../lib/comparador/loader.mjs';
+import { calcularTCO } from '../lib/tco/calculadora.mjs';
+import '../styles/global.css';
+
+// Selección narrativa: 4 coches con TCO disponible que cuentan la historia
+// de que el precio no es el TCO. Desde utilitario A (12k€) hasta premium
+// SUV (50k€), con un eléctrico protagonista (Tesla) y su ICE rival.
+const SELECCION = [
+  'tesla-model-3-rwd-highland',
+  'bmw-ix1-xdrive30',
+  'citroen-e-c3-you',
+  'hyundai-inster-long-range',
+];
+
+const todos = cargarParesTCO();
+const cartas = SELECCION.map((slug) => {
+  const par = todos.find((p) => p.slug === slug);
+  if (!par) throw new Error(`Preview: par no encontrado para ${slug}`);
+  const bev = par.horizontes[5].bev;
+  const ice = par.horizontes[5].ice;
+  const brBev = calcularTCO(bev);
+  const brIce = calcularTCO(ice);
+  return {
+    par,
+    bev,
+    ice,
+    totalBev: brBev.tco_total_eur,
+    totalIce: brIce.tco_total_eur,
+  };
+});
+
+// Encontrar la carta ganadora del grupo (menor TCO total entre los 4 BEV).
+const totales = cartas.map((c) => c.totalBev);
+const minTotal = Math.min(...totales);
+const ganadoraIdx = totales.indexOf(minTotal);
+const ganadora = cartas[ganadoraIdx];
+
+// Siguiente mejor para el banner.
+const ordenados = [...cartas].sort((a, b) => a.totalBev - b.totalBev);
+const ahorro = ordenados[1].totalBev - ordenados[0].totalBev;
+const siguiente = ordenados[1].par.nombreBev;
+
+const title = 'Comparador EV — preview Fase 2';
+const description =
+  'Preview del nuevo comparador unificado con coste total a 5 años y specs técnicas.';
+---
+
+<Layout {title} {description}>
+  <Header />
+  <main id="main">
+    <ComparadorHeader modo="tco" />
+
+    <WinnerBanner
+      ganador={ganadora.par.nombreBev}
+      ahorroEur={ahorro}
+      siguiente={siguiente}
+      escenario={`${PERFIL_ESTANDAR.horizonte_anios} años · ${PERFIL_ESTANDAR.km_anual.toLocaleString('es-ES')} km/año · Madrid`}
+    />
+
+    <section class="panel" id="panel-tco" role="tabpanel" aria-labelledby="tab-tco">
+      <TCOGrid>
+        {cartas.map((c, i) => (
+          <TCOCard
+            tren="BEV"
+            nombre={`${c.par.marca} ${c.par.modelo}`}
+            variante={c.par.variante}
+            input={c.bev}
+            rivalTotal={c.totalIce}
+            rivalNombre={c.par.nombreIce}
+            isWinner={i === ganadoraIdx}
+            stagger={i}
+            slug={c.par.slug}
+          />
+        ))}
+      </TCOGrid>
+    </section>
+
+    <!-- Stub para el panel Specs — se rellena en fase 3 con SpecsTable. -->
+    <section class="panel" id="panel-specs" role="tabpanel" aria-labelledby="tab-specs" hidden>
+      <div class="panel__stub">
+        <p>Vista Specs técnicas — en construcción.</p>
+      </div>
+    </section>
+
+    <aside class="meta">
+      <p>
+        Preview en <code>/comparador-preview</code>. Los 4 coches están fijos;
+        en fase 3 llega el selector de garage con modal y la barra de escenario
+        interactiva. Cifras calculadas con el motor TCO canónico del repo.
+      </p>
+    </aside>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .panel {
+    padding: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(3rem, 6vw, 5rem);
+    background: var(--bg);
+  }
+  .panel__stub {
+    max-width: var(--max-w);
+    margin-inline: auto;
+    padding: 4rem var(--page-gutter);
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+  }
+  .meta {
+    max-width: var(--max-w);
+    margin: 0 auto clamp(3rem, 6vw, 5rem);
+    padding: 1rem var(--page-gutter);
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .meta code {
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    background: var(--gray-50);
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    font-size: 0.78rem;
+  }
+  :global([data-theme='dark']) .meta code {
+    background: var(--surface-alt);
+  }
+</style>

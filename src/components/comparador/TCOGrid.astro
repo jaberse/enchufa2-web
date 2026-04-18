@@ -1,0 +1,29 @@
+---
+// src/components/comparador/TCOGrid.astro
+// Grid responsive para N tarjetas TCO. Usa auto-fit + minmax para que con
+// 4 tarjetas haga 4 columnas en desktop y se replieguen a 2 en tablet y 1
+// en móvil sin media queries explícitas.
+//
+// Pensado para recibir TCOCard como slot.
+---
+<div class="tco-grid">
+  <slot />
+</div>
+
+<style>
+  .tco-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: clamp(1rem, 1.5vw, 1.5rem);
+    align-items: stretch;
+    max-width: var(--max-w);
+    margin-inline: auto;
+    padding-inline: var(--page-gutter);
+  }
+  @media (min-width: 1200px) {
+    .tco-grid {
+      /* Forzar 4 columnas cuando haya espacio, sin que se estire 1/2/3. */
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

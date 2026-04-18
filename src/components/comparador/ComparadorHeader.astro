@@ -1,0 +1,138 @@
+---
+// src/components/comparador/ComparadorHeader.astro
+// Cabecera propia del comparador (no confundir con el Header global del site).
+// Contiene: eyebrow, título, descripción y mode-toggle Specs/TCO.
+//
+// El toggle es accesible (role=tablist + aria-selected) y se controla desde
+// el cliente vía public/comparador/comparador.js leyendo data-mode.
+
+interface Props {
+  /** Modo activo por defecto. */
+  modo?: 'tco' | 'specs';
+}
+
+const { modo = 'tco' } = Astro.props;
+---
+
+<section class="cmp-header">
+  <div class="cmp-header__wrap">
+    <p class="cmp-header__eyebrow">Comparador enchufa2</p>
+    <h1 class="cmp-header__title">
+      Comparador de coches <em class="serif">eléctricos</em>
+    </h1>
+    <p class="cmp-header__lead">
+      62 modelos con datos verificados y <em class="serif">coste real a 5 años</em>.
+      Elige hasta 4 coches y cambia entre specs técnicas y coste total.
+    </p>
+
+    <div
+      class="cmp-toggle"
+      role="tablist"
+      aria-label="Modo del comparador"
+      data-cmp-toggle
+    >
+      <button
+        class="cmp-toggle__btn"
+        role="tab"
+        aria-selected={modo === 'tco'}
+        data-mode="tco"
+        id="tab-tco"
+        aria-controls="panel-tco"
+      >
+        Coste total 5 años
+      </button>
+      <button
+        class="cmp-toggle__btn"
+        role="tab"
+        aria-selected={modo === 'specs'}
+        data-mode="specs"
+        id="tab-specs"
+        aria-controls="panel-specs"
+      >
+        Specs técnicas
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cmp-header {
+    padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(1.5rem, 3vw, 2.5rem);
+    background: var(--bg);
+  }
+  .cmp-header__wrap {
+    max-width: var(--max-w);
+    margin-inline: auto;
+    padding-inline: var(--page-gutter);
+  }
+  .cmp-header__eyebrow {
+    margin: 0 0 1rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .cmp-header__title {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 200;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: var(--text);
+  }
+  .cmp-header__title .serif {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text);
+  }
+  .cmp-header__lead {
+    margin: 1rem 0 0;
+    max-width: 56ch;
+    font-size: clamp(1rem, 1.4vw, 1.15rem);
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+  .cmp-header__lead .serif {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--yellow-text);
+  }
+
+  /* Toggle */
+  .cmp-toggle {
+    display: inline-flex;
+    margin-top: clamp(1.5rem, 3vw, 2rem);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.2rem;
+    background: var(--card-bg);
+    gap: 0.15rem;
+  }
+  .cmp-toggle__btn {
+    padding: 0.5rem 1.1rem;
+    font-size: 0.88rem;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 200ms var(--ease-out-expo), background 200ms var(--ease-out-expo);
+  }
+  .cmp-toggle__btn[aria-selected='true'] {
+    background: var(--text);
+    color: var(--bg);
+  }
+  .cmp-toggle__btn:hover:not([aria-selected='true']) {
+    color: var(--text);
+  }
+  .cmp-toggle__btn:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+  }
+</style>
