@@ -281,7 +281,7 @@ function renderTcoCard({ slug, slot, tco, isWinner }) {
 
       <footer class="tco-card__foot">
         <span><span class="pill-conf ${confianzaCls}">Confianza ${confianzaLabel}</span></span>
-        <a href="/docs/metodologia-tco" class="tco-card__method">Metodología completa →</a>
+        <a href="/calculadora-tco" class="tco-card__method">Metodología completa →</a>
       </footer>
     </article>
   `;
@@ -755,9 +755,22 @@ export function initComparador() {
     dom.scenbar.addEventListener('input', onScenarioInput);
   }
 
-  // Modo inicial: el atributo aria-selected del SSR manda.
-  const initialMode = document.querySelector('[role="tab"][aria-selected="true"]')
-    ?.getAttribute('data-mode') || 'tco';
+  // Modo inicial: si la URL trae ?mode=tco|specs lo respetamos; si no,
+  // cae en el atributo aria-selected del SSR.
+  let initialMode = 'specs';
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const m = params.get('mode');
+    if (m === 'tco' || m === 'specs') {
+      initialMode = m;
+    } else {
+      initialMode = document.querySelector('[role="tab"][aria-selected="true"]')
+        ?.getAttribute('data-mode') || 'specs';
+    }
+  } catch (_) {
+    initialMode = document.querySelector('[role="tab"][aria-selected="true"]')
+      ?.getAttribute('data-mode') || 'specs';
+  }
   setMode(initialMode);
 
   // Render inicial completo (sobreescribe el SSR con markup JS coherente).
