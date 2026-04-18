@@ -1,8 +1,16 @@
 ---
 const currentPath = Astro.url.pathname;
+const currentSearch = Astro.url.search || '';
 const isHome = currentPath === '/' || currentPath === '';
-const isComparador = currentPath.startsWith('/comparador');
-const isCalculadora = currentPath.startsWith('/calculadora-tco');
+// Activamos "Comparador" cuando el usuario está en /comparador sin mode=tco
+// (modo specs por defecto).
+const isComparador =
+  currentPath.startsWith('/comparador') && !currentSearch.includes('mode=tco');
+// "Calculadora" ahora apunta al mismo comparador unificado con mode=tco;
+// también se marca activa en /calculadora-tco (docs/metodología).
+const isCalculadora =
+  (currentPath.startsWith('/comparador') && currentSearch.includes('mode=tco')) ||
+  currentPath.startsWith('/calculadora-tco');
 ---
 <a href="#main" class="skip-link">Saltar al contenido</a>
 <header class="site-header" id="site-header">
@@ -55,7 +63,7 @@ const isCalculadora = currentPath.startsWith('/calculadora-tco');
       <a href={isHome ? '#autonomia' : '/#autonomia'}>¿Puedo viajar?</a>
       <a href={isHome ? '#tecnologia' : '/#tecnologia'}>¿Cómo funciona?</a>
       <a href="/comparador" class={isComparador ? 'active' : ''}>Comparador</a>
-      <a href="/calculadora-tco" class={isCalculadora ? 'active' : ''}>Calculadora</a>
+      <a href="/comparador?mode=tco" class={isCalculadora ? 'active' : ''}>Calculadora</a>
     </div>
   </nav>
 

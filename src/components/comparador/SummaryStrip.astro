@@ -1,0 +1,168 @@
+---
+// src/components/comparador/SummaryStrip.astro
+// Strip resumen "summA" portado del export DirectionA.
+// 2 columnas: a la izquierda el ganador (eyebrow + nombre + delta serif
+// amarillo), a la derecha un pequeño gráfico de barras con los 4 totales
+// escalados. La barra del ganador sale en amarillo; el resto en border-strong.
+//
+// Este componente recibe los totales ya calculados por SSR desde la página.
+// La animación de barras (transition width 700ms) se disparará vía IO+rAF
+// en fase 3 — de momento, se rinden con su width final.
+
+export interface Totals {
+  id: string;
+  nombre: string;
+  total: number;
+  tren?: 'BEV' | 'ICE' | 'PHEV' | 'HEV' | 'MHEV';
+}
+
+interface Props {
+  totals: Totals[];
+  anios?: number;
+  escenarioMeta?: string;
+}
+
+const { totals, anios = 5, escenarioMeta } = Astro.props;
+
+const maxTotal = Math.max(...totals.map(t => t.total));
+const minTotal = Math.min(...totals.map(t => t.total));
+const diff = maxTotal - minTotal;
+const winner = totals.find(t => t.total === minTotal)!;
+
+const fmtEur = (n: number) =>
+  new Intl.NumberFormat('es-ES', {
+    style: 'currency',
+    currency: 'EUR',
+    maximumFractionDigits: 0,
+  }).format(Math.round(n));
+---
+
+<section class="summA" aria-live="polite" data-summary>
+  <div class="summA__L">
+    <p class="eyebrow">Ganador del escenario</p>
+    <div class="summA__winner">{winner.nombre}</div>
+    <p class="serif summA__delta">
+      ahorra hasta {fmtEur(diff)} frente al peor de los {totals.length} en {anios} años
+    </p>
+    {escenarioMeta && (
+      <p class="summA__meta">{escenarioMeta}</p>
+    )}
+  </div>
+  <div class="summA__R">
+    {totals.map(t => {
+      const isWin = t.id === winner.id;
+      const pct = diff > 0 ? (t.total - minTotal) / diff : 0;
+      const width = Math.round(12 + pct * 88);
+      return (
+        <div
+          class:list={['summA__row', isWin && 'summA__row--win']}
+          data-summary-row={t.id}
+        >
+          <span class="summA__name">{t.nombre}</span>
+          <span class="summA__bar" aria-hidden="true">
+            <span
+              class="summA__barfill"
+              style={`width: ${width}%; background: ${isWin ? 'var(--yellow)' : 'var(--border-strong)'};`}
+            ></span>
+          </span>
+          <span class="summA__num tabular">{fmtEur(t.total)}</span>
+        </div>
+      );
+    })}
+  </div>
+</section>
+
+<style>
+  .summA {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) 2fr;
+    gap: 2rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 1.25rem;
+    align-items: center;
+  }
+  .eyebrow {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .summA__winner {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    font-size: clamp(1.2rem, 2vw, 1.4rem);
+    margin-top: 0.25rem;
+    color: var(--text);
+  }
+  .summA__delta {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent-text);
+    font-size: 0.95rem;
+    margin-top: 0.25rem;
+    line-height: 1.35;
+  }
+  .summA__meta {
+    margin-top: 0.35rem;
+    font-size: 0.78rem;
+    color: var(--text-mute);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .summA__R {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .summA__row {
+    display: grid;
+    grid-template-columns: 180px 1fr 100px;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.88rem;
+  }
+  .summA__name {
+    color: var(--text-soft);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .summA__row--win .summA__name {
+    color: var(--text);
+    font-weight: 400;
+  }
+  .summA__bar {
+    height: 6px;
+    background: var(--bg);
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+  }
+  .summA__barfill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    border-radius: 999px;
+    transition: width 700ms var(--ease-out-expo), background 200ms;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .summA__barfill { transition: none; }
+  }
+  .summA__num {
+    text-align: right;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+  }
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 720px) {
+    .summA { grid-template-columns: 1fr; gap: 1rem; }
+    .summA__row { grid-template-columns: 110px 1fr 80px; }
+  }
+</style>

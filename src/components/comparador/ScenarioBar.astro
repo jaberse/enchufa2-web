@@ -1,0 +1,191 @@
+---
+// src/components/comparador/ScenarioBar.astro
+// Barra horizontal con los 5 pill-inputs del escenario TCO.
+// Portada de ScenarioBar + PillInput del export DirectionA.
+//
+// Los valores iniciales vienen del perfil estándar enchufa2 (15.000 km/año,
+// 5 años, 0,17 €/kWh casa, 0,45 €/kWh fuera, 80 % en casa).
+// Los inputs son inputs nativos type=number — el script cliente del
+// comparador escucha 'input' para disparar la recomputación.
+
+interface Props {
+  kmAnual?: number;
+  anios?: number;
+  precioKwhCasa?: number;
+  precioKwhFuera?: number;
+  pctCasa?: number;
+  region?: string;
+  perfilSeguro?: string;
+}
+
+const {
+  kmAnual = 15000,
+  anios = 5,
+  precioKwhCasa = 0.17,
+  precioKwhFuera = 0.45,
+  pctCasa = 80,
+  region = 'Madrid',
+  perfilSeguro = 'Perfil medio',
+} = Astro.props;
+---
+
+<div class="scenbar scenbar--A" data-scenbar>
+  <span class="scenbar__intro serif">Tu escenario:</span>
+
+  <label class="pill">
+    <input
+      class="pill__input tabular"
+      type="number"
+      value={kmAnual}
+      step="500"
+      min="1000"
+      max="60000"
+      style="width: 72px;"
+      data-scen-field="km_anual"
+      aria-label="Kilómetros al año"
+    />
+    <span class="pill__suffix">km / año</span>
+  </label>
+
+  <label class="pill">
+    <input
+      class="pill__input tabular"
+      type="number"
+      value={anios}
+      step="1"
+      min="1"
+      max="15"
+      style="width: 40px;"
+      data-scen-field="anios"
+      aria-label="Años de tenencia"
+    />
+    <span class="pill__suffix">años</span>
+  </label>
+
+  <label class="pill">
+    <input
+      class="pill__input tabular"
+      type="number"
+      value={precioKwhCasa}
+      step="0.01"
+      min="0.05"
+      max="0.80"
+      style="width: 56px;"
+      data-scen-field="precio_kwh_casa"
+      aria-label="Precio kWh en casa"
+    />
+    <span class="pill__suffix">€/kWh casa</span>
+  </label>
+
+  <label class="pill">
+    <input
+      class="pill__input tabular"
+      type="number"
+      value={precioKwhFuera}
+      step="0.01"
+      min="0.10"
+      max="1.20"
+      style="width: 56px;"
+      data-scen-field="precio_kwh_fuera"
+      aria-label="Precio kWh fuera de casa"
+    />
+    <span class="pill__suffix">€/kWh fuera</span>
+  </label>
+
+  <label class="pill">
+    <input
+      class="pill__input tabular"
+      type="number"
+      value={pctCasa}
+      step="5"
+      min="0"
+      max="100"
+      style="width: 50px;"
+      data-scen-field="pct_casa"
+      aria-label="Porcentaje de carga en casa"
+    />
+    <span class="pill__suffix">% en casa</span>
+  </label>
+
+  <span class="scenbar__region">{region} · {perfilSeguro}</span>
+</div>
+
+<style>
+  .scenbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin: 0 0 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .scenbar__intro {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text-soft);
+    font-size: 1rem;
+    margin-right: 0.5rem;
+  }
+  .serif {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .scenbar__region {
+    margin-left: auto;
+    font-size: 0.78rem;
+    color: var(--text-mute);
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 640px) {
+    .scenbar__region {
+      margin-left: 0;
+      width: 100%;
+      margin-top: 0.25rem;
+    }
+  }
+
+  /* ── Pill input ──────────────────────────────────────────────── */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.3rem 0.6rem;
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    font-size: 0.82rem;
+    transition: border-color 180ms, background 180ms;
+    cursor: text;
+  }
+  .pill:focus-within {
+    border-color: var(--yellow);
+    background: var(--yellow-glow);
+  }
+  .pill__input {
+    border: 0;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 0.88rem;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    color: var(--text);
+    -moz-appearance: textfield;
+  }
+  .pill__input:focus { outline: none; }
+  .pill__input::-webkit-outer-spin-button,
+  .pill__input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .pill__suffix {
+    color: var(--text-soft);
+    font-size: 0.78rem;
+  }
+  .tabular { font-variant-numeric: tabular-nums; }
+</style>

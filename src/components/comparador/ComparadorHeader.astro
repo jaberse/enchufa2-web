@@ -1,0 +1,147 @@
+---
+// src/components/comparador/ComparadorHeader.astro
+// HeaderA portado 1:1 del export de Claude Design (DirectionA).
+// 2-col grid: eyebrow + título a la izquierda, toggle Specs/TCO a la derecha.
+// El título lleva la frase amarillo-serif "Los números, sin filtro." como cierre.
+//
+// Interactividad del toggle: controlada desde public/comparador/comparador.js
+// leyendo data-mode. Marcamos la tab correcta con aria-selected y la clase
+// is-on para que el thumb amarillo se posicione al render inicial sin JS.
+
+interface Props {
+  /** Modo activo por defecto. */
+  modo?: 'tco' | 'specs';
+}
+
+const { modo = 'specs' } = Astro.props;
+---
+
+<header class="dirA__head" data-cmp-header>
+  <div class="dirA__headL">
+    <p class="eyebrow">enchufa2 · /comparador</p>
+    <h1 class="dirA__title">
+      Cuatro coches. Una decisión. <span class="serif">Los números, sin filtro.</span>
+    </h1>
+  </div>
+  <div class="dirA__headR">
+    <div
+      class="modetoggle"
+      role="tablist"
+      aria-label="Vista"
+      data-cmp-toggle
+    >
+      <button
+        class:list={['modetoggle__tab', modo === 'specs' && 'is-on']}
+        role="tab"
+        aria-selected={modo === 'specs'}
+        data-mode="specs"
+        id="tab-specs"
+        aria-controls="panel-specs"
+      >
+        <span>Especificaciones</span>
+      </button>
+      <button
+        class:list={['modetoggle__tab', modo === 'tco' && 'is-on']}
+        role="tab"
+        aria-selected={modo === 'tco'}
+        data-mode="tco"
+        id="tab-tco"
+        aria-controls="panel-tco"
+      >
+        <span>Coste de propiedad</span>
+      </button>
+      <span
+        class="modetoggle__thumb"
+        aria-hidden="true"
+        style={`transform: translateX(${modo === 'tco' ? '100%' : '0'});`}
+      ></span>
+    </div>
+  </div>
+</header>
+
+<style>
+  /* Eyebrow local (reutilizado en varios bloques del comparador). */
+  .eyebrow {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .dirA__head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+  }
+  .dirA__title {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--text);
+    font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+    margin: 0.5rem 0 0;
+    max-width: 22ch;
+  }
+  .dirA__title .serif {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text-soft);
+    font-size: 0.9em;
+  }
+
+  @media (max-width: 720px) {
+    .dirA__head { grid-template-columns: 1fr; }
+    .dirA__headR { justify-self: start; }
+  }
+
+  /* ── Mode toggle iOS-style con thumb amarillo ────────────────── */
+  .modetoggle {
+    position: relative;
+    display: inline-flex;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    padding: 3px;
+    overflow: hidden;
+  }
+  .modetoggle__tab {
+    position: relative;
+    z-index: 2;
+    padding: 0.45rem 1rem;
+    font-size: 0.82rem;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    color: var(--text-soft);
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 220ms var(--ease-out-expo);
+    flex: 0 0 auto;
+    min-width: 140px;
+    text-align: center;
+  }
+  .modetoggle__tab.is-on { color: var(--black); }
+  .modetoggle__tab:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+  }
+  .modetoggle__thumb {
+    position: absolute;
+    z-index: 1;
+    top: 3px; left: 3px; bottom: 3px;
+    width: calc(50% - 3px);
+    background: var(--yellow);
+    border-radius: 999px;
+    transition: transform 420ms var(--ease-out-expo);
+  }
+</style>

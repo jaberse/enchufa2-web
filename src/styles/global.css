@@ -6,6 +6,8 @@
   --white:    #FAFAF8;
   --yellow:   #F5C518;
   --yellow-glow: rgba(245,197,24,0.15);
+  --phev-green: #3E7C5A;
+  --phev-green-glow: rgba(62,124,90,0.12);
   --cream:    #F8F6F1;
   --gray-50:  #F2F1ED;
   --gray-100: #E8E7E3;
@@ -31,10 +33,18 @@
   --card-bg:  #FFFFFF;
   --yellow-text: #8a6d00;
 
+  /* Aliases del export Claude Design (comparador) — no tocar, los usan
+     los componentes portados de DirectionA sin reescribir clases. */
+  --text-soft:     var(--text-secondary);
+  --text-mute:     var(--text-muted);
+  --border-strong: var(--gray-200);
+  --accent-text:   var(--yellow-text);
+
   --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
   --font-serif: 'Instrument Serif', Georgia, serif;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-in-out:   cubic-bezier(0.65, 0, 0.35, 1);
 
   --section-pad: clamp(5rem, 10vw, 9rem);
@@ -64,6 +74,11 @@
   --card-bg:  #141414;
   --yellow-text: #F5C518;
   --yellow-glow: rgba(245,197,24,0.10);
+  --phev-green-glow: rgba(62,124,90,0.18);
+  /* Los aliases heredan automáticamente porque apuntan a tokens semánticos,
+     pero --border-strong se apoya en --gray-200 que no se re-declara en dark.
+     Redefinimos explícitamente para que no se vea pálido. */
+  --border-strong: #3A3A3A;
 }
 
 /* ─────────────────────────────────────────────
