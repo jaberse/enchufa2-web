@@ -159,4 +159,10 @@ const fmtEur = (n: number) =>
     font-weight: 400;
     font-variant-numeric: tabular-nums;
   }
-  .tabular { font-variant-numeric: tabular-nums
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 720px) {
+    .summA { grid-template-columns: 1fr; gap: 1rem; }
+    .summA__row { grid-template-columns: 110px 1fr 80px; }
+  }
+</style>

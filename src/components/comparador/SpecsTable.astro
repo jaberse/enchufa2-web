@@ -275,4 +275,17 @@ function bestOf(row: Row): number | null {
   @media (max-width: 820px) {
     .stbl {
       grid-template-columns: 140px repeat(var(--cols), 68vw);
-  
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    }
+    .stbl__headcell,
+    .stbl__cell { scroll-snap-align: start; }
+    .stbl__labelcol,
+    .stbl__label {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      background: var(--bg);
+    }
+  }
+</style>
