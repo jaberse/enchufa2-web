@@ -1,0 +1,285 @@
+---
+// src/components/comparador/GarageModal.astro
+// Modal del selector de garaje — portado de SelectorGarage (DirectionA).
+// El markup entero vive aquí; la lista de coches se rellena en cliente
+// (client.mjs) leyendo el catálogo embebido en la página. El modal está
+// oculto por defecto con [hidden] y se muestra al click en un slot.
+//
+// Accesibilidad: role=dialog + aria-modal; focus trap mínimo en el script.
+// Escape cierra; click fuera del panel cierra.
+---
+
+<div
+  class="sel-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="sel-modal-title"
+  hidden
+  data-garage-modal
+>
+  <div class="sel-modal__panel" data-garage-modal-panel>
+    <div class="sel-modal__head">
+      <div>
+        <p class="eyebrow">Catálogo</p>
+        <p class="sel-modal__title" id="sel-modal-title" data-garage-modal-title>
+          Elegir coche
+        </p>
+      </div>
+      <button
+        type="button"
+        class="sel-modal__close"
+        aria-label="Cerrar"
+        data-garage-modal-close
+      >×</button>
+    </div>
+
+    <div class="sel-modal__toolbar">
+      <label class="sr-only" for="sel-modal-search">Buscar</label>
+      <input
+        id="sel-modal-search"
+        class="sel-modal__search"
+        type="search"
+        placeholder="Buscar marca, modelo o variante…"
+        autocomplete="off"
+        data-garage-modal-search
+      />
+      <div class="sel-modal__tabs" role="tablist" aria-label="Filtrar por tren motriz">
+        <button type="button" class="sel-modal__tab is-on" data-garage-modal-filter="all">Todos</button>
+        <button type="button" class="sel-modal__tab" data-garage-modal-filter="BEV">EV</button>
+        <button type="button" class="sel-modal__tab" data-garage-modal-filter="PHEV">PHEV</button>
+        <button type="button" class="sel-modal__tab" data-garage-modal-filter="HEV">HEV</button>
+        <button type="button" class="sel-modal__tab" data-garage-modal-filter="MHEV">MHEV</button>
+        <button type="button" class="sel-modal__tab" data-garage-modal-filter="ICE">Combustión</button>
+      </div>
+    </div>
+
+    <div class="sel-modal__body">
+      <div class="sel-group__list" data-garage-modal-list role="listbox">
+        <!-- Rellenado por client.mjs -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .eyebrow {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .sel-modal {
+    position: fixed;
+    inset: 0;
+    background: color-mix(in oklch, var(--text) 35%, transparent);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: modal-fade 180ms var(--ease-out-expo);
+  }
+  .sel-modal[hidden] { display: none; }
+  @keyframes modal-fade { from { opacity: 0 } to { opacity: 1 } }
+
+  .sel-modal__panel {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    max-width: 720px;
+    width: 100%;
+    max-height: min(82vh, 760px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 40px 80px -20px rgba(0,0,0,0.3);
+    animation: modal-up 260ms var(--ease-out-expo);
+  }
+  @keyframes modal-up {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sel-modal, .sel-modal__panel { animation: none; }
+  }
+
+  .sel-modal__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .sel-modal__title {
+    margin: 0.2rem 0 0;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 1.3rem;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  .sel-modal__close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: var(--text-mute);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .sel-modal__close:hover { background: var(--bg); color: var(--text); }
+  .sel-modal__close:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+  }
+
+  .sel-modal__toolbar {
+    padding: 0.75rem 1.25rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .sel-modal__search {
+    padding: 0.7rem 0.95rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: var(--font-sans);
+    color: var(--text);
+  }
+  .sel-modal__search:focus {
+    outline: 2px solid var(--yellow);
+    outline-offset: 1px;
+    border-color: var(--yellow);
+  }
+  .sel-modal__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .sel-modal__tab {
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    font-size: 0.76rem;
+    color: var(--text-soft);
+    background: transparent;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 140ms, border-color 140ms, color 140ms;
+  }
+  .sel-modal__tab:hover {
+    border-color: var(--border-strong);
+    color: var(--text);
+  }
+  .sel-modal__tab.is-on {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+  .sel-modal__tab:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+  }
+
+  .sel-modal__body {
+    padding: 0 1.25rem 1rem;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .sel-group__list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Los items se renderizan desde JS — estilos aquí para coherencia. */
+  :global(.sel-item) {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 0.75rem;
+    width: 100%;
+    text-align: left;
+    border-radius: 4px;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    transition: background 120ms;
+    font-family: var(--font-sans);
+    color: var(--text);
+    min-width: 0;
+  }
+  :global(.sel-item:last-child) { border-bottom: 0; }
+  :global(.sel-item:hover) { background: var(--bg); }
+  :global(.sel-item.is-taken) { opacity: 0.4; cursor: not-allowed; }
+  :global(.sel-item:focus-visible) {
+    outline: 2px solid var(--yellow);
+    outline-offset: -2px;
+  }
+  :global(.sel-item__main) {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+  }
+  :global(.sel-item__brand) {
+    font-weight: 400;
+    font-size: 0.98rem;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  :global(.sel-item__var) {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text-soft);
+    font-size: 0.9em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  :global(.sel-item__meta) {
+    color: var(--text-mute);
+    font-size: 0.76rem;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-variant-numeric: tabular-nums;
+  }
+  :global(.sel-item__sep) { opacity: 0.5; }
+  :global(.sel-item__tco) { color: var(--yellow-text); font-weight: 500; }
+  :global(.sel-item__in) { color: var(--text-mute); font-style: italic; margin-left: 0.3rem; }
+  :global(.sel-empty) {
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--text-soft);
+    font-size: 0.9rem;
+  }
+</style>

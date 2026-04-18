@@ -156,3 +156,47 @@ export function cargarParesTCO() {
 export function slugsConTCO() {
   return new Set(PARES_CANONICOS.map((p) => p.bev));
 }
+
+// ──────────────────────────────────────────────────────────────────────
+// 4) DATOS PARA CLIENTE — payload JSON serializable embebido en la página.
+//
+// Estructura:
+//   {
+//     catalogoSpecs: SpecsCar[],             // 63 BEV con specs para la tabla
+//     paresTCO:      { slug → ParCliente },  // 20 pares indexados por slug BEV
+//     slugsConTCO:   string[],               // mismo set, serializable
+//     perfil:        PERFIL_ESTANDAR,
+//     horizontes:    HORIZONTES_DISPONIBLES,
+//   }
+//
+// Pensado para inyectarse como <script type="application/json"> en la página
+// y ser consumido por src/lib/comparador/client.mjs.
+// ──────────────────────────────────────────────────────────────────────
+
+export function cargarDatosCliente() {
+  const catalogoSpecs = cargarCatalogoSpecs();
+  const pares = cargarParesTCO();
+  const paresTCO = {};
+  for (const p of pares) {
+    paresTCO[p.slug] = {
+      slug: p.slug,
+      iceSlug: p.iceSlug,
+      marca: p.marca,
+      modelo: p.modelo,
+      variante: p.variante,
+      nombreBev: p.nombreBev,
+      nombreIce: p.nombreIce,
+      segmento: p.segmento,
+      foto: p.foto,
+      horizontes: p.horizontes,
+      ayuda_eur: p.ayuda_eur,
+    };
+  }
+  return {
+    catalogoSpecs,
+    paresTCO,
+    slugsConTCO: pares.map((p) => p.slug),
+    perfil: PERFIL_ESTANDAR,
+    horizontes: HORIZONTES_DISPONIBLES,
+  };
+}

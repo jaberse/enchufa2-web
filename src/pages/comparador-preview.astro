@@ -15,6 +15,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ComparadorHeader from '../components/comparador/ComparadorHeader.astro';
 import GarageChipsRow from '../components/comparador/GarageChipsRow.astro';
+import GarageModal from '../components/comparador/GarageModal.astro';
 import ScenarioBar from '../components/comparador/ScenarioBar.astro';
 import SpecsTable from '../components/comparador/SpecsTable.astro';
 import SummaryStrip from '../components/comparador/SummaryStrip.astro';
@@ -23,10 +24,16 @@ import TCOCard from '../components/comparador/TCOCard.astro';
 import {
   cargarCatalogoSpecs,
   cargarParesTCO,
+  cargarDatosCliente,
   PERFIL_ESTANDAR,
 } from '../lib/comparador/loader.mjs';
 import { calcularTCO } from '../lib/tco/calculadora.mjs';
 import '../styles/global.css';
+
+// Payload JSON para el cliente: catálogo specs + pares TCO pre-computados
+// por horizonte, más perfil estándar. Se serializa inline en la página y
+// lo consume client.mjs via #cmp-data.
+const datosCliente = cargarDatosCliente();
 
 // ──────────────────────────────────────────────────────────────────────
 // Selección narrativa: 4 coches con TCO disponible que cuentan la historia
@@ -167,12 +174,23 @@ const description =
 
       <aside class="dirA__note">
         <p>
-          Preview en <code>/comparador-preview</code>. Los 4 coches están fijos;
-          en fase 3 llega el selector con modal y la barra de escenario
-          interactiva. Cifras calculadas con el motor TCO canónico del repo.
+          Preview en <code>/comparador-preview</code>. Modal del garaje,
+          escenario editable y recálculo TCO en vivo sobre el motor canónico
+          del repo. Toggle Specs ↔ TCO con animación de thumb amarillo.
         </p>
       </aside>
     </div>
+
+    <!-- Modal del garaje: oculto por defecto, lo abre/cierra client.mjs. -->
+    <GarageModal />
+
+    <!-- Payload JSON con catálogo + pares TCO pre-computados por horizonte.
+         Lo lee client.mjs vía #cmp-data en initComparador(). -->
+    <script
+      type="application/json"
+      id="cmp-data"
+      set:html={JSON.stringify(datosCliente)}
+    ></script>
   </main>
   <Footer />
 </Layout>
@@ -213,48 +231,9 @@ const description =
 </style>
 
 <script>
-  // Lógica cliente mínima para que el toggle Specs/TCO funcione en el
-  // preview. El comparador final tendrá un script más rico (modal del
-  // garaje, recomputación TCO en vivo, etc.) — fase 3.
-  (function () {
-    const root = document.querySelector('[data-cmp-header]')?.closest('main');
-    if (!root) return;
-
-    const toggle = root.querySelector('[data-cmp-toggle]');
-    const tabs = root.querySelectorAll('[data-cmp-toggle] [role="tab"]');
-    const thumb = root.querySelector('.modetoggle__thumb');
-    const panels = root.querySelectorAll('[data-panel]');
-    const scenSlots = root.querySelectorAll('[data-show-when-mode]');
-
-    function setMode(mode) {
-      tabs.forEach((btn) => {
-        const on = btn.getAttribute('data-mode') === mode;
-        btn.setAttribute('aria-selected', on ? 'true' : 'false');
-        btn.classList.toggle('is-on', on);
-      });
-      if (thumb) {
-        thumb.style.transform = mode === 'tco' ? 'translateX(100%)' : 'translateX(0)';
-      }
-      panels.forEach((p) => {
-        const show = p.getAttribute('data-panel') === mode;
-        if (show) p.removeAttribute('hidden');
-        else p.setAttribute('hidden', '');
-      });
-      scenSlots.forEach((s) => {
-        const show = s.getAttribute('data-show-when-mode') === mode;
-        s.style.display = show ? '' : 'none';
-      });
-    }
-
-    tabs.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        setMode(btn.getAttribute('data-mode'));
-      });
-    });
-
-    // Estado inicial: lo que diga el primer tab con aria-selected=true.
-    const initial = root.querySelector('[role="tab"][aria-selected="true"]')
-      ?.getAttribute('data-mode') || 'tco';
-    setMode(initial);
-  })();
+  // Fase 3: lógica cliente completa (modal del garaje, scenario interactivo,
+  // recomputación TCO en vivo, toggle Specs/TCO). El motor TCO canónico se
+  // importa en client.mjs y Vite lo bundlea automáticamente.
+  import { initComparador } from '../lib/comparador/client.mjs';
+  initComparador();
 </script>
