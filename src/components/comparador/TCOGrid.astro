@@ -16,7 +16,7 @@ const { cols = 4 } = Astro.props;
   <slot />
 </div>
 
-<style>
+<style is:global>
   .tcogrid {
     display: grid;
     grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
@@ -26,6 +26,4 @@ const { cols = 4 } = Astro.props;
     .tcogrid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 560px) {
-    .tcogrid { grid-template-columns: 1fr; }
-  }
-</style>
+    .tcogrid { grid-template-c

@@ -179,7 +179,7 @@ const confianzaCls =
   </footer>
 </article>
 
-<style>
+<style is:global>
   /* ── Badge base (escopado a la tarjeta) ────────────────────────────── */
   .badge {
     display: inline-flex;
@@ -373,18 +373,4 @@ const confianzaCls =
   .tco-card__method {
     text-decoration: none;
     color: var(--text-secondary);
-    border-bottom: 1px solid var(--gray-200);
-    padding-bottom: 1px;
-    transition: color 180ms, border-color 180ms;
-  }
-  .tco-card__method:hover {
-    color: var(--yellow-text);
-    border-color: var(--yellow);
-  }
-
-  /* Dark mode: ajustes finos que el token principal no cubre. */
-  :global([data-theme='dark']) .badge--black {
-    background: var(--text);
-    color: var(--bg);
-  }
-</style>
+    border-bottom: 1px 
