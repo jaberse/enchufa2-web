@@ -415,26 +415,53 @@ function renderRivalSelector(slug, tco) {
   if (!DATA.iceSlugs || !DATA.icesTCO) return '';
   const current = tco.rivalSlug;
   const canonical = tco.rivalCanonicalSlug;
+  const currentIce = DATA.icesTCO[current];
+  const currentLabel = currentIce ? currentIce.nombre : 'Elegir rival';
+  const labelId = 'rival-lbl-' + slug;
   const options = DATA.iceSlugs
     .map((is) => {
       const i = DATA.icesTCO[is];
       if (!i) return '';
       const isCanon = is === canonical;
-      const label = isCanon ? `${i.nombre} · recomendado` : i.nombre;
-      const sel = is === current ? ' selected' : '';
-      return `<option value="${escapeHtml(is)}"${sel}>${escapeHtml(label)}</option>`;
+      const isSel = is === current;
+      const tag = isCanon
+        ? '<span class="tco-card__rivalOptTag">recomendado</span>'
+        : '';
+      return (
+        '<li role="option"'
+        + ' class="tco-card__rivalOpt"'
+        + ' tabindex="-1"'
+        + ' data-tco-ice-opt="' + escapeHtml(slug) + '"'
+        + ' data-ice-slug="' + escapeHtml(is) + '"'
+        + ' aria-selected="' + (isSel ? 'true' : 'false') + '"'
+        + '><span class="tco-card__rivalOptName">'
+        + escapeHtml(i.nombre)
+        + '</span>' + tag + '</li>'
+      );
     })
     .join('');
-  return `
-    <div class="tco-card__rival">
-      <label class="tco-card__rivalLbl" for="rival-${escapeHtml(slug)}">Comparado con</label>
-      <select
-        id="rival-${escapeHtml(slug)}"
-        class="tco-card__rivalSel"
-        data-tco-ice-select="${escapeHtml(slug)}"
-      >${options}</select>
-    </div>
-  `;
+  const chev = '<svg class="tco-card__rivalBtnChev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>';
+  return (
+    '<div class="tco-card__rival">'
+    + '<span class="tco-card__rivalLbl" id="' + escapeHtml(labelId) + '">Comparado con</span>'
+    + '<button type="button"'
+    +   ' class="tco-card__rivalBtn"'
+    +   ' data-tco-ice-trigger="' + escapeHtml(slug) + '"'
+    +   ' aria-haspopup="listbox"'
+    +   ' aria-expanded="false"'
+    +   ' aria-labelledby="' + escapeHtml(labelId) + '"'
+    +   '>'
+    +   '<span class="tco-card__rivalBtnName">' + escapeHtml(currentLabel) + '</span>'
+    +   chev
+    + '</button>'
+    + '<ul class="tco-card__rivalMenu"'
+    +   ' role="listbox"'
+    +   ' hidden'
+    +   ' aria-labelledby="' + escapeHtml(labelId) + '"'
+    +   ' data-tco-ice-menu="' + escapeHtml(slug) + '"'
+    +   '>' + options + '</ul>'
+    + '</div>'
+  );
 }
 
 function renderTcoCard({ slug, slot, tco, isWinner }) {
@@ -1224,6 +1251,14 @@ function rerender() {
 function onDocClick(e) {
   const t = e.target;
 
+  // Rival dropdown: cerrar todos los menus abiertos si el click no fue
+  // dentro del trigger ni del menu. El click en una opcion tambien pasa
+  // por aqui, pero su handler mas abajo cerrara explicitamente tras
+  // actualizar el estado.
+  if (t.closest && !t.closest('[data-tco-ice-trigger]') && !t.closest('.tco-card__rivalMenu')) {
+    closeAllRivalMenus();
+  }
+
   // Popovers (confianza, metodología TCO, fiabilidad). Se manejan primero para
   // que el click en el trigger no dispare otros handlers.
   const popBtn = t.closest ? t.closest('[data-pop]') : null;
@@ -1255,6 +1290,39 @@ function onDocClick(e) {
     } else if (kind === 'fiab') {
       openPopover(popBtn, popoverFiabilidad());
     }
+    return;
+  }
+
+  // Rival dropdown: abrir/cerrar el menu al click en el trigger.
+  const rivTrig = t.closest('[data-tco-ice-trigger]');
+  if (rivTrig) {
+    const slug = rivTrig.getAttribute('data-tco-ice-trigger');
+    const menu = document.querySelector(
+      '.tco-card__rivalMenu[data-tco-ice-menu="' + slug + '"]'
+    );
+    if (!menu) return;
+    const isOpen = !menu.hidden;
+    closeAllRivalMenus();
+    if (!isOpen) {
+      menu.hidden = false;
+      rivTrig.setAttribute('aria-expanded', 'true');
+    }
+    return;
+  }
+
+  // Rival dropdown: seleccionar opcion = actualiza iceOverride + cierra.
+  const rivOpt = t.closest('[data-tco-ice-opt]');
+  if (rivOpt) {
+    const bevSlug = rivOpt.getAttribute('data-tco-ice-opt');
+    const iceSlug = rivOpt.getAttribute('data-ice-slug');
+    const par = DATA.paresTCO[bevSlug];
+    if (par && iceSlug === par.iceSlug) {
+      delete state.iceOverride[bevSlug];
+    } else {
+      state.iceOverride[bevSlug] = iceSlug;
+    }
+    closeAllRivalMenus();
+    renderPanelTCO();
     return;
   }
 
@@ -1464,8 +1532,15 @@ function clearAppliedChip(id) {
 }
 
 function onKey(e) {
-  if (e.key === 'Escape' && state.modal.open) {
-    closeModal();
+  if (e.key === 'Escape') {
+    // Cierra primero el menu rival abierto (si lo hay); si no, cierra modal.
+    const anyRiv = document.querySelector('.tco-card__rivalMenu:not([hidden])');
+    if (anyRiv) {
+      closeAllRivalMenus();
+      e.preventDefault();
+      return;
+    }
+    if (state.modal.open) closeModal();
   }
 }
 
@@ -1526,20 +1601,18 @@ function onVistaChk(e) {
   renderPanelSpecs();
 }
 
-function onTcoIceChange(e) {
-  const sel = e.target.closest('[data-tco-ice-select]');
-  if (!sel) return;
-  const bevSlug = sel.getAttribute('data-tco-ice-select');
-  const iceSlug = sel.value;
-  const par = DATA.paresTCO[bevSlug];
-  // Si el usuario vuelve al ICE canónico, limpiamos el override para que
-  // el estado quede mínimo; si elige otro, lo guardamos.
-  if (par && iceSlug === par.iceSlug) {
-    delete state.iceOverride[bevSlug];
-  } else {
-    state.iceOverride[bevSlug] = iceSlug;
-  }
-  renderPanelTCO();
+// Cierra todos los menus rival abiertos y resetea aria-expanded de sus
+// triggers. Se llama desde onDocClick (click fuera), onKey (Escape), y
+// tambien al seleccionar una opcion.
+function closeAllRivalMenus() {
+  const menus = document.querySelectorAll('.tco-card__rivalMenu');
+  menus.forEach((menu) => {
+    if (!menu.hidden) menu.hidden = true;
+  });
+  const btns = document.querySelectorAll('[data-tco-ice-trigger]');
+  btns.forEach((btn) => {
+    btn.setAttribute('aria-expanded', 'false');
+  });
 }
 
 function onScenarioInput(e) {
@@ -1648,7 +1721,6 @@ export function initComparador() {
   if (dom.modalSort) dom.modalSort.addEventListener('change', onModalSort);
   if (dom.modalDrawer) dom.modalDrawer.addEventListener('input', onModalRangeInput);
   if (dom.specsVistaDrawer) dom.specsVistaDrawer.addEventListener('change', onVistaChk);
-  if (dom.tcoGrid) dom.tcoGrid.addEventListener('change', onTcoIceChange);
   if (dom.scenbar) dom.scenbar.addEventListener('input', onScenarioInput);
 
   // Render inicial del drawer vista (para que las categorías ya estén listas).

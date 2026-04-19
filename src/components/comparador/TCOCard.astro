@@ -420,8 +420,16 @@ const confianzaCls =
     margin: 0.4rem 0 0.25rem;
   }
 
-  /* ── Rival (selector de ICE a comparar) ────────────────────────────── */
+    /* -- Rival (selector de ICE a comparar) --------------------------- */
+  /* Dropdown custom que sustituye al <select> nativo. El menu del
+     select depende del SO (Windows/macOS renderiza un widget propio)
+     y rompe la estetica del comparador. Aqui componemos:
+       - .tco-card__rivalBtn   -> trigger, aspecto de chip con chevron
+       - .tco-card__rivalMenu  -> listbox absoluto, ancla al trigger
+       - .tco-card__rivalOpt   -> cada opcion (marca recomendado para
+                                  el ICE canonico del par BEV). */
   .tco-card__rival {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
@@ -434,32 +442,106 @@ const confianzaCls =
     text-transform: uppercase;
     color: var(--text-muted);
   }
-  .tco-card__rivalSel {
+  .tco-card__rivalBtn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
     width: 100%;
-    appearance: none;
-    -webkit-appearance: none;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 0.4rem 1.85rem 0.4rem 0.6rem;
+    border-radius: 8px;
+    padding: 0.55rem 0.75rem;
     font-family: var(--font-sans);
-    font-weight: 400;
-    font-size: 0.86rem;
+    font-weight: 300;
+    font-size: 0.88rem;
+    line-height: 1.2;
     color: var(--text);
     cursor: pointer;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23666'><path d='M4 6l4 4 4-4'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 0.55rem center;
-    background-size: 12px 12px;
-    transition: border-color 180ms, box-shadow 180ms;
+    text-align: left;
+    transition: border-color 180ms, box-shadow 180ms, background 180ms;
   }
-  .tco-card__rivalSel:hover { border-color: var(--text-secondary); }
-  .tco-card__rivalSel:focus-visible {
+  .tco-card__rivalBtn:hover { border-color: var(--text-secondary); }
+  .tco-card__rivalBtn:focus-visible {
     outline: none;
     border-color: var(--yellow);
     box-shadow: 0 0 0 2px var(--yellow-glow, rgba(245, 197, 24, 0.25));
   }
-
+  .tco-card__rivalBtn[aria-expanded="true"] {
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 2px var(--yellow-glow, rgba(245, 197, 24, 0.25));
+  }
+  .tco-card__rivalBtnName {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .tco-card__rivalBtnChev {
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+    color: var(--text-muted);
+    transition: transform 180ms;
+  }
+  .tco-card__rivalBtn[aria-expanded="true"] .tco-card__rivalBtnChev {
+    transform: rotate(180deg);
+  }
+  .tco-card__rivalMenu {
+    position: absolute;
+    z-index: 40;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    max-height: 240px;
+    overflow-y: auto;
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    padding: 0.25rem;
+    margin: 0;
+    list-style: none;
+  }
+  .tco-card__rivalOpt {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.5rem 0.65rem;
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 0.86rem;
+    color: var(--text);
+    cursor: pointer;
+    user-select: none;
+  }
+  .tco-card__rivalOpt:hover,
+  .tco-card__rivalOpt.is-active {
+    background: var(--gray-100);
+  }
+  .tco-card__rivalOpt[aria-selected="true"] {
+    background: var(--yellow-glow);
+    font-weight: 400;
+  }
+  .tco-card__rivalOptName {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .tco-card__rivalOptTag {
+    flex-shrink: 0;
+    font-size: 0.64rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0.1rem 0.45rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+  }
   /* ── Rows ──────────────────────────────────────────────────────────── */
   .tco-rows { display: flex; flex-direction: column; }
   .tco-row {
