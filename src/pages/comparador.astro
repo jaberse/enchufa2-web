@@ -156,7 +156,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
         </div>
 
         <!-- Specs panel (renderizado por client.mjs) -->
-        <div class="comp-tab-panel" data-tab-panel="specs" hidden>
+        <div class="comp-tab-panel" data-tab-panel="specs" data-panel="specs" hidden>
           <div class="tab-empty" data-tab-empty="specs" hidden>
             <h3>Elige al menos 2 coches</h3>
             <p>Vuelve a <button type="button" class="inline-link" data-go-catalogo>Catálogo</button> y selecciona los coches que quieras comparar.</p>
@@ -165,7 +165,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
         </div>
 
         <!-- TCO panel (renderizado por client.mjs) -->
-        <div class="comp-tab-panel" data-tab-panel="tco" hidden>
+        <div class="comp-tab-panel" data-tab-panel="tco" data-panel="tco" hidden>
           <div class="tab-empty" data-tab-empty="tco" hidden>
             <h3>Elige al menos 2 coches</h3>
             <p>Vuelve a <button type="button" class="inline-link" data-go-catalogo>Catálogo</button> y selecciona los coches que quieras comparar.</p>
@@ -1962,8 +1962,17 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
       }
     }
 
+    function legacyIdToSlug(id) {
+      if (typeof id !== 'string') return null;
+      const parts = id.split('|');
+      if (parts.length < 3) return null;
+      const [marca, modelo, variante] = parts;
+      const m = allModelos.find(x => x.marca === marca && x.modelo === modelo && x.variante === variante);
+      return m && m.slug ? m.slug : null;
+    }
+
     function syncBridgeSelection() {
-      const slugs = Array.from(pickedIds);
+      const slugs = Array.from(pickedIds).map(legacyIdToSlug).filter(Boolean);
       if (window.__cmpBridge) window.__cmpBridge.setSelection(slugs);
     }
 
