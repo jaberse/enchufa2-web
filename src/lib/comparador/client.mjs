@@ -27,6 +27,12 @@ import {
   hasAnyFilter,
   descubrirValoresCategoria,
 } from './filterEngine.mjs';
+import { initPopoverRuntime, openPopover } from './popover.mjs';
+import {
+  popoverConfianza,
+  popoverMetodologia,
+  popoverFiabilidad,
+} from './popoverContent.mjs';
 
 // ══════════════════════════════════════════════════════════════════════
 // FORMATTERS
@@ -466,8 +472,18 @@ function renderTcoCard({ slug, slot, tco, isWinner }) {
       </div>
 
       <footer class="tco-card__foot">
-        <span><span class="pill-conf ${confianzaCls}">Confianza ${confianzaLabel}</span></span>
-        <a href="/calculadora-tco" class="tco-card__method">Metodología completa →</a>
+        <button
+          type="button"
+          class="pill-conf ${confianzaCls}"
+          data-pop="conf"
+          data-tco-slug="${escapeHtml(slug)}"
+          aria-label="Ver cómo se calcula la confianza y el rango de coste"
+        >Confianza ${confianzaLabel}</button>
+        <button
+          type="button"
+          class="tco-card__method"
+          data-pop="tco-method"
+        >Metodología completa →</button>
       </footer>
     </article>
   `;
@@ -666,14 +682,18 @@ function renderPanelSpecs() {
 
   const activeRows = SPECS_ROWS.filter((r) => state.visibleSpecsRows.has(r.k));
   const rows = activeRows
-    .map(
-      (row) => `
+    .map((row) => {
+      const help =
+        row.k === 'fiab'
+          ? `<button type="button" class="stbl__helpbtn" data-pop="fiab" aria-label="Cómo puntuamos la fiabilidad">?</button>`
+          : '';
+      return `
     <div class="stbl__row">
-      <div class="stbl__label">${row.label}</div>
+      <div class="stbl__label">${row.label}${help}</div>
       ${renderSpecsRowCells(row, cars, valid)}
     </div>
-  `,
-    )
+  `;
+    })
     .join('');
 
   dom.specsTableWrap.innerHTML = `
@@ -1010,6 +1030,40 @@ function rerender() {
 function onDocClick(e) {
   const t = e.target;
 
+  // Popovers (confianza, metodología TCO, fiabilidad). Se manejan primero para
+  // que el click en el trigger no dispare otros handlers.
+  const popBtn = t.closest ? t.closest('[data-pop]') : null;
+  if (popBtn) {
+    const kind = popBtn.getAttribute('data-pop');
+    if (kind === 'conf') {
+      const slug = popBtn.getAttribute('data-tco-slug');
+      const ctx = inputParaSlug(slug);
+      const tco = tcoParaSlug(slug);
+      if (ctx && tco) {
+        openPopover(
+          popBtn,
+          popoverConfianza({
+            nombreBev: `${tco.par.marca} ${tco.par.modelo}`,
+            input: ctx.bev,
+            breakdown: tco.breakdown,
+            anios: state.scenario.anios,
+          }),
+        );
+      }
+    } else if (kind === 'tco-method') {
+      openPopover(
+        popBtn,
+        popoverMetodologia({
+          perfil: DATA?.perfil || {},
+          anios: state.scenario.anios,
+        }),
+      );
+    } else if (kind === 'fiab') {
+      openPopover(popBtn, popoverFiabilidad());
+    }
+    return;
+  }
+
   // Toggle Specs/TCO
   const tab = t.closest('[data-cmp-toggle] [role="tab"]');
   if (tab) {
@@ -1320,6 +1374,9 @@ export function initComparador() {
 
   // Render inicial del drawer vista (para que las categorías ya estén listas).
   renderSpecsVistadrawer();
+
+  // Instalar runtime de popovers (host + listeners globales).
+  initPopoverRuntime();
 
   // Modo inicial: URL ?mode=tco|specs, si no el del SSR, por defecto specs.
   let initialMode = 'specs';
