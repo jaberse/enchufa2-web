@@ -379,7 +379,7 @@ function renderRivalSelector(slug, tco) {
     .join('');
   return `
     <div class="tco-card__rival">
-      <label class="tco-card__rivalLbl" for="rival-${escapeHtml(slug)}">Rival gasolina</label>
+      <label class="tco-card__rivalLbl" for="rival-${escapeHtml(slug)}">Comparado con</label>
       <select
         id="rival-${escapeHtml(slug)}"
         class="tco-card__rivalSel"
@@ -394,16 +394,18 @@ function renderTcoCard({ slug, slot, tco, isWinner }) {
   const delta = br.tco_total_eur - rivalTotal;
   const badge = BADGE_TCO.BEV;
 
+  // Las 6 filas se renderizan siempre con el mismo orden para que todas las
+  // tarjetas del panel TCO queden alineadas horizontalmente. Si el BEV no
+  // tiene Plan Auto+, se pinta la fila con "—" y estilo atenuado.
+  const tieneAyudas = br.ayudas_eur > 0;
   const filas = [
-    { key: 'depreciacion',  label: 'Depreciación',              valor: br.depreciacion_eur },
-    { key: 'energia',       label: 'Energía',                    valor: br.energia_eur },
-    { key: 'mantenimiento', label: 'Mantenimiento',              valor: br.mantenimiento_eur },
-    { key: 'seguro',        label: 'Seguro',                     valor: br.seguro_eur },
-    { key: 'impuestos',     label: 'Impuestos',                  valor: br.impuestos_eur },
+    { key: 'depreciacion',  label: 'Depreciación',       valor: br.depreciacion_eur, empty: false },
+    { key: 'energia',       label: 'Energía',            valor: br.energia_eur,      empty: false },
+    { key: 'mantenimiento', label: 'Mantenimiento',      valor: br.mantenimiento_eur, empty: false },
+    { key: 'seguro',        label: 'Seguro',             valor: br.seguro_eur,       empty: false },
+    { key: 'impuestos',     label: 'Impuestos',          valor: br.impuestos_eur,    empty: false },
+    { key: 'ayudas',        label: 'Ayudas Plan Auto+',  valor: tieneAyudas ? -br.ayudas_eur : 0, empty: !tieneAyudas },
   ];
-  if (br.ayudas_eur > 0) {
-    filas.push({ key: 'ayudas', label: 'Ayudas Plan Auto+', valor: -br.ayudas_eur });
-  }
 
   const confianzaLabel =
     br.margen_pct === 0 ? 'Alta' : br.margen_pct <= 0.08 ? 'Media' : 'Baja';
@@ -430,7 +432,7 @@ function renderTcoCard({ slug, slot, tco, isWinner }) {
       <header class="tco-card__head">
         <div class="tco-card__title">
           <div class="tco-card__brand">${escapeHtml(par.marca)} ${escapeHtml(par.modelo)}</div>
-          ${par.variante ? `<div class="tco-card__variant serif">${escapeHtml(par.variante)}</div>` : ''}
+          <div class="tco-card__variant">${par.variante ? escapeHtml(par.variante) : '&nbsp;'}</div>
         </div>
         <span class="badge ${badge.cls}">${badge.label}</span>
       </header>
@@ -446,18 +448,21 @@ function renderTcoCard({ slug, slot, tco, isWinner }) {
       <div class="tco-card__sep" aria-hidden="true"></div>
 
       <div class="tco-rows">
-        ${filas.map((f) => `
-          <div class="tco-row" data-tco-row="${f.key}">
+        ${filas.map((f) => {
+          const rowCls = f.empty ? 'tco-row tco-row--empty' : 'tco-row';
+          const num = f.empty
+            ? '—'
+            : (f.key === 'ayudas' && f.valor < 0 ? fmtEurSigned(f.valor) : fmtEur(f.valor));
+          return `
+          <div class="${rowCls}" data-tco-row="${f.key}">
             <div class="tco-row__main">
               <div class="tco-row__label"><span>${f.label}</span></div>
               <div class="tco-row__val">
-                <div class="tco-row__num" data-tco-key="${f.key}">
-                  ${f.key === 'ayudas' && f.valor < 0 ? fmtEurSigned(f.valor) : fmtEur(f.valor)}
-                </div>
+                <div class="tco-row__num" data-tco-key="${f.key}">${num}</div>
               </div>
             </div>
-          </div>
-        `).join('')}
+          </div>`;
+        }).join('')}
       </div>
 
       <footer class="tco-card__foot">

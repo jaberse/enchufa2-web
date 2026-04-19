@@ -91,15 +91,24 @@ const badge = BADGE[tren] ?? BADGE.BEV;
 const delta = rivalTotal != null ? br.tco_total_eur - rivalTotal : null;
 
 // Filas de breakdown. `ayudas_eur` se muestra negativo (es un crédito).
+// Las BEV siempre pintan 6 filas (con la última como "—" si no aplica Plan
+// Auto+) para que las tarjetas del grid queden alineadas horizontalmente.
+// Los ICE siguen con 5 filas porque nunca tienen ayudas.
+const tieneAyudas = tren === 'BEV' && br.ayudas_eur > 0;
 const filas = [
-  { key: 'depreciacion',   label: 'Depreciación',  valor: br.depreciacion_eur },
-  { key: 'energia',        label: tren === 'BEV' ? 'Energía' : 'Combustible', valor: br.energia_eur },
-  { key: 'mantenimiento',  label: 'Mantenimiento', valor: br.mantenimiento_eur },
-  { key: 'seguro',         label: 'Seguro',        valor: br.seguro_eur },
-  { key: 'impuestos',      label: 'Impuestos',     valor: br.impuestos_eur },
+  { key: 'depreciacion',   label: 'Depreciación',                               valor: br.depreciacion_eur, empty: false },
+  { key: 'energia',        label: tren === 'BEV' ? 'Energía' : 'Combustible',   valor: br.energia_eur,      empty: false },
+  { key: 'mantenimiento',  label: 'Mantenimiento',                              valor: br.mantenimiento_eur, empty: false },
+  { key: 'seguro',         label: 'Seguro',                                     valor: br.seguro_eur,       empty: false },
+  { key: 'impuestos',      label: 'Impuestos',                                  valor: br.impuestos_eur,    empty: false },
 ];
-if (tren === 'BEV' && br.ayudas_eur > 0) {
-  filas.push({ key: 'ayudas', label: 'Ayudas Plan Auto+', valor: -br.ayudas_eur });
+if (tren === 'BEV') {
+  filas.push({
+    key: 'ayudas',
+    label: 'Ayudas Plan Auto+',
+    valor: tieneAyudas ? -br.ayudas_eur : 0,
+    empty: !tieneAyudas,
+  });
 }
 
 // Confianza agregada (peor de las 4) — ya viene en br.margen_pct.
@@ -121,7 +130,7 @@ const confianzaCls =
   <header class="tco-card__head">
     <div class="tco-card__title">
       <div class="tco-card__brand">{nombre}</div>
-      {variante && <div class="tco-card__variant serif">{variante}</div>}
+      <div class="tco-card__variant">{variante || '\u00A0'}</div>
     </div>
     <span class:list={['badge', badge.cls]}>{badge.label}</span>
   </header>
@@ -154,14 +163,19 @@ const confianzaCls =
 
   <div class="tco-rows">
     {filas.map((f) => (
-      <div class="tco-row" data-tco-row={f.key}>
+      <div
+        class:list={['tco-row', f.empty && 'tco-row--empty']}
+        data-tco-row={f.key}
+      >
         <div class="tco-row__main">
           <div class="tco-row__label">
             <span>{f.label}</span>
           </div>
           <div class="tco-row__val">
             <div class="tco-row__num" data-tco-key={f.key}>
-              {f.key === 'ayudas' && f.valor < 0
+              {f.empty
+                ? '—'
+                : f.key === 'ayudas' && f.valor < 0
                 ? fmtEurSigned(f.valor)
                 : fmtEur(f.valor)}
             </div>
@@ -242,6 +256,9 @@ const confianzaCls =
     align-items: flex-start;
     justify-content: space-between;
     gap: 0.75rem;
+    /* Reserva 2 líneas de título (marca + variante) para alinear las 4
+       tarjetas del grid aunque alguna no tenga variante. */
+    min-height: 2.75rem;
   }
   .tco-card__title { text-align: left; min-width: 0; flex: 1; }
   .tco-card__brand {
@@ -254,11 +271,14 @@ const confianzaCls =
   }
   .tco-card__variant {
     color: var(--text-secondary);
-    font-size: 0.92rem;
-    margin-top: 0.1rem;
+    font-size: 0.85rem;
+    font-weight: 300;
+    letter-spacing: 0;
+    margin-top: 0.15rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-height: 1.15rem;
   }
   .serif {
     font-family: var(--font-serif);
@@ -289,18 +309,20 @@ const confianzaCls =
     color: var(--text);
   }
   .tco-card__edit {
-    margin-top: 0.7rem;
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400;
-    font-size: 1rem;
-    color: var(--yellow-text);
-    line-height: 1.4;
-  }
-  .tco-card__edit strong {
+    margin-top: 0.65rem;
     font-family: var(--font-sans);
     font-style: normal;
     font-weight: 400;
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    /* Reserva 2 líneas para que las tarjetas del grid queden alineadas
+       incluso cuando el nombre del rival produce un wrap. */
+    min-height: 2.6em;
+  }
+  .tco-card__edit strong {
+    font-weight: 500;
+    color: var(--yellow-text);
   }
 
   .tco-card__sep {
@@ -309,37 +331,36 @@ const confianzaCls =
     margin: 0.4rem 0 0.25rem;
   }
 
-  /* ── Rival gasolina (selector) ─────────────────────────────────────── */
+  /* ── Rival (selector de ICE a comparar) ────────────────────────────── */
   .tco-card__rival {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: -0.15rem;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-top: 0.1rem;
   }
   .tco-card__rivalLbl {
-    font-size: 0.68rem;
+    font-size: 0.66rem;
     font-weight: 500;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--text-muted);
-    white-space: nowrap;
   }
   .tco-card__rivalSel {
-    flex: 1;
-    min-width: 0;
+    width: 100%;
     appearance: none;
     -webkit-appearance: none;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 0.35rem 1.75rem 0.35rem 0.55rem;
-    font: inherit;
-    font-size: 0.82rem;
+    padding: 0.4rem 1.85rem 0.4rem 0.6rem;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 0.86rem;
     color: var(--text);
     cursor: pointer;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23666'><path d='M4 6l4 4 4-4'/></svg>");
     background-repeat: no-repeat;
-    background-position: right 0.5rem center;
+    background-position: right 0.55rem center;
     background-size: 12px 12px;
     transition: border-color 180ms, box-shadow 180ms;
   }
@@ -384,6 +405,11 @@ const confianzaCls =
     font-variant-numeric: tabular-nums;
     color: var(--text);
   }
+  /* Fila vacía: cuando el BEV no aplica al Plan Auto+, la fila se pinta
+     con guión y color atenuado para que el desglose de las 4 tarjetas
+     siempre tenga las mismas 6 líneas. */
+  .tco-row--empty .tco-row__label,
+  .tco-row--empty .tco-row__num { color: var(--text-muted); }
 
   /* ── Pills ─────────────────────────────────────────────────────────── */
   .pill-conf {
