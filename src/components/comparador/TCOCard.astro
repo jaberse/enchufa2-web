@@ -289,23 +289,18 @@ const confianzaCls =
   }
 
   /* ── Hero (foto del coche) ─────────────────────────────────────────── */
-  /* Cabecera visual de la tarjeta: foto con ratio fijo para que las 4
-     tarjetas del panel TCO queden alineadas horizontalmente. Usa -1 de
-     margen negativo para ocupar el ancho completo sobre el padding de la
-     tarjeta.
-
-     Las fotos del catálogo son PNG transparentes 1280×720 con el coche
-     centrado y amplios márgenes vacíos alrededor. Para que el coche
-     "llene" la tarjeta sin que se vea el fondo negro translucido, el
-     contenedor es más estrecho (21:9) y la imagen se escala con
-     transform:scale para recortar los márgenes laterales y superior. */
+  /* Mismo tratamiento visual que las tarjetas del catálogo (.ev-card-photo
+     en comparador.astro): fondo en gradiente gris claro y la imagen con
+     object-fit:contain para respetar la silueta completa del coche sin
+     recortarla. Ratio 16:9 para una cabecera más discreta que permita
+     ver total + desglose sin hacer scroll. */
   .tco-card__hero {
     position: relative;
     margin: calc(-1 * clamp(1.25rem, 1.8vw, 1.75rem));
     margin-bottom: 0.25rem;
-    aspect-ratio: 21 / 9;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
-    background: var(--surface-alt);
+    background: linear-gradient(180deg, #e2e0db 0%, #d0cec8 100%);
     border-bottom: 1px solid var(--border);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
@@ -315,22 +310,8 @@ const confianzaCls =
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: center 58%;
-    /* Escala para recortar los márgenes transparentes del PNG y que el
-       coche ocupe visualmente casi todo el ancho. 1.6 funciona bien con
-       el ratio 21:9 y el crop vertical centrado un poco por debajo del
-       centro (los coches están ligeramente desplazados hacia arriba). */
-    transform: scale(1.6);
-    transform-origin: center center;
-    transition: transform 400ms var(--ease-out-expo, ease-out);
-  }
-  .tco-card:hover .tco-card__hero img {
-    transform: scale(1.65);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .tco-card__hero img { transition: none; }
-    .tco-card:hover .tco-card__hero img { transform: scale(1.6); }
+    object-fit: contain;
+    object-position: center center;
   }
   .tco-card__hero--muted img {
     opacity: 0.55;
@@ -376,9 +357,9 @@ const confianzaCls =
     min-height: 1.15rem;
   }
   .serif {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400;
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-weight: 300;
   }
 
   /* Eyebrow local (la clase .eyebrow no existe en global.css; se define aquí

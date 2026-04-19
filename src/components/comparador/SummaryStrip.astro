@@ -41,7 +41,7 @@ const fmtEur = (n: number) =>
   <div class="summA__L">
     <p class="eyebrow">Ganador del escenario</p>
     <div class="summA__winner">{winner.nombre}</div>
-    <p class="serif summA__delta">
+    <p class="summA__delta">
       ahorra hasta {fmtEur(diff)} frente al peor de los {totals.length} en {anios} años
     </p>
     {escenarioMeta && (
@@ -101,9 +101,9 @@ const fmtEur = (n: number) =>
     color: var(--text);
   }
   .summA__delta {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400;
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-weight: 300;
     color: var(--accent-text);
     font-size: 0.95rem;
     margin-top: 0.25rem;
