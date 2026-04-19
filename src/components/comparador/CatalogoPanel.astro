@@ -1,0 +1,424 @@
+---
+// src/components/comparador/CatalogoPanel.astro
+// Vista "Catálogo" del comparador unificado. Grid de catcards con
+// click-to-select (máx 4 coches). Al seleccionar ≥2 y pulsar
+// "Comparar →", hace scroll suave hasta la zona de comparación y
+// sincroniza el estado en client.mjs (window.__cmpBridge.setSelection).
+
+interface CarPick {
+  slug: string;
+  marca: string;
+  modelo: string;
+  variante: string;
+  nombre: string;
+  segmento: string | null;
+  foto: string;
+  pvp_eur: number | null;
+  pvp_con_plan_auto_eur: number | null;
+  ayuda_plan_auto_eur: number | null;
+  autonomia_wltp_km: number | null;
+  potencia_cv: number | null;
+  carga_dc_max_kw: number | null;
+  quimica: string | null;
+  traccion: string | null;
+  fiabilidad_estrellas: number | null;
+}
+
+interface Props {
+  cars: CarPick[];
+  initial?: string[];
+  max?: number;
+}
+
+const { cars, initial = [], max = 4 } = Astro.props;
+const totalCars = cars.length;
+
+function fmtPrecio(v: number | null): string {
+  if (v == null) return '—';
+  return new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 }).format(v) + ' €';
+}
+function fmtKm(v: number | null): string {
+  if (v == null) return '—';
+  return new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 }).format(v) + ' km';
+}
+---
+
+<section class="catpanel" id="panel-catalogo" aria-labelledby="catpanel-title">
+  <div class="catpanel__intro">
+    <p class="eyebrow">Paso 1 · Catálogo</p>
+    <h2 class="catpanel__title" id="catpanel-title">
+      Elige hasta <span class="serif">cuatro</span> coches para comparar
+    </h2>
+    <p class="catpanel__sub">
+      {totalCars} modelos verificados · click para añadir o quitar · mínimo 2 para comparar
+    </p>
+  </div>
+
+  <div class="catpanel__bar" data-cat-bar>
+    <label class="sr-only" for="cat-search">Buscar</label>
+    <input
+      id="cat-search"
+      class="catpanel__search"
+      type="search"
+      placeholder="Buscar marca, modelo o variante…"
+      autocomplete="off"
+      data-cat-search
+    />
+    <span class="catpanel__count" data-cat-count aria-live="polite">
+      {totalCars} coches
+    </span>
+  </div>
+
+  <div class="catpanel__grid" data-cat-grid role="list">
+    {cars.map((c) => (
+      <button
+        type="button"
+        class="catcard"
+        data-cat-card
+        data-slug={c.slug}
+        data-marca={(c.marca || '').toLowerCase()}
+        data-modelo={(c.modelo || '').toLowerCase()}
+        data-variante={(c.variante || '').toLowerCase()}
+        data-segmento={c.segmento ?? ''}
+        data-traccion={c.traccion ?? ''}
+        data-quimica={c.quimica ?? ''}
+        data-plan-auto={c.ayuda_plan_auto_eur && c.ayuda_plan_auto_eur > 0 ? 'si' : 'no'}
+        aria-pressed={initial.includes(c.slug) ? 'true' : 'false'}
+        role="listitem"
+      >
+        <div class="catcard__photo">
+          <img src={c.foto} alt={`${c.marca} ${c.modelo}`} loading="lazy" />
+          <span class="catcard__check" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 7.2l3 3 5-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <div class="catcard__body">
+          <p class="catcard__brand">{c.marca} {c.modelo}</p>
+          <p class="catcard__var">{c.variante}</p>
+          <dl class="catcard__specs">
+            <div><dt>Autonomía</dt><dd>{fmtKm(c.autonomia_wltp_km)}</dd></div>
+            <div><dt>Potencia</dt><dd>{c.potencia_cv ? c.potencia_cv + ' cv' : '—'}</dd></div>
+            <div><dt>Carga DC</dt><dd>{c.carga_dc_max_kw ? c.carga_dc_max_kw + ' kW' : '—'}</dd></div>
+          </dl>
+          <div class="catcard__prices">
+            <span class="catcard__pvp">{fmtPrecio(c.pvp_eur)}</span>
+            {c.ayuda_plan_auto_eur && c.ayuda_plan_auto_eur > 0 && (
+              <span class="catcard__auto">Auto+ {fmtPrecio(c.pvp_con_plan_auto_eur)}</span>
+            )}
+          </div>
+        </div>
+      </button>
+    ))}
+  </div>
+
+  <div class="catpanel__empty" data-cat-empty hidden>
+    No hay coches que coincidan con la búsqueda.
+  </div>
+
+  <div class="catpanel__cta" data-cat-cta>
+    <div class="catpanel__status">
+      <span data-cat-selected-count>0</span> de {max} seleccionados
+      <span class="catpanel__hint" data-cat-hint>· elige al menos 2 para comparar</span>
+    </div>
+    <button type="button" class="catpanel__btn" data-cat-compare disabled>
+      <span data-cat-btn-label>Comparar</span>
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</section>
+
+<style is:global>
+  .catpanel { margin: 0 0 3rem; padding: 0; }
+  .catpanel__intro { margin-bottom: 1.5rem; }
+  .catpanel__title {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    margin: 0.35rem 0 0.5rem;
+    color: var(--text);
+  }
+  .catpanel__title .serif {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--yellow-text);
+    font-size: 0.95em;
+  }
+  .catpanel__sub { margin: 0; color: var(--text-secondary); font-size: 0.9rem; }
+
+  .catpanel__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+  .catpanel__search {
+    flex: 1; min-width: 0;
+    padding: 0.55rem 0.75rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--font-sans); font-size: 0.95rem; color: var(--text);
+  }
+  .catpanel__search:focus {
+    outline: 2px solid var(--yellow); outline-offset: 1px; border-color: var(--yellow);
+  }
+  .catpanel__count {
+    font-size: 0.78rem; color: var(--text-secondary);
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+    padding: 0.35rem 0.7rem; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 999px;
+  }
+
+  .catpanel__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.85rem;
+  }
+  .catpanel__empty {
+    padding: 3rem 1rem; text-align: center;
+    color: var(--text-secondary); font-size: 0.95rem;
+  }
+
+  .catcard {
+    position: relative; display: flex; flex-direction: column;
+    padding: 0; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 10px;
+    text-align: left; cursor: pointer; overflow: hidden;
+    transition: border-color 180ms, box-shadow 180ms, transform 180ms;
+    font-family: var(--font-sans); color: var(--text);
+  }
+  .catcard:hover {
+    border-color: var(--border-strong); transform: translateY(-2px);
+    box-shadow: 0 10px 20px -12px rgba(0,0,0,0.15);
+  }
+  .catcard:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+  .catcard[aria-pressed="true"] {
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 1px var(--yellow), 0 10px 24px -12px rgba(245,197,24,0.35);
+  }
+  .catcard[data-cat-disabled="true"] { opacity: 0.4; cursor: not-allowed; }
+  .catcard[data-cat-disabled="true"]:hover {
+    transform: none; box-shadow: none; border-color: var(--border);
+  }
+
+  .catcard__photo {
+    position: relative; aspect-ratio: 16 / 9;
+    background: var(--surface-alt, var(--gray-50));
+    overflow: hidden; border-bottom: 1px solid var(--border);
+  }
+  .catcard__photo img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform 340ms var(--ease-out-expo);
+  }
+  .catcard:hover .catcard__photo img { transform: scale(1.03); }
+
+  .catcard__check {
+    position: absolute; top: 0.55rem; right: 0.55rem;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--surface); border: 1.5px solid var(--border-strong);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: transparent;
+    transition: background 160ms, border-color 160ms, color 160ms, transform 200ms var(--ease-out-expo);
+  }
+  .catcard[aria-pressed="true"] .catcard__check {
+    background: var(--yellow); border-color: var(--yellow);
+    color: var(--black); transform: scale(1.08);
+  }
+
+  .catcard__body {
+    padding: 0.7rem 0.85rem 0.85rem;
+    display: flex; flex-direction: column; gap: 0.45rem; flex: 1;
+  }
+  .catcard__brand {
+    margin: 0; font-size: 0.96rem; font-weight: 400;
+    letter-spacing: -0.01em; color: var(--text);
+  }
+  .catcard__var {
+    margin: 0; font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.2;
+  }
+
+  .catcard__specs {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 0.35rem 0.5rem; margin: 0.15rem 0 0;
+    padding: 0.5rem 0 0; border-top: 1px solid var(--border);
+  }
+  .catcard__specs div { display: flex; flex-direction: column; min-width: 0; }
+  .catcard__specs dt {
+    font-size: 0.62rem; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--text-muted); font-weight: 500;
+  }
+  .catcard__specs dd {
+    margin: 0; font-size: 0.78rem; color: var(--text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .catcard__prices {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 0.5rem; padding-top: 0.35rem; border-top: 1px solid var(--border);
+  }
+  .catcard__pvp {
+    font-size: 0.95rem; font-weight: 500; color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .catcard__auto {
+    font-size: 0.72rem; padding: 0.15rem 0.5rem;
+    background: var(--yellow-glow); color: var(--yellow-text);
+    border-radius: 999px; white-space: nowrap;
+  }
+
+  .catpanel__cta {
+    position: sticky; bottom: 0.75rem; z-index: 40;
+    margin: 1.5rem 0 0; padding: 0.7rem 1rem;
+    background: var(--black); color: var(--white);
+    border-radius: 999px;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    box-shadow: 0 12px 28px -12px rgba(0,0,0,0.4);
+  }
+  .catpanel__status {
+    font-size: 0.86rem; letter-spacing: -0.005em; color: var(--white);
+  }
+  .catpanel__status [data-cat-selected-count] {
+    font-variant-numeric: tabular-nums; color: var(--yellow); font-weight: 500;
+  }
+  .catpanel__hint { color: var(--gray-400); font-size: 0.78rem; }
+  .catpanel__btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.55rem 1.1rem;
+    background: var(--yellow); color: var(--black);
+    border: 0; border-radius: 999px;
+    font-family: var(--font-sans); font-weight: 500;
+    font-size: 0.9rem; letter-spacing: -0.005em;
+    cursor: pointer;
+    transition: transform 160ms, filter 160ms, opacity 160ms;
+  }
+  .catpanel__btn:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.05); }
+  .catpanel__btn:disabled { background: var(--gray-400); color: var(--black); cursor: not-allowed; opacity: 0.7; }
+  .catpanel__btn:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
+
+  @media (max-width: 640px) {
+    .catpanel__grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+    .catpanel__cta { flex-direction: column; border-radius: 16px; padding: 0.75rem; }
+    .catpanel__btn { width: 100%; justify-content: center; }
+  }
+</style>
+
+<script>
+  const MAX_SEL = 4;
+
+  function initCatPanel() {
+    const panel = document.querySelector('[data-cat-grid]')?.closest('.catpanel');
+    if (!panel) return;
+
+    const cards = Array.from(panel.querySelectorAll('[data-cat-card]'));
+    const searchInput = panel.querySelector('[data-cat-search]');
+    const countEl = panel.querySelector('[data-cat-count]');
+    const emptyEl = panel.querySelector('[data-cat-empty]');
+    const selCountEl = panel.querySelector('[data-cat-selected-count]');
+    const hintEl = panel.querySelector('[data-cat-hint]');
+    const btnLabel = panel.querySelector('[data-cat-btn-label]');
+    const compareBtn = panel.querySelector('[data-cat-compare]');
+    const total = cards.length;
+
+    const selection = new Set(
+      cards.filter((c) => c.getAttribute('aria-pressed') === 'true').map((c) => c.dataset.slug)
+    );
+    let query = '';
+
+    function updateDisabledStates() {
+      const full = selection.size >= MAX_SEL;
+      cards.forEach((card) => {
+        const isSelected = selection.has(card.dataset.slug);
+        if (full && !isSelected) card.setAttribute('data-cat-disabled', 'true');
+        else card.removeAttribute('data-cat-disabled');
+      });
+    }
+
+    function updateCTA() {
+      if (selCountEl) selCountEl.textContent = String(selection.size);
+      const ok = selection.size >= 2;
+      if (compareBtn) compareBtn.disabled = !ok;
+      if (btnLabel) btnLabel.textContent = ok ? `Comparar ${selection.size}` : 'Comparar';
+      if (hintEl) {
+        if (selection.size === 0) hintEl.textContent = '· elige al menos 2 para comparar';
+        else if (selection.size === 1) hintEl.textContent = '· 1 más y ya puedes comparar';
+        else if (selection.size >= MAX_SEL) hintEl.textContent = '· límite alcanzado';
+        else hintEl.textContent = `· puedes añadir ${MAX_SEL - selection.size} más`;
+      }
+    }
+
+    function applyFilter() {
+      const q = query.trim().toLowerCase();
+      let visible = 0;
+      cards.forEach((card) => {
+        if (!q) { card.style.display = ''; visible += 1; return; }
+        const haystack = [card.dataset.marca, card.dataset.modelo, card.dataset.variante].join(' ');
+        const match = haystack.includes(q);
+        card.style.display = match ? '' : 'none';
+        if (match) visible += 1;
+      });
+      if (countEl) countEl.textContent = visible === total
+        ? `${total} coches` : `${visible} de ${total} coches`;
+      if (emptyEl) emptyEl.hidden = visible !== 0;
+    }
+
+    cards.forEach((card) => {
+      card.addEventListener('click', () => {
+        if (card.getAttribute('data-cat-disabled') === 'true') return;
+        const slug = card.dataset.slug;
+        if (!slug) return;
+        if (selection.has(slug)) {
+          selection.delete(slug);
+          card.setAttribute('aria-pressed', 'false');
+        } else {
+          if (selection.size >= MAX_SEL) return;
+          selection.add(slug);
+          card.setAttribute('aria-pressed', 'true');
+        }
+        updateDisabledStates();
+        updateCTA();
+      });
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        query = e.target.value || '';
+        applyFilter();
+      });
+    }
+
+    if (compareBtn) {
+      compareBtn.addEventListener('click', () => {
+        if (selection.size < 2) return;
+        const slugs = Array.from(selection);
+        if (typeof window !== 'undefined' && window.__cmpBridge && typeof window.__cmpBridge.setSelection === 'function') {
+          try { window.__cmpBridge.setSelection(slugs); } catch (_) {}
+        }
+        const target = document.getElementById('panel-specs')
+          || document.querySelector('.dirA__head')
+          || document.querySelector('.dirA');
+        if (target && typeof target.scrollIntoView === 'function') {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    updateDisabledStates();
+    updateCTA();
+    applyFilter();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCatPanel);
+  } else {
+    initCatPanel();
+  }
+</script>

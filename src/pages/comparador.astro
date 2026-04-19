@@ -18,6 +18,7 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ComparadorHeader from '../components/comparador/ComparadorHeader.astro';
+import CatalogoPanel from '../components/comparador/CatalogoPanel.astro';
 import GarageChipsRow from '../components/comparador/GarageChipsRow.astro';
 import GarageModal from '../components/comparador/GarageModal.astro';
 import ScenarioBar from '../components/comparador/ScenarioBar.astro';
@@ -112,6 +113,8 @@ const description =
 <Layout {title} {description}>
   <Header />
   <main id="main">
+    <CatalogoPanel cars={catalogoSpecs} initial={SELECCION} max={4} />
+
     <div class="dirA">
       <!-- Arrancamos en modo specs por defecto; si la URL trae ?mode=tco
            el cliente lo conmuta al cargar. -->
