@@ -1046,7 +1046,8 @@ function renderCatalogCard(c, selectedSet) {
       ? `<span class="catcard__price-auto" title="Ayuda Plan Auto+">\u2212${fmtEur(ayuda)} Auto+</span>`
       : '';
 
-  // Chips ligeros: segmento + LFP si aplica + "Sin TCO" si aplica
+  // Chips ligeros: segmento + LFP si aplica (Sin TCO se omite aquí para no
+  // saturar la tarjeta densa; la ausencia de TCO se comunica en TCOCard)
   const chips = [];
   if (c.segmento) {
     chips.push(`<span class="catcard__chip">${escapeHtml(c.segmento)}</span>`);
@@ -1054,16 +1055,13 @@ function renderCatalogCard(c, selectedSet) {
   if (c.quimica && /lfp/i.test(String(c.quimica))) {
     chips.push(`<span class="catcard__chip catcard__chip--lfp">LFP</span>`);
   }
-  if (!SLUGS_TCO.has(c.slug)) {
-    chips.push(`<span class="catcard__chip catcard__chip--tco">Sin TCO</span>`);
-  }
 
-  // Specs mini: autonomía, potencia, carga DC, consumo (2x2)
+  // Specs mini 2x2: autonomía, potencia, carga DC, 0-100
   const specs = [
-    { lbl: 'Autonomía', val: c.autonomia_wltp_km != null ? `${fmtNum(c.autonomia_wltp_km)} km` : '—' },
-    { lbl: 'Potencia',  val: c.potencia_cv != null ? `${fmtNum(c.potencia_cv)} CV` : '—' },
-    { lbl: 'Carga DC',  val: c.carga_dc_max_kw != null ? `${fmtNum(c.carga_dc_max_kw)} kW` : '—' },
-    { lbl: 'Consumo',   val: c.consumo_wltp_kwh100km != null ? `${fmtNum(c.consumo_wltp_kwh100km, 1)} kWh/100` : '—' },
+    { lbl: 'km',  val: c.autonomia_wltp_km != null ? fmtNum(c.autonomia_wltp_km) : '—' },
+    { lbl: 'CV',  val: c.potencia_cv != null ? fmtNum(c.potencia_cv) : '—' },
+    { lbl: 'kW',  val: c.carga_dc_max_kw != null ? fmtNum(c.carga_dc_max_kw) : '—' },
+    { lbl: '0-100', val: c.aceleracion_0_100_s != null ? `${fmtNum(c.aceleracion_0_100_s, 1)}s` : '—' },
   ];
 
   return `
@@ -1096,8 +1094,8 @@ function renderCatalogCard(c, selectedSet) {
             .map(
               (s) => `
             <div class="catcard__spec">
-              <span class="catcard__spec-lbl">${s.lbl}</span>
               <span class="catcard__spec-val">${s.val}</span>
+              <span class="catcard__spec-lbl">${s.lbl}</span>
             </div>`,
             )
             .join('')}
