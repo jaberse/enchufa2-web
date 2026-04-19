@@ -1683,6 +1683,26 @@ export function initComparador() {
   }
   setMode(initialMode);
 
+  // Bridge para que el listado legacy pueda sincronizar la seleccion y el modo.
+  window.__cmpBridge = {
+    setSelection(slugs) {
+      const clean = (Array.isArray(slugs) ? slugs : [])
+        .filter((s) => typeof s === 'string' && s.length > 0)
+        .slice(0, 4);
+      state.selection = [null, null, null, null];
+      clean.forEach((s, i) => { state.selection[i] = s; });
+      if (typeof rerender === 'function') rerender();
+    },
+    setMode(mode) {
+      if (mode === 'specs' || mode === 'tco' || mode === 'catalogo') {
+        setMode(mode);
+      }
+    },
+    getSelection() {
+      return state.selection.slice();
+    },
+  };
+
   // Render inicial.
   rerender();
 }

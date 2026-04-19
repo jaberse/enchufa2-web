@@ -4,7 +4,9 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import data from '../data/comparador.json';
+import { cargarDatosCliente } from '../lib/comparador/loader.mjs';
 
+const datosCliente = cargarDatosCliente();
 const modelos = data.modelos;
 const marcas = [...new Set(modelos.map(m => m.marca))].sort();
 const tipos = [...new Set(modelos.map(m => m.tipo).filter(Boolean))].sort();
@@ -109,8 +111,24 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
         <!-- Separator bar between filters and results -->
         <div class="comp-panel-separator"></div>
 
+        <!-- Topbar: 3 tabs (Catalogo / Especificaciones / Coste 5 anyos) -->
+        <nav class="comp-tabbar" role="tablist" aria-label="Vista del comparador">
+          <button type="button" class="comp-tab is-active" data-tab="catalogo" role="tab" aria-selected="true">
+            <span class="comp-tab-label">Catálogo</span>
+            <span class="comp-tab-hint">Filtra y selecciona</span>
+          </button>
+          <button type="button" class="comp-tab" data-tab="specs" role="tab" aria-selected="false" disabled>
+            <span class="comp-tab-label">Especificaciones</span>
+            <span class="comp-tab-hint" data-tab-hint="specs">Selecciona 2 o más</span>
+          </button>
+          <button type="button" class="comp-tab" data-tab="tco" role="tab" aria-selected="false" disabled>
+            <span class="comp-tab-label">Coste 5 años</span>
+            <span class="comp-tab-hint" data-tab-hint="tco">Selecciona 2 o más</span>
+          </button>
+        </nav>
+
         <!-- Block 4: Results -->
-        <div class="comp-results">
+        <div class="comp-results comp-tab-panel is-active" data-tab-panel="catalogo">
           <div class="fichas-view active" id="fichas-view">
             <div class="fichas-grid" id="results-grid"></div>
           </div>
@@ -131,14 +149,31 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
             </div>
           </div>
 
-          <!-- Comparison view (side-by-side table · 1·B) -->
-          <div class="compare-view" id="compare-view" style="display:none;">
-            <div class="compare-wrap" id="compare-wrap"></div>
-          </div>
 
           <p class="results-empty" id="no-results" style="display:none;">
             Ningún modelo cumple todos tus requisitos. Prueba a relajar algún filtro.
           </p>
+        </div>
+
+        <!-- Specs panel (renderizado por client.mjs) -->
+        <div class="comp-tab-panel" data-tab-panel="specs" hidden>
+          <div class="tab-empty" data-tab-empty="specs" hidden>
+            <h3>Elige al menos 2 coches</h3>
+            <p>Vuelve a <button type="button" class="inline-link" data-go-catalogo>Catálogo</button> y selecciona los coches que quieras comparar.</p>
+          </div>
+          <div data-specs-table-wrap></div>
+        </div>
+
+        <!-- TCO panel (renderizado por client.mjs) -->
+        <div class="comp-tab-panel" data-tab-panel="tco" hidden>
+          <div class="tab-empty" data-tab-empty="tco" hidden>
+            <h3>Elige al menos 2 coches</h3>
+            <p>Vuelve a <button type="button" class="inline-link" data-go-catalogo>Catálogo</button> y selecciona los coches que quieras comparar.</p>
+          </div>
+          <div class="tco-panel-inner">
+            <div data-summary></div>
+            <div class="tcogrid"></div>
+          </div>
         </div>
 
         <!-- Sticky selection footer (3·A) -->
@@ -187,6 +222,13 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
   </main>
 
   <Footer />
+
+  <script type="application/json" id="cmp-data" is:inline set:html={JSON.stringify(datosCliente)}></script>
+
+  <script>
+    import { initComparador } from '../lib/comparador/client.mjs';
+    initComparador();
+  </script>
 
   <script define:vars={{
     modelos: data.modelos,
@@ -284,8 +326,10 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     let tableSortAsc = true;
 
     const grid = document.getElementById('results-grid');
-    const compareView = document.getElementById('compare-view');
-    const compareWrap = document.getElementById('compare-wrap');
+    const tabbar = document.querySelector('.comp-tabbar');
+    const tabButtons = Array.from(document.querySelectorAll('.comp-tab'));
+    const tabPanels = Array.from(document.querySelectorAll('.comp-tab-panel'));
+    let activeTab = 'catalogo';
     const fichasView = document.getElementById('fichas-view');
     const listadoView = document.getElementById('listado-view');
     const tableOuter = document.getElementById('results-table-outer');
@@ -1804,7 +1848,6 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     // ═══════════════════════════════════════════════════════
     function update() {
       let filtered = allModelos.filter(m => passesFilter(m));
-      if (compareMode) filtered = filtered.filter(m => pickedIds.has(modelId(m)));
       sortModelos(filtered);
 
       const hasResults = filtered.length > 0;
@@ -1813,31 +1856,18 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
 
       computeBestValues();
 
-      // Active comparison mode with 2+ cars → show comparative table (1·B)
-      const useCompareTable = compareMode && filtered.length >= 2;
-      const compResultsEl = compareView.parentElement;
-      if (useCompareTable) {
-        fichasView.style.display = 'none';
+      if (currentView === 'fichas') {
+        fichasView.style.display = '';
         listadoView.style.display = 'none';
-        compareView.style.display = '';
-        compResultsEl.classList.add('in-compare');
-        renderCompareTable(filtered);
+        grid.innerHTML = '';
+        filtered.forEach(m => grid.appendChild(renderCard(m)));
       } else {
-        compareView.style.display = 'none';
-        compResultsEl.classList.remove('in-compare');
-        if (currentView === 'fichas') {
-          fichasView.style.display = '';
-          listadoView.style.display = 'none';
-          grid.innerHTML = '';
-          filtered.forEach(m => grid.appendChild(renderCard(m)));
-        } else {
-          fichasView.style.display = 'none';
-          listadoView.style.display = '';
-          renderTableHeaders();
-          tbody.innerHTML = '';
-          filtered.forEach(m => tbody.appendChild(renderRow(m)));
-          updateScrollNav();
-        }
+        fichasView.style.display = 'none';
+        listadoView.style.display = '';
+        renderTableHeaders();
+        tbody.innerHTML = '';
+        filtered.forEach(m => tbody.appendChild(renderRow(m)));
+        updateScrollNav();
       }
     }
 
@@ -1901,7 +1931,9 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
       // Update CTA label
       compareBtn.disabled = n < 2;
       const ctaText = compareBtn.querySelector('.sel-footer-cta-text');
-      if (ctaText) ctaText.textContent = compareMode ? 'Ver todos' : 'Comparar';
+      if (ctaText) ctaText.textContent = 'Comparar';
+      if (typeof refreshTabsAvailability === 'function') refreshTabsAvailability();
+      if (typeof syncBridgeSelection === 'function') syncBridgeSelection();
       // Populate thumbnails
       const thumbsEl = document.getElementById('sel-thumbs');
       if (thumbsEl) {
@@ -1930,20 +1962,74 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
       }
     }
 
-    compareBtn.addEventListener('click', () => {
-      if (compareMode) {
-        compareMode = false;
-        pickedIds.clear();
-      } else {
-        compareMode = true;
+    function syncBridgeSelection() {
+      const slugs = Array.from(pickedIds);
+      if (window.__cmpBridge) window.__cmpBridge.setSelection(slugs);
+    }
+
+    function setActiveTab(tab) {
+      // Si intenta ir a specs/tco sin 2+ seleccionados, se queda en catalogo.
+      if ((tab === 'specs' || tab === 'tco') && pickedIds.size < 2) {
+        tab = 'catalogo';
       }
-      updateCompareBar();
-      update();
+      activeTab = tab;
+      tabButtons.forEach((btn) => {
+        const on = btn.getAttribute('data-tab') === tab;
+        btn.classList.toggle('is-active', on);
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      tabPanels.forEach((p) => {
+        const on = p.getAttribute('data-tab-panel') === tab;
+        p.classList.toggle('is-active', on);
+        if (on) p.removeAttribute('hidden');
+        else p.setAttribute('hidden', '');
+      });
+      if (window.__cmpBridge) {
+        if (tab === 'specs') window.__cmpBridge.setMode('specs');
+        else if (tab === 'tco') window.__cmpBridge.setMode('tco');
+      }
+    }
+
+    function refreshTabsAvailability() {
+      const enough = pickedIds.size >= 2;
+      tabButtons.forEach((btn) => {
+        const t = btn.getAttribute('data-tab');
+        if (t === 'specs' || t === 'tco') {
+          btn.disabled = !enough;
+        }
+      });
+      // Si el tab activo pasa a no estar disponible, volver a catalogo.
+      if (!enough && (activeTab === 'specs' || activeTab === 'tco')) {
+        setActiveTab('catalogo');
+      }
+    }
+
+    tabButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (btn.disabled) return;
+        const tab = btn.getAttribute('data-tab');
+        if (tab === 'specs' || tab === 'tco') syncBridgeSelection();
+        setActiveTab(tab);
+      });
+    });
+
+    // Inline "ir a catálogo" desde los empty-states de los paneles
+    document.querySelectorAll('[data-go-catalogo]').forEach((btn) => {
+      btn.addEventListener('click', () => setActiveTab('catalogo'));
+    });
+
+    compareBtn.addEventListener('click', () => {
+      if (pickedIds.size < 2) return;
+      syncBridgeSelection();
+      setActiveTab('specs');
     });
 
     compareClear.addEventListener('click', () => {
       pickedIds.clear();
       compareMode = false;
+      refreshTabsAvailability();
+      setActiveTab('catalogo');
+      syncBridgeSelection();
       updateCompareBar();
       update();
     });
@@ -4133,6 +4219,100 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
      COMPARE VIEW · card-on-card (4 grupos)
      ══════════════════════════════════════════ */
   .compare-view { padding: 1.5rem clamp(.5rem, 1vw, .9rem); }
+
+  /* ━━━ Topbar: 3 tabs (Catalogo · Specs · TCO) ━━━ */
+  .comp-tabbar {
+    display: flex;
+    gap: 0;
+    padding: 0 clamp(1rem, 2vw, 1.5rem);
+    margin: 0;
+    border-bottom: 1px solid var(--border, #e6e6e0);
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+  .comp-tab {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .1rem;
+    background: transparent;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    padding: .9rem 1rem .8rem;
+    font-family: inherit;
+    font-weight: 500;
+    color: var(--gray-600, #666);
+    cursor: pointer;
+    transition: color .2s, border-color .2s, background .2s;
+  }
+  .comp-tab:hover:not(:disabled) { color: var(--black, #111); background: #fafaf8; }
+  .comp-tab.is-active {
+    color: var(--black, #111);
+    border-bottom-color: var(--yellow, #F5C518);
+  }
+  .comp-tab:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+  }
+  .comp-tab-label {
+    font-size: .95rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .comp-tab-hint {
+    font-size: .7rem;
+    color: var(--gray-400, #999);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  .comp-tab.is-active .comp-tab-hint { color: var(--gray-600, #666); }
+
+  /* ━━━ Tab panels (catalogo / specs / tco) ━━━ */
+  .comp-tab-panel[hidden] { display: none; }
+
+  .tab-empty {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: var(--gray-600, #666);
+  }
+  .tab-empty h3 {
+    margin: 0 0 .5rem;
+    font-size: 1.1rem;
+    color: var(--black, #111);
+    font-weight: 500;
+  }
+  .tab-empty p { margin: 0; font-size: .95rem; }
+  .tab-empty .inline-link {
+    background: transparent;
+    border: 0;
+    color: var(--black, #111);
+    text-decoration: underline;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    padding: 0;
+  }
+  .tab-empty .inline-link:hover { color: #000; }
+
+  .tco-panel-inner {
+    padding: 1.5rem clamp(1rem, 2vw, 1.5rem);
+  }
+
+  /* El specs panel hereda el padding propio de la tabla generada por client.mjs */
+  [data-tab-panel="specs"] > [data-specs-table-wrap] {
+    padding: 1.5rem clamp(.5rem, 1vw, .9rem);
+  }
+
+  @media (max-width: 640px) {
+    .comp-tabbar { padding: 0 .75rem; }
+    .comp-tab { padding: .65rem .5rem .55rem; }
+    .comp-tab-label { font-size: .85rem; }
+    .comp-tab-hint { display: none; }
+  }
+
   .compare-wrap { width: 100%; }
 
   .cmp-table {
