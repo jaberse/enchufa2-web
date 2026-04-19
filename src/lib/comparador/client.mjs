@@ -363,6 +363,51 @@ function renderGarage() {
 }
 
 // ══════════════════════════════════════════════════════════════════════
+// RENDER — SELECTION BAR (sticky bottom, modo catálogo)
+// ══════════════════════════════════════════════════════════════════════
+
+function renderSelectionBar() {
+  if (!dom.selbarSlots) return;
+  const slots = state.selection;
+  const nSel = slots.filter(Boolean).length;
+
+  dom.selbarSlots.innerHTML = slots
+    .map((slug, i) => {
+      if (!slug) {
+        return `
+          <div class="selbar__slot is-empty" data-selbar-slot="${i}" aria-label="Slot ${i + 1} vacío">
+            <span class="selbar__slot-placeholder" aria-hidden="true">+</span>
+          </div>
+        `;
+      }
+      const spec = specsCarBySlug(slug);
+      const nombre = spec ? `${spec.marca} ${spec.modelo}` : slug;
+      const foto = spec?.foto || '/comparador/placeholder.svg';
+      return `
+        <div class="selbar__slot is-filled" data-selbar-slot="${i}" aria-label="${escapeHtml(nombre)}">
+          <figure class="selbar__slot-photo">
+            <img src="${escapeHtml(foto)}" alt="" loading="lazy" decoding="async"
+              onerror="this.onerror=null;this.src='/comparador/placeholder.svg';" />
+          </figure>
+          <span class="selbar__slot-name">${escapeHtml(nombre)}</span>
+          <button type="button" class="selbar__slot-x" aria-label="Quitar ${escapeHtml(nombre)}" data-selbar-remove="${i}">\u00d7</button>
+        </div>
+      `;
+    })
+    .join('');
+
+  if (dom.selbarCompare) {
+    dom.selbarCompare.disabled = nSel < 2;
+  }
+  if (dom.selbarClear) {
+    dom.selbarClear.disabled = nSel === 0;
+  }
+  if (dom.selbarN) {
+    dom.selbarN.textContent = String(nSel);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════
 // RENDER — TCO PANEL (SUMMARY + CARDS)
 // ══════════════════════════════════════════════════════════════════════
 
@@ -925,19 +970,31 @@ function renderModalCount(filteredCount) {
 
 function renderModalList() {
   if (!dom.modalList) return;
-  const alreadyIn = new Set(state.selection.filter(Boolean));
   const items = catalogoFiltradoOrdenado();
   renderModalCount(items.length);
 
   if (items.length === 0) {
     dom.modalList.innerHTML = `
-      <div class="sel-empty">
+      <div class="catview__empty">
         Sin resultados con los filtros activos. Prueba a limpiar alguno.
       </div>
     `;
     return;
   }
 
+  // Modo "catálogo" inline (vista principal): tarjetas ricas con foto.
+  // En la vista catálogo el usuario puede tener hasta 4 coches seleccionados
+  // y click en una tarjeta alterna inclusión (toggle). No se usa el concepto
+  // de editingSlot.
+  if (!state.modal.open) {
+    const selectedSet = new Set(state.selection.filter(Boolean));
+    dom.modalList.innerHTML = items.map((p) => renderCatalogCard(p, selectedSet)).join('');
+    return;
+  }
+
+  // Flujo legacy del modal: seleccionar para un slot concreto. Se mantiene
+  // para el caso "click en tarjeta TCO/specs vacía abre el modal".
+  const alreadyIn = new Set(state.selection.filter(Boolean));
   const editingSlot = state.modal.editingSlot;
   dom.modalList.innerHTML = items
     .map((p) => {
@@ -976,6 +1033,82 @@ function renderModalList() {
       `;
     })
     .join('');
+}
+
+// Tarjeta rica del catálogo inline. Click = toggle selección (máx 4).
+function renderCatalogCard(c, selectedSet) {
+  const isSelected = selectedSet.has(c.slug);
+  const foto = c.foto || '/comparador/placeholder.svg';
+  const pvp = c.pvp_eur;
+  const ayuda = c.ayuda_plan_auto_eur;
+  const ayudaTxt =
+    ayuda && ayuda > 0
+      ? `<span class="catcard__price-auto" title="Ayuda Plan Auto+">\u2212${fmtEur(ayuda)} Auto+</span>`
+      : '';
+
+  // Chips ligeros: segmento + LFP si aplica + "Sin TCO" si aplica
+  const chips = [];
+  if (c.segmento) {
+    chips.push(`<span class="catcard__chip">${escapeHtml(c.segmento)}</span>`);
+  }
+  if (c.quimica && /lfp/i.test(String(c.quimica))) {
+    chips.push(`<span class="catcard__chip catcard__chip--lfp">LFP</span>`);
+  }
+  if (!SLUGS_TCO.has(c.slug)) {
+    chips.push(`<span class="catcard__chip catcard__chip--tco">Sin TCO</span>`);
+  }
+
+  // Specs mini: autonomía, potencia, carga DC, consumo (2x2)
+  const specs = [
+    { lbl: 'Autonomía', val: c.autonomia_wltp_km != null ? `${fmtNum(c.autonomia_wltp_km)} km` : '—' },
+    { lbl: 'Potencia',  val: c.potencia_cv != null ? `${fmtNum(c.potencia_cv)} CV` : '—' },
+    { lbl: 'Carga DC',  val: c.carga_dc_max_kw != null ? `${fmtNum(c.carga_dc_max_kw)} kW` : '—' },
+    { lbl: 'Consumo',   val: c.consumo_wltp_kwh100km != null ? `${fmtNum(c.consumo_wltp_kwh100km, 1)} kWh/100` : '—' },
+  ];
+
+  return `
+    <button
+      type="button"
+      class="catcard${isSelected ? ' is-selected' : ''}"
+      data-catcard-toggle="${escapeHtml(c.slug)}"
+      aria-pressed="${isSelected ? 'true' : 'false'}"
+      aria-label="${isSelected ? 'Quitar' : 'Añadir'} ${escapeHtml(c.marca)} ${escapeHtml(c.modelo)} a la comparativa"
+    >
+      <figure class="catcard__hero">
+        <img
+          src="${escapeHtml(foto)}"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onerror="this.onerror=null;this.src='/comparador/placeholder.svg';"
+        />
+        <span class="catcard__checkmark" aria-hidden="true">\u2713</span>
+      </figure>
+      <div class="catcard__body">
+        <h3 class="catcard__title">
+          <span class="catcard__brand">${escapeHtml(c.marca)}</span>
+          <span class="catcard__model">${escapeHtml(c.modelo)}</span>
+        </h3>
+        ${c.variante ? `<p class="catcard__variant">${escapeHtml(c.variante)}</p>` : ''}
+        ${chips.length ? `<div class="catcard__chips">${chips.join('')}</div>` : ''}
+        <div class="catcard__specs">
+          ${specs
+            .map(
+              (s) => `
+            <div class="catcard__spec">
+              <span class="catcard__spec-lbl">${s.lbl}</span>
+              <span class="catcard__spec-val">${s.val}</span>
+            </div>`,
+            )
+            .join('')}
+        </div>
+        <div class="catcard__price">
+          <span class="catcard__price-pvp">${pvp != null ? fmtEur(pvp) : '—'}</span>
+          ${ayudaTxt}
+        </div>
+      </div>
+    </button>
+  `;
 }
 
 function renderModal() {
@@ -1038,7 +1171,9 @@ function setMode(mode) {
     btn.classList.toggle('is-on', on);
   });
   if (dom.toggleThumb) {
-    dom.toggleThumb.style.transform = mode === 'tco' ? 'translateX(100%)' : 'translateX(0)';
+    // 3 tabs: catalogo (0) → specs (100%) → tco (200%).
+    const pos = mode === 'catalogo' ? '0%' : mode === 'specs' ? '100%' : '200%';
+    dom.toggleThumb.style.transform = `translateX(${pos})`;
   }
   dom.panels?.forEach((p) => {
     const show = p.getAttribute('data-panel') === mode;
@@ -1049,8 +1184,24 @@ function setMode(mode) {
     const show = s.getAttribute('data-show-when-mode') === mode;
     s.style.display = show ? '' : 'none';
   });
-  // Si el modal está abierto, re-renderiza la lista para actualizar los
-  // "Sin par TCO" cuando cambia el modo.
+  // La SelectionBar solo tiene sentido en modo catálogo (sirve para lanzar la
+  // comparativa desde el listado). En specs/tco, donde ya se están viendo
+  // los coches, estorba visualmente.
+  if (dom.selbar) {
+    if (mode === 'catalogo') {
+      dom.selbar.hidden = false;
+      dom.selbar.classList.remove('is-hidden');
+    } else {
+      dom.selbar.classList.add('is-hidden');
+      // Delay ocultar para que la animación se vea.
+      window.setTimeout(() => {
+        if (state.mode !== 'catalogo' && dom.selbar) dom.selbar.hidden = true;
+      }, 280);
+    }
+  }
+  // Re-renderiza el catálogo al volver a él (para marcar seleccionados).
+  if (mode === 'catalogo') renderModalList();
+  // Si el modal legacy está abierto, actualiza también.
   if (state.modal.open) renderModalList();
 }
 
@@ -1060,8 +1211,12 @@ function setMode(mode) {
 
 function rerender() {
   renderGarage();
+  renderSelectionBar();
   renderPanelTCO();
   renderPanelSpecs();
+  // Cuando cambia la selección, refresca también la grilla del catálogo
+  // (checkmarks amarillos sobre las tarjetas seleccionadas).
+  if (state.mode === 'catalogo') renderModalList();
 }
 
 // ══════════════════════════════════════════════════════════════════════
@@ -1112,27 +1267,59 @@ function onDocClick(e) {
     return;
   }
 
-  // Añadir coche (slot vacío en el garage)
-  const addBtn = t.closest('[data-garage-add]');
-  if (addBtn) {
-    const chip = addBtn.closest('[data-garage-chip]');
-    const slot = Number(chip.getAttribute('data-garage-slot'));
-    openModal(slot);
+  // Tarjeta del catálogo inline: click = toggle selección. Si el coche ya
+  // está, lo quita; si no, lo añade al primer slot libre. Si no hay slots
+  // libres, desplaza el más viejo (FIFO) para hacer hueco.
+  const catToggle = t.closest('[data-catcard-toggle]');
+  if (catToggle) {
+    const slug = catToggle.getAttribute('data-catcard-toggle');
+    toggleSelection(slug);
     return;
   }
 
-  // Añadir coche desde una tarjeta TCO vacía (o de una cabecera Specs vacía).
-  // Permite añadir/reemplazar sin subir a la fila del garaje.
+  // SelectionBar: quitar coche
+  const selRm = t.closest('[data-selbar-remove]');
+  if (selRm) {
+    const slot = Number(selRm.getAttribute('data-selbar-remove'));
+    if (!isNaN(slot)) {
+      state.selection[slot] = null;
+      rerender();
+    }
+    return;
+  }
+
+  // SelectionBar: limpiar todo
+  if (t.closest('[data-selbar-clear]')) {
+    state.selection = [null, null, null, null];
+    rerender();
+    return;
+  }
+
+  // SelectionBar: Comparar → cambia a specs
+  if (t.closest('[data-selbar-compare]')) {
+    const n = state.selection.filter(Boolean).length;
+    if (n >= 2) setMode('specs');
+    return;
+  }
+
+  // Añadir coche (slot vacío en el garage legacy — por compatibilidad).
+  const addBtn = t.closest('[data-garage-add]');
+  if (addBtn) {
+    // En el flujo nuevo, volvemos al catálogo para elegir.
+    setMode('catalogo');
+    return;
+  }
+
+  // Añadir coche desde una tarjeta TCO vacía (o cabecera Specs vacía):
+  // volvemos al catálogo, que es donde se hace la selección ahora.
   const emptyTco = t.closest('[data-tco-empty-slot]');
   if (emptyTco) {
-    const slot = Number(emptyTco.getAttribute('data-tco-empty-slot'));
-    if (!isNaN(slot)) openModal(slot);
+    setMode('catalogo');
     return;
   }
   const emptySpecs = t.closest('[data-specs-empty-slot]');
   if (emptySpecs) {
-    const slot = Number(emptySpecs.getAttribute('data-specs-empty-slot'));
-    if (!isNaN(slot)) openModal(slot);
+    setMode('catalogo');
     return;
   }
 
@@ -1237,6 +1424,24 @@ function onDocClick(e) {
     renderPanelSpecs();
     return;
   }
+}
+
+// Alterna la presencia de un slug en state.selection. Si ya está, lo quita.
+// Si no está y hay slot libre, lo pone en el primero. Si todos están llenos,
+// desplaza en FIFO (elimina el slot 0 y mete el nuevo en el slot 3).
+function toggleSelection(slug) {
+  const idx = state.selection.indexOf(slug);
+  if (idx !== -1) {
+    state.selection[idx] = null;
+  } else {
+    const free = state.selection.indexOf(null);
+    if (free !== -1) {
+      state.selection[free] = slug;
+    } else {
+      state.selection = [state.selection[1], state.selection[2], state.selection[3], slug];
+    }
+  }
+  rerender();
 }
 
 function clearAppliedChip(id) {
@@ -1374,13 +1579,28 @@ export function initComparador() {
   }
   SLUGS_TCO = new Set(DATA.slugsConTCO || []);
 
-  // Selección inicial desde los chips SSR.
+  // Selección inicial: intenta leerla primero del SSR del garage-row (flujo
+  // legacy), si no está, del data-initial-selection del selbar (nuevo flujo).
   const chips = document.querySelectorAll('[data-garage-row] [data-garage-chip]');
-  chips.forEach((chip) => {
-    const slot = Number(chip.getAttribute('data-garage-slot'));
-    const slug = chip.getAttribute('data-garage-slug');
-    if (!isNaN(slot) && slug) state.selection[slot] = slug;
-  });
+  if (chips.length) {
+    chips.forEach((chip) => {
+      const slot = Number(chip.getAttribute('data-garage-slot'));
+      const slug = chip.getAttribute('data-garage-slug');
+      if (!isNaN(slot) && slug) state.selection[slot] = slug;
+    });
+  } else {
+    const initialEl = document.querySelector('[data-cmp-initial-selection]');
+    if (initialEl) {
+      try {
+        const arr = JSON.parse(initialEl.textContent || '[]');
+        if (Array.isArray(arr)) {
+          for (let i = 0; i < 4; i++) {
+            state.selection[i] = arr[i] ?? null;
+          }
+        }
+      } catch (_) {}
+    }
+  }
 
   if (DATA.perfil) {
     state.scenario.km_anual = DATA.perfil.km_anual ?? state.scenario.km_anual;
@@ -1413,6 +1633,11 @@ export function initComparador() {
   dom.modalDrawer     = document.querySelector('[data-garage-modal-drawer]');
   dom.modalList       = document.querySelector('[data-garage-modal-list]');
   dom.scenbar         = document.querySelector('[data-scenbar]');
+  dom.selbar          = document.querySelector('[data-selbar]');
+  dom.selbarSlots     = document.querySelector('[data-selbar-slots]');
+  dom.selbarClear     = document.querySelector('[data-selbar-clear]');
+  dom.selbarCompare   = document.querySelector('[data-selbar-compare]');
+  dom.selbarN         = document.querySelector('[data-selbar-n]');
 
   // Inicializa el contador del drawer de Vista.
   if (dom.specsVistaCount)
@@ -1431,23 +1656,32 @@ export function initComparador() {
   // Render inicial del drawer vista (para que las categorías ya estén listas).
   renderSpecsVistadrawer();
 
+  // El catálogo inline necesita pills + drawer + applied renderizados desde
+  // el arranque (antes vivían dentro del modal, que se rellenaba al abrir).
+  // El `renderModalList` dentro de `renderModal` es inofensivo porque lo
+  // volveremos a llamar en `rerender()` al final.
+  if (dom.modalPills || dom.modalDrawer || dom.modalApplied) {
+    renderModal();
+  }
+
   // Instalar runtime de popovers (host + listeners globales).
   initPopoverRuntime();
 
-  // Modo inicial: URL ?mode=tco|specs, si no el del SSR, por defecto specs.
-  let initialMode = 'specs';
+  // Modo inicial: URL ?mode=catalogo|specs|tco, si no el del SSR, por defecto
+  // catálogo (landing view con el listado visible).
+  let initialMode = 'catalogo';
   try {
     const params = new URLSearchParams(window.location.search);
     const m = params.get('mode');
-    if (m === 'tco' || m === 'specs') {
+    if (m === 'catalogo' || m === 'tco' || m === 'specs') {
       initialMode = m;
     } else {
       initialMode = document.querySelector('[role="tab"][aria-selected="true"]')
-        ?.getAttribute('data-mode') || 'specs';
+        ?.getAttribute('data-mode') || 'catalogo';
     }
   } catch (_) {
     initialMode = document.querySelector('[role="tab"][aria-selected="true"]')
-      ?.getAttribute('data-mode') || 'specs';
+      ?.getAttribute('data-mode') || 'catalogo';
   }
   setMode(initialMode);
 

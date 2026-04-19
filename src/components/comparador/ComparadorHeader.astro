@@ -1,26 +1,29 @@
 ---
 // src/components/comparador/ComparadorHeader.astro
 // HeaderA portado 1:1 del export de Claude Design (DirectionA).
-// 2-col grid: eyebrow + título a la izquierda, toggle Specs/TCO a la derecha.
+// 2-col grid: eyebrow + título a la izquierda, toggle Catálogo/Specs/TCO a la derecha.
 // El título lleva la frase amarillo-serif "Los números, sin filtro." como cierre.
 //
-// Interactividad del toggle: controlada desde public/comparador/comparador.js
+// Interactividad del toggle: controlada desde src/lib/comparador/client.mjs
 // leyendo data-mode. Marcamos la tab correcta con aria-selected y la clase
 // is-on para que el thumb amarillo se posicione al render inicial sin JS.
 
 interface Props {
   /** Modo activo por defecto. */
-  modo?: 'tco' | 'specs';
+  modo?: 'catalogo' | 'specs' | 'tco';
 }
 
-const { modo = 'specs' } = Astro.props;
+const { modo = 'catalogo' } = Astro.props;
+
+// Posición del thumb amarillo en función del modo activo.
+const thumbPos = modo === 'catalogo' ? '0%' : modo === 'specs' ? '100%' : '200%';
 ---
 
 <header class="dirA__head" data-cmp-header>
   <div class="dirA__headL">
     <p class="eyebrow">enchufa2 · /comparador</p>
     <h1 class="dirA__title">
-      Cuatro coches. Una decisión. <span class="serif">Los números, sin filtro.</span>
+      Elige, compara, decide. <span class="serif">Los números, sin filtro.</span>
     </h1>
   </div>
   <div class="dirA__headR">
@@ -30,6 +33,16 @@ const { modo = 'specs' } = Astro.props;
       aria-label="Vista"
       data-cmp-toggle
     >
+      <button
+        class:list={['modetoggle__tab', modo === 'catalogo' && 'is-on']}
+        role="tab"
+        aria-selected={modo === 'catalogo'}
+        data-mode="catalogo"
+        id="tab-catalogo"
+        aria-controls="panel-catalogo"
+      >
+        <span>Catálogo</span>
+      </button>
       <button
         class:list={['modetoggle__tab', modo === 'specs' && 'is-on']}
         role="tab"
@@ -53,7 +66,7 @@ const { modo = 'specs' } = Astro.props;
       <span
         class="modetoggle__thumb"
         aria-hidden="true"
-        style={`transform: translateX(${modo === 'tco' ? '100%' : '0'});`}
+        style={`transform: translateX(${thumbPos});`}
       ></span>
     </div>
   </div>
@@ -102,7 +115,7 @@ const { modo = 'specs' } = Astro.props;
     .dirA__headR { justify-self: start; }
   }
 
-  /* ── Mode toggle iOS-style con thumb amarillo ────────────────── */
+  /* ── Mode toggle iOS-style con thumb amarillo (3 tabs) ───────────── */
   .modetoggle {
     position: relative;
     display: inline-flex;
@@ -127,7 +140,7 @@ const { modo = 'specs' } = Astro.props;
     cursor: pointer;
     transition: color 220ms var(--ease-out-expo);
     flex: 0 0 auto;
-    min-width: 140px;
+    min-width: 120px;
     text-align: center;
   }
   .modetoggle__tab.is-on { color: var(--black); }
@@ -139,9 +152,13 @@ const { modo = 'specs' } = Astro.props;
     position: absolute;
     z-index: 1;
     top: 3px; left: 3px; bottom: 3px;
-    width: calc(50% - 3px);
+    width: calc(33.333% - 2px);
     background: var(--yellow);
     border-radius: 999px;
     transition: transform 420ms var(--ease-out-expo);
+  }
+
+  @media (max-width: 520px) {
+    .modetoggle__tab { min-width: 90px; padding: 0.4rem 0.6rem; font-size: 0.76rem; }
   }
 </style>

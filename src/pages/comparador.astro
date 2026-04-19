@@ -18,8 +18,8 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ComparadorHeader from '../components/comparador/ComparadorHeader.astro';
-import GarageChipsRow from '../components/comparador/GarageChipsRow.astro';
-import GarageModal from '../components/comparador/GarageModal.astro';
+import CatalogView from '../components/comparador/CatalogView.astro';
+import SelectionBar from '../components/comparador/SelectionBar.astro';
 import ScenarioBar from '../components/comparador/ScenarioBar.astro';
 import SpecsTable from '../components/comparador/SpecsTable.astro';
 import SummaryStrip from '../components/comparador/SummaryStrip.astro';
@@ -86,15 +86,6 @@ const totalsForStrip = cartas.map((c) => ({
   tren: 'BEV' as const,
 }));
 
-// ── Slots para la fila de garaje ──────────────────────────────────────
-const garageSlots = parsSeleccionados.map((p) => ({
-  slug: p.slug,
-  nombre: `${p.marca} ${p.modelo}`,
-  variante: p.variante,
-  tren: 'BEV' as const,
-  pvp_eur: p.horizontes[5].bev.pvp_eur,
-}));
-
 // ── Specs cars ────────────────────────────────────────────────────────
 const specsCars = SELECCION.map((slug) => {
   const c = catalogoSpecs.find((x) => x.slug === slug);
@@ -113,13 +104,10 @@ const description =
   <Header />
   <main id="main">
     <div class="dirA">
-      <!-- Arrancamos en modo specs por defecto; si la URL trae ?mode=tco
-           el cliente lo conmuta al cargar. -->
-      <ComparadorHeader modo="specs" />
-
-      <section class="dirA__selectors" aria-label="Selector de coches">
-        <GarageChipsRow slots={garageSlots} />
-      </section>
+      <!-- Arrancamos en modo catálogo por defecto (landing con el listado
+           visible); si la URL trae ?mode=specs o ?mode=tco el cliente lo
+           conmuta al cargar. -->
+      <ComparadorHeader modo="catalogo" />
 
       <!-- ScenarioBar solo se muestra en vista TCO; el cliente controla la
            visibilidad a través de data-show-when-mode. -->
@@ -132,6 +120,17 @@ const description =
           pctCasa={80}
         />
       </div>
+
+      <!-- ── Panel CATÁLOGO (modo por defecto) ── -->
+      <section
+        class="dirA__panel"
+        id="panel-catalogo"
+        role="tabpanel"
+        aria-labelledby="tab-catalogo"
+        data-panel="catalogo"
+      >
+        <CatalogView />
+      </section>
 
       <!-- ── Panel SPECS (modo por defecto) ── -->
       <section
@@ -219,8 +218,9 @@ const description =
       </section>
     </div>
 
-    <!-- Modal del garaje: oculto por defecto, lo abre/cierra client.mjs. -->
-    <GarageModal />
+    <!-- Barra inferior sticky con los 4 slots de selección y el botón
+         "Comparar". Solo visible en modo catálogo (lo controla client.mjs). -->
+    <SelectionBar />
 
     <!-- Payload JSON con catálogo + pares TCO pre-computados por horizonte.
          Lo lee client.mjs vía #cmp-data en initComparador(). -->
@@ -228,6 +228,14 @@ const description =
       type="application/json"
       id="cmp-data"
       set:html={JSON.stringify(datosCliente)}
+    ></script>
+
+    <!-- Selección inicial (slugs en orden de slot). El cliente la lee al
+         arrancar si no hay chips SSR. -->
+    <script
+      type="application/json"
+      data-cmp-initial-selection
+      set:html={JSON.stringify(SELECCION)}
     ></script>
   </main>
   <Footer />

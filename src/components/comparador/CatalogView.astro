@@ -1,0 +1,645 @@
+---
+// src/components/comparador/CatalogView.astro
+// Vista de catálogo INLINE (no modal). Sustituye al GarageModal como flujo
+// principal de selección: el usuario ve la rejilla completa de coches,
+// filtra/ordena, y clica para añadirlos a los 4 slots. La barra inferior
+// (SelectionBar) muestra qué tiene elegido y el botón "Comparar".
+//
+// Estructura visual:
+//   ┌ TOOLBAR ─────────────────────────────────────────────────────────┐
+//   │  [🔍 Buscar...]   [Ordenar ▾]  [62 coches]   [⚙ Más filtros]    │
+//   │  Segmento:  [A] [B] [C] ...                                      │
+//   │  Tracción:  [FWD] [RWD] [AWD]                                    │
+//   │  Química:   [LFP] [NMC]      Plan Auto+: [Sí] [Parcial] [No]     │
+//   │  ─ Filtros activos: ...   [Limpiar todo]                         │
+//   │  ┌ Más filtros (drawer) ────────────────────────────────┐        │
+//   │  │ Rangos PVP / autonomía / potencia / carga DC         │        │
+//   │  └──────────────────────────────────────────────────────┘        │
+//   ├ GRID ─────────────────────────────────────────────────────────────┤
+//   │  [card] [card] [card] [card]                                     │
+//   │  ...                                                             │
+//   └───────────────────────────────────────────────────────────────────┘
+//
+// Reutiliza los data-attributes `data-garage-modal-*` para que la maquinaria
+// de filterEngine/pills/drawer de client.mjs siga funcionando con cambios
+// mínimos. Solo `renderModalList` necesita cambiar para emitir tarjetas
+// ricas (foto + 6-7 campos) en lugar de filas densas.
+---
+
+<section
+  class="catview"
+  role="region"
+  aria-label="Catálogo de coches eléctricos"
+  data-catalog-view
+>
+  <!-- ── TOOLBAR ── -->
+  <div class="catview__toolbar">
+    <!-- Fila superior: search + sort + count + advbtn -->
+    <div class="catview__top">
+      <label class="sr-only" for="catview-search">Buscar</label>
+      <input
+        id="catview-search"
+        class="catview__search"
+        type="search"
+        placeholder="Buscar marca, modelo o variante…"
+        autocomplete="off"
+        data-garage-modal-search
+      />
+      <div class="catview__sort">
+        <label class="catview__sort-lbl" for="catview-sort">Ordenar</label>
+        <select id="catview-sort" class="catview__sort-sel" data-garage-modal-sort>
+          <option value="">Autonomía ↓</option>
+          <option value="pvp-asc">Precio ↑</option>
+          <option value="pvp-desc">Precio ↓</option>
+          <option value="pvp_efectivo-asc">PVP con Auto+ ↑</option>
+          <option value="ayuda_auto-desc">Ayuda Auto+ ↓</option>
+          <option value="potencia_cv-desc">Potencia ↓</option>
+          <option value="carga_dc-desc">Carga DC ↓</option>
+          <option value="aceleracion-asc">0-100 ↑</option>
+          <option value="consumo-asc">Consumo ↑</option>
+          <option value="peso-asc">Peso ↑</option>
+          <option value="maletero-desc">Maletero ↓</option>
+        </select>
+      </div>
+      <span class="catview__count" data-garage-modal-count aria-live="polite">
+        62 coches
+      </span>
+      <button
+        type="button"
+        class="catview__advbtn"
+        data-garage-modal-advbtn
+        aria-expanded="false"
+        aria-controls="catview-drawer"
+        title="Filtros avanzados"
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+          <circle cx="4" cy="3.5" r="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <line x1="5.5" y1="3.5" x2="13" y2="3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="1" y1="3.5" x2="2.5" y2="3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="10" cy="7" r="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <line x1="1" y1="7" x2="8.5" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="11.5" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="5.5" cy="10.5" r="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <line x1="7" y1="10.5" x2="13" y2="10.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="1" y1="10.5" x2="4" y2="10.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        <span>Más filtros</span>
+        <span class="catview__advbadge" data-garage-modal-advbadge hidden></span>
+      </button>
+    </div>
+
+    <!-- Pills por categoría (rellena client.mjs) -->
+    <div class="catview__pillswrap" data-garage-modal-pills></div>
+
+    <!-- Strip de filtros aplicados -->
+    <div class="catview__applied" data-garage-modal-applied hidden>
+      <span class="catview__applied-lbl">Filtros activos</span>
+      <div class="catview__applied-chips" data-garage-modal-applied-chips></div>
+      <button
+        type="button"
+        class="catview__resetbtn"
+        data-garage-modal-reset
+      >Limpiar todo</button>
+    </div>
+
+    <!-- Drawer con rangos avanzados -->
+    <div
+      id="catview-drawer"
+      class="catview__drawer"
+      data-garage-modal-drawer
+      hidden
+    ></div>
+  </div>
+
+  <!-- ── GRID ── -->
+  <div class="catview__grid" data-garage-modal-list role="listbox">
+    <!-- Rellenado por client.mjs: tarjetas .catcard con foto + specs -->
+  </div>
+</section>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .catview {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 7rem;  /* espacio para la SelectionBar sticky */
+  }
+
+  /* ── TOOLBAR ─────────────────────────────────────────────────── */
+  .catview__toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.9rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .catview__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  @media (max-width: 720px) {
+    .catview__top {
+      grid-template-columns: 1fr 1fr;
+    }
+    .catview__search { grid-column: 1 / -1; }
+  }
+
+  .catview__search {
+    padding: 0.6rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-family: var(--font-sans);
+    color: var(--text);
+    min-width: 0;
+  }
+  .catview__search:focus {
+    outline: 2px solid var(--yellow);
+    outline-offset: 1px;
+    border-color: var(--yellow);
+  }
+
+  .catview__sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .catview__sort-lbl {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .catview__sort-sel {
+    padding: 0.45rem 1.8rem 0.45rem 0.65rem;
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23666' stroke-width='1.4' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.55rem center;
+  }
+  .catview__sort-sel:hover,
+  .catview__sort-sel:focus {
+    outline: 2px solid var(--yellow);
+    outline-offset: 1px;
+    border-color: var(--yellow);
+  }
+
+  .catview__count {
+    font-size: 0.78rem;
+    color: var(--text-soft);
+    font-variant-numeric: tabular-nums;
+    padding: 0.3rem 0.6rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .catview__advbtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.8rem;
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 140ms, border-color 140ms;
+  }
+  .catview__advbtn:hover {
+    border-color: var(--border-strong);
+    background: var(--surface);
+  }
+  .catview__advbtn[aria-expanded="true"] {
+    background: var(--yellow-fade, rgba(245, 197, 24, 0.12));
+    border-color: var(--yellow);
+    color: var(--text);
+  }
+  .catview__advbtn:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+  }
+  .catview__advbadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 0.35rem;
+    background: var(--yellow);
+    color: var(--black, #111);
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .catview__advbadge[hidden] { display: none; }
+
+  .catview__pillswrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .catview__pillswrap:empty { display: none; }
+
+  .catview__applied {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 0.6rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    flex-wrap: wrap;
+  }
+  .catview__applied[hidden] { display: none; }
+  .catview__applied-lbl {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .catview__applied-chips {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    flex: 1;
+    min-width: 0;
+  }
+  .catview__resetbtn {
+    padding: 0.3rem 0.6rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: border-color 140ms, color 140ms;
+  }
+  .catview__resetbtn:hover {
+    border-color: var(--text);
+    color: var(--text);
+  }
+  .catview__resetbtn:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+  }
+
+  .catview__drawer {
+    padding: 0.75rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+  .catview__drawer[hidden] { display: none; }
+
+  /* ── GRID de tarjetas ────────────────────────────────────────── */
+  .catview__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+</style>
+
+<!-- Estilos globales para markup inyectado por client.mjs: pills, chips,
+     range inputs, tarjetas .catcard. -->
+<style is:global>
+  /* Pill group (una línea por categoría) */
+  .catview .sel-pillgroup,
+  [data-catalog-view] .sel-pillgroup {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.5rem;
+  }
+  [data-catalog-view] .sel-pillgroup__lbl {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    flex-shrink: 0;
+    min-width: 5.5rem;
+  }
+  [data-catalog-view] .sel-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.28rem 0.65rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.76rem;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: background 120ms, border-color 120ms, color 120ms;
+    white-space: nowrap;
+  }
+  [data-catalog-view] .sel-pill:hover {
+    border-color: var(--border-strong);
+    color: var(--text);
+  }
+  [data-catalog-view] .sel-pill.is-on {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+  [data-catalog-view] .sel-pill:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+  }
+
+  [data-catalog-view] .sel-appchip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.22rem 0.55rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    color: var(--text);
+    font-family: var(--font-sans);
+  }
+  [data-catalog-view] .sel-appchip__x {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0 0 0 0.1rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    color: var(--text-mute);
+    cursor: pointer;
+  }
+  [data-catalog-view] .sel-appchip__x:hover { color: var(--text); }
+  [data-catalog-view] .sel-appchip__x:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  [data-catalog-view] .sel-range {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  [data-catalog-view] .sel-range__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.4rem;
+  }
+  [data-catalog-view] .sel-range__lbl {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  [data-catalog-view] .sel-range__val {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.76rem;
+    color: var(--text-soft);
+  }
+  [data-catalog-view] .sel-range__slider {
+    width: 100%;
+    accent-color: var(--yellow);
+  }
+
+  /* ── Tarjeta rica del catálogo inline ─────────────────────────── */
+  .catcard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 160ms, transform 160ms, box-shadow 160ms;
+    text-align: left;
+    font-family: var(--font-sans);
+    color: var(--text);
+    overflow: hidden;
+    width: 100%;
+  }
+  .catcard:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.2);
+  }
+  .catcard:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+  }
+  .catcard.is-selected {
+    border-color: var(--yellow);
+    background: var(--yellow-fade, rgba(245, 197, 24, 0.08));
+  }
+  .catcard.is-selected:hover { border-color: var(--yellow); }
+
+  .catcard__hero {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--border);
+  }
+  .catcard__hero img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 58%;
+    transform: scale(1.55);
+    transform-origin: center center;
+    transition: transform 360ms var(--ease-out-expo, ease-out);
+  }
+  .catcard:hover .catcard__hero img { transform: scale(1.6); }
+
+  .catcard__checkmark {
+    position: absolute;
+    top: 0.55rem;
+    right: 0.55rem;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--yellow);
+    color: var(--black, #111);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 160ms, transform 160ms var(--ease-out-expo, ease-out);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .catcard.is-selected .catcard__checkmark {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .catcard__body {
+    padding: 0.85rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    flex: 1;
+  }
+
+  .catcard__title {
+    font-size: 1rem;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin: 0;
+  }
+  .catcard__brand { font-weight: 400; }
+  .catcard__model { color: var(--text-soft); }
+
+  .catcard__variant {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text-soft);
+    font-size: 0.88rem;
+    line-height: 1.3;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .catcard__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.1rem;
+  }
+  .catcard__chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.12rem 0.45rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.68rem;
+    color: var(--text-soft);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .catcard__chip--lfp {
+    background: var(--yellow-fade, rgba(245, 197, 24, 0.18));
+    border-color: var(--yellow);
+    color: var(--yellow-text, #8a6a00);
+    font-weight: 500;
+  }
+  .catcard__chip--tco {
+    background: transparent;
+    border-style: dashed;
+    color: var(--text-mute);
+  }
+
+  .catcard__specs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem 0.8rem;
+    margin-top: 0.2rem;
+    padding-top: 0.55rem;
+    border-top: 1px solid var(--border);
+  }
+  .catcard__spec {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+  }
+  .catcard__spec-lbl {
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .catcard__spec-val {
+    font-size: 0.86rem;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+  }
+
+  .catcard__price {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 0.55rem;
+    padding-top: 0.55rem;
+    border-top: 1px solid var(--border);
+  }
+  .catcard__price-pvp {
+    font-size: 0.95rem;
+    color: var(--text);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .catcard__price-auto {
+    font-size: 0.74rem;
+    color: var(--yellow-text, #8a6a00);
+    background: var(--yellow-fade, rgba(245, 197, 24, 0.18));
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .catcard__price-auto--none { color: var(--text-mute); background: transparent; padding: 0; }
+
+  /* Estado vacío */
+  .catview__empty {
+    grid-column: 1 / -1;
+    padding: 3rem 1rem;
+    text-align: center;
+    color: var(--text-soft);
+    font-size: 0.92rem;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+  }
+</style>
