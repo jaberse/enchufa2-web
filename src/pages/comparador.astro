@@ -164,6 +164,25 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
 
         <!-- Specs panel (renderizado por client.mjs) -->
         <div class="comp-tab-panel" data-tab-panel="specs" data-panel="specs" hidden>
+          <header class="comp-subheader">
+            <div class="comp-subheader__crumb">
+              <span class="comp-subheader__kicker">Comparador</span>
+              <span class="comp-subheader__sep" aria-hidden="true">·</span>
+              <span class="comp-subheader__title">Especificaciones</span>
+            </div>
+            <div class="comp-subheader__actions">
+              <button type="button" class="comp-subbtn" data-specs-vistabtn aria-expanded="false">
+                <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="4" cy="3.5" r="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="5.5" y1="3.5" x2="13" y2="3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="1" y1="3.5" x2="2.5" y2="3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="10" cy="7" r="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="1" y1="7" x2="8.5" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="11.5" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="5.5" cy="10.5" r="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="7" y1="10.5" x2="13" y2="10.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="1" y1="10.5" x2="4" y2="10.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                <span>Datos y vista</span>
+                <span class="comp-subbtn__count" data-specs-vista-count></span>
+              </button>
+              <button type="button" class="comp-subbtn comp-subbtn--primary" data-add-car-btn data-go-catalogo>
+                <span class="comp-subbtn__plus" aria-hidden="true">+</span>
+                <span>Añadir coche</span>
+              </button>
+            </div>
+          </header>
+          <div class="comp-vistadrawer" data-specs-vistadrawer hidden></div>
           <div class="tab-empty" data-tab-empty="specs" hidden>
             <h3>Elige al menos 2 coches</h3>
             <p>Vuelve a <button type="button" class="inline-link" data-go-catalogo>Catálogo</button> y selecciona los coches que quieras comparar.</p>
@@ -173,6 +192,19 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
 
         <!-- TCO panel (renderizado por client.mjs) -->
         <div class="comp-tab-panel" data-tab-panel="tco" data-panel="tco" hidden>
+          <header class="comp-subheader">
+            <div class="comp-subheader__crumb">
+              <span class="comp-subheader__kicker">Comparador</span>
+              <span class="comp-subheader__sep" aria-hidden="true">·</span>
+              <span class="comp-subheader__title">Coste total de propiedad</span>
+            </div>
+            <div class="comp-subheader__actions">
+              <button type="button" class="comp-subbtn comp-subbtn--primary" data-add-car-btn data-go-catalogo>
+                <span class="comp-subbtn__plus" aria-hidden="true">+</span>
+                <span>Añadir coche</span>
+              </button>
+            </div>
+          </header>
           <div class="tab-empty" data-tab-empty="tco" hidden>
             <h3>Elige al menos 2 coches</h3>
             <p>Vuelve a <button type="button" class="inline-link" data-go-catalogo>Catálogo</button> y selecciona los coches que quieras comparar.</p>
@@ -322,6 +354,13 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
 
     const DEFAULT_IDS = FIELDS.filter(f => f.dflt).map(f => f.id);
     let selectedFields = [...DEFAULT_IDS];
+    // Emite un evento cuando cambia selectedFields — client.mjs lo escucha
+    // para sincronizar state.visibleSpecsRows (Datos y vista) del panel Specs.
+    function emitFieldsChange() {
+      try {
+        document.dispatchEvent(new CustomEvent('catfields:change', { detail: [...selectedFields] }));
+      } catch (_) { /* noop */ }
+    }
     let filterRanges = {}; // { fieldId: {min: Number|null, max: Number|null} }
     let catVals = {};      // { catId: ['val1','val2',...] }
     let openPopover = null; // id of currently open popover
@@ -376,6 +415,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
         } else {
           selectedFields = FIELDS.map(f => f.id);
         }
+        emitFieldsChange();
         allFieldsOn = !allOn;
         panelSelectAllBtn.textContent = allOn ? 'Seleccionar todos' : 'Volver a predefinidos';
         btnReset.style.display = hasAnyFilter() ? '' : 'none';
@@ -751,7 +791,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
           if (mx < dMax - 1e-9) r.max = mx;
           if (r.min == null && r.max == null) delete filterRanges[f.id];
           else filterRanges[f.id] = r;
-          if (!selectedFields.includes(f.id)) selectedFields.push(f.id);
+          if (!selectedFields.includes(f.id)) { selectedFields.push(f.id); emitFieldsChange(); }
           btnReset.style.display = hasAnyFilter() ? '' : 'none';
           clearTimeout(debounceT);
           debounceT = setTimeout(() => { renderPanel(); update(); }, 180);
@@ -964,6 +1004,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
           } else {
             selectedFields.push(f.id);
           }
+          emitFieldsChange();
           btnReset.style.display = hasAnyFilter() ? '' : 'none';
           renderPanel();
           update();
@@ -1892,6 +1933,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
       filterRanges = {};
       catVals = {};
       selectedFields = [...DEFAULT_IDS];
+      emitFieldsChange();
       tableSortId = null;
       tableSortAsc = true;
       allFieldsOn = false;
@@ -5129,4 +5171,74 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     .cmp-head { padding: .5rem .4rem !important; min-height: 0 !important; }
     .cmp-head-photo img { max-height: 60px !important; width: auto !important; }
   }
+
+  /* ---- Subheader por panel (P5) -------------------------------------- */
+  .comp-subheader {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; padding: .9rem 0 .7rem;
+    border-bottom: 1px solid var(--gray-100);
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .comp-subheader__crumb {
+    display: inline-flex; align-items: baseline; gap: .6rem;
+    font-family: var(--font-sans); font-weight: 300;
+  }
+  .comp-subheader__kicker {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--yellow); font-weight: 500;
+  }
+  .comp-subheader__sep {
+    color: var(--gray-400); font-weight: 300;
+  }
+  .comp-subheader__title {
+    font-size: clamp(1.15rem, 2.4vw, 1.4rem); font-weight: 300;
+    color: var(--black); letter-spacing: -0.01em;
+  }
+  .comp-subheader__actions {
+    display: inline-flex; align-items: center; gap: .5rem; flex-wrap: wrap;
+  }
+  .comp-subbtn {
+    display: inline-flex; align-items: center; gap: .45rem;
+    height: 34px; padding: 0 .9rem; border-radius: 999px;
+    background: transparent; border: 1px solid var(--gray-100);
+    color: var(--gray-600); font: 300 .82rem/1 var(--font-sans);
+    cursor: pointer; transition: all .2s;
+  }
+  .comp-subbtn:hover {
+    border-color: var(--black); color: var(--black);
+  }
+  .comp-subbtn[aria-expanded="true"] {
+    background: var(--black); color: #fff; border-color: var(--black);
+  }
+  .comp-subbtn--primary {
+    background: var(--yellow); color: var(--black); border-color: var(--yellow);
+    font-weight: 400;
+  }
+  .comp-subbtn--primary:hover {
+    background: var(--black); color: var(--yellow); border-color: var(--black);
+  }
+  .comp-subbtn__count:empty { display: none; }
+  .comp-subbtn__count {
+    display: inline-block; padding: 1px 6px; border-radius: 999px;
+    background: var(--gray-100); color: var(--black); font-size: .7rem;
+    font-weight: 500;
+  }
+  .comp-subbtn--primary .comp-subbtn__plus {
+    font-weight: 500; font-size: 1rem; line-height: 1;
+  }
+  .comp-vistadrawer {
+    margin-bottom: 1rem;
+    padding: 1rem; background: var(--gray-100); border-radius: 12px;
+    border: 1px solid var(--gray-100);
+  }
+  .comp-vistadrawer[hidden] { display: none; }
+  /* Dark mode */
+  [data-theme="dark"] .comp-subheader { border-bottom-color: rgba(255,255,255,0.08); }
+  [data-theme="dark"] .comp-subheader__title { color: var(--white); }
+  [data-theme="dark"] .comp-subbtn { border-color: rgba(255,255,255,0.12); color: rgba(255,255,255,0.75); }
+  [data-theme="dark"] .comp-subbtn:hover { border-color: var(--yellow); color: var(--white); }
+  [data-theme="dark"] .comp-subbtn[aria-expanded="true"] { background: var(--yellow); color: var(--black); border-color: var(--yellow); }
+  [data-theme="dark"] .comp-subbtn__count { background: rgba(255,255,255,0.08); color: var(--white); }
+  [data-theme="dark"] .comp-vistadrawer { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); }
 </style>

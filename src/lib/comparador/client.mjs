@@ -95,6 +95,29 @@ function stars(v) {
 //   'stars' — 0..5 con stars() + número
 //   'html'  — html personalizado (Plan Auto+)
 
+// Mapea los IDs del catálogo (FIELDS[].id en comparador.astro) a las keys de
+// SPECS_ROWS[].k de arriba. Los que no tienen equivalente se ignoran — el
+// puente catálogo → panel Specs (evento 'catfields:change') sólo transfiere
+// los campos que existen a ambos lados.
+const CAT_FIELD_TO_SPEC_K = {
+  pvp: 'pvp',
+  ayuda_auto: 'ayuda',
+  pvp_efectivo: 'pvp_ef',
+  garantia_anos: 'gar_bat',
+  autonomia: 'autonomia',
+  consumo: 'consumo',
+  bateria_neta: 'bateria',
+  carga_dc: 'dc',
+  carga_ac: 'ac',
+  t_10_80: 't1080',
+  potencia_cv: 'potencia',
+  aceleracion: 'acel',
+  peso: 'peso',
+  maletero: 'maletero',
+  largo: 'largo',
+  fiab_stars: 'fiab',
+};
+
 const SPECS_ROWS = [
   // Núcleo por defecto
   { kind: 'num',   k: 'pvp',       grupo: 'precio',       label: 'Precio',         dflt: true,  lowerBetter: true,
@@ -624,7 +647,7 @@ function renderPanelTCO() {
         aria-label="Añadir coche al slot 1"
       >
         <div class="stbl__emptyPlus" aria-hidden="true">+</div>
-        <div class="stbl__emptyTxt">Añade coches para ver su coste a ${state.scenario.anios} años</div>
+        <div class="stbl__emptyTxt">Añadir coche</div>
       </button>
     `;
     dom.tcoGrid.style.setProperty('--cols', '1');
@@ -665,7 +688,7 @@ function renderPanelTCO() {
           aria-label="Añadir coche al slot ${slot + 1}"
         >
           <div class="stbl__emptyPlus" aria-hidden="true">+</div>
-          <div class="stbl__emptyTxt">Slot vacío</div>
+          <div class="stbl__emptyTxt">Añadir coche</div>
         </button>
       `);
       return;
@@ -1717,6 +1740,38 @@ export function initComparador() {
   // Event wiring.
   document.addEventListener('click', onDocClick);
   document.addEventListener('keydown', onKey);
+
+  // Puente Catálogo -> Panel Specs: cuando el script inline de comparador.astro
+  // muta selectedFields (Datos y vista del catálogo), recibimos la lista de IDs
+  // del catálogo, mapeamos a keys de SPECS_ROWS y actualizamos la vista Specs
+  // para que persista al cambiar a la pestaña Especificaciones.
+  document.addEventListener('catfields:change', (ev) => {
+    const catIds = Array.isArray(ev.detail) ? ev.detail : [];
+    const next = new Set();
+    for (const id of catIds) {
+      const k = CAT_FIELD_TO_SPEC_K[id];
+      if (k) next.add(k);
+    }
+    // Asegurar que siempre hay al menos el núcleo (si el catálogo no incluye
+    // Plan Auto+ como campo, seguimos mostrando la fila del panel Specs).
+    if (next.size === 0) return;
+    // Mantener los campos que están en SPECS_ROWS pero no tienen equivalente en
+    // el catálogo y ya estaban visibles (p.ej. plan_auto se gestiona por defecto
+    // en SPECS_ROWS; evitamos ''borrarlo'' sin querer).
+    const specsKeys = new Set(SPECS_ROWS.map((r) => r.k));
+    const mapped = new Set(Object.values(CAT_FIELD_TO_SPEC_K));
+    for (const k of state.visibleSpecsRows) {
+      // Si estaba visible y NO es un campo puenteable desde el catálogo, lo
+      // conservamos (es un extra del drawer Datos y vista del panel Specs).
+      if (specsKeys.has(k) && !mapped.has(k)) next.add(k);
+    }
+    // Plan Auto+ siempre debe estar presente por ser un diferenciador clave.
+    if (specsKeys.has('plan_auto')) next.add('plan_auto');
+    state.visibleSpecsRows = next;
+    // Re-render del panel Specs si está abierto o ya montado.
+    try { renderPanelSpecs(); } catch (_) { /* aún no inicializado */ }
+    try { renderSpecsVistadrawer(); } catch (_) { /* drawer cerrado */ }
+  });
   if (dom.modalSearch) dom.modalSearch.addEventListener('input', onModalSearch);
   if (dom.modalSort) dom.modalSort.addEventListener('change', onModalSort);
   if (dom.modalDrawer) dom.modalDrawer.addEventListener('input', onModalRangeInput);
