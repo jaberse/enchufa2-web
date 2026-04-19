@@ -163,9 +163,6 @@ function bestOfStars(row: StarsRow): number | null {
               <img src={c.foto} alt={`${c.marca} ${c.modelo}`} loading="lazy" />
             </div>
             <div class="stbl__headtxt">
-              <span class:list={['badge', `badge--${c.tren.toLowerCase()}`]}>
-                {c.tren === 'BEV' ? 'ELÉCTRICO' : c.tren}
-              </span>
               <div class="stbl__brand">
                 {c.marca} <span class="stbl__model">{c.modelo}</span>
               </div>

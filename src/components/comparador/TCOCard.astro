@@ -47,6 +47,8 @@ interface Props {
   slug?: string;
   /** Fecha de los parámetros (mostrada en footer). */
   datosFecha?: string;
+  /** Ruta absoluta a la foto del coche (/comparador/{slug}.webp). */
+  foto?: string;
 }
 
 const {
@@ -60,6 +62,7 @@ const {
   stagger = 0,
   slug = '',
   datosFecha = '2026-04',
+  foto = '',
 } = Astro.props;
 
 // SSR: cálculo con perfil estándar (overrides = {} usa PARAMS_ENCHUFA2_ESTANDAR).
@@ -77,18 +80,11 @@ const fmtEur = (n: number) =>
 
 const fmtEurSigned = (n: number) => (n >= 0 ? '+' : '\u2212') + fmtEur(Math.abs(n));
 
-// Etiquetas de badge por tren (HÍBRIDO con tilde, bug del export).
-const BADGE: Record<string, { label: string; cls: string }> = {
-  BEV:  { label: 'ELÉCTRICO', cls: 'badge--yellow' },
-  ICE:  { label: 'GASOLINA',  cls: 'badge--black' },
-  PHEV: { label: 'HÍBRIDO ENCHUFABLE', cls: 'badge--green' },
-  HEV:  { label: 'HÍBRIDO',   cls: 'badge--outlineGreen' },
-  MHEV: { label: 'MILD-HYBRID', cls: 'badge--outline' },
-};
-const badge = BADGE[tren] ?? BADGE.BEV;
-
 // Delta editorial (serif) — solo si hay rival y es distinto del propio total.
 const delta = rivalTotal != null ? br.tco_total_eur - rivalTotal : null;
+
+// Foto del coche con fallback al placeholder.
+const fotoSrc = foto || '/comparador/placeholder.svg';
 
 // Filas de breakdown. `ayudas_eur` se muestra negativo (es un crédito).
 // Las BEV siempre pintan 6 filas (con la última como "—" si no aplica Plan
@@ -127,12 +123,20 @@ const confianzaCls =
   data-tco-tren={tren}
   style={`--stagger: ${stagger * 80}ms;`}
 >
+  <figure class="tco-card__hero">
+    <img
+      src={fotoSrc}
+      alt={nombre}
+      loading="lazy"
+      decoding="async"
+    />
+  </figure>
+
   <header class="tco-card__head">
     <div class="tco-card__title">
       <div class="tco-card__brand">{nombre}</div>
       <div class="tco-card__variant">{variante || '\u00A0'}</div>
     </div>
-    <span class:list={['badge', badge.cls]}>{badge.label}</span>
   </header>
 
   <div class="tco-card__total">
@@ -145,15 +149,15 @@ const confianzaCls =
         {delta < 0 ? (
           <>
             Ahorras <strong>{fmtEur(Math.abs(delta))}</strong>
-            {rivalNombre && <> frente al {rivalNombre}.</>}
+            {rivalNombre && <><br /><span class="tco-card__rival-ref">frente al {rivalNombre}</span></>}
           </>
         ) : delta > 0 ? (
           <>
             Paga <strong>{fmtEur(delta)}</strong> más
-            {rivalNombre && <> que el {rivalNombre}.</>}
+            {rivalNombre && <><br /><span class="tco-card__rival-ref">que el {rivalNombre}</span></>}
           </>
         ) : (
-          <>Empate con el {rivalNombre || 'rival'}.</>
+          <>Empate<br /><span class="tco-card__rival-ref">con el {rivalNombre || 'rival'}</span></>
         )}
       </p>
     )}
@@ -202,33 +206,6 @@ const confianzaCls =
 </article>
 
 <style is:global>
-  /* ── Badge base (escopado a la tarjeta) ────────────────────────────── */
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.15rem 0.45rem;
-    border-radius: 999px;
-    font-size: 0.58rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    line-height: 1;
-    white-space: nowrap;
-  }
-  .badge--yellow      { background: var(--yellow); color: var(--black); }
-  .badge--green       { background: var(--phev-green); color: #fff; }
-  .badge--black       { background: var(--text); color: var(--bg); }
-  .badge--outlineGreen {
-    background: var(--surface);
-    color: var(--phev-green);
-    box-shadow: inset 0 0 0 1px var(--phev-green);
-  }
-  .badge--outline {
-    background: var(--surface);
-    color: var(--text-secondary);
-    box-shadow: inset 0 0 0 1px var(--gray-200);
-  }
-
   /* ── Card ──────────────────────────────────────────────────────────── */
   .tco-card {
     position: relative;
@@ -301,6 +278,64 @@ const confianzaCls =
   .tco-card--notco {
     /* Estado de error suave: el slug no tiene par TCO. */
     border-color: var(--border-strong);
+    /* Anula el centrado por flex del .tco-card--empty para que la foto
+       ocupe el ancho completo como en las tarjetas normales. */
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+  .tco-card--notco .stbl__emptyPlus,
+  .tco-card--notco .stbl__emptyTxt {
+    align-self: center;
+  }
+
+  /* ── Hero (foto del coche) ─────────────────────────────────────────── */
+  /* Cabecera visual de la tarjeta: foto con ratio fijo para que las 4
+     tarjetas del panel TCO queden alineadas horizontalmente. Usa -1 de
+     margen negativo para ocupar el ancho completo sobre el padding de la
+     tarjeta. */
+  .tco-card__hero {
+    position: relative;
+    margin: calc(-1 * clamp(1.25rem, 1.8vw, 1.75rem));
+    margin-bottom: 0.25rem;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background:
+      radial-gradient(
+        ellipse at 50% 100%,
+        var(--surface-alt) 0%,
+        var(--card-bg) 70%
+      );
+    border-bottom: 1px solid var(--border);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  .tco-card__hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center 60%;
+    /* Pequeño padding lateral para que los coches no toquen los bordes. */
+    padding: 6% 8%;
+    transition: transform 400ms var(--ease-out-expo, ease-out);
+  }
+  .tco-card:hover .tco-card__hero img {
+    transform: scale(1.03);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tco-card__hero img { transition: none; }
+    .tco-card:hover .tco-card__hero img { transform: none; }
+  }
+  .tco-card__hero--muted {
+    opacity: 0.55;
+    filter: grayscale(0.3);
+  }
+  .tco-card--win .tco-card__hero {
+    background:
+      radial-gradient(
+        ellipse at 50% 100%,
+        var(--yellow-glow, rgba(245, 197, 24, 0.18)) 0%,
+        var(--card-bg) 75%
+      );
   }
 
   /* ── Head ──────────────────────────────────────────────────────────── */
@@ -368,14 +403,27 @@ const confianzaCls =
     font-weight: 400;
     font-size: 0.92rem;
     color: var(--text-secondary);
-    line-height: 1.45;
-    /* Reserva 2 líneas para que las tarjetas del grid queden alineadas
-       incluso cuando el nombre del rival produce un wrap. */
+    line-height: 1.4;
+    /* Reserva exacta de 2 líneas: primera para la acción ("Ahorras X€"),
+       segunda para el nombre del rival. Así las 4 tarjetas quedan
+       alineadas independientemente de la longitud del nombre. */
     min-height: 2.6em;
   }
   .tco-card__edit strong {
     font-weight: 500;
     color: var(--yellow-text);
+  }
+  /* Nombre del rival: queda en su propia línea y se trunca con ellipsis
+     si no cabe (ej. "Mercedes-Benz EQA 250+" en una tarjeta estrecha). */
+  .tco-card__rival-ref {
+    display: inline-block;
+    max-width: 100%;
+    font-size: 0.88em;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
   }
 
   .tco-card__sep {

@@ -70,13 +70,10 @@ const TREN_LABEL = {
   ICE: 'Combustión',
 };
 
-const BADGE_TCO = {
-  BEV:  { label: 'ELÉCTRICO',           cls: 'badge--yellow' },
-  ICE:  { label: 'GASOLINA',            cls: 'badge--black'  },
-  PHEV: { label: 'HÍBRIDO ENCHUFABLE',  cls: 'badge--green'  },
-  HEV:  { label: 'HÍBRIDO',             cls: 'badge--outlineGreen' },
-  MHEV: { label: 'MILD-HYBRID',         cls: 'badge--outline' },
-};
+// Nota: el comparador es BEV-only (todas las tarjetas son eléctricas), por
+// lo que no se pinta badge de tren. El selector de rival ICE sigue en su
+// propio bloque dentro de la tarjeta TCO. Si en el futuro entran PHEV/HEV
+// en la comparativa se reintroduce aquí el mapa de badges.
 
 function stars(v) {
   if (v == null || isNaN(v)) return '';
@@ -398,7 +395,6 @@ function renderRivalSelector(slug, tco) {
 function renderTcoCard({ slug, slot, tco, isWinner }) {
   const { par, breakdown: br, rivalTotal, rivalNombre } = tco;
   const delta = br.tco_total_eur - rivalTotal;
-  const badge = BADGE_TCO.BEV;
 
   // Las 6 filas se renderizan siempre con el mismo orden para que todas las
   // tarjetas del panel TCO queden alineadas horizontalmente. Si el BEV no
@@ -420,12 +416,19 @@ function renderTcoCard({ slug, slot, tco, isWinner }) {
     : br.margen_pct <= 0.08 ? 'pill-conf--media'
     : 'pill-conf--baja';
 
+  // Delta editorial: siempre en 2 líneas (acción + rival). Esto mantiene
+  // alineadas las tarjetas aunque el nombre del rival sea largo (ej.
+  // "Mercedes-Benz EQA 250+"), ya que el nombre queda en su propia línea
+  // con ellipsis si no cabe.
   const deltaTxt =
     delta < 0
-      ? `Ahorras <strong>${fmtEur(Math.abs(delta))}</strong> frente al ${escapeHtml(rivalNombre)}.`
+      ? `Ahorras <strong>${fmtEur(Math.abs(delta))}</strong><br><span class="tco-card__rival-ref">frente al ${escapeHtml(rivalNombre)}</span>`
       : delta > 0
-      ? `Paga <strong>${fmtEur(delta)}</strong> más que el ${escapeHtml(rivalNombre)}.`
-      : `Empate con el ${escapeHtml(rivalNombre)}.`;
+      ? `Paga <strong>${fmtEur(delta)}</strong> más<br><span class="tco-card__rival-ref">que el ${escapeHtml(rivalNombre)}</span>`
+      : `Empate<br><span class="tco-card__rival-ref">con el ${escapeHtml(rivalNombre)}</span>`;
+
+  const nombreCompleto = `${par.marca} ${par.modelo}${par.variante ? ' ' + par.variante : ''}`;
+  const foto = par.foto || '/comparador/placeholder.svg';
 
   return `
     <article
@@ -435,12 +438,21 @@ function renderTcoCard({ slug, slot, tco, isWinner }) {
       data-tco-tren="BEV"
       style="--stagger: ${slot * 80}ms;"
     >
+      <figure class="tco-card__hero">
+        <img
+          src="${escapeHtml(foto)}"
+          alt="${escapeHtml(nombreCompleto)}"
+          loading="lazy"
+          decoding="async"
+          onerror="this.onerror=null;this.src='/comparador/placeholder.svg';"
+        />
+      </figure>
+
       <header class="tco-card__head">
         <div class="tco-card__title">
           <div class="tco-card__brand">${escapeHtml(par.marca)} ${escapeHtml(par.modelo)}</div>
           <div class="tco-card__variant">${par.variante ? escapeHtml(par.variante) : '&nbsp;'}</div>
         </div>
-        <span class="badge ${badge.cls}">${badge.label}</span>
       </header>
 
       ${renderRivalSelector(slug, tco)}
@@ -590,6 +602,7 @@ function renderPanelTCO() {
     if (!r) {
       const spec = specsCarBySlug(slug);
       const nombre = spec ? `${spec.marca} ${spec.modelo}` : slug;
+      const fotoNotco = spec && spec.foto ? spec.foto : '/comparador/placeholder.svg';
       cards.push(`
         <button
           type="button"
@@ -597,6 +610,15 @@ function renderPanelTCO() {
           data-tco-empty-slot="${slot}"
           aria-label="Cambiar ${escapeHtml(nombre)} por otro coche"
         >
+          <figure class="tco-card__hero tco-card__hero--muted">
+            <img
+              src="${escapeHtml(fotoNotco)}"
+              alt="${escapeHtml(nombre)}"
+              loading="lazy"
+              decoding="async"
+              onerror="this.onerror=null;this.src='/comparador/placeholder.svg';"
+            />
+          </figure>
           <div class="stbl__emptyPlus" aria-hidden="true">!</div>
           <div class="stbl__emptyTxt">Sin par TCO disponible<br/><small>${escapeHtml(nombre)}</small></div>
         </button>
@@ -690,7 +712,6 @@ function renderPanelSpecs() {
               <img src="${escapeHtml(c.foto)}" alt="${escapeHtml(c.marca)} ${escapeHtml(c.modelo)}" loading="lazy" />
             </div>
             <div class="stbl__headtxt">
-              <span class="badge badge--bev">ELÉCTRICO</span>
               <div class="stbl__brand">${escapeHtml(c.marca)} <span class="stbl__model">${escapeHtml(c.modelo)}</span></div>
               <div class="stbl__variant serif">${escapeHtml(c.variante)}</div>
             </div>
