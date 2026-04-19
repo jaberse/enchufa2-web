@@ -1,0 +1,719 @@
+---
+// src/pages/preview-integracion.astro
+// MOCKUP de dos opciones de integración Catálogo ↔ Specs/TCO.
+// No interactivo: solo muestra el layout y jerarquía de cada opción.
+// Se puede borrar cuando se elija la definitiva.
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<Layout title="Preview · Integración comparador" description="Mockup visual de dos opciones de integración Catálogo / Specs / TCO">
+  <Header />
+
+  <main id="main" class="prev">
+    <section class="prev__intro">
+      <p class="eyebrow">enchufa2 / interno</p>
+      <h1>Preview · Integración Catálogo + Specs/TCO</h1>
+      <p class="prev__lead">
+        Dos formas de encajar la comparativa Specs/TCO sobre el listado legacy que ya
+        funciona en producción. Los bloques son mockups estáticos — sirven para decidir
+        <em class="serif">layout</em>, no el detalle final.
+      </p>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- OPCIÓN A — 3 TABS ARRIBA                                    -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <section class="prev__opt">
+      <header class="prev__optHead">
+        <span class="prev__optTag">Opción A</span>
+        <h2 class="prev__optTitle">3 tabs arriba · Catálogo / Specs / Coste</h2>
+        <p class="prev__optSub serif">
+          La cabecera del comparador monta el toggle amarillo iOS-style como en la versión
+          unificada anterior. El listado legacy vive como panel del tab <em>Catálogo</em>.
+          Al pulsar <em>Comparar</em> en la sel-footer, el toggle salta a <em>Specs</em>
+          automáticamente y se mantiene la selección.
+        </p>
+      </header>
+
+      <!-- Mock del comparador con 3 tabs -->
+      <div class="mock mock--frame">
+        <!-- Header con 3 tabs -->
+        <div class="mock-head">
+          <div class="mock-head-L">
+            <p class="eyebrow">enchufa2 · /comparador</p>
+            <h3 class="mock-head-title">
+              Elige, compara, decide. <span class="serif">Los números, sin filtro.</span>
+            </h3>
+          </div>
+          <div class="mock-head-R">
+            <div class="mock-toggle" role="tablist" aria-label="Vista">
+              <span class="mock-toggle__thumb" aria-hidden="true"></span>
+              <button class="mock-toggle__tab is-on" role="tab" aria-selected="true">Catálogo</button>
+              <button class="mock-toggle__tab" role="tab" aria-selected="false">Especificaciones</button>
+              <button class="mock-toggle__tab" role="tab" aria-selected="false">Coste de propiedad</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Catálogo (activo) -->
+        <div class="mock-panel">
+          <div class="mock-toolbar">
+            <span class="mock-pill">62 coches</span>
+            <span class="mock-input">Buscar modelo…</span>
+            <span class="mock-select">Ordenar ▾</span>
+            <span class="mock-btn">Más filtros <span class="mock-badge">2</span></span>
+            <span class="mock-view">
+              <span class="mock-view__opt is-on">▦ Fichas</span>
+              <span class="mock-view__opt">☰ Listado</span>
+            </span>
+          </div>
+
+          <div class="mock-cats">
+            <span class="mock-cat is-on">SUV</span>
+            <span class="mock-cat">Berlina</span>
+            <span class="mock-cat">Urbano</span>
+            <span class="mock-cat">LFP</span>
+            <span class="mock-cat">400V</span>
+            <span class="mock-cat">800V</span>
+            <span class="mock-cat-more">+12</span>
+          </div>
+
+          <div class="mock-grid">
+            <div class="mock-card mock-card--sel">
+              <div class="mock-card__thumb">📸</div>
+              <div class="mock-card__name">Tesla <strong>Model Y</strong></div>
+              <div class="mock-card__price">45.990 €</div>
+              <div class="mock-card__check">✓</div>
+            </div>
+            <div class="mock-card mock-card--sel">
+              <div class="mock-card__thumb">📸</div>
+              <div class="mock-card__name">BMW <strong>iX1</strong></div>
+              <div class="mock-card__price">52.300 €</div>
+              <div class="mock-card__check">✓</div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-card__thumb">📸</div>
+              <div class="mock-card__name">Citroën <strong>ë-C3</strong></div>
+              <div class="mock-card__price">23.500 €</div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-card__thumb">📸</div>
+              <div class="mock-card__name">Kia <strong>EV6</strong></div>
+              <div class="mock-card__price">48.900 €</div>
+            </div>
+            <div class="mock-card mock-card--ghost">
+              <span>… 58 más</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sel-footer sticky (legacy) -->
+        <div class="mock-selfooter">
+          <span class="mock-selfooter__count">2</span>
+          <span>seleccionados</span>
+          <div class="mock-selfooter__thumbs">
+            <span class="mock-thumb">Y</span>
+            <span class="mock-thumb">iX1</span>
+          </div>
+          <span class="mock-selfooter__clear">Limpiar</span>
+          <span class="mock-selfooter__cta">Comparar →</span>
+        </div>
+
+        <!-- Anotación -->
+        <div class="mock-note">
+          <p><strong>Flujo:</strong></p>
+          <ol>
+            <li>Aterrizo en <em>Catálogo</em>. Filtros, búsqueda, fichas/listado tal cual ahora.</li>
+            <li>Selecciono hasta 4 coches desde las tarjetas. Sel-footer en vivo.</li>
+            <li>Pulso <strong>Comparar →</strong>. El toggle salta a <em>Specs</em>.</li>
+            <li>En <em>Specs</em>: tabla SpecsTable (12 filas por defecto, "Datos y vista" abre drawer con +12 filas opcionales).</li>
+            <li>Pulso <em>Coste de propiedad</em>: aparece ScenarioBar + SummaryStrip + TCOGrid con los mismos coches.</li>
+            <li>Para añadir más coches o cambiar alguno: o bien vuelvo al tab <em>Catálogo</em>, o pulso el <em>+</em> de un slot vacío en Specs/TCO (que me devuelve al catálogo).</li>
+          </ol>
+          <p class="mock-note__pros"><strong>Fuerte:</strong> jerarquía clara, el toggle vive en lo más alto y es la columna vertebral de la página. Muy consistente con la versión unificada anterior, solo que con un Catálogo de verdad.</p>
+          <p class="mock-note__cons"><strong>Coste:</strong> reorganizar el HTML del /comparador.astro para envolver el listado dentro de un panel + cablear client.mjs con la selección de la sel-footer.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- OPCIÓN B — TOGGLE INTERNO REEMPLAZA COMPARE-VIEW            -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <section class="prev__opt">
+      <header class="prev__optHead">
+        <span class="prev__optTag">Opción B</span>
+        <h2 class="prev__optTitle">Toggle interno · bloque de resultado tras Comparar</h2>
+        <p class="prev__optSub serif">
+          El /comparador se queda exactamente como está ahora (listado legacy, filtros, sel-footer).
+          Al pulsar <em>Comparar</em>, la página revela <strong>bajo</strong> el listado un bloque
+          de resultado con su propio toggle Specs ⇄ Coste. No hay tabs en la cabecera.
+        </p>
+      </header>
+
+      <div class="mock mock--frame">
+        <!-- Header normal -->
+        <div class="mock-head mock-head--plain">
+          <div class="mock-head-L">
+            <p class="eyebrow">enchufa2 · /comparador</p>
+            <h3 class="mock-head-title">
+              Elige, compara, decide.
+            </h3>
+          </div>
+        </div>
+
+        <!-- Listado legacy tal cual -->
+        <div class="mock-panel">
+          <div class="mock-toolbar">
+            <span class="mock-pill">62 coches</span>
+            <span class="mock-input">Buscar modelo…</span>
+            <span class="mock-select">Ordenar ▾</span>
+            <span class="mock-btn">Más filtros <span class="mock-badge">2</span></span>
+            <span class="mock-view">
+              <span class="mock-view__opt is-on">▦ Fichas</span>
+              <span class="mock-view__opt">☰ Listado</span>
+            </span>
+          </div>
+
+          <div class="mock-grid">
+            <div class="mock-card mock-card--sel">
+              <div class="mock-card__thumb">📸</div>
+              <div class="mock-card__name">Tesla <strong>Model Y</strong></div>
+              <div class="mock-card__price">45.990 €</div>
+              <div class="mock-card__check">✓</div>
+            </div>
+            <div class="mock-card mock-card--sel">
+              <div class="mock-card__thumb">📸</div>
+              <div class="mock-card__name">BMW <strong>iX1</strong></div>
+              <div class="mock-card__price">52.300 €</div>
+              <div class="mock-card__check">✓</div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-card__thumb">📸</div>
+              <div class="mock-card__name">Citroën <strong>ë-C3</strong></div>
+              <div class="mock-card__price">23.500 €</div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-card__thumb">📸</div>
+              <div class="mock-card__name">Kia <strong>EV6</strong></div>
+              <div class="mock-card__price">48.900 €</div>
+            </div>
+            <div class="mock-card mock-card--ghost">
+              <span>… 58 más</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloque de resultado con toggle interno -->
+        <div class="mock-resultblk">
+          <div class="mock-resultblk__bar">
+            <div class="mock-resultblk__L">
+              <span class="mock-resultblk__eyebrow">Comparando 2 coches</span>
+              <span class="mock-resultblk__names">Tesla Model Y · BMW iX1</span>
+            </div>
+            <div class="mock-resultblk__R">
+              <div class="mock-toggle mock-toggle--small">
+                <span class="mock-toggle__thumb mock-toggle__thumb--two" aria-hidden="true"></span>
+                <button class="mock-toggle__tab is-on" role="tab" aria-selected="true">Specs</button>
+                <button class="mock-toggle__tab" role="tab" aria-selected="false">Coste</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabla specs -->
+          <div class="mock-resultblk__body">
+            <div class="mock-specs">
+              <div class="mock-specs__row mock-specs__row--head">
+                <span></span>
+                <span><strong>Tesla Model Y</strong></span>
+                <span><strong>BMW iX1</strong></span>
+              </div>
+              <div class="mock-specs__row">
+                <span>Precio</span><span class="mock-best">45.990 €</span><span>52.300 €</span>
+              </div>
+              <div class="mock-specs__row">
+                <span>Autonomía WLTP</span><span class="mock-best">533 km</span><span>438 km</span>
+              </div>
+              <div class="mock-specs__row">
+                <span>Carga DC</span><span class="mock-best">250 kW</span><span>130 kW</span>
+              </div>
+              <div class="mock-specs__row">
+                <span>0-100</span><span class="mock-best">5,9 s</span><span>5,6 s</span>
+              </div>
+              <div class="mock-specs__more">+ 8 filas · Datos y vista →</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sel-footer sticky -->
+        <div class="mock-selfooter">
+          <span class="mock-selfooter__count">2</span>
+          <span>seleccionados</span>
+          <div class="mock-selfooter__thumbs">
+            <span class="mock-thumb">Y</span>
+            <span class="mock-thumb">iX1</span>
+          </div>
+          <span class="mock-selfooter__clear">Limpiar</span>
+          <span class="mock-selfooter__cta is-on">✓ Comparando</span>
+        </div>
+
+        <div class="mock-note">
+          <p><strong>Flujo:</strong></p>
+          <ol>
+            <li>Listado tal cual. Selecciono 2-4 coches.</li>
+            <li>Pulso <strong>Comparar</strong>. Debajo del listado aparece el <em>bloque de resultado</em> con un toggle pequeño Specs ⇄ Coste.</li>
+            <li>La página hace scroll suave hasta ese bloque. El listado sigue disponible arriba.</li>
+            <li>Cambio entre Specs y Coste sin perder contexto ni el listado.</li>
+            <li>Si añado/quito coches en el listado, el bloque se actualiza en vivo.</li>
+          </ol>
+          <p class="mock-note__pros"><strong>Fuerte:</strong> cero reorganización del /comparador actual. El resultado aparece donde esperas (debajo, tras la acción). Listado siempre a la vista.</p>
+          <p class="mock-note__cons"><strong>Coste:</strong> doble scroll si quieres volver al listado. El toggle vive dentro del resultado, no en la cabecera, así que la página se siente "lista + mini-app" más que "app unificada".</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <section class="prev__decide">
+      <h2>Para decidir</h2>
+      <p class="serif">Piensa en qué expresa mejor la intención de enchufa2: ¿el comparador es una <em>app unificada</em> con tres vistas (A) o un <em>catálogo + resultado on-demand</em> (B)?</p>
+      <p>Respóndeme con A o B y arranco la integración real (2–3 horas de trabajo). Si ninguna convence, lo hablamos.</p>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .prev {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: clamp(2rem, 4vw, 4rem) var(--page-gutter) 6rem;
+  }
+  .prev__intro {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2rem;
+    margin-bottom: 3rem;
+  }
+  .prev__intro h1 {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    font-size: clamp(1.8rem, 3.8vw, 2.6rem);
+    margin: 0.5rem 0 1rem;
+  }
+  .prev__lead {
+    color: var(--text-secondary);
+    font-size: 1.02rem;
+    max-width: 68ch;
+  }
+  .eyebrow {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .serif { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--text-secondary); }
+
+  /* Opt section */
+  .prev__opt { margin-bottom: 5rem; }
+  .prev__optHead { margin-bottom: 1.5rem; }
+  .prev__optTag {
+    display: inline-block;
+    background: var(--black);
+    color: var(--yellow);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.75rem;
+  }
+  .prev__optTitle {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    font-size: clamp(1.4rem, 2.8vw, 1.9rem);
+    margin: 0 0 0.6rem;
+  }
+  .prev__optSub {
+    font-size: 1rem;
+    max-width: 72ch;
+    line-height: 1.6;
+  }
+
+  /* Mock frame */
+  .mock--frame {
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  }
+  .mock-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.25rem;
+  }
+  .mock-head--plain { grid-template-columns: 1fr; }
+  .mock-head-title {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+    margin: 0.4rem 0 0;
+    max-width: 22ch;
+  }
+  .mock-head-title .serif {
+    font-size: 0.88em;
+    color: var(--text-secondary);
+  }
+
+  /* Toggle iOS-style */
+  .mock-toggle {
+    position: relative;
+    display: inline-flex;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    padding: 3px;
+  }
+  .mock-toggle__tab {
+    position: relative;
+    z-index: 2;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.78rem;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    min-width: 100px;
+    text-align: center;
+  }
+  .mock-toggle__tab.is-on { color: var(--black); }
+  .mock-toggle__thumb {
+    position: absolute;
+    z-index: 1;
+    top: 3px; left: 3px; bottom: 3px;
+    width: calc(33.333% - 2px);
+    background: var(--yellow);
+    border-radius: 999px;
+  }
+  .mock-toggle--small .mock-toggle__tab { min-width: 80px; padding: 0.35rem 0.7rem; font-size: 0.74rem; }
+  .mock-toggle__thumb--two { width: calc(50% - 2px); }
+
+  /* Toolbar */
+  .mock-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+  .mock-pill {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    background: var(--surface-alt);
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+  }
+  .mock-input {
+    flex: 1;
+    min-width: 180px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.4rem 0.7rem;
+  }
+  .mock-select, .mock-btn {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    padding: 0.35rem 0.8rem;
+  }
+  .mock-badge {
+    display: inline-block;
+    min-width: 18px;
+    margin-left: 0.35rem;
+    padding: 0 0.3rem;
+    background: var(--yellow);
+    color: var(--black);
+    border-radius: 999px;
+    font-size: 0.7rem;
+    text-align: center;
+  }
+  .mock-view {
+    display: inline-flex;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .mock-view__opt {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    background: var(--surface);
+    cursor: pointer;
+  }
+  .mock-view__opt.is-on { background: var(--black); color: var(--yellow); }
+
+  /* Categorías */
+  .mock-cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+  }
+  .mock-cat, .mock-cat-more {
+    font-size: 0.78rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .mock-cat.is-on {
+    background: var(--black);
+    color: var(--yellow);
+    border-color: var(--black);
+  }
+  .mock-cat-more { color: var(--text-muted); }
+
+  /* Grid tarjetas */
+  .mock-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+  }
+  .mock-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.8rem;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: border-color 200ms var(--ease-out-expo);
+  }
+  .mock-card--sel {
+    border-color: var(--yellow);
+    background: var(--yellow-glow);
+  }
+  .mock-card--ghost {
+    border-style: dashed;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    align-items: center;
+    justify-content: center;
+  }
+  .mock-card__thumb {
+    height: 42px;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    display: flex; align-items: center;
+  }
+  .mock-card__name {
+    font-size: 0.82rem;
+    color: var(--text);
+    line-height: 1.25;
+  }
+  .mock-card__name strong { font-weight: 500; }
+  .mock-card__price {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+  }
+  .mock-card__check {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 22px; height: 22px;
+    background: var(--yellow);
+    color: var(--black);
+    border-radius: 50%;
+    font-size: 0.82rem;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600;
+  }
+  @media (max-width: 720px) {
+    .mock-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* Sel-footer sticky mock */
+  .mock-selfooter {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--black);
+    color: var(--white);
+    border-radius: var(--radius);
+    padding: 0.8rem 1rem;
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+  }
+  .mock-selfooter__count {
+    display: inline-block;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--yellow);
+    color: var(--black);
+    text-align: center;
+    line-height: 28px;
+    font-weight: 500;
+  }
+  .mock-selfooter__thumbs {
+    display: flex;
+    gap: 0.35rem;
+    flex: 1;
+  }
+  .mock-thumb {
+    display: inline-block;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    color: var(--white);
+    text-align: center;
+    line-height: 32px;
+    font-size: 0.74rem;
+  }
+  .mock-selfooter__clear {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  .mock-selfooter__cta {
+    background: var(--yellow);
+    color: var(--black);
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    font-weight: 500;
+    font-size: 0.84rem;
+  }
+  .mock-selfooter__cta.is-on {
+    background: var(--yellow-glow);
+    color: var(--yellow);
+    border: 1px solid var(--yellow);
+  }
+
+  /* Bloque de resultado (opción B) */
+  .mock-resultblk {
+    margin-top: 1.5rem;
+    background: var(--surface-alt);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+  .mock-resultblk__bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .mock-resultblk__L { display: flex; flex-direction: column; }
+  .mock-resultblk__eyebrow {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+  .mock-resultblk__names {
+    font-size: 0.95rem;
+    color: var(--text);
+    margin-top: 0.15rem;
+  }
+  .mock-specs {
+    background: var(--surface);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .mock-specs__row {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.86rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .mock-specs__row:last-of-type { border-bottom: 0; }
+  .mock-specs__row--head {
+    background: var(--black);
+    color: var(--white);
+    font-size: 0.82rem;
+  }
+  .mock-specs__row > span:first-child { color: var(--text-secondary); }
+  .mock-specs__row--head > span:first-child { color: var(--text-muted); }
+  .mock-best {
+    color: var(--yellow-text);
+    font-weight: 500;
+    background: var(--yellow-glow);
+    border-radius: 3px;
+    padding: 0 0.3rem;
+    display: inline-block;
+    margin-right: auto;
+  }
+  .mock-specs__more {
+    padding: 0.6rem 0.9rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    border-top: 1px dashed var(--border);
+    text-align: right;
+  }
+
+  /* Notas de flujo */
+  .mock-note {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface-alt);
+    border-left: 3px solid var(--yellow);
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+  .mock-note p { margin: 0 0 0.4rem; }
+  .mock-note ol {
+    margin: 0.4rem 0 0.8rem 1.25rem;
+    padding: 0;
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  .mock-note__pros, .mock-note__cons {
+    margin-top: 0.5rem;
+    font-size: 0.88rem;
+  }
+  .mock-note__pros { color: var(--text); }
+  .mock-note__cons { color: var(--text-secondary); }
+
+  /* Cierre */
+  .prev__decide {
+    border-top: 1px solid var(--border);
+    padding-top: 2.5rem;
+  }
+  .prev__decide h2 {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+    margin: 0 0 0.75rem;
+  }
+  .prev__decide p { color: var(--text-secondary); margin-bottom: 0.5rem; }
+</style>
