@@ -98,7 +98,7 @@ function fmtKm(v: number | null): string {
           <dl class="catcard__specs">
             <div><dt>Autonomía</dt><dd>{fmtKm(c.autonomia_wltp_km)}</dd></div>
             <div><dt>Potencia</dt><dd>{c.potencia_cv ? c.potencia_cv + ' cv' : '—'}</dd></div>
-            <div><dt>Carga DC</dt><dd>{c.carga_dc_max_kw ? c.carga_dc_max_kw + ' kW' : '—'}</dd></div>
+            <div><dt>10–80%</dt><dd>{c.t_10_80_min ? c.t_10_80_min + ' min' : '—'}</dd></div>
           </dl>
           <div class="catcard__prices">
             <span class="catcard__pvp">{fmtPrecio(c.pvp_eur)}</span>
@@ -128,7 +128,7 @@ function fmtKm(v: number | null): string {
 </section>
 
 <style is:global>
-  .catpanel { margin: 0 0 3rem; padding: 0; }
+  .catpanel { max-width: var(--max-w); margin: 0 auto 3rem; padding: clamp(1.5rem, 3vw, 2.5rem) var(--hub-gutter) 0; }
   .catpanel__intro { margin-bottom: 1.5rem; }
   .catpanel__title {
     font-family: var(--font-sans);
@@ -189,14 +189,15 @@ function fmtKm(v: number | null): string {
   .catcard {
     position: relative; display: flex; flex-direction: column;
     padding: 0; background: var(--surface);
-    border: 1px solid var(--border); border-radius: 10px;
+    border: 1px solid var(--border-strong); border-radius: 10px;
     text-align: left; cursor: pointer; overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
     transition: border-color 180ms, box-shadow 180ms, transform 180ms;
     font-family: var(--font-sans); color: var(--text);
   }
   .catcard:hover {
-    border-color: var(--border-strong); transform: translateY(-2px);
-    box-shadow: 0 10px 20px -12px rgba(0,0,0,0.15);
+    border-color: var(--text-muted); transform: translateY(-2px);
+    box-shadow: 0 10px 22px -10px rgba(0,0,0,0.18);
   }
   .catcard:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
   .catcard[aria-pressed="true"] {
