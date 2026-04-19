@@ -3,13 +3,12 @@
 // Tabla de especificaciones — portada de SpecsTableA del export DirectionA.
 // Grid: 1 columna label de 180px + N columnas coche con minmax(0, 1fr).
 // Header con thumb + tren + marca + variante serif, resto de filas con
-// celda "mejor" resaltada en amarillo (fondo yellow-glow + subrayado).
+// celda "mejor" resaltada en amarillo.
 //
-// Se alimenta de la slice `catalogoSpecs` generada por loader.mjs. El
-// catálogo es BEV-only por ahora (63 modelos); cuando entren ICEs, las
-// columnas funcionarán igual y se elegirá el mejor entre ambos trenes.
-
-import type { Slot } from './GarageChipsRow.astro';
+// Se alimenta de la slice `catalogoSpecs` generada por loader.mjs. Soporta
+// las 12 filas por defecto (10 base + Fiabilidad + Plan Auto+); las filas
+// opcionales (voltaje, bomba_calor, garantías, peso, 0-100, etc.) las activa
+// el usuario desde el drawer "Datos y vista" en client.mjs.
 
 export interface SpecsCar {
   slug: string;
@@ -19,6 +18,9 @@ export interface SpecsCar {
   foto: string;
   tren: 'BEV' | 'PHEV' | 'HEV' | 'MHEV' | 'ICE';
   pvp_eur: number | null;
+  pvp_con_plan_auto_eur: number | null;
+  ayuda_plan_auto_eur: number | null;
+  plan_auto_elegible: string | null;
   potencia_cv: number | null;
   autonomia_wltp_km: number | null;
   consumo_wltp_kwh100km: number | null;
@@ -28,6 +30,16 @@ export interface SpecsCar {
   maletero_l: number | null;
   largo_mm: number | null;
   plazas: number | null;
+  fiabilidad_estrellas: number | null;
+  quimica: string | null;
+  voltaje: number | null;
+  bomba_calor: string | null;
+  garantia_bateria_anos: number | null;
+  garantia_vehiculo_anos: number | null;
+  traccion: string | null;
+  peso_kg: number | null;
+  aceleracion_0_100_s: number | null;
+  carga_ac_max_kw: number | null;
 }
 
 interface Props {
@@ -38,14 +50,6 @@ interface Props {
 const { cars } = Astro.props;
 const cols = cars.length;
 const valid = cars.filter((c): c is SpecsCar => c != null);
-
-type Row = {
-  k: string;
-  label: string;
-  pick: (c: SpecsCar) => number | null;
-  fmt: (v: number) => string;
-  lowerBetter?: boolean;
-};
 
 const num = (v: number, d = 0) =>
   new Intl.NumberFormat('es-ES', {
@@ -60,25 +64,87 @@ const fmtEur = (n: number) =>
     maximumFractionDigits: 0,
   }).format(Math.round(n));
 
+// Render de estrellas "★★★★☆ · 4.2" — vacías con opacidad reducida.
+function stars(v: number | null): string {
+  if (v == null || isNaN(v)) return '';
+  const clamp = Math.max(0, Math.min(5, v));
+  const filled = Math.round(clamp);
+  return '★'.repeat(filled) + '☆'.repeat(5 - filled);
+}
+
+// Plan Auto+ — devuelve HTML para celda: estado + ayuda € si elegible.
+function planAutoHtml(c: SpecsCar): string {
+  const estado = c.plan_auto_elegible;
+  const ayuda = c.ayuda_plan_auto_eur;
+  if (!estado) return '—';
+  if (estado === 'No elegible') {
+    return '<span class="stbl__planauto stbl__planauto--no">No elegible</span>';
+  }
+  const label = estado === 'Parcial' ? 'Parcial' : 'Sí';
+  const ayudaTxt = ayuda && ayuda > 0 ? ` · ${fmtEur(ayuda)}` : '';
+  return `<span class="stbl__planauto stbl__planauto--yes">${label}${ayudaTxt}</span>`;
+}
+
+type BaseRow = {
+  k: string;
+  label: string;
+  lowerBetter?: boolean;
+};
+
+type NumRow = BaseRow & {
+  kind: 'num';
+  pick: (c: SpecsCar) => number | null;
+  fmt: (v: number) => string;
+};
+
+type TextRow = BaseRow & {
+  kind: 'text';
+  pick: (c: SpecsCar) => string | null;
+};
+
+type StarsRow = BaseRow & {
+  kind: 'stars';
+  pick: (c: SpecsCar) => number | null;
+};
+
+type HtmlRow = BaseRow & {
+  kind: 'html';
+  html: (c: SpecsCar) => string;
+};
+
+type Row = NumRow | TextRow | StarsRow | HtmlRow;
+
+// 10 base + Fiabilidad + Plan Auto+ = 12 filas por defecto.
+// Las opcionales se activan desde el drawer "Datos y vista" en client.mjs.
 const ROWS: Row[] = [
-  { k: 'pvp',       label: 'Precio',              pick: c => c.pvp_eur,              fmt: v => fmtEur(v), lowerBetter: true },
-  { k: 'potencia',  label: 'Potencia',            pick: c => c.potencia_cv,          fmt: v => `${num(v)} CV` },
-  { k: 'autonomia', label: 'Autonomía WLTP',      pick: c => c.autonomia_wltp_km,    fmt: v => `${num(v)} km` },
-  { k: 'consumo',   label: 'Consumo WLTP',        pick: c => c.consumo_wltp_kwh100km, fmt: v => `${num(v, 1)} kWh/100`, lowerBetter: true },
-  { k: 'bateria',   label: 'Batería neta',        pick: c => c.bateria_neta_kwh,     fmt: v => `${num(v, 1)} kWh` },
-  { k: 'dc',        label: 'Carga DC pico',       pick: c => c.carga_dc_max_kw,      fmt: v => `${num(v)} kW` },
-  { k: 't1080',     label: 'Carga 10→80%',        pick: c => c.t_10_80_min,          fmt: v => `${num(v)} min`, lowerBetter: true },
-  { k: 'maletero',  label: 'Maletero',            pick: c => c.maletero_l,           fmt: v => `${num(v)} L` },
-  { k: 'largo',     label: 'Longitud',            pick: c => c.largo_mm,             fmt: v => `${num(v / 1000, 2)} m` },
-  { k: 'plazas',    label: 'Plazas',              pick: c => c.plazas,               fmt: v => `${num(v)}` },
+  { kind: 'num',  k: 'pvp',       label: 'Precio',          pick: c => c.pvp_eur,              fmt: v => fmtEur(v), lowerBetter: true },
+  { kind: 'num',  k: 'potencia',  label: 'Potencia',        pick: c => c.potencia_cv,          fmt: v => `${num(v)} CV` },
+  { kind: 'num',  k: 'autonomia', label: 'Autonomía WLTP',  pick: c => c.autonomia_wltp_km,    fmt: v => `${num(v)} km` },
+  { kind: 'num',  k: 'consumo',   label: 'Consumo WLTP',    pick: c => c.consumo_wltp_kwh100km, fmt: v => `${num(v, 1)} kWh/100`, lowerBetter: true },
+  { kind: 'num',  k: 'bateria',   label: 'Batería neta',    pick: c => c.bateria_neta_kwh,     fmt: v => `${num(v, 1)} kWh` },
+  { kind: 'num',  k: 'dc',        label: 'Carga DC pico',   pick: c => c.carga_dc_max_kw,      fmt: v => `${num(v)} kW` },
+  { kind: 'num',  k: 't1080',     label: 'Carga 10→80%',    pick: c => c.t_10_80_min,          fmt: v => `${num(v)} min`, lowerBetter: true },
+  { kind: 'num',  k: 'maletero',  label: 'Maletero',        pick: c => c.maletero_l,           fmt: v => `${num(v)} L` },
+  { kind: 'num',  k: 'largo',     label: 'Longitud',        pick: c => c.largo_mm,             fmt: v => `${num(v / 1000, 2)} m` },
+  { kind: 'num',  k: 'plazas',    label: 'Plazas',          pick: c => c.plazas,               fmt: v => `${num(v)}` },
+  { kind: 'stars', k: 'fiab',     label: 'Fiabilidad',      pick: c => c.fiabilidad_estrellas },
+  { kind: 'html', k: 'plan_auto', label: 'Plan Auto+',      html: c => planAutoHtml(c) },
 ];
 
-function bestOf(row: Row): number | null {
+function bestOfNum(row: NumRow): number | null {
   const values = valid
     .map(c => row.pick(c))
     .filter((v): v is number => v != null && !isNaN(v));
   if (values.length < 2) return null;
   return row.lowerBetter ? Math.min(...values) : Math.max(...values);
+}
+
+function bestOfStars(row: StarsRow): number | null {
+  const values = valid
+    .map(c => row.pick(c))
+    .filter((v): v is number => v != null && !isNaN(v));
+  if (values.length < 2) return null;
+  return Math.max(...values);
 }
 ---
 
@@ -89,7 +155,7 @@ function bestOf(row: Row): number | null {
 >
   <div class="stbl__header">
     <div class="stbl__labelcol" aria-hidden="true"></div>
-    {cars.map((c, i) => (
+    {cars.map((c) => (
       <div class="stbl__headcell">
         {c ? (
           <>
@@ -117,21 +183,70 @@ function bestOf(row: Row): number | null {
   </div>
 
   {ROWS.map(row => {
-    const best = bestOf(row);
+    if (row.kind === 'num') {
+      const best = bestOfNum(row);
+      return (
+        <div class="stbl__row">
+          <div class="stbl__label">{row.label}</div>
+          {cars.map((c) => {
+            if (!c) return <div class="stbl__cell stbl__cell--empty">—</div>;
+            const v = row.pick(c);
+            const isBest = best != null && v === best && valid.length > 1;
+            return (
+              <div class:list={['stbl__cell', 'tabular', isBest && 'stbl__cell--best']}>
+                <span>{v != null ? row.fmt(v) : '—'}</span>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+    if (row.kind === 'stars') {
+      const best = bestOfStars(row);
+      return (
+        <div class="stbl__row">
+          <div class="stbl__label">{row.label}</div>
+          {cars.map((c) => {
+            if (!c) return <div class="stbl__cell stbl__cell--empty">—</div>;
+            const v = row.pick(c);
+            const isBest = best != null && v === best && valid.length > 1;
+            return (
+              <div class:list={['stbl__cell', 'tabular', isBest && 'stbl__cell--best']}>
+                {v != null ? (
+                  <span class="stbl__stars" title={`${v} sobre 5`}>
+                    <span class="stbl__starsFg">{stars(v)}</span>
+                    <span class="stbl__starsNum">{num(v, 1)}</span>
+                  </span>
+                ) : <span>—</span>}
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+    if (row.kind === 'text') {
+      return (
+        <div class="stbl__row">
+          <div class="stbl__label">{row.label}</div>
+          {cars.map((c) => {
+            if (!c) return <div class="stbl__cell stbl__cell--empty">—</div>;
+            const v = row.pick(c);
+            return (
+              <div class="stbl__cell">
+                <span>{v != null ? v : '—'}</span>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+    // kind === 'html'
     return (
       <div class="stbl__row">
         <div class="stbl__label">{row.label}</div>
-        {cars.map((c, i) => {
-          if (!c) return (
-            <div class="stbl__cell stbl__cell--empty">—</div>
-          );
-          const v = row.pick(c);
-          const isBest = best != null && v === best && valid.length > 1;
-          return (
-            <div class:list={['stbl__cell', 'tabular', isBest && 'stbl__cell--best']}>
-              <span>{v != null ? row.fmt(v) : '—'}</span>
-            </div>
-          );
+        {cars.map((c) => {
+          if (!c) return <div class="stbl__cell stbl__cell--empty">—</div>;
+          return <div class="stbl__cell" set:html={row.html(c)} />;
         })}
       </div>
     );
@@ -176,7 +291,7 @@ function bestOf(row: Row): number | null {
     object-fit: contain;
     mix-blend-mode: multiply;
   }
-  :global([data-theme='dark']) .stbl__thumb img { mix-blend-mode: normal; }
+  [data-theme='dark'] .stbl__thumb img { mix-blend-mode: normal; }
 
   .stbl__headtxt { display: flex; flex-direction: column; gap: 0.15rem; }
   .stbl__brand {
@@ -271,6 +386,48 @@ function bestOf(row: Row): number | null {
   }
   .stbl__cell--empty { color: var(--text-mute); }
   .tabular { font-variant-numeric: tabular-nums; }
+
+  /* Fiabilidad: estrellas + número */
+  .stbl__stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+  }
+  .stbl__starsFg {
+    color: var(--yellow);
+    letter-spacing: 0.08em;
+    font-size: 0.88rem;
+    line-height: 1;
+  }
+  .stbl__starsNum {
+    color: var(--text-soft);
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Plan Auto+ badge */
+  .stbl__planauto {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .stbl__planauto--yes {
+    background: var(--yellow);
+    color: var(--black, #111);
+  }
+  .stbl__planauto--no {
+    background: transparent;
+    color: var(--text-mute);
+    box-shadow: inset 0 0 0 1px var(--border);
+  }
 
   @media (max-width: 820px) {
     .stbl {

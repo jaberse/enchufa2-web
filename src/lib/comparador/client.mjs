@@ -3,20 +3,30 @@
 //
 // Responsabilidades:
 //   - Leer el payload JSON embebido en la página (#cmp-data)
-//   - Gestionar estado: selection[4], scenario {km, anios, €/kWh casa/fuera, %casa}, mode
-//   - Togglear Specs ↔ TCO con animación del thumb amarillo
-//   - Abrir/cerrar el modal del garaje (Escape, click fuera, ×)
-//   - Filtrar y buscar en el modal; seleccionar coche → actualizar slot
-//   - Swap/× en los chips del garaje
-//   - Recomputar TCO con motor canónico al cambiar escenario o selección
-//   - Re-renderizar los tres bloques del panel TCO: chips, summary, tarjetas
-//   - Re-renderizar el panel Specs (tabla con resaltado del mejor por fila)
-//
-// Para simplificar, el renderizado es "overwrite via innerHTML": cada vez
-// que cambia el estado relevante, regeneramos el markup del bloque. El coste
-// es bajo porque el DOM es pequeño (4 tarjetas, 10 filas specs).
+//   - Gestionar estado: selection[4], scenario TCO, modo, filtros, sort,
+//     filas visibles de SpecsTable.
+//   - Togglear Specs ↔ TCO con animación del thumb amarillo.
+//   - Abrir/cerrar el modal del garaje (Escape, click fuera, ×) y dentro
+//     aplicar filtros (pills + drawer de rangos + búsqueda libre + sort).
+//   - Swap/× en los chips del garaje.
+//   - Recomputar TCO con motor canónico al cambiar escenario o selección.
+//   - Re-renderizar los tres bloques del panel TCO: chips, summary, tarjetas.
+//   - Re-renderizar la tabla Specs respetando filas visibles (drawer "Datos
+//     y vista"). En modo TCO los coches sin par disponible aparecen
+//     atenuados y con la etiqueta "Sin par TCO".
 
 import { calcularTCO } from '../tco/calculadora.mjs';
+import {
+  CATEGORIAS,
+  RANGOS,
+  SORT_OPTIONS,
+  emptyState,
+  applyFilters,
+  applySort,
+  appliedFilterChips,
+  hasAnyFilter,
+  descubrirValoresCategoria,
+} from './filterEngine.mjs';
 
 // ══════════════════════════════════════════════════════════════════════
 // FORMATTERS
@@ -62,16 +72,133 @@ const BADGE_TCO = {
   MHEV: { label: 'MILD-HYBRID',         cls: 'badge--outline' },
 };
 
+function stars(v) {
+  if (v == null || isNaN(v)) return '';
+  const clamp = Math.max(0, Math.min(5, v));
+  const filled = Math.round(clamp);
+  return '★'.repeat(filled) + '☆'.repeat(5 - filled);
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// ESPECIFICACIÓN DE FILAS PARA LA TABLA SPECS
+// ══════════════════════════════════════════════════════════════════════
+//
+// 12 filas por defecto (10 base + Fiabilidad + Plan Auto+). El resto son
+// opcionales y se activan desde el drawer "Datos y vista".
+//
+// kind:
+//   'num'   — numérico con fmt() y lowerBetter opcional (destaca "mejor")
+//   'text'  — texto libre (sin "mejor")
+//   'stars' — 0..5 con stars() + número
+//   'html'  — html personalizado (Plan Auto+)
+
+const SPECS_ROWS = [
+  // Núcleo por defecto
+  { kind: 'num',   k: 'pvp',       grupo: 'precio',       label: 'Precio',         dflt: true,  lowerBetter: true,
+    pick: (c) => c.pvp_eur,
+    fmt:  (v) => fmtEur(v) },
+  { kind: 'num',   k: 'potencia',  grupo: 'rendimiento',  label: 'Potencia',       dflt: true,
+    pick: (c) => c.potencia_cv,
+    fmt:  (v) => `${fmtNum(v)} CV` },
+  { kind: 'num',   k: 'autonomia', grupo: 'autonomia',    label: 'Autonomía WLTP', dflt: true,
+    pick: (c) => c.autonomia_wltp_km,
+    fmt:  (v) => `${fmtNum(v)} km` },
+  { kind: 'num',   k: 'consumo',   grupo: 'autonomia',    label: 'Consumo WLTP',   dflt: true, lowerBetter: true,
+    pick: (c) => c.consumo_wltp_kwh100km,
+    fmt:  (v) => `${fmtNum(v, 1)} kWh/100` },
+  { kind: 'num',   k: 'bateria',   grupo: 'bateria',      label: 'Batería neta',   dflt: true,
+    pick: (c) => c.bateria_neta_kwh,
+    fmt:  (v) => `${fmtNum(v, 1)} kWh` },
+  { kind: 'num',   k: 'dc',        grupo: 'bateria',      label: 'Carga DC pico',  dflt: true,
+    pick: (c) => c.carga_dc_max_kw,
+    fmt:  (v) => `${fmtNum(v)} kW` },
+  { kind: 'num',   k: 't1080',     grupo: 'bateria',      label: 'Carga 10→80%',   dflt: true, lowerBetter: true,
+    pick: (c) => c.t_10_80_min,
+    fmt:  (v) => `${fmtNum(v)} min` },
+  { kind: 'num',   k: 'maletero',  grupo: 'dimensiones',  label: 'Maletero',       dflt: true,
+    pick: (c) => c.maletero_l,
+    fmt:  (v) => `${fmtNum(v)} L` },
+  { kind: 'num',   k: 'largo',     grupo: 'dimensiones',  label: 'Longitud',       dflt: true,
+    pick: (c) => c.largo_mm,
+    fmt:  (v) => `${fmtNum(v / 1000, 2)} m` },
+  { kind: 'num',   k: 'plazas',    grupo: 'dimensiones',  label: 'Plazas',         dflt: true,
+    pick: (c) => c.plazas,
+    fmt:  (v) => fmtNum(v) },
+  { kind: 'stars', k: 'fiab',      grupo: 'fiabilidad',   label: 'Fiabilidad',     dflt: true,
+    pick: (c) => c.fiabilidad_estrellas },
+  { kind: 'html',  k: 'plan_auto', grupo: 'ayudas',       label: 'Plan Auto+',     dflt: true,
+    html: (c) => planAutoHtml(c) },
+
+  // Opcionales (activables desde "Datos y vista")
+  { kind: 'num',   k: 'pvp_ef',    grupo: 'precio',       label: 'PVP con Auto+',  dflt: false, lowerBetter: true,
+    pick: (c) => c.pvp_con_plan_auto_eur,
+    fmt:  (v) => fmtEur(v) },
+  { kind: 'num',   k: 'ayuda',     grupo: 'ayudas',       label: 'Ayuda Auto+',    dflt: false,
+    pick: (c) => c.ayuda_plan_auto_eur,
+    fmt:  (v) => (v && v > 0 ? fmtEur(v) : '—') },
+  { kind: 'num',   k: 'gar_bat',   grupo: 'garantia',     label: 'Gar. batería',   dflt: false,
+    pick: (c) => c.garantia_bateria_anos,
+    fmt:  (v) => `${fmtNum(v)} años` },
+  { kind: 'num',   k: 'gar_veh',   grupo: 'garantia',     label: 'Gar. vehículo',  dflt: false,
+    pick: (c) => c.garantia_vehiculo_anos,
+    fmt:  (v) => `${fmtNum(v)} años` },
+  { kind: 'num',   k: 'ac',        grupo: 'bateria',      label: 'Carga AC',       dflt: false,
+    pick: (c) => c.carga_ac_max_kw,
+    fmt:  (v) => `${fmtNum(v)} kW` },
+  { kind: 'num',   k: 'voltaje',   grupo: 'bateria',      label: 'Voltaje',        dflt: false,
+    pick: (c) => c.voltaje,
+    fmt:  (v) => `${fmtNum(v)} V` },
+  { kind: 'text',  k: 'bomba',     grupo: 'bateria',      label: 'Bomba calor',    dflt: false,
+    pick: (c) => c.bomba_calor },
+  { kind: 'text',  k: 'quimica',   grupo: 'bateria',      label: 'Química',        dflt: false,
+    pick: (c) => c.quimica },
+  { kind: 'num',   k: 'peso',      grupo: 'dimensiones',  label: 'Peso',           dflt: false, lowerBetter: true,
+    pick: (c) => c.peso_kg,
+    fmt:  (v) => `${fmtNum(v)} kg` },
+  { kind: 'num',   k: 'acel',      grupo: 'rendimiento',  label: '0-100 km/h',     dflt: false, lowerBetter: true,
+    pick: (c) => c.aceleracion_0_100_s,
+    fmt:  (v) => `${fmtNum(v, 1)} s` },
+  { kind: 'text',  k: 'traccion',  grupo: 'vehiculo',     label: 'Tracción',       dflt: false,
+    pick: (c) => c.traccion },
+  { kind: 'text',  k: 'pais',      grupo: 'vehiculo',     label: 'País fabricación', dflt: false,
+    pick: (c) => c.pais_ensamblaje },
+];
+
+const SPECS_GRUPOS = [
+  { id: 'precio',       label: 'Precio' },
+  { id: 'ayudas',       label: 'Ayudas' },
+  { id: 'autonomia',    label: 'Autonomía' },
+  { id: 'bateria',      label: 'Batería y carga' },
+  { id: 'rendimiento',  label: 'Rendimiento' },
+  { id: 'dimensiones',  label: 'Dimensiones' },
+  { id: 'fiabilidad',   label: 'Fiabilidad' },
+  { id: 'garantia',     label: 'Garantía' },
+  { id: 'vehiculo',     label: 'Vehículo' },
+];
+
+function planAutoHtml(c) {
+  const estado = c.plan_auto_elegible;
+  const ayuda = c.ayuda_plan_auto_eur;
+  if (!estado) return '—';
+  if (estado === 'No elegible') {
+    return '<span class="stbl__planauto stbl__planauto--no">No elegible</span>';
+  }
+  const label = estado === 'Parcial' ? 'Parcial' : 'Sí';
+  const ayudaTxt = ayuda && ayuda > 0 ? ` · ${fmtEur(ayuda)}` : '';
+  return `<span class="stbl__planauto stbl__planauto--yes">${escapeHtml(label)}${escapeHtml(ayudaTxt)}</span>`;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════════════════════════
 
 /** @type {{ catalogoSpecs: any[], paresTCO: Record<string,any>, slugsConTCO: string[], perfil: any, horizontes: number[] }} */
 let DATA = null;
+let SLUGS_TCO = null; // Set<string>
 
 const state = {
-  selection: [null, null, null, null],   // 4 slugs (null = hueco vacío)
-  mode: 'tco',                            // 'tco' | 'specs'
+  selection: [null, null, null, null],
+  mode: 'tco',
   scenario: {
     km_anual: 15000,
     anios: 5,
@@ -79,23 +206,23 @@ const state = {
     precio_kwh_fuera: 0.45,
     pct_casa: 80,
   },
-  // Estado del modal: cuando está abierto, editingSlot es 0..3.
   modal: {
     open: false,
     editingSlot: null,
-    query: '',
-    filter: 'all',
+    advDrawerOpen: false,
   },
+  filters: emptyState(), // { query, sort, categorias, rangos, soloConTCO }
+  // Visibilidad de filas de SpecsTable — set de row.k activos.
+  visibleSpecsRows: new Set(SPECS_ROWS.filter((r) => r.dflt).map((r) => r.k)),
+  vistaDrawerOpen: false,
 };
 
-// Cache de nodos del DOM referenciados repetidamente.
 const dom = {};
 
 // ══════════════════════════════════════════════════════════════════════
 // HELPERS DE ESCENARIO
 // ══════════════════════════════════════════════════════════════════════
 
-/** Devuelve el horizonte disponible más cercano al valor elegido. */
 function horizonteMasCercano(anios) {
   const disponibles = DATA.horizontes;
   let best = disponibles[0];
@@ -107,14 +234,12 @@ function horizonteMasCercano(anios) {
   return best;
 }
 
-/** Precio €/kWh efectivo mezclando casa y fuera según %casa. */
 function precioKwhEfectivo() {
   const s = state.scenario;
   const pct = s.pct_casa / 100;
   return s.precio_kwh_casa * pct + s.precio_kwh_fuera * (1 - pct);
 }
 
-/** Devuelve los overrides para calcularTCO según el escenario. */
 function overridesTCO() {
   const s = state.scenario;
   return {
@@ -125,7 +250,6 @@ function overridesTCO() {
   };
 }
 
-/** InputCoche para BEV/ICE en el horizonte redondeado. */
 function inputParaSlug(slug) {
   const par = DATA.paresTCO[slug];
   if (!par) return null;
@@ -133,7 +257,6 @@ function inputParaSlug(slug) {
   return { par, h, bev: par.horizontes[h].bev, ice: par.horizontes[h].ice };
 }
 
-/** Cálculo TCO BEV + ICE para un slug, devuelto como estructura cómoda. */
 function tcoParaSlug(slug) {
   const ctx = inputParaSlug(slug);
   if (!ctx) return null;
@@ -148,6 +271,18 @@ function tcoParaSlug(slug) {
     rivalTotal: brIce.tco_total_eur,
     rivalNombre: ctx.par.nombreIce,
   };
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// CATÁLOGO FILTRADO (pipeline applyFilters → applySort)
+// ══════════════════════════════════════════════════════════════════════
+
+function catalogoFiltrado() {
+  return applyFilters(DATA.catalogoSpecs, state.filters, { slugsConTCO: SLUGS_TCO });
+}
+
+function catalogoFiltradoOrdenado() {
+  return applySort(catalogoFiltrado(), state.filters.sort);
 }
 
 // ══════════════════════════════════════════════════════════════════════
@@ -169,12 +304,12 @@ function renderGarageChip(slot, slug) {
       </button>
     `;
   }
-  const par = DATA.paresTCO[slug];
-  if (!par) return '';
-  const nombre = `${par.marca} ${par.modelo}`;
-  const variante = par.variante;
-  const tren = 'BEV';
-  const pvp = par.horizontes[5].bev.pvp_eur;
+  // Datos desde catalogoSpecs (no todos los coches tienen par TCO).
+  const spec = specsCarBySlug(slug);
+  const nombre = spec ? `${spec.marca} ${spec.modelo}` : slug;
+  const variante = spec?.variante ?? '';
+  const tren = spec?.tren ?? 'BEV';
+  const pvp = spec?.pvp_eur;
   return `
     <div
       class="garage-chip"
@@ -185,11 +320,11 @@ function renderGarageChip(slot, slug) {
       <div class="garage-chip__name">${escapeHtml(nombre)}</div>
       <span class="garage-chip__train-inline">
         <span class="garage-chip__train-dot" data-train="${tren}"></span>
-        ${escapeHtml(TREN_LABEL[tren])}
+        ${escapeHtml(TREN_LABEL[tren] ?? tren)}
       </span>
       <div class="garage-chip__meta">
         <span class="garage-chip__var serif">${escapeHtml(variante)}</span>
-        <span class="garage-chip__price tabular">${fmtEur(pvp)}</span>
+        ${pvp != null ? `<span class="garage-chip__price tabular">${fmtEur(pvp)}</span>` : ''}
       </div>
       <div class="garage-chip__controls">
         <button type="button" class="garage-chip__swap" data-garage-swap title="Cambiar" aria-label="Cambiar ${escapeHtml(nombre)}">↻</button>
@@ -211,7 +346,7 @@ function renderGarage() {
 // ══════════════════════════════════════════════════════════════════════
 
 function renderTcoCard({ slug, slot, tco, isWinner }) {
-  const { par, input, breakdown: br, rivalTotal, rivalNombre } = tco;
+  const { par, breakdown: br, rivalTotal, rivalNombre } = tco;
   const delta = br.tco_total_eur - rivalTotal;
   const badge = BADGE_TCO.BEV;
 
@@ -376,10 +511,12 @@ function renderPanelTCO() {
     }
     const r = tcoResults.find((x) => x.slug === slug);
     if (!r) {
+      const spec = specsCarBySlug(slug);
+      const nombre = spec ? `${spec.marca} ${spec.modelo}` : slug;
       cards.push(`
         <div class="tco-card tco-card--empty" data-tco-empty-slot="${slot}">
           <div class="stbl__emptyPlus" aria-hidden="true">!</div>
-          <div class="stbl__emptyTxt">TCO no disponible para este coche</div>
+          <div class="stbl__emptyTxt">Sin par TCO disponible<br/><small>${escapeHtml(nombre)}</small></div>
         </div>
       `);
       return;
@@ -392,36 +529,57 @@ function renderPanelTCO() {
 }
 
 // ══════════════════════════════════════════════════════════════════════
-// RENDER — SPECS PANEL
+// RENDER — SPECS PANEL (TABLA)
 // ══════════════════════════════════════════════════════════════════════
 
-const SPECS_ROWS = [
-  { k: 'pvp',       label: 'Precio',          pick: (c) => c.pvp_eur,              fmt: (v) => fmtEur(v),                 lowerBetter: true },
-  { k: 'potencia',  label: 'Potencia',        pick: (c) => c.potencia_cv,          fmt: (v) => `${fmtNum(v)} CV` },
-  { k: 'autonomia', label: 'Autonomía WLTP',  pick: (c) => c.autonomia_wltp_km,    fmt: (v) => `${fmtNum(v)} km` },
-  { k: 'consumo',   label: 'Consumo WLTP',    pick: (c) => c.consumo_wltp_kwh100km, fmt: (v) => `${fmtNum(v, 1)} kWh/100`, lowerBetter: true },
-  { k: 'bateria',   label: 'Batería neta',    pick: (c) => c.bateria_neta_kwh,     fmt: (v) => `${fmtNum(v, 1)} kWh` },
-  { k: 'dc',        label: 'Carga DC pico',   pick: (c) => c.carga_dc_max_kw,      fmt: (v) => `${fmtNum(v)} kW` },
-  { k: 't1080',     label: 'Carga 10→80%',    pick: (c) => c.t_10_80_min,          fmt: (v) => `${fmtNum(v)} min`,        lowerBetter: true },
-  { k: 'maletero',  label: 'Maletero',        pick: (c) => c.maletero_l,           fmt: (v) => `${fmtNum(v)} L` },
-  { k: 'largo',     label: 'Longitud',        pick: (c) => c.largo_mm,             fmt: (v) => `${fmtNum(v / 1000, 2)} m` },
-  { k: 'plazas',    label: 'Plazas',          pick: (c) => c.plazas,               fmt: (v) => fmtNum(v) },
-];
+function specsCarBySlug(slug) {
+  if (!DATA) return null;
+  return DATA.catalogoSpecs.find((c) => c.slug === slug) || null;
+}
 
 function bestOfRow(row, valid) {
   const vs = valid
     .map((c) => row.pick(c))
     .filter((v) => v != null && !isNaN(v));
   if (vs.length < 2) return null;
+  if (row.kind === 'stars') return Math.max(...vs);
   return row.lowerBetter ? Math.min(...vs) : Math.max(...vs);
 }
 
-function specsCarBySlug(slug) {
-  return DATA.catalogoSpecs.find((c) => c.slug === slug) || null;
+function renderSpecsRowCells(row, cars, valid) {
+  const best =
+    row.kind === 'num' || row.kind === 'stars' ? bestOfRow(row, valid) : null;
+  return cars
+    .map((c) => {
+      if (!c) return `<div class="stbl__cell stbl__cell--empty">—</div>`;
+      if (row.kind === 'num') {
+        const v = row.pick(c);
+        const isBest = best != null && v === best && valid.length > 1;
+        return `<div class="stbl__cell tabular${isBest ? ' stbl__cell--best' : ''}"><span>${v != null ? row.fmt(v) : '—'}</span></div>`;
+      }
+      if (row.kind === 'text') {
+        const v = row.pick(c);
+        return `<div class="stbl__cell"><span>${v != null ? escapeHtml(v) : '—'}</span></div>`;
+      }
+      if (row.kind === 'stars') {
+        const v = row.pick(c);
+        const isBest = best != null && v === best && valid.length > 1;
+        if (v == null) return `<div class="stbl__cell tabular"><span>—</span></div>`;
+        return `<div class="stbl__cell tabular${isBest ? ' stbl__cell--best' : ''}">
+          <span class="stbl__stars" title="${fmtNum(v, 1)} sobre 5">
+            <span class="stbl__starsFg">${stars(v)}</span>
+            <span class="stbl__starsNum">${fmtNum(v, 1)}</span>
+          </span>
+        </div>`;
+      }
+      // html
+      return `<div class="stbl__cell">${row.html(c)}</div>`;
+    })
+    .join('');
 }
 
 function renderPanelSpecs() {
-  if (!dom.specsPanel) return;
+  if (!dom.specsTableWrap) return;
 
   const cars = state.selection.map((s) => (s ? specsCarBySlug(s) : null));
   const valid = cars.filter(Boolean);
@@ -455,23 +613,19 @@ function renderPanelSpecs() {
     </div>
   `;
 
-  const rows = SPECS_ROWS.map((row) => {
-    const best = bestOfRow(row, valid);
-    const cells = cars.map((c) => {
-      if (!c) return `<div class="stbl__cell stbl__cell--empty">—</div>`;
-      const v = row.pick(c);
-      const isBest = best != null && v === best && valid.length > 1;
-      return `<div class="stbl__cell tabular${isBest ? ' stbl__cell--best' : ''}"><span>${v != null ? row.fmt(v) : '—'}</span></div>`;
-    }).join('');
-    return `
-      <div class="stbl__row">
-        <div class="stbl__label">${row.label}</div>
-        ${cells}
-      </div>
-    `;
-  }).join('');
+  const activeRows = SPECS_ROWS.filter((r) => state.visibleSpecsRows.has(r.k));
+  const rows = activeRows
+    .map(
+      (row) => `
+    <div class="stbl__row">
+      <div class="stbl__label">${row.label}</div>
+      ${renderSpecsRowCells(row, cars, valid)}
+    </div>
+  `,
+    )
+    .join('');
 
-  dom.specsPanel.innerHTML = `
+  dom.specsTableWrap.innerHTML = `
     <div class="stbl" style="--cols: ${cols};" data-specs-table>
       ${header}
       ${rows}
@@ -480,28 +634,264 @@ function renderPanelSpecs() {
 }
 
 // ══════════════════════════════════════════════════════════════════════
-// MODAL — OPEN, CLOSE, FILTER, PICK
+// RENDER — DRAWER "DATOS Y VISTA" DEL PANEL SPECS
+// ══════════════════════════════════════════════════════════════════════
+
+function renderSpecsVistadrawer() {
+  if (!dom.specsVistaDrawer) return;
+  const filasPorGrupo = {};
+  for (const row of SPECS_ROWS) {
+    (filasPorGrupo[row.grupo] = filasPorGrupo[row.grupo] || []).push(row);
+  }
+  const grupos = SPECS_GRUPOS.filter((g) => filasPorGrupo[g.id]);
+
+  const gridHtml = grupos
+    .map((g) => {
+      const items = filasPorGrupo[g.id]
+        .map((row) => {
+          const checked = state.visibleSpecsRows.has(row.k) ? 'checked' : '';
+          return `
+            <label class="vistadrawer__chk">
+              <input type="checkbox" data-specs-vista-chk="${escapeHtml(row.k)}" ${checked} />
+              ${escapeHtml(row.label)}
+            </label>
+          `;
+        })
+        .join('');
+      return `
+        <div class="vistadrawer__group">
+          <div class="vistadrawer__grouplbl">${escapeHtml(g.label)}</div>
+          ${items}
+        </div>
+      `;
+    })
+    .join('');
+
+  dom.specsVistaDrawer.innerHTML = `
+    <div class="vistadrawer__head">
+      <p class="vistadrawer__title">Elige qué datos comparar</p>
+      <div class="vistadrawer__actions">
+        <button type="button" class="vistadrawer__actbtn" data-specs-vista-defaults>Predefinidos</button>
+        <button type="button" class="vistadrawer__actbtn" data-specs-vista-all>Seleccionar todos</button>
+      </div>
+    </div>
+    <div class="vistadrawer__grid">${gridHtml}</div>
+  `;
+
+  if (dom.specsVistaCount) {
+    const n = state.visibleSpecsRows.size;
+    dom.specsVistaCount.textContent = String(n);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// MODAL — FILTROS (PILLS), DRAWER DE RANGOS, APPLIED, LISTA
+// ══════════════════════════════════════════════════════════════════════
+
+function renderModalPills() {
+  if (!dom.modalPills || !DATA) return;
+  const valores = descubrirValoresCategoria(DATA.catalogoSpecs);
+  const groups = CATEGORIAS.map((c) => {
+    const vs = valores[c.id] || [];
+    if (vs.length === 0) return '';
+    const sel = new Set(state.filters.categorias[c.id] || []);
+    const pills = vs
+      .map((v) => {
+        const isOn = sel.has(String(v));
+        const sfx = c.sufijo ? `<small>${escapeHtml(c.sufijo)}</small>` : '';
+        return `
+          <button
+            type="button"
+            class="sel-pill${isOn ? ' is-on' : ''}"
+            data-garage-pill
+            data-garage-pill-cat="${escapeHtml(c.id)}"
+            data-garage-pill-val="${escapeHtml(String(v))}"
+            aria-pressed="${isOn}"
+          >${escapeHtml(String(v))}${sfx}</button>
+        `;
+      })
+      .join('');
+    return `
+      <div class="sel-pillgroup" data-garage-pill-group="${escapeHtml(c.id)}">
+        <span class="sel-pillgroup__lbl">${escapeHtml(c.label)}</span>
+        ${pills}
+      </div>
+    `;
+  }).join('');
+  dom.modalPills.innerHTML = groups;
+}
+
+function renderModalDrawer() {
+  if (!dom.modalDrawer || !DATA) return;
+  // Min/max dinámicos a partir del catálogo para guiar al usuario.
+  const rngHtml = RANGOS.map((r) => {
+    const vs = DATA.catalogoSpecs
+      .map((m) => m[r.campo])
+      .filter((v) => v != null && !isNaN(v));
+    if (vs.length === 0) return '';
+    const lo = Math.floor(Math.min(...vs));
+    const hi = Math.ceil(Math.max(...vs));
+    const step = hi - lo > 1000 ? 100 : hi - lo > 100 ? 10 : 1;
+    const st = state.filters.rangos[r.id] || { min: null, max: null };
+    const valInput =
+      r.tipo === 'max'
+        ? (st.max ?? hi)
+        : (st.min ?? lo);
+    const valTxt =
+      r.tipo === 'max'
+        ? `máx ${fmtNum(valInput)} ${r.unidad}`
+        : `mín ${fmtNum(valInput)} ${r.unidad}`;
+    return `
+      <div class="sel-range" data-garage-range-group="${escapeHtml(r.id)}">
+        <div class="sel-range__head">
+          <span class="sel-range__lbl">${escapeHtml(r.label)}</span>
+          <span class="sel-range__val" data-garage-range-val>${escapeHtml(valTxt)}</span>
+        </div>
+        <input
+          type="range"
+          class="sel-range__slider"
+          data-garage-range-input
+          data-garage-range-rid="${escapeHtml(r.id)}"
+          data-garage-range-tipo="${escapeHtml(r.tipo)}"
+          min="${lo}"
+          max="${hi}"
+          step="${step}"
+          value="${valInput}"
+        />
+      </div>
+    `;
+  }).join('');
+  dom.modalDrawer.innerHTML = rngHtml;
+}
+
+function renderModalApplied() {
+  if (!dom.modalApplied || !dom.modalAppliedChips) return;
+  const chips = appliedFilterChips(state.filters);
+  if (chips.length === 0) {
+    dom.modalApplied.hidden = true;
+    dom.modalAppliedChips.innerHTML = '';
+    return;
+  }
+  dom.modalApplied.hidden = false;
+  dom.modalAppliedChips.innerHTML = chips
+    .map(
+      (c) => `
+    <span class="sel-appchip" data-garage-appchip="${escapeHtml(c.id)}">
+      ${escapeHtml(c.label)}
+      <button
+        type="button"
+        class="sel-appchip__x"
+        aria-label="Quitar ${escapeHtml(c.label)}"
+        data-garage-appchip-clear="${escapeHtml(c.id)}"
+      >×</button>
+    </span>
+  `,
+    )
+    .join('');
+  // Badge del botón "Más filtros" con el nº de rangos activos.
+  if (dom.modalAdvBadge) {
+    const nRangos = chips.filter((c) => c.tipo === 'rango').length;
+    if (nRangos > 0) {
+      dom.modalAdvBadge.hidden = false;
+      dom.modalAdvBadge.textContent = String(nRangos);
+    } else {
+      dom.modalAdvBadge.hidden = true;
+      dom.modalAdvBadge.textContent = '';
+    }
+  }
+}
+
+function renderModalCount(filteredCount) {
+  if (!dom.modalCount) return;
+  const total = DATA.catalogoSpecs.length;
+  const txt =
+    filteredCount === total
+      ? `${total} coches`
+      : `${filteredCount} de ${total}`;
+  dom.modalCount.textContent = txt;
+}
+
+function renderModalList() {
+  if (!dom.modalList) return;
+  const alreadyIn = new Set(state.selection.filter(Boolean));
+  const items = catalogoFiltradoOrdenado();
+  renderModalCount(items.length);
+
+  if (items.length === 0) {
+    dom.modalList.innerHTML = `
+      <div class="sel-empty">
+        Sin resultados con los filtros activos. Prueba a limpiar alguno.
+      </div>
+    `;
+    return;
+  }
+
+  const editingSlot = state.modal.editingSlot;
+  dom.modalList.innerHTML = items
+    .map((p) => {
+      const taken =
+        alreadyIn.has(p.slug) && state.selection[editingSlot] !== p.slug;
+      const pvp = p.pvp_eur;
+      const tieneTCO = SLUGS_TCO.has(p.slug);
+      const dimNoTco = state.mode === 'tco' && !tieneTCO;
+      const tcoLabel = tieneTCO
+        ? `<span class="sel-item__tco">TCO disponible</span>`
+        : `<span class="sel-item__notco">Sin par TCO</span>`;
+      const autoAyuda =
+        p.ayuda_plan_auto_eur && p.ayuda_plan_auto_eur > 0
+          ? `<span class="sel-item__sep">·</span><span class="sel-item__auto">Auto+ ${fmtEur(p.ayuda_plan_auto_eur)}</span>`
+          : '';
+      return `
+        <button
+          type="button"
+          class="sel-item${taken ? ' is-taken' : ''}${dimNoTco ? ' is-notco' : ''}"
+          role="option"
+          ${taken ? 'disabled aria-disabled="true"' : ''}
+          data-garage-modal-pick="${escapeHtml(p.slug)}"
+        >
+          <span class="sel-item__main">
+            <span class="sel-item__brand">${escapeHtml(p.marca)} ${escapeHtml(p.modelo)}</span>
+            <span class="sel-item__var"> · ${escapeHtml(p.variante)}</span>
+          </span>
+          <span class="sel-item__meta">
+            ${tcoLabel}
+            <span class="sel-item__sep">·</span>
+            ${pvp != null ? fmtEur(pvp) : '—'}
+            ${autoAyuda}
+            ${taken ? `<span class="sel-item__in">· ya incluido</span>` : ''}
+          </span>
+        </button>
+      `;
+    })
+    .join('');
+}
+
+function renderModal() {
+  renderModalPills();
+  renderModalDrawer();
+  renderModalApplied();
+  renderModalList();
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// MODAL — OPEN / CLOSE
 // ══════════════════════════════════════════════════════════════════════
 
 function openModal(slot) {
   state.modal.open = true;
   state.modal.editingSlot = slot;
-  state.modal.query = '';
-  state.modal.filter = 'all';
+  state.filters.query = '';
 
   if (dom.modal) dom.modal.hidden = false;
   if (dom.modalSearch) {
     dom.modalSearch.value = '';
     dom.modalSearch.focus();
   }
+  if (dom.modalSort) dom.modalSort.value = state.filters.sort || '';
   if (dom.modalTitle) {
     dom.modalTitle.textContent = `Elegir coche ${slot + 1}`;
   }
-  // Reset filter tabs
-  dom.modalFilters?.forEach((btn) => {
-    btn.classList.toggle('is-on', btn.getAttribute('data-garage-modal-filter') === 'all');
-  });
-  renderModalList();
+  renderModal();
 }
 
 function closeModal() {
@@ -510,54 +900,18 @@ function closeModal() {
   if (dom.modal) dom.modal.hidden = true;
 }
 
-function renderModalList() {
-  if (!dom.modalList) return;
-  const q = state.modal.query.trim().toLowerCase();
-  const filter = state.modal.filter;
-  const alreadyIn = new Set(state.selection.filter(Boolean));
+function setAdvDrawerOpen(open) {
+  state.modal.advDrawerOpen = open;
+  if (dom.modalAdvBtn)
+    dom.modalAdvBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  if (dom.modalDrawer) dom.modalDrawer.hidden = !open;
+}
 
-  const pares = Object.values(DATA.paresTCO);
-  const items = pares
-    .filter((p) => filter === 'all' || filter === 'BEV') // por ahora solo BEV con TCO
-    .filter((p) => {
-      if (!q) return true;
-      return (p.marca + ' ' + p.modelo + ' ' + p.variante).toLowerCase().includes(q);
-    })
-    .sort((a, b) => (a.marca + a.modelo).localeCompare(b.marca + b.modelo));
-
-  if (items.length === 0) {
-    dom.modalList.innerHTML = `
-      <div class="sel-empty">
-        Sin resultados${q ? ` para <strong>"${escapeHtml(q)}"</strong>` : ''}.
-      </div>
-    `;
-    return;
-  }
-
-  dom.modalList.innerHTML = items.map((p) => {
-    const taken = alreadyIn.has(p.slug) && state.selection[state.modal.editingSlot] !== p.slug;
-    const pvp = p.horizontes[5].bev.pvp_eur;
-    return `
-      <button
-        type="button"
-        class="sel-item${taken ? ' is-taken' : ''}"
-        role="option"
-        ${taken ? 'disabled aria-disabled="true"' : ''}
-        data-garage-modal-pick="${escapeHtml(p.slug)}"
-      >
-        <span class="sel-item__main">
-          <span class="sel-item__brand">${escapeHtml(p.marca)} ${escapeHtml(p.modelo)}</span>
-          <span class="sel-item__var"> · ${escapeHtml(p.variante)}</span>
-        </span>
-        <span class="sel-item__meta">
-          <span class="sel-item__tco">TCO disponible</span>
-          <span class="sel-item__sep">·</span>
-          ${fmtEur(pvp)}
-          ${taken ? `<span class="sel-item__in">· ya incluido</span>` : ''}
-        </span>
-      </button>
-    `;
-  }).join('');
+function setVistaDrawerOpen(open) {
+  state.vistaDrawerOpen = open;
+  if (dom.specsVistaBtn)
+    dom.specsVistaBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  if (dom.specsVistaDrawer) dom.specsVistaDrawer.hidden = !open;
 }
 
 // ══════════════════════════════════════════════════════════════════════
@@ -583,11 +937,13 @@ function setMode(mode) {
     const show = s.getAttribute('data-show-when-mode') === mode;
     s.style.display = show ? '' : 'none';
   });
+  // Si el modal está abierto, re-renderiza la lista para actualizar los
+  // "Sin par TCO" cuando cambia el modo.
+  if (state.modal.open) renderModalList();
 }
 
 // ══════════════════════════════════════════════════════════════════════
-// ORQUESTADOR: después de cualquier cambio en state.selection o scenario,
-// llamamos rerender() que actualiza los 3 bloques.
+// ORQUESTADOR
 // ══════════════════════════════════════════════════════════════════════
 
 function rerender() {
@@ -597,7 +953,7 @@ function rerender() {
 }
 
 // ══════════════════════════════════════════════════════════════════════
-// EVENT DELEGATION
+// EVENT HANDLERS
 // ══════════════════════════════════════════════════════════════════════
 
 function onDocClick(e) {
@@ -644,16 +1000,48 @@ function onDocClick(e) {
     return;
   }
 
-  // Modal filter tabs
-  const filter = t.closest('[data-garage-modal-filter]');
-  if (filter) {
-    state.modal.filter = filter.getAttribute('data-garage-modal-filter');
-    dom.modalFilters.forEach((b) => b.classList.toggle('is-on', b === filter));
+  // Pill de categoría
+  const pill = t.closest('[data-garage-pill]');
+  if (pill) {
+    const catId = pill.getAttribute('data-garage-pill-cat');
+    const val = pill.getAttribute('data-garage-pill-val');
+    const cur = state.filters.categorias[catId] || [];
+    const i = cur.indexOf(val);
+    const next = i >= 0 ? cur.filter((_, j) => j !== i) : [...cur, val];
+    state.filters.categorias[catId] = next;
+    renderModalPills();
+    renderModalApplied();
     renderModalList();
     return;
   }
 
-  // Modal pick car
+  // Toggle drawer de rangos
+  if (t.closest('[data-garage-modal-advbtn]')) {
+    setAdvDrawerOpen(!state.modal.advDrawerOpen);
+    return;
+  }
+
+  // Limpiar todos los filtros
+  if (t.closest('[data-garage-modal-reset]')) {
+    state.filters = emptyState();
+    if (dom.modalSearch) dom.modalSearch.value = '';
+    if (dom.modalSort) dom.modalSort.value = '';
+    renderModal();
+    return;
+  }
+
+  // Quitar un filtro aplicado (chip ×)
+  const appclr = t.closest('[data-garage-appchip-clear]');
+  if (appclr) {
+    clearAppliedChip(appclr.getAttribute('data-garage-appchip-clear'));
+    renderModal();
+    if (dom.modalSearch && state.filters.query === '') {
+      dom.modalSearch.value = '';
+    }
+    return;
+  }
+
+  // Pick car del listado
   const pick = t.closest('[data-garage-modal-pick]');
   if (pick && !pick.disabled) {
     const slug = pick.getAttribute('data-garage-modal-pick');
@@ -665,6 +1053,50 @@ function onDocClick(e) {
     }
     return;
   }
+
+  // Toggle drawer "Datos y vista" del panel Specs
+  if (t.closest('[data-specs-vistabtn]')) {
+    setVistaDrawerOpen(!state.vistaDrawerOpen);
+    if (state.vistaDrawerOpen) renderSpecsVistadrawer();
+    return;
+  }
+
+  // Botones del drawer vista: predefinidos / seleccionar todos
+  if (t.closest('[data-specs-vista-defaults]')) {
+    state.visibleSpecsRows = new Set(
+      SPECS_ROWS.filter((r) => r.dflt).map((r) => r.k),
+    );
+    renderSpecsVistadrawer();
+    renderPanelSpecs();
+    return;
+  }
+  if (t.closest('[data-specs-vista-all]')) {
+    state.visibleSpecsRows = new Set(SPECS_ROWS.map((r) => r.k));
+    renderSpecsVistadrawer();
+    renderPanelSpecs();
+    return;
+  }
+}
+
+function clearAppliedChip(id) {
+  if (id === 'query') {
+    state.filters.query = '';
+    return;
+  }
+  if (id === 'tco') {
+    state.filters.soloConTCO = false;
+    return;
+  }
+  if (id.startsWith('cat:')) {
+    const [, catId, val] = id.split(':');
+    state.filters.categorias[catId] = (state.filters.categorias[catId] || []).filter((x) => x !== val);
+    return;
+  }
+  if (id.startsWith('rng:')) {
+    const rid = id.slice(4);
+    state.filters.rangos[rid] = { min: null, max: null };
+    return;
+  }
 }
 
 function onKey(e) {
@@ -674,8 +1106,60 @@ function onKey(e) {
 }
 
 function onModalSearch() {
-  state.modal.query = dom.modalSearch.value;
+  state.filters.query = dom.modalSearch.value;
+  renderModalApplied();
   renderModalList();
+}
+
+function onModalSort() {
+  state.filters.sort = dom.modalSort.value;
+  renderModalList();
+}
+
+function onModalRangeInput(e) {
+  const input = e.target.closest('[data-garage-range-input]');
+  if (!input) return;
+  const rid = input.getAttribute('data-garage-range-rid');
+  const tipo = input.getAttribute('data-garage-range-tipo');
+  const r = RANGOS.find((x) => x.id === rid);
+  if (!r) return;
+  const v = Number(input.value);
+  // Determina si el valor elegido "activa" el filtro: solo si difiere del
+  // extremo natural del catálogo (lo/hi). Así evitamos spam de chips cuando
+  // el slider está en reposo.
+  const min = Number(input.min);
+  const max = Number(input.max);
+  if (tipo === 'max') {
+    state.filters.rangos[rid] = {
+      min: null,
+      max: v >= max ? null : v,
+    };
+  } else {
+    state.filters.rangos[rid] = {
+      min: v <= min ? null : v,
+      max: null,
+    };
+  }
+  // Actualizar el texto junto al slider
+  const group = input.closest('[data-garage-range-group]');
+  const valEl = group?.querySelector('[data-garage-range-val]');
+  if (valEl) {
+    const tipoTxt = tipo === 'max' ? 'máx' : 'mín';
+    valEl.textContent = `${tipoTxt} ${fmtNum(v)} ${r.unidad}`;
+  }
+  renderModalApplied();
+  renderModalList();
+}
+
+function onVistaChk(e) {
+  const chk = e.target.closest('[data-specs-vista-chk]');
+  if (!chk) return;
+  const k = chk.getAttribute('data-specs-vista-chk');
+  if (chk.checked) state.visibleSpecsRows.add(k);
+  else state.visibleSpecsRows.delete(k);
+  if (dom.specsVistaCount)
+    dom.specsVistaCount.textContent = String(state.visibleSpecsRows.size);
+  renderPanelSpecs();
 }
 
 function onScenarioInput(e) {
@@ -684,7 +1168,6 @@ function onScenarioInput(e) {
   const field = input.getAttribute('data-scen-field');
   const raw = Number(input.value);
   if (isNaN(raw)) return;
-  // Validación suave por campo.
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
   switch (field) {
     case 'km_anual':        state.scenario.km_anual = clamp(raw, 1000, 60000); break;
@@ -693,7 +1176,6 @@ function onScenarioInput(e) {
     case 'precio_kwh_fuera':state.scenario.precio_kwh_fuera = clamp(raw, 0.10, 1.20); break;
     case 'pct_casa':        state.scenario.pct_casa = clamp(raw, 0, 100); break;
   }
-  // Solo el panel TCO depende del escenario.
   renderPanelTCO();
 }
 
@@ -713,8 +1195,9 @@ export function initComparador() {
     console.error('[comparador] Error parseando #cmp-data:', err);
     return;
   }
+  SLUGS_TCO = new Set(DATA.slugsConTCO || []);
 
-  // Seleccion inicial desde los chips SSR.
+  // Selección inicial desde los chips SSR.
   const chips = document.querySelectorAll('[data-garage-row] [data-garage-chip]');
   chips.forEach((chip) => {
     const slot = Number(chip.getAttribute('data-garage-slot'));
@@ -722,41 +1205,55 @@ export function initComparador() {
     if (!isNaN(slot) && slug) state.selection[slot] = slug;
   });
 
-  // Perfil inicial (SSR usa los mismos valores).
   if (DATA.perfil) {
     state.scenario.km_anual = DATA.perfil.km_anual ?? state.scenario.km_anual;
     state.scenario.anios = DATA.perfil.horizonte_anios ?? state.scenario.anios;
     state.scenario.precio_kwh_casa = DATA.perfil.precio_kwh_eur ?? state.scenario.precio_kwh_casa;
   }
 
-  // Cache de nodos.
-  dom.garageRow   = document.querySelector('[data-garage-row]');
-  dom.tcoGrid     = document.querySelector('[data-panel="tco"] .tcogrid');
-  dom.summary     = document.querySelector('[data-summary]');
-  dom.specsPanel  = document.querySelector('[data-panel="specs"]');
-  dom.toggleTabs  = document.querySelectorAll('[data-cmp-toggle] [role="tab"]');
-  dom.toggleThumb = document.querySelector('[data-cmp-toggle] .modetoggle__thumb');
-  dom.panels      = document.querySelectorAll('[data-panel]');
-  dom.scenSlots   = document.querySelectorAll('[data-show-when-mode]');
-  dom.modal       = document.querySelector('[data-garage-modal]');
-  dom.modalTitle  = document.querySelector('[data-garage-modal-title]');
-  dom.modalSearch = document.querySelector('[data-garage-modal-search]');
-  dom.modalList   = document.querySelector('[data-garage-modal-list]');
-  dom.modalFilters = document.querySelectorAll('[data-garage-modal-filter]');
-  dom.scenbar     = document.querySelector('[data-scenbar]');
+  // Cache DOM.
+  dom.garageRow       = document.querySelector('[data-garage-row]');
+  dom.tcoGrid         = document.querySelector('[data-panel="tco"] .tcogrid');
+  dom.summary         = document.querySelector('[data-summary]');
+  dom.specsTableWrap  = document.querySelector('[data-specs-table-wrap]');
+  dom.specsVistaBtn   = document.querySelector('[data-specs-vistabtn]');
+  dom.specsVistaCount = document.querySelector('[data-specs-vistacount]');
+  dom.specsVistaDrawer = document.querySelector('[data-specs-vistadrawer]');
+  dom.toggleTabs      = document.querySelectorAll('[data-cmp-toggle] [role="tab"]');
+  dom.toggleThumb     = document.querySelector('[data-cmp-toggle] .modetoggle__thumb');
+  dom.panels          = document.querySelectorAll('[data-panel]');
+  dom.scenSlots       = document.querySelectorAll('[data-show-when-mode]');
+  dom.modal           = document.querySelector('[data-garage-modal]');
+  dom.modalTitle      = document.querySelector('[data-garage-modal-title]');
+  dom.modalSearch     = document.querySelector('[data-garage-modal-search]');
+  dom.modalSort       = document.querySelector('[data-garage-modal-sort]');
+  dom.modalCount      = document.querySelector('[data-garage-modal-count]');
+  dom.modalAdvBtn     = document.querySelector('[data-garage-modal-advbtn]');
+  dom.modalAdvBadge   = document.querySelector('[data-garage-modal-advbadge]');
+  dom.modalPills      = document.querySelector('[data-garage-modal-pills]');
+  dom.modalApplied    = document.querySelector('[data-garage-modal-applied]');
+  dom.modalAppliedChips = document.querySelector('[data-garage-modal-applied-chips]');
+  dom.modalDrawer     = document.querySelector('[data-garage-modal-drawer]');
+  dom.modalList       = document.querySelector('[data-garage-modal-list]');
+  dom.scenbar         = document.querySelector('[data-scenbar]');
+
+  // Inicializa el contador del drawer de Vista.
+  if (dom.specsVistaCount)
+    dom.specsVistaCount.textContent = String(state.visibleSpecsRows.size);
 
   // Event wiring.
   document.addEventListener('click', onDocClick);
   document.addEventListener('keydown', onKey);
-  if (dom.modalSearch) {
-    dom.modalSearch.addEventListener('input', onModalSearch);
-  }
-  if (dom.scenbar) {
-    dom.scenbar.addEventListener('input', onScenarioInput);
-  }
+  if (dom.modalSearch) dom.modalSearch.addEventListener('input', onModalSearch);
+  if (dom.modalSort) dom.modalSort.addEventListener('change', onModalSort);
+  if (dom.modalDrawer) dom.modalDrawer.addEventListener('input', onModalRangeInput);
+  if (dom.specsVistaDrawer) dom.specsVistaDrawer.addEventListener('change', onVistaChk);
+  if (dom.scenbar) dom.scenbar.addEventListener('input', onScenarioInput);
 
-  // Modo inicial: si la URL trae ?mode=tco|specs lo respetamos; si no,
-  // cae en el atributo aria-selected del SSR.
+  // Render inicial del drawer vista (para que las categorías ya estén listas).
+  renderSpecsVistadrawer();
+
+  // Modo inicial: URL ?mode=tco|specs, si no el del SSR, por defecto specs.
   let initialMode = 'specs';
   try {
     const params = new URLSearchParams(window.location.search);
@@ -773,6 +1270,6 @@ export function initComparador() {
   }
   setMode(initialMode);
 
-  // Render inicial completo (sobreescribe el SSR con markup JS coherente).
+  // Render inicial.
   rerender();
 }

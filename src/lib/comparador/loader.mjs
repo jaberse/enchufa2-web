@@ -84,6 +84,17 @@ export function cargarCatalogoSpecs() {
       carroceria: pickValor(s.carroceria),
       traccion: pickValor(s.traccion),
       fiabilidad_estrellas: pickValor(s.fiabilidad_estrellas),
+      // Campos adicionales para filtros / vista avanzada:
+      pais_ensamblaje: pickValor(s.pais_ensamblaje),
+      bateria_ensamblaje_ue: pickValor(s.bateria_ensamblaje_ue),
+      voltaje: pickValor(s.voltaje),
+      bomba_calor: pickValor(s.bomba_calor),
+      garantia_bateria_anos: pickValor(s.garantia_bateria_anos),
+      garantia_vehiculo_anos: pickValor(s.garantia_vehiculo_anos),
+      carga_ac_max_kw: pickValor(s.carga_ac_max_kw),
+      peso_kg: pickValor(s.peso_kg),
+      aceleracion_0_100_s: pickValor(s.aceleracion_0_100_s),
+      plan_auto_elegible: pickValor(s.plan_auto_elegible),
       tren: 'BEV',
     };
   });

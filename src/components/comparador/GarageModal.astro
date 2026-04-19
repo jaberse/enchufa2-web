@@ -1,12 +1,30 @@
 ---
 // src/components/comparador/GarageModal.astro
-// Modal del selector de garaje — portado de SelectorGarage (DirectionA).
-// El markup entero vive aquí; la lista de coches se rellena en cliente
-// (client.mjs) leyendo el catálogo embebido en la página. El modal está
-// oculto por defecto con [hidden] y se muestra al click en un slot.
+// Modal del selector de garaje unificado — versión con filtros, orden y
+// rangos avanzados heredados del comparador antiguo.
 //
-// Accesibilidad: role=dialog + aria-modal; focus trap mínimo en el script.
-// Escape cierra; click fuera del panel cierra.
+// Estructura visual:
+//   ┌ HEAD    ─────────────────────────────────────────────────────────┐
+//   │  Catálogo · Elegir coche 2                                    ×  │
+//   ├ TOOLBAR ─────────────────────────────────────────────────────────┤
+//   │  [🔍 Buscar marca, modelo...]   [Ordenar ▾]  [20 de 62]   [⚙ Más]│
+//   │  Segmento:  [Utilitario] [Compacto] [Berlina] [SUV]...           │
+//   │  Tracción:  [FWD] [RWD] [AWD]                                    │
+//   │  Química:   [LFP] [NMC]      Plan Auto+: [Sí] [Parcial] [No]     │
+//   │  ─ Filtros activos: "bmw" × | Segmento: SUV ×   [Limpiar todo]   │
+//   │  ┌ Más filtros (drawer collapsable) ──────────────────┐          │
+//   │  │ Rango PVP  [______─┼────] máx 60 000 €            │          │
+//   │  │ Rango autonomía    ...                            │          │
+//   │  └────────────────────────────────────────────────────┘          │
+//   ├ BODY    ─────────────────────────────────────────────────────────┤
+//   │  Listado de coches filtrado                                      │
+//   └──────────────────────────────────────────────────────────────────┘
+//
+// La maquetación es estática; los *contenedores* de pills, drawer, chips y
+// lista los rellena client.mjs tras aplicar el filterEngine.
+//
+// Accesibilidad: role=dialog + aria-modal, Escape cierra, click fuera cierra,
+// focus-visible amarillo en todos los controles interactivos.
 ---
 
 <div
@@ -18,6 +36,7 @@
   data-garage-modal
 >
   <div class="sel-modal__panel" data-garage-modal-panel>
+    <!-- ── HEAD ── -->
     <div class="sel-modal__head">
       <div>
         <p class="eyebrow">Catálogo</p>
@@ -33,26 +52,90 @@
       >×</button>
     </div>
 
+    <!-- ── TOOLBAR ── -->
     <div class="sel-modal__toolbar">
-      <label class="sr-only" for="sel-modal-search">Buscar</label>
-      <input
-        id="sel-modal-search"
-        class="sel-modal__search"
-        type="search"
-        placeholder="Buscar marca, modelo o variante…"
-        autocomplete="off"
-        data-garage-modal-search
-      />
-      <div class="sel-modal__tabs" role="tablist" aria-label="Filtrar por tren motriz">
-        <button type="button" class="sel-modal__tab is-on" data-garage-modal-filter="all">Todos</button>
-        <button type="button" class="sel-modal__tab" data-garage-modal-filter="BEV">EV</button>
-        <button type="button" class="sel-modal__tab" data-garage-modal-filter="PHEV">PHEV</button>
-        <button type="button" class="sel-modal__tab" data-garage-modal-filter="HEV">HEV</button>
-        <button type="button" class="sel-modal__tab" data-garage-modal-filter="MHEV">MHEV</button>
-        <button type="button" class="sel-modal__tab" data-garage-modal-filter="ICE">Combustión</button>
+      <!-- Fila superior: buscar + ordenar + contador + abrir drawer -->
+      <div class="sel-modal__top">
+        <label class="sr-only" for="sel-modal-search">Buscar</label>
+        <input
+          id="sel-modal-search"
+          class="sel-modal__search"
+          type="search"
+          placeholder="Buscar marca, modelo o variante…"
+          autocomplete="off"
+          data-garage-modal-search
+        />
+        <div class="sel-modal__sort">
+          <label class="sel-modal__sort-lbl" for="sel-modal-sort">Ordenar</label>
+          <select id="sel-modal-sort" class="sel-modal__sort-sel" data-garage-modal-sort>
+            <option value="">Autonomía ↓</option>
+            <option value="pvp-asc">Precio ↑</option>
+            <option value="pvp-desc">Precio ↓</option>
+            <option value="pvp_efectivo-asc">PVP con Auto+ ↑</option>
+            <option value="ayuda_auto-desc">Ayuda Auto+ ↓</option>
+            <option value="potencia_cv-desc">Potencia ↓</option>
+            <option value="carga_dc-desc">Carga DC ↓</option>
+            <option value="aceleracion-asc">0-100 ↑</option>
+            <option value="consumo-asc">Consumo ↑</option>
+            <option value="peso-asc">Peso ↑</option>
+            <option value="maletero-desc">Maletero ↓</option>
+          </select>
+        </div>
+        <span class="sel-modal__count" data-garage-modal-count aria-live="polite">
+          62 coches
+        </span>
+        <button
+          type="button"
+          class="sel-modal__advbtn"
+          data-garage-modal-advbtn
+          aria-expanded="false"
+          aria-controls="sel-modal-drawer"
+          title="Filtros avanzados"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+            <circle cx="4" cy="3.5" r="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/>
+            <line x1="5.5" y1="3.5" x2="13" y2="3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="1" y1="3.5" x2="2.5" y2="3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="10" cy="7" r="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/>
+            <line x1="1" y1="7" x2="8.5" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="11.5" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="5.5" cy="10.5" r="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/>
+            <line x1="7" y1="10.5" x2="13" y2="10.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="1" y1="10.5" x2="4" y2="10.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+          <span>Más filtros</span>
+          <span class="sel-modal__advbadge" data-garage-modal-advbadge hidden></span>
+        </button>
+      </div>
+
+      <!-- Fila de pills por categoría (rellena JS en client.mjs) -->
+      <div class="sel-modal__pillswrap" data-garage-modal-pills>
+        <!-- data-garage-pill-group=segmento/traccion/... -->
+      </div>
+
+      <!-- Strip de filtros aplicados (rellena JS) -->
+      <div class="sel-modal__applied" data-garage-modal-applied hidden>
+        <span class="sel-modal__applied-lbl">Filtros activos</span>
+        <div class="sel-modal__applied-chips" data-garage-modal-applied-chips></div>
+        <button
+          type="button"
+          class="sel-modal__resetbtn"
+          data-garage-modal-reset
+        >Limpiar todo</button>
+      </div>
+
+      <!-- Drawer con rangos avanzados (colapsable, rellena JS) -->
+      <div
+        id="sel-modal-drawer"
+        class="sel-modal__drawer"
+        data-garage-modal-drawer
+        hidden
+      >
+        <!-- data-garage-range-group=pvp/autonomia/... -->
       </div>
     </div>
 
+    <!-- ── BODY ── -->
     <div class="sel-modal__body">
       <div class="sel-group__list" data-garage-modal-list role="listbox">
         <!-- Rellenado por client.mjs -->
@@ -82,6 +165,7 @@
     color: var(--text-muted);
   }
 
+  /* ── OVERLAY + PANEL ────────────────────────────────────────────── */
   .sel-modal {
     position: fixed;
     inset: 0;
@@ -100,9 +184,9 @@
     background: var(--surface);
     border: 1px solid var(--border-strong);
     border-radius: 12px;
-    max-width: 720px;
+    max-width: 840px;
     width: 100%;
-    max-height: min(82vh, 760px);
+    max-height: min(88vh, 820px);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -117,6 +201,7 @@
     .sel-modal, .sel-modal__panel { animation: none; }
   }
 
+  /* ── HEAD ───────────────────────────────────────────────────────── */
   .sel-modal__head {
     display: flex;
     align-items: center;
@@ -152,56 +237,199 @@
     outline-offset: 2px;
   }
 
+  /* ── TOOLBAR: contenedor general ─────────────────────────────────── */
   .sel-modal__toolbar {
     padding: 0.75rem 1.25rem 0.5rem;
     display: flex;
     flex-direction: column;
-    gap: 0.55rem;
+    gap: 0.6rem;
+    border-bottom: 1px solid var(--border);
   }
+
+  /* Fila superior: search + sort + count + advbtn */
+  .sel-modal__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  @media (max-width: 680px) {
+    .sel-modal__top {
+      grid-template-columns: 1fr;
+    }
+  }
+
   .sel-modal__search {
-    padding: 0.7rem 0.95rem;
+    padding: 0.6rem 0.85rem;
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 6px;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-family: var(--font-sans);
     color: var(--text);
+    min-width: 0;
   }
   .sel-modal__search:focus {
     outline: 2px solid var(--yellow);
     outline-offset: 1px;
     border-color: var(--yellow);
   }
-  .sel-modal__tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem;
+
+  .sel-modal__sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
   }
-  .sel-modal__tab {
-    padding: 0.3rem 0.7rem;
-    border-radius: 999px;
+  .sel-modal__sort-lbl {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .sel-modal__sort-sel {
+    padding: 0.45rem 1.8rem 0.45rem 0.65rem;
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    color: var(--text);
+    background: var(--bg);
     border: 1px solid var(--border);
-    font-size: 0.76rem;
-    color: var(--text-soft);
-    background: transparent;
-    letter-spacing: 0.02em;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background 140ms, border-color 140ms, color 140ms;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23666' stroke-width='1.4' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.55rem center;
   }
-  .sel-modal__tab:hover {
+  .sel-modal__sort-sel:hover,
+  .sel-modal__sort-sel:focus {
+    outline: 2px solid var(--yellow);
+    outline-offset: 1px;
+    border-color: var(--yellow);
+  }
+
+  .sel-modal__count {
+    font-size: 0.78rem;
+    color: var(--text-soft);
+    font-variant-numeric: tabular-nums;
+    padding: 0.3rem 0.6rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .sel-modal__advbtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.8rem;
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 140ms, border-color 140ms;
+  }
+  .sel-modal__advbtn:hover {
     border-color: var(--border-strong);
+    background: var(--surface);
+  }
+  .sel-modal__advbtn[aria-expanded="true"] {
+    background: var(--yellow-fade, rgba(245, 197, 24, 0.12));
+    border-color: var(--yellow);
     color: var(--text);
   }
-  .sel-modal__tab.is-on {
-    background: var(--text);
-    color: var(--bg);
-    border-color: var(--text);
+  .sel-modal__advbtn:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
   }
-  .sel-modal__tab:focus-visible {
+  .sel-modal__advbadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 0.35rem;
+    background: var(--yellow);
+    color: var(--black, #111);
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .sel-modal__advbadge[hidden] { display: none; }
+
+  /* ── PILLS por categoría ─────────────────────────────────────────── */
+  .sel-modal__pillswrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .sel-modal__pillswrap:empty { display: none; }
+
+  /* ── Filtros aplicados (strip) ───────────────────────────────────── */
+  .sel-modal__applied {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 0.6rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    flex-wrap: wrap;
+  }
+  .sel-modal__applied[hidden] { display: none; }
+  .sel-modal__applied-lbl {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .sel-modal__applied-chips {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    flex: 1;
+    min-width: 0;
+  }
+  .sel-modal__resetbtn {
+    padding: 0.3rem 0.6rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: border-color 140ms, color 140ms;
+  }
+  .sel-modal__resetbtn:hover {
+    border-color: var(--text);
+    color: var(--text);
+  }
+  .sel-modal__resetbtn:focus-visible {
     outline: 2px solid var(--yellow);
     outline-offset: 2px;
   }
 
+  /* ── Drawer de rangos avanzados ──────────────────────────────────── */
+  .sel-modal__drawer {
+    padding: 0.75rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+  .sel-modal__drawer[hidden] { display: none; }
+
+  /* ── BODY (lista) ────────────────────────────────────────────────── */
   .sel-modal__body {
     padding: 0 1.25rem 1rem;
     overflow-y: auto;
@@ -212,7 +440,115 @@
     flex-direction: column;
   }
 
-  /* Los items se renderizan desde JS — estilos aquí para coherencia. */
+  /* ════════════════════════════════════════════════════════════════
+     Estilos GLOBALES para markup inyectado por client.mjs
+     (pills, chips, range inputs, lista de coches).
+     Van en :global(...) para sobrevivir al scoping scoped de Astro.
+     ════════════════════════════════════════════════════════════════ */
+
+  /* Pill group (una línea por categoría) */
+  :global(.sel-pillgroup) {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.5rem;
+  }
+  :global(.sel-pillgroup__lbl) {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    flex-shrink: 0;
+    min-width: 5.5rem;
+  }
+  :global(.sel-pill) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.28rem 0.65rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.76rem;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: background 120ms, border-color 120ms, color 120ms;
+    white-space: nowrap;
+  }
+  :global(.sel-pill:hover) {
+    border-color: var(--border-strong);
+    color: var(--text);
+  }
+  :global(.sel-pill.is-on) {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+  :global(.sel-pill:focus-visible) {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+  }
+
+  /* Chip de filtro aplicado */
+  :global(.sel-appchip) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.22rem 0.55rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    color: var(--text);
+    font-family: var(--font-sans);
+  }
+  :global(.sel-appchip__x) {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0 0 0 0.1rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    color: var(--text-mute);
+    cursor: pointer;
+  }
+  :global(.sel-appchip__x:hover) { color: var(--text); }
+  :global(.sel-appchip__x:focus-visible) {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Range group dentro del drawer */
+  :global(.sel-range) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  :global(.sel-range__head) {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.4rem;
+  }
+  :global(.sel-range__lbl) {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  :global(.sel-range__val) {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.76rem;
+    color: var(--text-soft);
+  }
+  :global(.sel-range__slider) {
+    width: 100%;
+    accent-color: var(--yellow);
+  }
+
+  /* Ítems de la lista de coches (inyectados por client.mjs) */
   :global(.sel-item) {
     display: flex;
     align-items: baseline;
@@ -234,6 +570,7 @@
   :global(.sel-item:last-child) { border-bottom: 0; }
   :global(.sel-item:hover) { background: var(--bg); }
   :global(.sel-item.is-taken) { opacity: 0.4; cursor: not-allowed; }
+  :global(.sel-item.is-notco) { opacity: 0.5; }
   :global(.sel-item:focus-visible) {
     outline: 2px solid var(--yellow);
     outline-offset: -2px;
@@ -275,7 +612,16 @@
   }
   :global(.sel-item__sep) { opacity: 0.5; }
   :global(.sel-item__tco) { color: var(--yellow-text); font-weight: 500; }
+  :global(.sel-item__notco) { color: var(--text-mute); font-style: italic; }
   :global(.sel-item__in) { color: var(--text-mute); font-style: italic; margin-left: 0.3rem; }
+  :global(.sel-item__auto) {
+    background: var(--yellow-fade, rgba(245, 197, 24, 0.18));
+    color: var(--yellow-text);
+    padding: 0.05rem 0.35rem;
+    border-radius: 3px;
+    font-weight: 500;
+    font-size: 0.72rem;
+  }
   :global(.sel-empty) {
     padding: 2rem 1rem;
     text-align: center;
