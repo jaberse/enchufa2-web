@@ -1,9 +1,9 @@
 ---
 // src/components/comparador/CatalogoPanel.astro
 // Vista "Catálogo" del comparador unificado. Grid de catcards con
-// click-to-select (máx 4 coches). Al seleccionar ≥2 y pulsar
-// "Comparar →", hace scroll suave hasta la zona de comparación y
-// sincroniza el estado en client.mjs (window.__cmpBridge.setSelection).
+// click-to-select (máx 4). La sticky bar vive ahora en SelectionBar;
+// este componente sólo emite eventos `cmp:selection-change` y escucha
+// `cmp:external-toggle` / `cmp:external-clear` / `cmp:external-set`.
 
 interface CarPick {
   slug: string;
@@ -19,6 +19,7 @@ interface CarPick {
   autonomia_wltp_km: number | null;
   potencia_cv: number | null;
   carga_dc_max_kw: number | null;
+  t_10_80_min: number | null;
   quimica: string | null;
   traccion: string | null;
   fiabilidad_estrellas: number | null;
@@ -69,7 +70,7 @@ function fmtKm(v: number | null): string {
     </span>
   </div>
 
-  <div class="catpanel__grid" data-cat-grid role="list">
+  <div class="catpanel__grid" data-cat-grid role="list" data-cat-max={max}>
     {cars.map((c) => (
       <button
         type="button"
@@ -114,21 +115,14 @@ function fmtKm(v: number | null): string {
   <div class="catpanel__empty" data-cat-empty hidden>
     No hay coches que coincidan con la búsqueda.
   </div>
-
-  <div class="catpanel__cta" data-cat-cta>
-    <div class="catpanel__status">
-      <span data-cat-selected-count>0</span> de {max} seleccionados
-      <span class="catpanel__hint" data-cat-hint>· elige al menos 2 para comparar</span>
-    </div>
-    <button type="button" class="catpanel__btn" data-cat-compare disabled>
-      <span data-cat-btn-label>Comparar</span>
-      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-  </div>
 </section>
 
 <style is:global>
-  .catpanel { max-width: var(--max-w); margin: 0 auto 3rem; padding: clamp(1.5rem, 3vw, 2.5rem) var(--hub-gutter) 0; }
+  .catpanel {
+    max-width: var(--max-w);
+    margin: 0 auto 2rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem) var(--hub-gutter) 0;
+  }
   .catpanel__intro { margin-bottom: 1.5rem; }
   .catpanel__title {
     font-family: var(--font-sans);
@@ -276,61 +270,30 @@ function fmtKm(v: number | null): string {
     border-radius: 999px; white-space: nowrap;
   }
 
-  .catpanel__cta {
-    position: sticky; bottom: 0.75rem; z-index: 40;
-    margin: 1.5rem 0 0; padding: 0.7rem 1rem;
-    background: var(--black); color: var(--white);
-    border-radius: 999px;
-    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-    box-shadow: 0 12px 28px -12px rgba(0,0,0,0.4);
-  }
-  .catpanel__status {
-    font-size: 0.86rem; letter-spacing: -0.005em; color: var(--white);
-  }
-  .catpanel__status [data-cat-selected-count] {
-    font-variant-numeric: tabular-nums; color: var(--yellow); font-weight: 500;
-  }
-  .catpanel__hint { color: var(--gray-400); font-size: 0.78rem; }
-  .catpanel__btn {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    padding: 0.55rem 1.1rem;
-    background: var(--yellow); color: var(--black);
-    border: 0; border-radius: 999px;
-    font-family: var(--font-sans); font-weight: 500;
-    font-size: 0.9rem; letter-spacing: -0.005em;
-    cursor: pointer;
-    transition: transform 160ms, filter 160ms, opacity 160ms;
-  }
-  .catpanel__btn:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.05); }
-  .catpanel__btn:disabled { background: var(--gray-400); color: var(--black); cursor: not-allowed; opacity: 0.7; }
-  .catpanel__btn:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
-
   @media (max-width: 640px) {
     .catpanel__grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
-    .catpanel__cta { flex-direction: column; border-radius: 16px; padding: 0.75rem; }
-    .catpanel__btn { width: 100%; justify-content: center; }
   }
 </style>
 
 <script>
-  const MAX_SEL = 4;
-
   function initCatPanel() {
-    const panel = document.querySelector('[data-cat-grid]')?.closest('.catpanel');
+    const grid = document.querySelector('[data-cat-grid]');
+    if (!grid) return;
+    const panel = grid.closest('.catpanel');
     if (!panel) return;
 
+    const MAX_SEL = Number(grid.getAttribute('data-cat-max')) || 4;
     const cards = Array.from(panel.querySelectorAll('[data-cat-card]'));
     const searchInput = panel.querySelector('[data-cat-search]');
     const countEl = panel.querySelector('[data-cat-count]');
     const emptyEl = panel.querySelector('[data-cat-empty]');
-    const selCountEl = panel.querySelector('[data-cat-selected-count]');
-    const hintEl = panel.querySelector('[data-cat-hint]');
-    const btnLabel = panel.querySelector('[data-cat-btn-label]');
-    const compareBtn = panel.querySelector('[data-cat-compare]');
     const total = cards.length;
 
     const selection = new Set(
-      cards.filter((c) => c.getAttribute('aria-pressed') === 'true').map((c) => c.dataset.slug)
+      cards
+        .filter((c) => c.getAttribute('aria-pressed') === 'true')
+        .map((c) => c.dataset.slug)
+        .filter(Boolean),
     );
     let query = '';
 
@@ -343,17 +306,46 @@ function fmtKm(v: number | null): string {
       });
     }
 
-    function updateCTA() {
-      if (selCountEl) selCountEl.textContent = String(selection.size);
-      const ok = selection.size >= 2;
-      if (compareBtn) compareBtn.disabled = !ok;
-      if (btnLabel) btnLabel.textContent = ok ? `Comparar ${selection.size}` : 'Comparar';
-      if (hintEl) {
-        if (selection.size === 0) hintEl.textContent = '· elige al menos 2 para comparar';
-        else if (selection.size === 1) hintEl.textContent = '· 1 más y ya puedes comparar';
-        else if (selection.size >= MAX_SEL) hintEl.textContent = '· límite alcanzado';
-        else hintEl.textContent = `· puedes añadir ${MAX_SEL - selection.size} más`;
+    function reflectCard(card) {
+      const isSelected = selection.has(card.dataset.slug);
+      card.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+    }
+
+    function emitChange() {
+      document.dispatchEvent(
+        new CustomEvent('cmp:selection-change', { detail: { slugs: Array.from(selection) } }),
+      );
+    }
+
+    function doToggle(slug) {
+      if (!slug) return false;
+      if (selection.has(slug)) {
+        selection.delete(slug);
+      } else {
+        if (selection.size >= MAX_SEL) return false;
+        selection.add(slug);
       }
+      const card = cards.find((c) => c.dataset.slug === slug);
+      if (card) reflectCard(card);
+      updateDisabledStates();
+      emitChange();
+      return true;
+    }
+
+    function doClear() {
+      if (selection.size === 0) return;
+      selection.clear();
+      cards.forEach(reflectCard);
+      updateDisabledStates();
+      emitChange();
+    }
+
+    function doSetAll(slugs) {
+      selection.clear();
+      (slugs || []).slice(0, MAX_SEL).forEach((s) => selection.add(s));
+      cards.forEach(reflectCard);
+      updateDisabledStates();
+      emitChange();
     }
 
     function applyFilter() {
@@ -374,47 +366,32 @@ function fmtKm(v: number | null): string {
     cards.forEach((card) => {
       card.addEventListener('click', () => {
         if (card.getAttribute('data-cat-disabled') === 'true') return;
-        const slug = card.dataset.slug;
-        if (!slug) return;
-        if (selection.has(slug)) {
-          selection.delete(slug);
-          card.setAttribute('aria-pressed', 'false');
-        } else {
-          if (selection.size >= MAX_SEL) return;
-          selection.add(slug);
-          card.setAttribute('aria-pressed', 'true');
-        }
-        updateDisabledStates();
-        updateCTA();
+        doToggle(card.dataset.slug);
       });
     });
 
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
-        query = e.target.value || '';
+        query = (e.target && e.target.value) || '';
         applyFilter();
       });
     }
 
-    if (compareBtn) {
-      compareBtn.addEventListener('click', () => {
-        if (selection.size < 2) return;
-        const slugs = Array.from(selection);
-        if (typeof window !== 'undefined' && window.__cmpBridge && typeof window.__cmpBridge.setSelection === 'function') {
-          try { window.__cmpBridge.setSelection(slugs); } catch (_) {}
-        }
-        const target = document.getElementById('panel-specs')
-          || document.querySelector('.dirA__head')
-          || document.querySelector('.dirA');
-        if (target && typeof target.scrollIntoView === 'function') {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    }
+    // Eventos desde SelectionBar / shell
+    document.addEventListener('cmp:external-toggle', (e) => {
+      const slug = e && e.detail && e.detail.slug;
+      if (slug) doToggle(slug);
+    });
+    document.addEventListener('cmp:external-clear', () => doClear());
+    document.addEventListener('cmp:external-set', (e) => {
+      const slugs = (e && e.detail && e.detail.slugs) || [];
+      doSetAll(slugs);
+    });
 
     updateDisabledStates();
-    updateCTA();
     applyFilter();
+    // Emitimos el estado inicial para que SelectionBar se sincronice
+    emitChange();
   }
 
   if (document.readyState === 'loading') {

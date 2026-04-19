@@ -2,23 +2,22 @@
 // src/pages/comparador.astro
 // Comparador unificado: especificaciones técnicas + coste de propiedad (TCO).
 //
-// Una sola página con toggle Specs ↔ TCO (thumb amarillo animado). Selector
-// de garaje (hasta 4 coches) con modal buscable, barra de escenario editable
-// (km/año, años, €/kWh casa/fuera, % casa) y recálculo TCO en vivo sobre el
-// motor canónico del repo (src/lib/tco/calculadora.mjs).
+// Arquitectura en 2 modos (no dos áreas apiladas):
+//   - modo "explore"  → se ve el catálogo, oculta el área de comparación
+//   - modo "compare"  → se ve la comparación (Specs / Coste), oculta catálogo
+// La SelectionBar fija inferior muestra los chips seleccionados y alterna
+// entre modos. Escuchamos CustomEvents (cmp:set-mode, cmp:selection-change)
+// para desacoplar catálogo, barra y shell.
 //
 // La URL admite ?mode=tco o ?mode=specs para entrar directo en una vista —
 // lo resuelve el cliente (client.mjs) leyendo window.location.search.
-//
-// Selección inicial hardcoded con 4 coches que cubren la narrativa
-// "del utilitario al premium" y tienen TCO disponible. El usuario puede
-// añadir/quitar coches desde el garaje.
 
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ComparadorHeader from '../components/comparador/ComparadorHeader.astro';
 import CatalogoPanel from '../components/comparador/CatalogoPanel.astro';
+import SelectionBar from '../components/comparador/SelectionBar.astro';
 import GarageChipsRow from '../components/comparador/GarageChipsRow.astro';
 import GarageModal from '../components/comparador/GarageModal.astro';
 import ScenarioBar from '../components/comparador/ScenarioBar.astro';
@@ -113,72 +112,77 @@ const description =
 <Layout {title} {description}>
   <Header />
   <main id="main">
-    <CatalogoPanel cars={catalogoSpecs} initial={SELECCION} max={4} />
+    <div class="cmp-shell" data-mode="explore" data-cmp-shell>
+      <CatalogoPanel cars={catalogoSpecs} initial={SELECCION} max={4} />
 
-    <div class="dirA">
-      <!-- Arrancamos en modo specs por defecto; si la URL trae ?mode=tco
-           el cliente lo conmuta al cargar. -->
-      <ComparadorHeader modo="specs" />
+      <div class="dirA" data-cmp-compare-area>
+        <!-- Arrancamos en modo specs por defecto; si la URL trae ?mode=tco
+             el cliente lo conmuta al cargar. -->
+        <ComparadorHeader modo="specs" />
 
-      <section class="dirA__selectors" aria-label="Selector de coches">
-        <GarageChipsRow slots={garageSlots} />
-      </section>
+        <section class="dirA__selectors" aria-label="Selector de coches">
+          <GarageChipsRow slots={garageSlots} />
+        </section>
 
-      <!-- ScenarioBar solo se muestra en vista TCO; el cliente controla la
-           visibilidad a través de data-show-when-mode. -->
-      <div class="dirA__scen" data-show-when-mode="tco" style="display: none;">
-        <ScenarioBar
-          kmAnual={PERFIL_ESTANDAR.km_anual}
-          anios={PERFIL_ESTANDAR.horizonte_anios}
-          precioKwhCasa={PERFIL_ESTANDAR.precio_kwh_eur}
-          precioKwhFuera={0.45}
-          pctCasa={80}
-        />
+        <!-- ScenarioBar solo se muestra en vista TCO; el cliente controla la
+             visibilidad a través de data-show-when-mode. -->
+        <div class="dirA__scen" data-show-when-mode="tco" style="display: none;">
+          <ScenarioBar
+            kmAnual={PERFIL_ESTANDAR.km_anual}
+            anios={PERFIL_ESTANDAR.horizonte_anios}
+            precioKwhCasa={PERFIL_ESTANDAR.precio_kwh_eur}
+            precioKwhFuera={0.45}
+            pctCasa={80}
+          />
+        </div>
+
+        <!-- ── Panel SPECS (modo por defecto) ── -->
+        <section
+          class="dirA__panel"
+          id="panel-specs"
+          role="tabpanel"
+          aria-labelledby="tab-specs"
+          data-panel="specs"
+        >
+          <SpecsTable cars={specsCars} />
+        </section>
+
+        <!-- ── Panel TCO ── -->
+        <section
+          class="dirA__panel"
+          id="panel-tco"
+          role="tabpanel"
+          aria-labelledby="tab-tco"
+          data-panel="tco"
+          hidden
+        >
+          <SummaryStrip
+            totals={totalsForStrip}
+            anios={PERFIL_ESTANDAR.horizonte_anios}
+            escenarioMeta={escenarioMeta}
+          />
+
+          <TCOGrid cols={cartas.length}>
+            {cartas.map((c, i) => (
+              <TCOCard
+                tren="BEV"
+                nombre={`${c.par.marca} ${c.par.modelo}`}
+                variante={c.par.variante}
+                input={c.bev}
+                rivalTotal={c.totalIce}
+                rivalNombre={c.par.nombreIce}
+                isWinner={i === ganadoraIdx}
+                stagger={i}
+                slug={c.par.slug}
+              />
+            ))}
+          </TCOGrid>
+        </section>
       </div>
-
-      <!-- ── Panel SPECS (modo por defecto) ── -->
-      <section
-        class="dirA__panel"
-        id="panel-specs"
-        role="tabpanel"
-        aria-labelledby="tab-specs"
-        data-panel="specs"
-      >
-        <SpecsTable cars={specsCars} />
-      </section>
-
-      <!-- ── Panel TCO ── -->
-      <section
-        class="dirA__panel"
-        id="panel-tco"
-        role="tabpanel"
-        aria-labelledby="tab-tco"
-        data-panel="tco"
-        hidden
-      >
-        <SummaryStrip
-          totals={totalsForStrip}
-          anios={PERFIL_ESTANDAR.horizonte_anios}
-          escenarioMeta={escenarioMeta}
-        />
-
-        <TCOGrid cols={cartas.length}>
-          {cartas.map((c, i) => (
-            <TCOCard
-              tren="BEV"
-              nombre={`${c.par.marca} ${c.par.modelo}`}
-              variante={c.par.variante}
-              input={c.bev}
-              rivalTotal={c.totalIce}
-              rivalNombre={c.par.nombreIce}
-              isWinner={i === ganadoraIdx}
-              stagger={i}
-              slug={c.par.slug}
-            />
-          ))}
-        </TCOGrid>
-      </section>
     </div>
+
+    <!-- Barra fija inferior con chips + toggle Explorar/Comparar -->
+    <SelectionBar cars={catalogoSpecs} initial={SELECCION} max={4} />
 
     <!-- Modal del garaje: oculto por defecto, lo abre/cierra client.mjs. -->
     <GarageModal />
@@ -194,11 +198,23 @@ const description =
   <Footer />
 </Layout>
 
+<style is:global>
+  .cmp-shell {
+    position: relative;
+  }
+  .cmp-shell[data-mode="explore"] [data-cmp-compare-area] {
+    display: none;
+  }
+  .cmp-shell[data-mode="compare"] .catpanel {
+    display: none;
+  }
+</style>
+
 <style>
   .dirA {
     max-width: var(--max-w);
     margin: 0 auto;
-    padding: clamp(1.5rem, 3vw, 2.5rem) var(--hub-gutter) 5rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem) var(--hub-gutter) 2rem;
   }
 
   .dirA__selectors {
@@ -212,6 +228,50 @@ const description =
     background: transparent;
   }
 </style>
+
+<script>
+  // Shell de modos Explorar / Comparar. Vive aquí porque sólo coordina —
+  // CatalogoPanel y SelectionBar se comunican via CustomEvents.
+  (function initCmpShell() {
+    const shell = document.querySelector('[data-cmp-shell]');
+    if (!shell) return;
+
+    let mode = 'explore';
+    let lastSelection: string[] = [];
+
+    document.addEventListener('cmp:selection-change', (e: any) => {
+      lastSelection = (e && e.detail && e.detail.slugs) || [];
+    });
+
+    document.addEventListener('cmp:set-mode', (e: any) => {
+      const next = (e && e.detail && e.detail.mode) || 'explore';
+      if (next === mode) return;
+      if (next === 'compare' && lastSelection.length < 2) return; // guard
+      mode = next;
+      shell.setAttribute('data-mode', mode);
+
+      // Al entrar en comparar, empujamos la selección al motor del comparador
+      if (mode === 'compare') {
+        const w = window as any;
+        if (w.__cmpBridge && typeof w.__cmpBridge.setSelection === 'function') {
+          try { w.__cmpBridge.setSelection(lastSelection.slice()); } catch (_) {}
+        }
+      }
+
+      // Scroll suave al top del shell para que el cambio de vista se vea limpio
+      try {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (_) {}
+
+      document.dispatchEvent(new CustomEvent('cmp:mode-change', { detail: { mode } }));
+    });
+
+    // Emitimos el modo inicial para que SelectionBar sepa el label del botón
+    requestAnimationFrame(() => {
+      document.dispatchEvent(new CustomEvent('cmp:mode-change', { detail: { mode } }));
+    });
+  })();
+</script>
 
 <script>
   // Lógica cliente: modal del garaje, scenario interactivo, recomputación
