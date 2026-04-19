@@ -352,10 +352,24 @@ function bestOfStars(row: StarsRow): number | null {
     border-radius: 6px;
     background: var(--bg);
   }
+  /* Variante clicable: resetea defaults de <button> y añade hover visible. */
+  .stbl__empty--btn {
+    width: 100%;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 200ms, color 200ms, background 200ms;
+  }
+  .stbl__empty--btn:hover {
+    border-color: var(--yellow);
+    color: var(--yellow-text);
+    background: var(--yellow-glow);
+  }
+  .stbl__empty--btn:hover .stbl__emptyPlus { color: var(--yellow-text); }
   .stbl__emptyPlus {
     font-size: 1.8rem;
     font-weight: 200;
     color: var(--text-mute);
+    transition: color 200ms;
   }
 
   .stbl__row { display: contents; }

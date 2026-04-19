@@ -258,6 +258,51 @@ const confianzaCls =
       0 2px 12px -4px var(--yellow-glow);
   }
 
+  /* ── Slot vacío / sin par TCO ────────────────────────────────────────── */
+  /* Empty cards son <button> clicables. Reset de estilos de botón y hover
+     que sugiere que se puede añadir un coche. */
+  .tco-card--empty {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0.75rem;
+    min-height: 180px;
+    border-style: dashed;
+    color: var(--text-mute);
+    font-size: 0.85rem;
+    background: var(--bg);
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 200ms, color 200ms, background 200ms;
+  }
+  .tco-card--empty:hover {
+    border-color: var(--yellow);
+    color: var(--yellow-text);
+    background: var(--yellow-glow);
+  }
+  .tco-card--empty:hover .stbl__emptyPlus { color: var(--yellow-text); }
+  .tco-card--empty .stbl__emptyPlus {
+    font-size: 1.8rem;
+    font-weight: 200;
+    color: var(--text-mute);
+    transition: color 200ms;
+    line-height: 1;
+  }
+  .tco-card--empty .stbl__emptyTxt {
+    max-width: 22ch;
+    line-height: 1.4;
+  }
+  .tco-card--empty .stbl__emptyTxt small {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.75rem;
+    color: var(--text-mute);
+  }
+  .tco-card--notco {
+    /* Estado de error suave: el slug no tiene par TCO. */
+    border-color: var(--border-strong);
+  }
+
   /* ── Head ──────────────────────────────────────────────────────────── */
   .tco-card__head {
     display: flex;

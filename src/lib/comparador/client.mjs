@@ -533,10 +533,15 @@ function renderPanelTCO() {
     dom.summary.hidden = true;
     dom.summary.innerHTML = '';
     dom.tcoGrid.innerHTML = `
-      <div class="tco-card tco-card--empty" data-tco-card>
+      <button
+        type="button"
+        class="tco-card tco-card--empty"
+        data-tco-empty-slot="0"
+        aria-label="Añadir coche al slot 1"
+      >
         <div class="stbl__emptyPlus" aria-hidden="true">+</div>
         <div class="stbl__emptyTxt">Añade coches para ver su coste a ${state.scenario.anios} años</div>
-      </div>
+      </button>
     `;
     dom.tcoGrid.style.setProperty('--cols', '1');
     return;
@@ -569,10 +574,15 @@ function renderPanelTCO() {
   state.selection.forEach((slug, slot) => {
     if (!slug) {
       cards.push(`
-        <div class="tco-card tco-card--empty" data-tco-empty-slot="${slot}">
+        <button
+          type="button"
+          class="tco-card tco-card--empty"
+          data-tco-empty-slot="${slot}"
+          aria-label="Añadir coche al slot ${slot + 1}"
+        >
           <div class="stbl__emptyPlus" aria-hidden="true">+</div>
           <div class="stbl__emptyTxt">Slot vacío</div>
-        </div>
+        </button>
       `);
       return;
     }
@@ -581,10 +591,15 @@ function renderPanelTCO() {
       const spec = specsCarBySlug(slug);
       const nombre = spec ? `${spec.marca} ${spec.modelo}` : slug;
       cards.push(`
-        <div class="tco-card tco-card--empty" data-tco-empty-slot="${slot}">
+        <button
+          type="button"
+          class="tco-card tco-card--empty tco-card--notco"
+          data-tco-empty-slot="${slot}"
+          aria-label="Cambiar ${escapeHtml(nombre)} por otro coche"
+        >
           <div class="stbl__emptyPlus" aria-hidden="true">!</div>
           <div class="stbl__emptyTxt">Sin par TCO disponible<br/><small>${escapeHtml(nombre)}</small></div>
-        </div>
+        </button>
       `);
       return;
     }
@@ -655,13 +670,18 @@ function renderPanelSpecs() {
   const header = `
     <div class="stbl__header">
       <div class="stbl__labelcol" aria-hidden="true"></div>
-      ${cars.map((c) => {
+      ${cars.map((c, i) => {
         if (!c) return `
           <div class="stbl__headcell">
-            <div class="stbl__empty">
+            <button
+              type="button"
+              class="stbl__empty stbl__empty--btn"
+              data-specs-empty-slot="${i}"
+              aria-label="Añadir coche al slot ${i + 1}"
+            >
               <div class="stbl__emptyPlus" aria-hidden="true">+</div>
               <div class="stbl__emptyTxt">Añadir coche</div>
-            </div>
+            </button>
           </div>
         `;
         return `
@@ -1071,12 +1091,27 @@ function onDocClick(e) {
     return;
   }
 
-  // Añadir coche (slot vacío)
+  // Añadir coche (slot vacío en el garage)
   const addBtn = t.closest('[data-garage-add]');
   if (addBtn) {
     const chip = addBtn.closest('[data-garage-chip]');
     const slot = Number(chip.getAttribute('data-garage-slot'));
     openModal(slot);
+    return;
+  }
+
+  // Añadir coche desde una tarjeta TCO vacía (o de una cabecera Specs vacía).
+  // Permite añadir/reemplazar sin subir a la fila del garaje.
+  const emptyTco = t.closest('[data-tco-empty-slot]');
+  if (emptyTco) {
+    const slot = Number(emptyTco.getAttribute('data-tco-empty-slot'));
+    if (!isNaN(slot)) openModal(slot);
+    return;
+  }
+  const emptySpecs = t.closest('[data-specs-empty-slot]');
+  if (emptySpecs) {
+    const slot = Number(emptySpecs.getAttribute('data-specs-empty-slot'));
+    if (!isNaN(slot)) openModal(slot);
     return;
   }
 
