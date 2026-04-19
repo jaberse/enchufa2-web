@@ -85,7 +85,10 @@
   .sel-modal {
     position: fixed;
     inset: 0;
-    background: color-mix(in oklch, var(--text) 35%, transparent);
+    /* Overlay siempre oscuro, independiente del tema. Antes con --text daba velo claro en dark mode. */
+    background: rgba(17, 17, 17, 0.62);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     z-index: 500;
     display: flex;
     align-items: center;
