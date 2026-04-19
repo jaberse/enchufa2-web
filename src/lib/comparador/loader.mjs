@@ -161,7 +161,42 @@ export function cargarParesTCO() {
 }
 
 // ──────────────────────────────────────────────────────────────────────
-// 3) SLUGS con TCO disponible (para marcar el catálogo Specs).
+// 3) CATÁLOGO COMPLETO DE ICE — los 9 archivos de ice-equivalentes con
+//    InputCoche precomputado por horizonte. Sirve para que el usuario
+//    pueda elegir el rival a mano en la tarjeta TCO.
+// ──────────────────────────────────────────────────────────────────────
+
+function listIceFiles() {
+  const dir = path.join(ROOT, 'data/referencias/ice-equivalentes');
+  return fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith('.json'))
+    .sort();
+}
+
+export function cargarTodosIces() {
+  const files = listIceFiles();
+  return files.map((f) => {
+    const json = readJson(`data/referencias/ice-equivalentes/${f}`);
+    const iceSlug = json.slug ?? f.replace(/\.json$/, '');
+    const horizontes = {};
+    for (const h of HORIZONTES_DISPONIBLES) {
+      horizontes[h] = iceFromJson(json, { horizonte_anios: h });
+    }
+    return {
+      iceSlug,
+      marca: json.marca,
+      modelo: json.modelo,
+      variante: json.variante ?? '',
+      nombre: `${json.marca} ${json.modelo}${json.variante ? ' ' + json.variante : ''}`.trim(),
+      segmento: json.segmento ?? null,
+      horizontes,
+    };
+  });
+}
+
+// ──────────────────────────────────────────────────────────────────────
+// 4) SLUGS con TCO disponible (para marcar el catálogo Specs).
 // ──────────────────────────────────────────────────────────────────────
 
 export function slugsConTCO() {
@@ -169,13 +204,15 @@ export function slugsConTCO() {
 }
 
 // ──────────────────────────────────────────────────────────────────────
-// 4) DATOS PARA CLIENTE — payload JSON serializable embebido en la página.
+// 5) DATOS PARA CLIENTE — payload JSON serializable embebido en la página.
 //
 // Estructura:
 //   {
 //     catalogoSpecs: SpecsCar[],             // 63 BEV con specs para la tabla
 //     paresTCO:      { slug → ParCliente },  // 20 pares indexados por slug BEV
-//     slugsConTCO:   string[],               // mismo set, serializable
+//     icesTCO:       { iceSlug → IceCliente },// 9 ICE con input por horizonte
+//     iceSlugs:      string[],               // orden canónico para el <select>
+//     slugsConTCO:   string[],               // mismo set de BEV, serializable
 //     perfil:        PERFIL_ESTANDAR,
 //     horizontes:    HORIZONTES_DISPONIBLES,
 //   }
@@ -203,9 +240,24 @@ export function cargarDatosCliente() {
       ayuda_eur: p.ayuda_eur,
     };
   }
+  const ices = cargarTodosIces();
+  const icesTCO = {};
+  for (const i of ices) {
+    icesTCO[i.iceSlug] = {
+      iceSlug: i.iceSlug,
+      marca: i.marca,
+      modelo: i.modelo,
+      variante: i.variante,
+      nombre: i.nombre,
+      segmento: i.segmento,
+      horizontes: i.horizontes,
+    };
+  }
   return {
     catalogoSpecs,
     paresTCO,
+    icesTCO,
+    iceSlugs: ices.map((i) => i.iceSlug),
     slugsConTCO: pares.map((p) => p.slug),
     perfil: PERFIL_ESTANDAR,
     horizontes: HORIZONTES_DISPONIBLES,

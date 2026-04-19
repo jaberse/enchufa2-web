@@ -215,6 +215,9 @@ const state = {
   // Visibilidad de filas de SpecsTable — set de row.k activos.
   visibleSpecsRows: new Set(SPECS_ROWS.filter((r) => r.dflt).map((r) => r.k)),
   vistaDrawerOpen: false,
+  // Override manual del rival ICE por slug BEV. null/undefined = usar par
+  // canónico. Un valor válido reemplaza el ICE canónico al calcular TCO.
+  iceOverride: {},
 };
 
 const dom = {};
@@ -254,7 +257,20 @@ function inputParaSlug(slug) {
   const par = DATA.paresTCO[slug];
   if (!par) return null;
   const h = horizonteMasCercano(state.scenario.anios);
-  return { par, h, bev: par.horizontes[h].bev, ice: par.horizontes[h].ice };
+  // Rival ICE: si el usuario ha elegido uno manualmente y existe en icesTCO,
+  // se usa ese; si no, se cae al ICE del par canónico.
+  const overrideSlug = state.iceOverride[slug];
+  const iceData = overrideSlug && DATA.icesTCO && DATA.icesTCO[overrideSlug]
+    ? DATA.icesTCO[overrideSlug]
+    : null;
+  const ice = iceData
+    ? iceData.horizontes[h]
+    : par.horizontes[h].ice;
+  const iceNombre = iceData
+    ? iceData.nombre
+    : par.nombreIce;
+  const iceSlug = iceData ? iceData.iceSlug : par.iceSlug;
+  return { par, h, bev: par.horizontes[h].bev, ice, iceNombre, iceSlug };
 }
 
 function tcoParaSlug(slug) {
@@ -269,7 +285,9 @@ function tcoParaSlug(slug) {
     breakdown: br,
     total: br.tco_total_eur,
     rivalTotal: brIce.tco_total_eur,
-    rivalNombre: ctx.par.nombreIce,
+    rivalNombre: ctx.iceNombre,
+    rivalSlug: ctx.iceSlug,
+    rivalCanonicalSlug: ctx.par.iceSlug,
   };
 }
 
@@ -345,6 +363,32 @@ function renderGarage() {
 // RENDER — TCO PANEL (SUMMARY + CARDS)
 // ══════════════════════════════════════════════════════════════════════
 
+function renderRivalSelector(slug, tco) {
+  if (!DATA.iceSlugs || !DATA.icesTCO) return '';
+  const current = tco.rivalSlug;
+  const canonical = tco.rivalCanonicalSlug;
+  const options = DATA.iceSlugs
+    .map((is) => {
+      const i = DATA.icesTCO[is];
+      if (!i) return '';
+      const isCanon = is === canonical;
+      const label = isCanon ? `${i.nombre} · recomendado` : i.nombre;
+      const sel = is === current ? ' selected' : '';
+      return `<option value="${escapeHtml(is)}"${sel}>${escapeHtml(label)}</option>`;
+    })
+    .join('');
+  return `
+    <div class="tco-card__rival">
+      <label class="tco-card__rivalLbl" for="rival-${escapeHtml(slug)}">Rival gasolina</label>
+      <select
+        id="rival-${escapeHtml(slug)}"
+        class="tco-card__rivalSel"
+        data-tco-ice-select="${escapeHtml(slug)}"
+      >${options}</select>
+    </div>
+  `;
+}
+
 function renderTcoCard({ slug, slot, tco, isWinner }) {
   const { par, breakdown: br, rivalTotal, rivalNombre } = tco;
   const delta = br.tco_total_eur - rivalTotal;
@@ -390,6 +434,8 @@ function renderTcoCard({ slug, slot, tco, isWinner }) {
         </div>
         <span class="badge ${badge.cls}">${badge.label}</span>
       </header>
+
+      ${renderRivalSelector(slug, tco)}
 
       <div class="tco-card__total">
         <p class="eyebrow">Coste total a ${state.scenario.anios} años</p>
@@ -1162,6 +1208,22 @@ function onVistaChk(e) {
   renderPanelSpecs();
 }
 
+function onTcoIceChange(e) {
+  const sel = e.target.closest('[data-tco-ice-select]');
+  if (!sel) return;
+  const bevSlug = sel.getAttribute('data-tco-ice-select');
+  const iceSlug = sel.value;
+  const par = DATA.paresTCO[bevSlug];
+  // Si el usuario vuelve al ICE canónico, limpiamos el override para que
+  // el estado quede mínimo; si elige otro, lo guardamos.
+  if (par && iceSlug === par.iceSlug) {
+    delete state.iceOverride[bevSlug];
+  } else {
+    state.iceOverride[bevSlug] = iceSlug;
+  }
+  renderPanelTCO();
+}
+
 function onScenarioInput(e) {
   const input = e.target.closest('[data-scen-field]');
   if (!input) return;
@@ -1248,6 +1310,7 @@ export function initComparador() {
   if (dom.modalSort) dom.modalSort.addEventListener('change', onModalSort);
   if (dom.modalDrawer) dom.modalDrawer.addEventListener('input', onModalRangeInput);
   if (dom.specsVistaDrawer) dom.specsVistaDrawer.addEventListener('change', onVistaChk);
+  if (dom.tcoGrid) dom.tcoGrid.addEventListener('change', onTcoIceChange);
   if (dom.scenbar) dom.scenbar.addEventListener('input', onScenarioInput);
 
   // Render inicial del drawer vista (para que las categorías ya estén listas).

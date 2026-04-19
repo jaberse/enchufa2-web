@@ -309,6 +309,47 @@ const confianzaCls =
     margin: 0.4rem 0 0.25rem;
   }
 
+  /* ── Rival gasolina (selector) ─────────────────────────────────────── */
+  .tco-card__rival {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: -0.15rem;
+  }
+  .tco-card__rivalLbl {
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .tco-card__rivalSel {
+    flex: 1;
+    min-width: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.35rem 1.75rem 0.35rem 0.55rem;
+    font: inherit;
+    font-size: 0.82rem;
+    color: var(--text);
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23666'><path d='M4 6l4 4 4-4'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 12px 12px;
+    transition: border-color 180ms, box-shadow 180ms;
+  }
+  .tco-card__rivalSel:hover { border-color: var(--text-secondary); }
+  .tco-card__rivalSel:focus-visible {
+    outline: none;
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 2px var(--yellow-glow, rgba(245, 197, 24, 0.25));
+  }
+
   /* ── Rows ──────────────────────────────────────────────────────────── */
   .tco-rows { display: flex; flex-direction: column; }
   .tco-row {
