@@ -34,7 +34,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
       <li><strong>Traducido a PVP con IVA, el umbral está en ~54.450 €.</strong> Un coche a 53.999 € con IVA puede cobrar ayuda; uno a 54.501 €, no. La diferencia de 500 € en precio marcado se convierte en hasta 4.050 € de ayuda perdida.</li>
       <li><strong>BMW iX1 vs iX2: caso de libro.</strong> Comparten plataforma UKL2, motor, batería de 64,7 kWh NMC y fábrica (Regensburg). Separados por 4.291 € de PVP con IVA, uno cruza el umbral y el otro no. Uno cobra 4.050 € y el otro 0.</li>
       <li><strong>Jugada pragmática.</strong> Si el PVP sin IVA del coche que te interesa cae entre 45.500 € y 48.500 €, pedir 1.000–3.000 € de descuento para bajar del umbral puede devolverte hasta 2× ese descuento en ayuda recuperada.</li>
-      <li><strong>No te damos un TCO puntual a 5 años.</strong> La ayuda del Plan Auto+ es una cifra dura del BOE. Lo que viene después — depreciación, seguro, mantenimiento proyectados a 5 años — no lo es. Para eso está nuestra <a href="/calculadora-tco">calculadora TCO</a>, que muestra bandas de incertidumbre explícitas (±0 % / ±8 % / ±15 %) según la confianza de cada dato.</li>
+      <li><strong>No te damos un TCO puntual a 5 años.</strong> La ayuda del Plan Auto+ es una cifra dura del BOE. Lo que viene después — depreciación, seguro, mantenimiento proyectados a 5 años — no lo es. Para eso está nuestra <a href="/comparador?mode=tco">calculadora TCO</a>, que muestra bandas de incertidumbre explícitas (±0 % / ±8 % / ±15 %) según la confianza de cada dato.</li>
     </ul>
   </div>
 
@@ -233,7 +233,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <p>Repasemos despacio la fila "Precio neto tras ayuda": sobre una diferencia de PVP de 4.291 €, el precio efectivo para el comprador pasa a ser <strong>8.341 €</strong> más alto en el iX2. Casi el doble. Ese ~100 % de amplificación es el escalón. No es un efecto compuesto de depreciación o de seguro: es puro Plan Auto+, puro BOE, cifra del concesionario.</p>
 
-  <p>Lo que <em>no</em> estamos diciendo en este artículo — y esta es una diferencia importante respecto a la versión anterior que retiramos — es qué pasa después de la compra. Cuánto acaba costando cada uno a 3, 5 o 10 años depende de la depreciación, el seguro, el mantenimiento y el uso real. Esos cuatro factores tienen incertidumbre, y nuestra <a href="/calculadora-tco">calculadora TCO</a> los muestra como bandas (±0 % con confianza alta, ±8 % con media, ±15 % con baja) para que veáis el rango en lugar de un punto falso <sup>[5]</sup>.</p>
+  <p>Lo que <em>no</em> estamos diciendo en este artículo — y esta es una diferencia importante respecto a la versión anterior que retiramos — es qué pasa después de la compra. Cuánto acaba costando cada uno a 3, 5 o 10 años depende de la depreciación, el seguro, el mantenimiento y el uso real. Esos cuatro factores tienen incertidumbre, y nuestra <a href="/comparador?mode=tco">calculadora TCO</a> los muestra como bandas (±0 % con confianza alta, ±8 % con media, ±15 % con baja) para que veáis el rango en lugar de un punto falso <sup>[5]</sup>.</p>
 
   <h2>04 — Tres jugadas para cruzar el umbral a la baja</h2>
 
@@ -257,7 +257,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
   <p>Publicamos una primera versión de este análisis el 15 de abril de 2026 y lo retiramos el mismo día. El motivo: incluía tablas de coste total de propiedad a 5 años con cifras puntuales al euro (por ejemplo, "el iX2 cuesta 16.170 € más que el iX1 a 5 años") que <em>no</em> estaban sostenidas por los datos que nuestro pipeline tenía en ese momento. Los 4.050 € del Plan Auto+ sí están sostenidos — es una cifra del BOE, verificable al céntimo. Los otros ~12.000 € venían de proyecciones de depreciación con nivel de confianza media o baja en los <code>specs_tco</code>, sin margen de error declarado en el texto. Estábamos publicando un rango disfrazado de punto.</p>
 
-  <p>La lección la escribimos en una nueva sección §8 de <a href="https://github.com/jaberse/enchufa2-web/blob/main/docs/metodologia-tco.md">docs/metodologia-tco.md</a>: los artículos de enchufa2 nunca citan el output de la calculadora TCO como un punto cuando los inputs tienen confianza media o baja. Citan rango, o escenarios, o no lo citan. Esta versión cita solo lo que es duro: la mecánica del Plan Auto+ y el salto efectivo en el precio de compra. Para el resto — depreciación, TCO a 5 años, ahorro total — dejamos que hables directamente con la <a href="/calculadora-tco">calculadora</a>, que ahora muestra la banda de incertidumbre propia de cada par.</p>
+  <p>La lección la escribimos en una nueva sección §8 de <a href="https://github.com/jaberse/enchufa2-web/blob/main/docs/metodologia-tco.md">docs/metodologia-tco.md</a>: los artículos de enchufa2 nunca citan el output de la calculadora TCO como un punto cuando los inputs tienen confianza media o baja. Citan rango, o escenarios, o no lo citan. Esta versión cita solo lo que es duro: la mecánica del Plan Auto+ y el salto efectivo en el precio de compra. Para el resto — depreciación, TCO a 5 años, ahorro total — dejamos que hables directamente con la <a href="/comparador?mode=tco">calculadora</a>, que ahora muestra la banda de incertidumbre propia de cada par.</p>
 
   <p>Si te parece un principio excesivo para un blog de coches, es porque la mayoría de los blogs de coches no lo aplican. Nosotros lo aprendimos por las malas hace seis horas.</p>
 
@@ -277,7 +277,7 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
     <ul>
       <li><a href="/articulos/subvenciones-ayudas-ev-2026">Subvenciones y ayudas para coches eléctricos en España (2026)</a></li>
       <li><a href="/articulos/coste-real-electrico">El coste real de un eléctrico: combustible, mantenimiento y TCO</a></li>
-      <li><a href="/calculadora-tco">Calculadora TCO de enchufa2 (versión beta)</a></li>
+      <li><a href="/comparador?mode=tco">Comparador enchufa2 — modo coste total</a></li>
     </ul>
   </div>
 
