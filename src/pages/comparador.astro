@@ -369,6 +369,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
     let allFieldsOn = false; // track select-all state
     let pickedIds = new Set();  // IDs of models picked for comparison
     let compareMode = false;    // true = show only picked models
+    const MAX_PICKED = 4;        // Tope de coches seleccionables simultáneamente
 
     // ═══════════════════════════════════════════════════════
     // DOM REFS
@@ -1971,8 +1972,24 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
 
     function togglePick(m) {
       const id = modelId(m);
-      if (pickedIds.has(id)) pickedIds.delete(id);
-      else pickedIds.add(id);
+      if (pickedIds.has(id)) {
+        pickedIds.delete(id);
+      } else {
+        // Tope de MAX_PICKED: si ya está lleno, ignoramos el click y avisamos
+        // con un pequeño "shake" visual en la selbar (se limita a 4 porque
+        // la tabla Specs/TCO está calibrada para 4 columnas como máximo).
+        if (pickedIds.size >= MAX_PICKED) {
+          const bar = document.getElementById('compare-bar');
+          if (bar) {
+            bar.classList.remove('is-maxed');
+            // reflow para reiniciar la animación
+            void bar.offsetWidth;
+            bar.classList.add('is-maxed');
+          }
+          return;
+        }
+        pickedIds.add(id);
+      }
       updateCompareBar();
       update();
     }
@@ -2162,7 +2179,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
         const m = allModelos.find(x =>
           x.marca === marca && x.modelo === modelo && (x.variante || '') === (variante || '')
         );
-        if (m) { pickedIds.add(modelId(m)); matched++; }
+        if (m && pickedIds.size < MAX_PICKED) { pickedIds.add(modelId(m)); matched++; }
       });
       if (matched >= 2) compareMode = true;
       updateCompareBar();
@@ -2277,7 +2294,10 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
   .hero-band {
     position: relative;
     width: 100%;
-    height: clamp(200px, 30vh, 360px);
+    /* /comparador es una utilidad: el hero sólo es un acento visual,
+       no debe dominar el viewport ni empujar el contenido útil hacia
+       abajo. clamp generoso en móvil y tope bajo en desktop. */
+    height: clamp(120px, 18vh, 200px);
     overflow: hidden;
     background: var(--black);
   }
@@ -3357,6 +3377,20 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
   @keyframes sel-slide-up {
     from { transform: translateY(100%); }
     to { transform: translateY(0); }
+  }
+  /* Feedback "máximo alcanzado": cuando se intenta añadir un 5º coche
+     la barra hace un pequeño shake para avisar. Se activa añadiendo
+     .is-maxed desde togglePick(). Reducido con prefers-reduced-motion. */
+  .sel-footer.is-maxed { animation: sel-shake .34s ease-out; }
+  @keyframes sel-shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sel-footer, .sel-footer.is-maxed { animation: none !important; }
   }
   .sel-footer-inner {
     max-width: 1200px;
