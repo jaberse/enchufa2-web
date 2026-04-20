@@ -2080,9 +2080,11 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
       });
     });
 
-    // Inline "ir a catálogo" desde los empty-states de los paneles
-    document.querySelectorAll('[data-go-catalogo]').forEach((btn) => {
-      btn.addEventListener('click', () => setActiveTab('catalogo'));
+    // Delegación: cualquier elemento con [data-go-catalogo] (estático o renderizado
+    // por client.mjs como los slots vacíos del table Specs/TCO) vuelve al catálogo.
+    document.addEventListener('click', (e) => {
+      const hit = e.target && e.target.closest && e.target.closest('[data-go-catalogo]');
+      if (hit) setActiveTab('catalogo');
     });
 
     compareBtn.addEventListener('click', () => {

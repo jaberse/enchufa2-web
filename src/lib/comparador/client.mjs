@@ -643,7 +643,7 @@ function renderPanelTCO() {
       <button
         type="button"
         class="tco-card tco-card--empty"
-        data-tco-empty-slot="0"
+        data-tco-empty-slot="0" data-go-catalogo
         aria-label="Añadir coche al slot 1"
       >
         <div class="stbl__emptyPlus" aria-hidden="true">+</div>
@@ -684,7 +684,7 @@ function renderPanelTCO() {
         <button
           type="button"
           class="tco-card tco-card--empty"
-          data-tco-empty-slot="${slot}"
+          data-tco-empty-slot="${slot}" data-go-catalogo
           aria-label="Añadir coche al slot ${slot + 1}"
         >
           <div class="stbl__emptyPlus" aria-hidden="true">+</div>
@@ -702,7 +702,7 @@ function renderPanelTCO() {
         <button
           type="button"
           class="tco-card tco-card--empty tco-card--notco"
-          data-tco-empty-slot="${slot}"
+          data-tco-empty-slot="${slot}" data-go-catalogo
           aria-label="Cambiar ${escapeHtml(nombre)} por otro coche"
         >
           <figure class="tco-card__hero tco-card__hero--muted">
@@ -793,7 +793,7 @@ function renderPanelSpecs() {
             <button
               type="button"
               class="stbl__empty stbl__empty--btn"
-              data-specs-empty-slot="${i}"
+              data-specs-empty-slot="${i}" data-go-catalogo
               aria-label="Añadir coche al slot ${i + 1}"
             >
               <div class="stbl__emptyPlus" aria-hidden="true">+</div>
