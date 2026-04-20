@@ -5241,4 +5241,123 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
   [data-theme="dark"] .comp-subbtn[aria-expanded="true"] { background: var(--yellow); color: var(--black); border-color: var(--yellow); }
   [data-theme="dark"] .comp-subbtn__count { background: rgba(255,255,255,0.08); color: var(--white); }
   [data-theme="dark"] .comp-vistadrawer { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); }
+  /* Datos y vista — drawer interior */
+  .comp-vistadrawer { padding: 1.25rem 1.25rem 1.35rem; }
+  .vistadrawer__head {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    margin-bottom: 1rem; padding-bottom: 0.85rem;
+    border-bottom: 1px solid rgba(17,17,17,0.08);
+  }
+  .vistadrawer__title {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 0.95rem;
+    letter-spacing: -0.01em;
+    color: var(--black);
+  }
+  .vistadrawer__actions {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+  }
+  .vistadrawer__actbtn {
+    display: inline-flex; align-items: center;
+    padding: 0.45rem 0.85rem;
+    background: transparent;
+    border: 1px solid rgba(17,17,17,0.12);
+    border-radius: 999px;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.01em;
+  }
+  .vistadrawer__actbtn:hover {
+    border-color: var(--black);
+    color: var(--black);
+  }
+  .vistadrawer__actbtn:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+  }
+  .vistadrawer__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.35rem 1.75rem;
+  }
+  .vistadrawer__group {
+    display: flex; flex-direction: column; gap: 0.55rem;
+  }
+  .vistadrawer__grouplbl {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--black);
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--yellow);
+    margin-bottom: 0.15rem;
+  }
+  .vistadrawer__chk {
+    display: flex; align-items: center; gap: 0.55rem;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 0.87rem;
+    color: var(--gray-600);
+    cursor: pointer;
+    padding: 0.2rem 0;
+    user-select: none;
+    transition: color 0.2s ease;
+  }
+  .vistadrawer__chk:hover { color: var(--black); }
+  .vistadrawer__chk input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.05rem; height: 1.05rem;
+    border: 1.5px solid rgba(17,17,17,0.25);
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex: 0 0 auto;
+    margin: 0;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+  .vistadrawer__chk input[type="checkbox"]:hover { border-color: var(--black); }
+  .vistadrawer__chk input[type="checkbox"]:checked {
+    background: var(--yellow);
+    border-color: var(--yellow);
+  }
+  .vistadrawer__chk input[type="checkbox"]:checked::after {
+    content: "";
+    width: 0.3rem; height: 0.55rem;
+    border: solid var(--black);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) translate(-1px, -1px);
+  }
+  .vistadrawer__chk input[type="checkbox"]:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+  }
+  .vistadrawer__chk:has(input:checked) { color: var(--black); }
+
+  /* Dark mode — drawer interior */
+  [data-theme="dark"] .vistadrawer__head { border-bottom-color: rgba(255,255,255,0.08); }
+  [data-theme="dark"] .vistadrawer__title { color: var(--white); }
+  [data-theme="dark"] .vistadrawer__actbtn { border-color: rgba(255,255,255,0.14); color: rgba(255,255,255,0.65); }
+  [data-theme="dark"] .vistadrawer__actbtn:hover { border-color: var(--yellow); color: var(--white); }
+  [data-theme="dark"] .vistadrawer__grouplbl { color: var(--white); }
+  [data-theme="dark"] .vistadrawer__chk { color: rgba(255,255,255,0.65); }
+  [data-theme="dark"] .vistadrawer__chk:hover { color: var(--white); }
+  [data-theme="dark"] .vistadrawer__chk input[type="checkbox"] { border-color: rgba(255,255,255,0.25); }
+  [data-theme="dark"] .vistadrawer__chk input[type="checkbox"]:hover { border-color: rgba(255,255,255,0.55); }
+  [data-theme="dark"] .vistadrawer__chk input[type="checkbox"]:checked { background: var(--yellow); border-color: var(--yellow); }
+
+  @media (max-width: 560px) {
+    .vistadrawer__head { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+    .vistadrawer__grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1.1rem 1.25rem; }
+  }
 </style>
