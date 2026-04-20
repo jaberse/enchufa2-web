@@ -1,9 +1,9 @@
-# Metodología TCO enchufa2 — v1
+# Metodología TCO enchufa2 — v2
 
 **Estado:** canónico
-**Fecha:** 2026-04-15
+**Fecha:** 2026-04-20
 **Autor:** Javi + Cowork
-**Reemplaza:** Ninguno. Consolida `plan-calculadora-tco.md` §4 y §10, `perfil-estandar-seguro.md`, `regla-baseline-intra-plataforma.md` en un único referente operativo.
+**Reemplaza:** v1 (2026-04-15). El v1 queda congelado en el tag `methodology-v1-frozen-2026-04-20`.
 
 ---
 
@@ -63,12 +63,12 @@ Todos los campos siguen el mismo esquema de trazabilidad:
 
 1. **Hermana intra-plataforma con TCO ya poblado** → hereda el valor, `fuente_tipo: "baseline_compartido_intra_plataforma"`, `confianza: baja`. Ver `docs/regla-baseline-intra-plataforma.md`.
 2. **Predecesor directo con ≥3 años de mercado** (ej. Kona SX1 → Kona SX2, Model 3 pre-Highland → Highland) → usa la curva real del predecesor, `fuente_tipo: "analogo_predecesor"`, `confianza: media`. En `fuente_detalle` cita el slug del predecesor y los años del que se toma la curva.
-3. **Tablas Ganvam por segmento + motorización** → valor base de la tabla Ganvam pública para el segmento y la antigüedad, ajustado por factor plataforma/química batería (§5). `fuente_tipo: "ganvam_segmento"`, `confianza: media`.
+3. **Tablas Ganvam por segmento + motorización** → valor base de la tabla Ganvam pública para el segmento y la antigüedad, ajustado por factor plataforma/química batería (§5.1). `fuente_tipo: "ganvam_segmento"`, `confianza: media`.
 4. **Curva BEV categoría** → para modelos donde Ganvam aún no publica cifras específicas BEV (Inster, Dolphin Surf, etc.), se usa la curva media BEV por segmento observada en `data/referencias/curva-depreciacion-bev.json`. `fuente_tipo: "curva_bev_categoria"`, `confianza: baja`.
 
 **Lo que no vale como fuente:** un número redondo sin derivación documentada, una cita "Autocasion dice que…" sin el enlace y la fecha, una cifra editorial elegida "porque encaja con el artículo".
 
-**Y10 específicamente:** siempre `confianza: baja`. No hay mercado observable de BEV de 10 años en España. El valor es una extrapolación de la curva y3 + y5 con factor de degradación batería (§5.3). Se etiqueta explícitamente en UI como "proyección experimental".
+**Y10 específicamente:** siempre `confianza: baja`. No hay mercado observable de BEV de 10 años en España. El valor es una extrapolación de la curva y3 + y5 con factor de degradación batería (§5.5). Se etiqueta explícitamente en UI como "proyección experimental".
 
 ### 2.2 `seguro_anual_eur`
 
@@ -80,7 +80,7 @@ Todos los campos siguen el mismo esquema de trazabilidad:
 2. **Cotización del ICE equivalente × factor BEV categoría** → cuando aún no hay cotizaciones específicas del BEV, se parte del seguro del ICE hermano (con misma plataforma/carrocería) y se aplica el factor §5.2. `fuente_tipo: "estimacion_bev_sobre_ice"`, `confianza: media`.
 3. **Media UNESPA por segmento BEV** → último recurso, cuando ni siquiera hay ICE equivalente. `fuente_tipo: "media_segmento_unespa"`, `confianza: baja`.
 
-**Sanity check:** toda cifra de seguro debe caer en el rango 450–1.400 €/año para el perfil estándar. Valores fuera de rango disparan alerta en `npm run data:audit`.
+**Sanity check:** toda cifra de seguro BEV debe caer en el rango 450–1.400 €/año para el perfil estándar. Valores fuera de rango disparan alerta en `npm run data:audit`.
 
 ### 2.3 `mantenimiento_anual_eur`
 
@@ -105,13 +105,168 @@ Todos los campos siguen el mismo esquema de trazabilidad:
 
 Este factor es el único campo de `specs_tco` que **no** tiene banda de incertidumbre — varía legítimamente por carrocería y aerodinámica y la banda se absorbe en el slider de precio de electricidad (§2.5).
 
+Para PHEV ver §2.8.5 — el PHEV no usa un único `consumo_real_factor`, sino dos factores independientes para los modos eléctrico y combustión.
+
 ### 2.5 `precio_electricidad_eur_kwh`
 
 **Siempre `null`** en los JSONs. Este campo no se almacena, se toma del slider del calculador. Default 0,17 €/kWh (70% casa PVPC valle + 30% pública), extremos 0,08 €/kWh (autoconsumo FV) y 0,55 €/kWh (100% rápida pública).
 
-### 2.6 `equivalente_ice`
+### 2.6 `equivalente_termico`
 
-**Siempre documentado** con `{ tipo, modelo_id, razon, fuente_tipo: "decision_editorial", confianza: alta }`. La razón editorial debe citar plataforma, fábrica y posicionamiento compartido cuando existe.
+La clave (renombrada desde `equivalente_ice` en v1) admite tres tipos de referente: `ICE`, `HEV`, `PHEV`. Cada BEV tiene un referente canónico (default) y hasta 3 alternativas listadas explícitamente.
+
+```jsonc
+"equivalente_termico": {
+  "tipo": "HEV",                         // "ICE" | "HEV" | "PHEV"
+  "referente_id": "toyota-corolla-cross-hev",
+  "fuente_tipo": "decision_editorial",
+  "confianza": "alta",
+  "razon": "…",                          // plataforma + fábrica + posicionamiento
+  "alternativas": [
+    { "tipo": "ICE",  "referente_id": "volkswagen-tiguan-tsi" },
+    { "tipo": "PHEV", "referente_id": "kia-sportage-phev" }
+  ]
+}
+```
+
+**Mapeo BEV→referente** — orden de preferencia editorial (no es una matriz cerrada por segmento/precio):
+
+1. Hermano térmico intra-plataforma con mismo fabricante (ej. Ford Explorer EV → Ford Kuga HEV, Kia EV3 → Kia Sportage HEV, Mercedes EQA → Mercedes GLA 200).
+2. Mismo fabricante, segmento análogo (Mercedes EQB → Mercedes GLB; VW ID.7 → VW Passat HEV).
+3. Benchmark sectorial por segmento + rango de precio, preferentemente HEV si es el más vendido del segmento en España según datos ANFAC del año en curso.
+4. Sin equivalente directo: `equivalente_termico: null` con nota editorial en `meta.equivalente_termico_ausente_razon`. Caso típico: VW ID Buzz (monovolumen eléctrico puro sin equivalente térmico real en la misma categoría).
+
+Migración v1 → v2: las entradas `equivalente_ice` existentes se renombran a `equivalente_termico` con `tipo: "ICE"` (script de migración `_migrate_equivalente_termico_v2.mjs`).
+
+### 2.7 Campos HEV (auto-recargable, "Full Hybrid")
+
+> Aplica a **HEV auto-recargable** estilo Toyota Hybrid Synergy Drive, Honda e:HEV, Hyundai/Kia HEV, Renault E-Tech hybrid. **NO aplica a mild hybrid 48V** (BMW mild, Mercedes EQ Boost, Stellantis e-Hybrid mild): un mild hybrid se trata como ICE estándar a efectos de TCO — se usan los consumos WLTP de fabricante tal cual, sin factor HEV. No es un eléctrico en ninguna capa del cálculo.
+
+Los 3 campos principales (`depreciacion_y*_pct`, `mantenimiento_anual_eur`, `seguro_anual_eur`) siguen el esquema de trazabilidad §2, con novedades en el orden de derivación.
+
+#### 2.7.1 `depreciacion_y{3,5,10}_pct` — HEV
+
+1. **Hermano térmico intra-plataforma con TCO poblado** → hereda valor. `fuente_tipo: "baseline_compartido_intra_plataforma"`, `confianza: baja`.
+2. **Predecesor directo con ≥3 años mercado** → curva real predecesor. `fuente_tipo: "analogo_predecesor"`, `confianza: media`.
+3. **Tabla Ganvam HEV segmento** → cuando Ganvam publica segmentación HEV diferenciada (disponible desde 2024 para Toyota y Hyundai). `fuente_tipo: "ganvam_segmento"`, `confianza: media`. **Prima sobre el factor §5.3 cuando existe dato primario.**
+4. **Factor HEV sobre ICE-segmento** → partir de la cifra ICE base del segmento y aplicar el delta único de §5.3. `fuente_tipo: "factor_hev_sobre_ice"`, `confianza: media`.
+5. **Media HEV categoría** → fallback para categorías con <3 HEV poblados. `fuente_tipo: "media_hev_segmento"`, `confianza: baja`.
+
+**Y10 HEV:** siempre `confianza: baja`, banda ±15%. La ventaja HEV en retención se concentra en y3-y5; en y10 converge a ICE.
+
+#### 2.7.2 `mantenimiento_anual_eur` — HEV
+
+1. **Plan oficial fabricante** (Toyota Relax, Hyundai iCare HEV, etc.) → `fuente_tipo: "fabricante"`, `confianza: alta`.
+2. **Plan hermano fabricante** si el HEV concreto no tiene plan publicado pero sí un HEV hermano del mismo fabricante → `fuente_tipo: "plan_hermano_fabricante"`, `confianza: media`.
+3. **Factor HEV sobre ICE-segmento** → partir del mantenimiento ICE-segmento y aplicar ×0.85 (§5.3). `fuente_tipo: "factor_hev_sobre_ice"`, `confianza: media`.
+4. **Media HEV categoría** → `fuente_tipo: "media_hev_segmento"`, `confianza: baja`.
+
+**Sanity range HEV:** 150–400 €/año. Ligeramente superior al BEV (por tener motor térmico con revisiones de aceite) y netamente inferior al ICE equivalente.
+
+#### 2.7.3 `seguro_anual_eur` — HEV
+
+1. **Tres cotizaciones reales** perfil estándar → `fuente_tipo: "tres_cotizaciones_reales"`, `confianza: alta`.
+2. **Seguro del ICE hermano × factor HEV §5.3** → `fuente_tipo: "factor_hev_sobre_ice"`, `confianza: media`.
+3. **Media HEV segmento UNESPA** → `fuente_tipo: "media_hev_segmento"`, `confianza: baja`.
+
+**Sanity range HEV:** 480–1.300 €/año.
+
+#### 2.7.4 `consumo_real_factor` — HEV
+
+Factor WLTP→real. Valores observados EV Database + InsideEVs + Consumer Reports 2024:
+
+- HEV compacto Toyota (Yaris, Corolla, C-HR): **1.08** (gap pequeño — el ciclo urbano WLTP captura bien la ventaja del modo EV).
+- HEV SUV Toyota/Hyundai/Kia (RAV4, Tucson, Sportage): **1.12**.
+- HEV premium o de alta potencia (Lexus, BMW sin plug-in): **1.15**.
+
+`fuente_tipo: "factor_categoria"`, `confianza: media`. Se permite `ev_database` con `confianza: alta` si el modelo tiene ≥20 reportes.
+
+### 2.8 Campos PHEV (híbrido enchufable)
+
+El PHEV tiene TCO dependiente del comportamiento del usuario. Por tanto su ficha guarda **dos consumos separados** (eléctrico y combustión) y un **ratio eléctrico por defecto** basado en estudio sectorial, pero la UI expone un slider para que el usuario ajuste el ratio a su caso real.
+
+#### 2.8.1 Campos adicionales específicos PHEV
+
+```jsonc
+"specs_tco": {
+  // … campos comunes (depreciación, mantenimiento, seguro) …
+
+  "consumo_electrico_wltp_kwh100km": {
+    "valor": 17.5,
+    "unidad": "kWh/100km",
+    "fuente_tipo": "fabricante",
+    "confianza": "alta",
+    "notas": "Modo EV puro, batería cargada"
+  },
+  "consumo_combustion_wltp_l100km": {
+    "valor": 6.8,
+    "unidad": "L/100km",
+    "fuente_tipo": "fabricante",
+    "confianza": "alta",
+    "notas": "Modo combustión, batería agotada — consumo realista con peso batería"
+  },
+  "autonomia_electrica_wltp_km": {
+    "valor": 75,
+    "unidad": "km",
+    "fuente_tipo": "fabricante",
+    "confianza": "alta"
+  },
+  "ratio_electrico_default": {
+    "valor": 0.60,
+    "unidad": "fracción",
+    "fuente_tipo": "estudio_sectorial_utility_factor",
+    "fuente_detalle": "ICCT 2024 — PHEV real-world utility factor España. Perfil ponderado: 60% usuarios con cargador casa (ratio medio 0.72), 40% sin cargador accesible (ratio medio 0.24).",
+    "confianza": "media",
+    "notas": "Slider editable por el usuario en la UI; el default es el punto central enchufa2."
+  }
+}
+```
+
+#### 2.8.2 `depreciacion_y{3,5,10}_pct` — PHEV
+
+1. **Hermano térmico intra-plataforma con TCO poblado** → `baseline_compartido_intra_plataforma`, `confianza: baja`.
+2. **Predecesor directo** → `analogo_predecesor`, `confianza: media`.
+3. **Tabla Ganvam PHEV segmento** (disponible solo para segmentos populares: C, C-SUV, D, D-SUV) → `ganvam_segmento`, `confianza: media`.
+4. **Factor PHEV sobre HEV-segmento** → §5.4. `fuente_tipo: "factor_phev_sobre_hev"`, `confianza: media`.
+5. **Media PHEV categoría** → `media_phev_segmento`, `confianza: baja`.
+
+**Nota sectorial:** la curva PHEV en España se ha visto presionada por el fin del Plan MOVES III y la incertidumbre regulatoria sobre la etiqueta CERO/ECO; en Q2 2026 la retención de un PHEV es ~5 pp peor que la de un HEV equivalente.
+
+#### 2.8.3 `mantenimiento_anual_eur` — PHEV
+
+1. **Plan oficial fabricante** → `fabricante`, `confianza: alta`.
+2. **Plan hermano fabricante PHEV** → `plan_hermano_fabricante`, `confianza: media`.
+3. **Factor PHEV sobre HEV-segmento** → partir del HEV y aplicar ×1.30 (§5.4). `factor_phev_sobre_hev`, `confianza: media`.
+4. **Media PHEV categoría** → `media_phev_segmento`, `confianza: baja`.
+
+**Sanity range PHEV:** 220–500 €/año.
+
+#### 2.8.4 `seguro_anual_eur` — PHEV
+
+1. **Tres cotizaciones reales** → `tres_cotizaciones_reales`, `confianza: alta`.
+2. **Seguro del HEV hermano × factor PHEV §5.4** → `factor_phev_sobre_hev`, `confianza: media`.
+3. **Media PHEV segmento UNESPA** → `media_phev_segmento`, `confianza: baja`.
+
+**Sanity range PHEV:** 550–1.500 €/año.
+
+#### 2.8.5 Consumo real PHEV — dos factores independientes
+
+El PHEV **no** usa el `consumo_real_factor` unidimensional de §2.4. Usa dos factores:
+
+- `factor_real_electrico` (sobre `consumo_electrico_wltp_kwh100km`): 1.10 típico (modo EV puro similar a BEV pequeño).
+- `factor_real_combustion` (sobre `consumo_combustion_wltp_l100km`): 1.25 típico (peor que ICE puro del segmento porque el motor térmico arrastra peso de batería y suele ser más pequeño para compensar emisiones WLTP).
+
+**Cálculo de energía combinado en la calculadora** (aplicable solo a PHEV):
+
+```
+coste_anual_energia =
+    ratio × (kWh/100 × factor_real_e × km_anuales / 100) × precio_kWh
+  + (1 - ratio) × (L/100 × factor_real_c × km_anuales / 100) × precio_L
+```
+
+Donde `ratio` ∈ [0, 1] viene del slider de UI con default `ratio_electrico_default`.
+
+**Validación de `ratio` vs autonomía eléctrica:** si `ratio × km_anuales > autonomía_electrica_wltp_km × 300` (asume ≤ 300 días efectivos carga al año), la UI muestra advertencia: "Para alcanzar este ratio el coche debería cargarse >300 días al año — poco realista".
 
 ---
 
@@ -120,6 +275,8 @@ Este factor es el único campo de `specs_tco` que **no** tiene banda de incertid
 Tabla cerrada. Cualquier `fuente_tipo` fuera de esta lista debe ser migrado o revisado.
 
 **Cómo leer la columna "Confianza por defecto":** es el **máximo alcanzable** para ese tipo cuando el dato es íntegro (fuente primaria directa, sin ajustes ni extrapolaciones). Un JSON puede declarar una confianza **inferior** al canon cuando el valor incorpora estimaciones parciales, combinaciones con otras fuentes, o ajustes editoriales — en ese caso el motivo se documenta en `fuente_detalle` o `notas`. Un JSON **no puede** declarar confianza superior al canon. Las bandas de §4 se aplican siempre sobre la confianza declarada, no sobre el canon.
+
+El tipo de tren (ICE/HEV/PHEV) del referente **no** se expresa en `fuente_tipo` sino en el campo `tipo` de la propia ficha referente — `baseline_compartido_intra_plataforma` aplica igual a cualquier tecnología.
 
 | `fuente_tipo` | Campos donde aplica | Confianza por defecto |
 |---|---|---|
@@ -136,9 +293,14 @@ Tabla cerrada. Cualquier `fuente_tipo` fuera de esta lista debe ser migrado o re
 | `ev_database` | consumo_real_factor | alta |
 | `factor_categoria` | consumo_real_factor | media |
 | `parametros_calculador` | precio_electricidad_eur_kwh | — |
-| `decision_editorial` | equivalente_ice | alta |
+| `decision_editorial` | equivalente_termico (cualquier tipo) | alta |
+| `factor_hev_sobre_ice` | depreciación, manto, seguro HEV | media |
+| `factor_phev_sobre_hev` | depreciación, manto, seguro PHEV | media |
+| `media_hev_segmento` | depreciación, manto, seguro HEV | baja |
+| `media_phev_segmento` | depreciación, manto, seguro PHEV | baja |
+| `estudio_sectorial_utility_factor` | ratio_electrico_default PHEV | media |
 
-**Migración de nombres legacy** (pasada pendiente como parte de D2):
+**Migración de nombres legacy** (sigue vigente desde v1, ampliada en v2):
 
 | Legacy | Canónico |
 |---|---|
@@ -150,10 +312,11 @@ Tabla cerrada. Cualquier `fuente_tipo` fuera de esta lista debe ser migrado o re
 | `comparador_agregado` (seguro) | `tres_cotizaciones_reales` si de verdad eran 3 con perfil estándar; `estimacion_bev_sobre_ice` si no |
 | `investigacion_web` | `ev_database` o `factor_categoria` |
 | `dato_real_usuario` | `fabricante` si era plan oficial, `plan_hermano_fabricante` si era derivado |
+| `equivalente_ice` (clave, no fuente_tipo) | Renombrar a `equivalente_termico` con `tipo: "ICE"` |
 
 ---
 
-## 4. Bandas de incertidumbre (D13 del plan)
+## 4. Bandas de incertidumbre
 
 Cada campo central produce una banda min/max según su nivel de confianza:
 
@@ -194,7 +357,70 @@ Cuando derivamos seguro BEV desde el ICE hermano:
 
 Razón: mayor valor asegurado y mayor coste de reparación eléctrica frente a mecánica. Dato viene de media observada en las primeras `tres_cotizaciones_reales` que hemos capturado (perfil estándar enchufa2). Se recalibra trimestralmente en las pasadas de §7.
 
-### 5.3 Degradación batería y10
+### 5.3 Factor HEV sobre ICE de segmento
+
+Cuando no hay dato primario disponible para un HEV, se deriva desde el ICE del mismo segmento aplicando los siguientes factores. Todos documentados en `fuente_detalle` con la forma canónica: *"ICE-{segmento} {campo} = X → × factor_hev_{valor} = Y"*.
+
+#### 5.3.1 Depreciación HEV vs ICE
+
+**Factor único** para todos los HEV auto-recargables, sin distinguir marca:
+
+| Horizonte | Delta retención sobre ICE equivalente |
+|---|---|
+| y3 | **+3 pp** |
+| y5 | +2 pp |
+| y10 | +1 pp |
+
+Mild hybrid 48V: **0 pp** (se trata como ICE puro).
+
+**Excepción:** si un modelo concreto tiene dato Ganvam primario HEV-segmento que discrepe del factor (p. ej. Toyota RAV4 con retención documentada superior), se usa el dato Ganvam con `fuente_tipo: "ganvam_segmento"` y confianza `media`, y se documenta la divergencia en `fuente_detalle`. El factor §5.3.1 solo aplica cuando no hay dato primario — por eso su `fuente_tipo` es `factor_hev_sobre_ice` con confianza `media` (banda ±8%).
+
+**Fuentes:** Ganvam Boletín HEV Q1 2026 + Eurotax retención 2024-Q4 + muestras Autocasion.com 2026-Q1 (n=40 por segmento top). El factor +3 pp es la media ponderada de retención HEV sobre ICE equivalente observada en España Q1 2026, agregada sin distinguir marca — la varianza intra-marca (±2 pp entre Toyota, Hyundai y Renault) se absorbe en la banda ±8% de la confianza media.
+
+#### 5.3.2 Mantenimiento HEV vs ICE
+
+**Factor único ×0.85** sobre el mantenimiento ICE equivalente del segmento.
+
+**Razón documentada:**
+- Frenos duran ~30-40% más por regeneración (Toyota Service data + Consumer Reports 2024).
+- El motor térmico trabaja menos horas (asistencia del eléctrico en arranque + ralentí off).
+- Compensación parcial: mayor complejidad electrónica, servicio batería HV cada 100k km.
+
+Marcas sin dato propio: aplicar ×0.85 universal. Toyota publica planes Relax públicos que se prefieren siempre (→ `fabricante`, confianza alta).
+
+#### 5.3.3 Seguro HEV vs ICE
+
+| Rango PVP del HEV | Factor seguro sobre ICE segmento |
+|---|---|
+| <30k € | × 1.03 |
+| 30-55k € | × 1.05 |
+| >55k € | × 1.08 |
+
+**Razón documentada:** mayor valor asegurado (batería HV 1-2 kWh añade 1.000-2.000 € al coste de reposición), electrónica de potencia más cara, pero sin el impacto BEV (batería de tracción 40-80 kWh). Dato de media observada en primeras cotizaciones perfil enchufa2 Q1 2026.
+
+### 5.4 Factor PHEV sobre HEV de segmento
+
+Cuando no hay dato primario disponible para un PHEV, se deriva desde el HEV del mismo segmento aplicando los siguientes factores.
+
+#### 5.4.1 Depreciación PHEV vs HEV
+
+**Delta único −5 pp retención a 3y, −4 pp a 5y, −2 pp a 10y** respecto al HEV equivalente.
+
+**Razón documentada:** mayor complejidad percibida + incertidumbre regulatoria sobre etiqueta CERO/ECO + peso batería 10-15 kWh que añade coste mantenimiento percibido. Datos: Ganvam Boletín PHEV Q1 2026 + rastreo Coches.net PHEV 2023-MY con 45k km.
+
+#### 5.4.2 Mantenimiento PHEV vs HEV
+
+**Factor único ×1.30** sobre el mantenimiento HEV equivalente del segmento.
+
+**Razón documentada:** sistema dual más complejo (refrigeración batería + cargador AC + gestión térmica), servicio batería HV cada 80k km, aceite motor + aceite caja potencialmente diferenciado.
+
+#### 5.4.3 Seguro PHEV vs HEV
+
+**Factor único ×1.10** sobre el seguro HEV equivalente del segmento.
+
+**Razón documentada:** mayor valor asegurado (batería 10-15 kWh añade 5.000-9.000 € al coste de reposición), cargador AC integrado.
+
+### 5.5 Degradación batería y10
 
 Para proyectar y10 desde y5 cuando no existe análogo a 10 años:
 
@@ -219,11 +445,15 @@ Ver `docs/regla-baseline-intra-plataforma.md` para el detalle completo. Resumen 
 
 > Si dos variantes comparten plataforma, fábrica, química de batería y motorización, sus campos `specs_tco` de depreciación, seguro y mantenimiento **parten del mismo baseline**. Divergencias requieren fuente primaria citada y se capturan en el script `_audit_intra_plataforma.mjs`.
 
+La regla aplica igual a BEV, HEV y PHEV entre variantes del mismo tren (BEV↔BEV, HEV↔HEV, PHEV↔PHEV).
+
+**Caveat BEV vs PHEV sobre misma plataforma:** si un BEV y su hermano PHEV comparten plataforma + fábrica (p. ej. un BEV y un PHEV construidos sobre la misma base chasis), la regla intra-plataforma **no** aplica — son trenes motrices distintos con economía de escala diferente. Se pueden comparar para coherencia editorial en un artículo, pero no para baselines compartidos de `specs_tco`.
+
 El script se ejecuta antes de cada push a `data/coches/**` y antes de publicar cualquier artículo que cite resultados del calculador.
 
 ---
 
-## 7. Recalibración trimestral (D5 del nuevo Fase D)
+## 7. Recalibración trimestral
 
 Cada trimestre (Q1/Q2/Q3/Q4) se ejecuta una pasada de **sanity check** de muestras reales:
 
@@ -235,6 +465,7 @@ Cada trimestre (Q1/Q2/Q3/Q4) se ejecuta una pasada de **sanity check** de muestr
    - **FLAG** (gap ≥20 %) → recalibrar el factor §5.1 afectado y revisar los modelos hermanos intra-plataforma (§6).
 4. Si hay al menos un FLAG el script sale con código 1, de modo que puede cablearse a CI para prevenir regresiones de calidad en los JSON.
 5. Las cotizaciones de seguro del perfil estándar se rotan al mismo ritmo — 3 modelos por trimestre pasan de `estimacion_bev_sobre_ice` a `tres_cotizaciones_reales`.
+6. A partir de v2 se amplía la rotación: 2 HEV + 1 PHEV trimestrales pasan de `factor_hev_sobre_ice` / `factor_phev_sobre_hev` a `tres_cotizaciones_reales`, para afinar los factores §5.3 y §5.4 con dato primario.
 
 **La recogida de muestras nunca reemplaza al método.** Es un control de calidad. Para patchear anclajes con muestras reales (flujo explícito de recalibración del piloto) se usa `scripts/data-pipeline/ingest-samples-cochesnet.mjs`, nunca `tco-sanity-check.mjs`. El método sigue siendo el que se describe en §2.
 
@@ -245,15 +476,29 @@ Cada trimestre (Q1/Q2/Q3/Q4) se ejecuta una pasada de **sanity check** de muestr
 Toda pieza editorial que cite cifras del calculador debe cumplir:
 
 1. **Mostrar rango o escenarios, no un punto.** Presentar "a 5 años te ahorras 4.050 €" sin banda viola la regla y es causa automática de retirada del artículo.
-2. **Citar la versión de la metodología.** Al pie del artículo: *"Cálculo basado en metodología TCO enchufa2 v1 (abril 2026). Ver docs/metodologia-tco.md."*
+2. **Citar la versión de la metodología.** Al pie del artículo: *"Cálculo basado en metodología TCO enchufa2 v2 (abril 2026). Ver docs/metodologia-tco.md."*
 3. **Usar cifras de la calculadora, no propias.** Si un artículo necesita un número que no está en la calculadora, primero se añade el número a la calculadora con su trazabilidad y luego se cita. Nunca al revés.
 4. **No extrapolar más allá del horizonte.** La calculadora cubre 3/5/7/10 años. Un artículo no puede afirmar nada a 15 años.
+5. **Rivales PHEV citados con ratio explícito.** Toda cifra TCO que compare un BEV con un PHEV debe citar el ratio eléctrico asumido ("asumiendo 60% uso eléctrico, consistente con el perfil enchufa2 estándar"). No se publica una comparativa BEV-vs-PHEV con ratio oculto — es causa automática de retirada.
 
 ---
 
 ## 9. Historia de versiones y decisiones retrospectivas
 
-**v1 — 2026-04-15**
+**v2 — 2026-04-20**
+
+- Renombrado `equivalente_ice` a `equivalente_termico` con tipos `ICE` / `HEV` / `PHEV`.
+- Añadidas §2.7 (HEV auto-recargable) y §2.8 (PHEV con slider de ratio eléctrico).
+- Ampliada tabla `fuente_tipo` con 5 entradas nuevas: `factor_hev_sobre_ice`, `factor_phev_sobre_hev`, `media_hev_segmento`, `media_phev_segmento`, `estudio_sectorial_utility_factor`. `decision_editorial` se amplía a `equivalente_termico` (cualquier tipo).
+- Añadidas §5.3 (factor HEV/ICE) y §5.4 (factor PHEV/HEV). La §5.3 v1 "Degradación batería y10" se renumera como §5.5.
+- Ampliada regla §6 intra-plataforma con caveat BEV vs PHEV sobre misma plataforma.
+- Ampliada §8 con exigencia de ratio explícito en artículos BEV-vs-PHEV.
+- Ampliada §7 con rotación trimestral de 2 HEV + 1 PHEV a `tres_cotizaciones_reales`.
+- **Mild hybrid 48V:** no se considera HEV a efectos de TCO — se usa ICE puro con consumos WLTP de fabricante.
+- **Factor HEV único**, sin distinguir marca (+3pp y3 / +2pp y5 / +1pp y10). Ganvam primario prima sobre el factor cuando existe.
+- **Estructura de fichas referente:** una sola carpeta `data/referencias/termicos-equivalentes/` con campo `tipo` en la ficha. Migración de `data/referencias/ice-equivalentes/` documentada en F4 del RFC `docs/rfc-tco-ampliacion-bevs-sin-par.md`.
+
+**v1 — 2026-04-15** (congelado en tag `methodology-v1-frozen-2026-04-20`)
 
 - Creación del documento.
 - Consolidación de D1–D14 del `plan-calculadora-tco.md`.
