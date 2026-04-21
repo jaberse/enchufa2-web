@@ -1,5 +1,5 @@
 // scripts/data-pipeline/validate-ice-equivalent.mjs
-// Validador del skill enchufa2-ice-ingest para data/referencias/ice-equivalentes/*.json
+// Validador del skill enchufa2-ice-ingest para data/referencias/termicos-equivalentes/*.json
 //
 // Uso:
 //   node scripts/data-pipeline/validate-ice-equivalent.mjs <slug>      # un archivo
@@ -8,7 +8,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
-const DATA_DIR = 'data/referencias/ice-equivalentes';
+const DATA_DIR = 'data/referencias/termicos-equivalentes';
 
 const SEGMENTOS_VALIDOS = new Set([
   'A', 'B', 'B-SUV', 'C', 'C-SUV', 'D', 'D-SUV', 'E', 'E-SUV', 'F',

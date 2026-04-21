@@ -135,7 +135,7 @@ const PARES_CANONICOS = [
 export function cargarParesTCO() {
   return PARES_CANONICOS.map((p) => {
     const bevJson = readJson(`data/coches/${p.bev}.json`);
-    const iceJson = readJson(`data/referencias/ice-equivalentes/${p.ice}.json`);
+    const iceJson = readJson(`data/referencias/termicos-equivalentes/${p.ice}.json`);
     const horizontes = {};
     for (const h of HORIZONTES_DISPONIBLES) {
       horizontes[h] = {
@@ -161,13 +161,14 @@ export function cargarParesTCO() {
 }
 
 // ──────────────────────────────────────────────────────────────────────
-// 3) CATÁLOGO COMPLETO DE ICE — los 9 archivos de ice-equivalentes con
+// 3) CATÁLOGO COMPLETO DE TÉRMICOS — archivos de termicos-equivalentes/ con
 //    InputCoche precomputado por horizonte. Sirve para que el usuario
 //    pueda elegir el rival a mano en la tarjeta TCO.
+//    Incluye ICE, HEV y PHEV (metodología v2, 2026-04-20).
 // ──────────────────────────────────────────────────────────────────────
 
 function listIceFiles() {
-  const dir = path.join(ROOT, 'data/referencias/ice-equivalentes');
+  const dir = path.join(ROOT, 'data/referencias/termicos-equivalentes');
   return fs
     .readdirSync(dir)
     .filter((f) => f.endsWith('.json'))
@@ -177,7 +178,7 @@ function listIceFiles() {
 export function cargarTodosIces() {
   const files = listIceFiles();
   return files.map((f) => {
-    const json = readJson(`data/referencias/ice-equivalentes/${f}`);
+    const json = readJson(`data/referencias/termicos-equivalentes/${f}`);
     const iceSlug = json.slug ?? f.replace(/\.json$/, '');
     const horizontes = {};
     for (const h of HORIZONTES_DISPONIBLES) {

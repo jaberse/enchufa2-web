@@ -16,7 +16,7 @@ import { curvaTCO } from '../../src/lib/tco/calculadora.mjs';
 
 const ROOT = process.cwd();
 const COCHES = path.join(ROOT, 'data/coches');
-const ICES = path.join(ROOT, 'data/referencias/ice-equivalentes');
+const ICES = path.join(ROOT, 'data/referencias/termicos-equivalentes');
 
 // Los 20 pares del calculadora-tco.astro (orden narrativo)
 const PARES = [

@@ -13,7 +13,7 @@ const pares = [
 ];
 for (const [bevSlug, iceSlug, label] of pares) {
   const bevJson = read(`data/coches/${bevSlug}.json`);
-  const iceJson = read(`data/referencias/ice-equivalentes/${iceSlug}.json`);
+  const iceJson = read(`data/referencias/termicos-equivalentes/${iceSlug}.json`);
   const bev = bevFromJson(bevJson, { horizonte_anios: 5, aplicar_ayuda: true });
   const ice = iceFromJson(iceJson, { horizonte_anios: 5 });
   const curva = curvaTCO(bev, ice, {}, { horizonte_max: 5, granularidad_anios: 1 });

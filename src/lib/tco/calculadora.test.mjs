@@ -242,7 +242,7 @@ test('Resolver — Tesla Model 3 JSON real + BMW 320i JSON → cifras del Piloto
   );
   const bmw = JSON.parse(
     fs.readFileSync(
-      path.join(ROOT, 'data', 'referencias', 'ice-equivalentes', 'bmw-320i-sedan.json'),
+      path.join(ROOT, 'data', 'referencias', 'termicos-equivalentes', 'bmw-320i-sedan.json'),
       'utf8',
     ),
   );
@@ -343,7 +343,7 @@ test('curvaTCO — coherente con calcularTCO al horizonte del perfil', () => {
     { horizonte_anios: 5, aplicar_ayuda: true },
   );
   const ice = iceFromJson(
-    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/ice-equivalentes/bmw-320i-sedan.json'), 'utf8')),
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/termicos-equivalentes/bmw-320i-sedan.json'), 'utf8')),
     { horizonte_anios: 5 },
   );
   const bk_bev = calcularTCO(bev, { horizonte_anios: 5 });
@@ -405,7 +405,7 @@ test('curvaTCO — break-even del Tesla Model 3 con Plan Auto+ es desde t=0', ()
     { horizonte_anios: 5, aplicar_ayuda: true },
   );
   const ice = iceFromJson(
-    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/ice-equivalentes/bmw-320i-sedan.json'), 'utf8')),
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/termicos-equivalentes/bmw-320i-sedan.json'), 'utf8')),
     { horizonte_anios: 5 },
   );
   const c = curvaTCO(bev, ice, {}, { horizonte_max: 5 });
@@ -426,7 +426,7 @@ test('curvaTCO — Hyundai Inster LR: rentable al inicio pero ICE lo alcanza', (
     { horizonte_anios: 5, aplicar_ayuda: true },
   );
   const ice = iceFromJson(
-    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/ice-equivalentes/hyundai-i10-mpi.json'), 'utf8')),
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/termicos-equivalentes/hyundai-i10-mpi.json'), 'utf8')),
     { horizonte_anios: 5 },
   );
   assert.ok((bev.ayuda_eur ?? 0) > 0, 'Inster LR debe tener Plan Auto+ aplicado');
@@ -454,7 +454,7 @@ test('curvaTCO — empate en t=0 sin ayuda y BEV siempre más caro → sin break
     { horizonte_anios: 3, aplicar_ayuda: false },
   );
   const ice = iceFromJson(
-    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/ice-equivalentes/hyundai-i10-mpi.json'), 'utf8')),
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/termicos-equivalentes/hyundai-i10-mpi.json'), 'utf8')),
     { horizonte_anios: 3 },
   );
   assert.equal(bev.ayuda_eur ?? 0, 0);
@@ -477,7 +477,7 @@ test('curvaUnTren — BEV: t=0 arranca en -ayuda, monotonía y consistencia con 
     { horizonte_anios: 5, aplicar_ayuda: true },
   );
   const ice = iceFromJson(
-    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/ice-equivalentes/bmw-320i-sedan.json'), 'utf8')),
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/termicos-equivalentes/bmw-320i-sedan.json'), 'utf8')),
     { horizonte_anios: 5 },
   );
 
@@ -506,7 +506,7 @@ test('curvaUnTren — BEV: t=0 arranca en -ayuda, monotonía y consistencia con 
 
 test('curvaUnTren — ICE: t=0 arranca en 0 € (sin ayuda)', () => {
   const ice = iceFromJson(
-    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/ice-equivalentes/volkswagen-tiguan-tsi.json'), 'utf8')),
+    JSON.parse(fs.readFileSync(path.join(ROOT, 'data/referencias/termicos-equivalentes/volkswagen-tiguan-tsi.json'), 'utf8')),
     { horizonte_anios: 5 },
   );
   const cu = curvaUnTren(ice, {}, { horizonte_max: 5 });

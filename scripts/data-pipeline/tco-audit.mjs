@@ -27,7 +27,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '../..');
 const COCHES_DIR = path.join(REPO_ROOT, 'data/coches');
-const ICE_DIR = path.join(REPO_ROOT, 'data/referencias/ice-equivalentes');
+const ICE_DIR = path.join(REPO_ROOT, 'data/referencias/termicos-equivalentes');
 const BENCHMARKS_FILE = path.join(REPO_ROOT, 'data/referencias/benchmarks_ice.json');
 
 // ─── Configuración de validación ─────────────────────────────
@@ -208,7 +208,7 @@ function resolverEquivalenteICE(eq, iceIndex, benchmarks) {
   if (eq.tipo === 'intra_marca') {
     if (!eq.modelo_id) return { ok: false, msg: 'intra_marca sin modelo_id' };
     const target = iceIndex.find(i => i.slug === eq.modelo_id);
-    if (!target) return { ok: false, msg: `ICE "${eq.modelo_id}" no existe en data/referencias/ice-equivalentes/` };
+    if (!target) return { ok: false, msg: `ICE "${eq.modelo_id}" no existe en data/referencias/termicos-equivalentes/` };
     return { ok: true, target };
   }
 
@@ -231,7 +231,7 @@ function resolverEquivalenteICE(eq, iceIndex, benchmarks) {
     if (!target) {
       return {
         ok: false,
-        msg: `benchmark "${iceSlug}" del segmento "${seg}" no existe en data/referencias/ice-equivalentes/`,
+        msg: `benchmark "${iceSlug}" del segmento "${seg}" no existe en data/referencias/termicos-equivalentes/`,
       };
     }
     return { ok: true, target, benchmark, via: `segmento ${seg} → ${iceSlug}` };
@@ -299,7 +299,7 @@ function resumen({ soloTop20 = false, soloReady = false, soloActivables = false 
 
   console.log(`\n=== Auditoría TCO enchufa2 · ${new Date().toISOString().slice(0, 10)} ===\n`);
   console.log(`  Catálogo EV:      ${coches.length} modelos en data/coches/`);
-  console.log(`  ICEs 1:1:         ${iceIndex.length} en data/referencias/ice-equivalentes/`);
+  console.log(`  ICEs 1:1:         ${iceIndex.length} en data/referencias/termicos-equivalentes/`);
   console.log(`  Benchmarks seg.:  ${benchmarks ? Object.keys(benchmarks).length : 0} segmentos`);
   console.log('');
 

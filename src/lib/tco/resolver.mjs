@@ -1,6 +1,6 @@
 // src/lib/tco/resolver.mjs
 // Helpers para mapear el schema de data/coches/*.json y
-// data/referencias/ice-equivalentes/*.json al InputCoche de la calculadora.
+// data/referencias/termicos-equivalentes/*.json al InputCoche de la calculadora.
 //
 // El schema de cada campo es { valor, unidad, fuente_*, verificado, confianza, ... }.
 // Estas utilidades extraen `valor` + `confianza` de forma segura.
