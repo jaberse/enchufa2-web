@@ -1,5 +1,6 @@
 // scripts/data-pipeline/validate-ice-equivalent.mjs
-// Validador del skill enchufa2-ice-ingest para data/referencias/termicos-equivalentes/*.json
+// Validador de data/referencias/termicos-equivalentes/*.json.
+// Desde metodología v2 (2026-04-20) acepta fichas ICE | HEV | PHEV.
 //
 // Uso:
 //   node scripts/data-pipeline/validate-ice-equivalent.mjs <slug>      # un archivo
@@ -13,6 +14,8 @@ const DATA_DIR = 'data/referencias/termicos-equivalentes';
 const SEGMENTOS_VALIDOS = new Set([
   'A', 'B', 'B-SUV', 'C', 'C-SUV', 'D', 'D-SUV', 'E', 'E-SUV', 'F',
 ]);
+
+const TIPOS_VEHICULO_VALIDOS = new Set(['ICE', 'HEV', 'PHEV']);
 
 // Canónicos § 3 de docs/metodologia-tco.md
 const FUENTE_TIPO_CANONICA = new Set([
@@ -38,6 +41,12 @@ const FUENTE_TIPO_CANONICA = new Set([
   // specs_tco — consumo real
   'ev_database',
   'factor_categoria',
+  // v2 (HEV + PHEV, metodología 2026-04-20)
+  'factor_hev_sobre_ice',
+  'factor_phev_sobre_hev',
+  'media_hev_segmento',
+  'media_phev_segmento',
+  'estudio_sectorial_utility_factor',
 ]);
 
 // Legacy permitidos — marcados como warning para migrar (§3 tabla de migración)
@@ -64,10 +73,26 @@ const SPECS_OBLIGATORIOS = [
   'garantia_vehiculo_anos', 'fecha_lanzamiento_es', 'model_year', 'estado_comercial',
 ];
 
-const SPECS_TCO_OBLIGATORIOS = [
+// Comunes a ICE | HEV | PHEV
+const SPECS_TCO_OBLIGATORIOS_COMUNES = [
   'depreciacion_y3_pct', 'depreciacion_y5_pct', 'depreciacion_y10_pct',
   'mantenimiento_anual_eur', 'seguro_anual_eur',
-  'precio_combustible_eur_l', 'consumo_real_factor',
+  'precio_combustible_eur_l',
+];
+
+// ICE | HEV usan el factor unidimensional
+const SPECS_TCO_OBLIGATORIOS_UNIFACTOR = [
+  'consumo_real_factor',
+];
+
+// PHEV tiene consumos separados (§2.8)
+const SPECS_TCO_OBLIGATORIOS_PHEV = [
+  'consumo_electrico_wltp_kwh100km',
+  'consumo_combustion_wltp_l100km',
+  'autonomia_electrica_wltp_km',
+  'ratio_electrico_default',
+  'factor_real_electrico',
+  'factor_real_combustion',
 ];
 
 /**
@@ -94,7 +119,9 @@ function validarArchivo(slug) {
 
   if (json.slug !== slug) errors.push(`slug del fichero (${slug}) no coincide con json.slug (${json.slug})`);
   if (json.id !== json.slug) errors.push(`id ≠ slug (${json.id} vs ${json.slug})`);
-  if (json.tipo_vehiculo !== 'ICE') errors.push(`tipo_vehiculo debe ser "ICE" (es "${json.tipo_vehiculo}")`);
+  if (!TIPOS_VEHICULO_VALIDOS.has(json.tipo_vehiculo)) {
+    errors.push(`tipo_vehiculo inválido: "${json.tipo_vehiculo}" (debe ser ${[...TIPOS_VEHICULO_VALIDOS].join(' | ')})`);
+  }
   if (!SEGMENTOS_VALIDOS.has(json.segmento)) {
     errors.push(`segmento inválido: "${json.segmento}" (debe ser ${[...SEGMENTOS_VALIDOS].join(' | ')})`);
   }
@@ -124,9 +151,16 @@ function validarArchivo(slug) {
   };
   for (const k of SPECS_OBLIGATORIOS) checkEnvelope(specs, k);
 
-  // specs_tco obligatorios
+  // specs_tco obligatorios — varían según tipo_vehiculo (§2.6-2.8 v2)
   const st = json.specs_tco ?? {};
-  for (const k of SPECS_TCO_OBLIGATORIOS) {
+  const obligatorios_tco = [...SPECS_TCO_OBLIGATORIOS_COMUNES];
+  if (json.tipo_vehiculo === 'PHEV') {
+    obligatorios_tco.push(...SPECS_TCO_OBLIGATORIOS_PHEV);
+  } else {
+    // ICE y HEV
+    obligatorios_tco.push(...SPECS_TCO_OBLIGATORIOS_UNIFACTOR);
+  }
+  for (const k of obligatorios_tco) {
     if (st[k] == null) errors.push(`Falta specs_tco.${k}`);
     else checkEnvelope(st, k, ['valor', 'fuente_tipo']);
   }

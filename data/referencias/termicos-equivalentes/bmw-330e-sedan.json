@@ -1,0 +1,377 @@
+{
+  "id": "bmw-330e-sedan",
+  "slug": "bmw-330e-sedan",
+  "marca": "BMW",
+  "modelo": "Serie 3",
+  "variante": "330e Sedan",
+  "nombre_completo": "BMW 330e Sedan",
+  "segmento": "D",
+  "tipo_vehiculo": "PHEV",
+  "combustible": "gasolina + eléctrico",
+  "uso": "referencia_tco_hermano_plataforma",
+  "equivalente_ev_id": "bmw-i4-edrive40",
+  "benchmark_para": [
+    "bmw-i4-edrive40"
+  ],
+  "specs": {
+    "carroceria": {
+      "valor": "Berlina",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "notas": "Pendiente cross-check con BMW España (POC v2)"
+    },
+    "traccion": {
+      "valor": "RWD",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "notas": "Tracción trasera clásica del Serie 3 (misma plataforma CLAR que 320i)"
+    },
+    "motor_tipo": {
+      "valor": "2.0 TwinPower Turbo 4 cilindros gasolina + motor eléctrico síncrono integrado en caja 8AT",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "fuente_detalle": "BMW España ficha 330e MY2026 — pendiente verificación"
+    },
+    "cilindrada_cc": {
+      "valor": 1998,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "cc"
+    },
+    "n_cilindros": {
+      "valor": 4,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false
+    },
+    "potencia_kw": {
+      "valor": 215,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "kW",
+      "notas": "Potencia combinada sistema híbrido (184 CV térmico + 109 CV eléctrico, combinada homologada 292 CV)"
+    },
+    "potencia_cv": {
+      "valor": 292,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "CV"
+    },
+    "par_nm": {
+      "valor": 420,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "Nm",
+      "notas": "Par combinado sistema híbrido"
+    },
+    "transmision": {
+      "valor": "Automática Steptronic 8 velocidades con motor eléctrico integrado",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false
+    },
+    "consumo_wltp_l100km": {
+      "valor": 0.8,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "L/100km",
+      "fuente_detalle": "WLTP ponderado PHEV (ciclo con batería inicialmente cargada). El valor real en modo combustión puro está en specs_tco.consumo_combustion_wltp_l100km.",
+      "notas": "Consumo WLTP ponderado PHEV NO es representativo del uso real; usar specs_tco de §2.8.5 para cálculo TCO"
+    },
+    "emisiones_co2_wltp_g_km": {
+      "valor": 18,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "g/km",
+      "notas": "WLTP ponderado PHEV"
+    },
+    "normativa_emisiones": {
+      "valor": "Euro 6e",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false
+    },
+    "distintivo_dgt": {
+      "valor": "CERO",
+      "fuente_tipo": "DGT",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "notas": "PHEV con autonomía eléctrica WLTP ≥40 km obtiene etiqueta CERO DGT"
+    },
+    "aceleracion_0_100_s": {
+      "valor": 5.9,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "s"
+    },
+    "velocidad_max_kmh": {
+      "valor": 230,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "km/h"
+    },
+    "largo_mm": {
+      "valor": 4713,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "ancho_mm": {
+      "valor": 1827,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "alto_mm": {
+      "valor": 1442,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "batalla_mm": {
+      "valor": 2851,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "mm"
+    },
+    "peso_kg": {
+      "valor": 1820,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "kg",
+      "notas": "Peso en orden de marcha — ~215 kg sobre 320i por batería PHEV"
+    },
+    "plazas": {
+      "valor": 5,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false
+    },
+    "maletero_l": {
+      "valor": 375,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "L",
+      "notas": "105 L menos que el 320i (480 L) por alojamiento de batería bajo el piso del maletero"
+    },
+    "deposito_combustible_l": {
+      "valor": 40,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "L",
+      "notas": "Depósito reducido vs 320i (59 L) por espacio ocupado por batería/cableado HV"
+    },
+    "autonomia_wltp_km_derivada": {
+      "valor": null,
+      "fuente_tipo": "calculado",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "km",
+      "notas": "N/A en PHEV: la autonomía combinada depende del ratio eléctrico/combustión del usuario. Ver autonomia_electrica_wltp_km en specs_tco y depósito × consumo_combustion en modo CS."
+    },
+    "pvp": {
+      "valor": 57500,
+      "fuente_tipo": "distribuidor",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "€",
+      "fuente_detalle": "BMW España — PVP base 330e Sedan MY2026 (POC v2, pendiente cross-check con quecochemecompro.com + carwow.es)"
+    },
+    "pvp_fecha": {
+      "valor": "2026-04-21",
+      "fuente_tipo": "distribuidor",
+      "verificado": false
+    },
+    "pais_fabricacion": {
+      "valor": "Alemania (Múnich)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false
+    },
+    "plataforma": {
+      "valor": "CLAR (Cluster Architecture, BMW Group)",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "notas": "Misma plataforma que 320i Sedan y que el BMW i4 eDrive40"
+    },
+    "garantia_vehiculo_anos": {
+      "valor": 2,
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "unidad": "años",
+      "fuente_detalle": "BMW España — garantía legal estándar vehículo 2 años; batería de alto voltaje 8 años / 100.000 km (cobertura separada en meta)"
+    },
+    "fecha_lanzamiento_es": {
+      "valor": "2019",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "notas": "Generación G20; facelift LCI (2022) con upgrade de batería; pack MY2024 mantiene batería 19,5 kWh gross"
+    },
+    "model_year": {
+      "valor": "2026",
+      "fuente_tipo": "distribuidor",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false
+    },
+    "estado_comercial": {
+      "valor": "a la venta",
+      "fuente_tipo": "distribuidor",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false
+    }
+  },
+  "specs_tco": {
+    "depreciacion_y3_pct": {
+      "valor": 0.35,
+      "fuente_tipo": "factor_phev_sobre_hev",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Derivado de HEV segmento D (no hay Toyota Camry/Lexus ES en España): base ICE-D 320i = 30% → +3pp factor HEV §5.3.1 = 27% retención HEV → −5pp PHEV = 32% retención → depreciación 35%. Banda ±8%.",
+      "notas": "Pendiente cross-check con Ganvam PHEV segmento D Q1 2026."
+    },
+    "depreciacion_y5_pct": {
+      "valor": 0.48,
+      "fuente_tipo": "factor_phev_sobre_hev",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "fracción",
+      "fuente_detalle": "Derivado: ICE-D 320i = 44% → +2pp retención HEV = 42% depreciación HEV → −4pp retención PHEV = 48% depreciación PHEV (§5.4.1).",
+      "notas": "Revisar 2027-Q2 con muestras reales Coches.net 330e 2023-MY 45k km."
+    },
+    "depreciacion_y10_pct": {
+      "valor": 0.67,
+      "fuente_tipo": "factor_phev_sobre_hev",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "confianza": "baja",
+      "unidad": "fracción",
+      "fuente_detalle": "Proyección decay asintótico. ICE-D 320i = 65% → +1pp retención HEV y10 = 64% dep HEV → −2pp retención PHEV = 67% dep PHEV. Banda ±15% (y10 PHEV alta incertidumbre regulatoria CERO/ECO + salud batería).",
+      "notas": "Riesgo elevado por incertidumbre regulatoria sobre etiqueta CERO PHEV (debate 2026-2028) y degradación batería 19,5 kWh a 10 años."
+    },
+    "mantenimiento_anual_eur": {
+      "valor": 650,
+      "fuente_tipo": "factor_phev_sobre_hev",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "HEV-D estimado 500€/año (factor 0.85 sobre ICE-D 320i 590€/año) → ×1.30 factor PHEV §5.4.2 = 650€/año. Incluye gestión adicional de batería HV y sistema de carga on-board.",
+      "notas": "Sanity range PHEV 220-500€/año: excede ligeramente por tratarse de premium alemán (motor 2.0 + batería 19,5 kWh + mantenimiento sistema híbrido). Pendiente BMW Service Inclusive Next PHEV.",
+      "mantenimiento_cobertura": "Revisión oficial cada 12 meses o según Condition Based Service. Excluye neumáticos, pastillas, líquidos auxiliares e ITV. Incluye chequeo específico de batería HV y sistema de refrigeración de módulos PHEV."
+    },
+    "seguro_anual_eur": {
+      "valor": 780,
+      "fuente_tipo": "factor_phev_sobre_hev",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "confianza": "media",
+      "unidad": "€/año",
+      "fuente_detalle": "HEV-D estimado 710€/año (factor 1.10 sobre ICE-D 320i 650€/año perfil premium) → ×1.10 factor PHEV §5.4.3 = 780€/año. Perfil enchufa2 estándar: todo riesgo 500€ franquicia.",
+      "notas": "Pendiente: 3 cotizaciones específicas 330e con perfil enchufa2 (Mapfre + Mutua Madrileña + Rastreator).",
+      "seguro_cotizaciones": []
+    },
+    "precio_combustible_eur_l": {
+      "valor": null,
+      "fuente_tipo": "parametros_calculador",
+      "verificado": false,
+      "unidad": "€/L",
+      "notas": "Se tomará del archivo de parámetros (real-time MITECO) junto con precio_kwh para el cálculo combinado §2.8.5."
+    },
+    "consumo_electrico_wltp_kwh100km": {
+      "valor": 18.5,
+      "unidad": "kWh/100km",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "confianza": "alta",
+      "notas": "Modo EV puro con batería cargada (charge-depleting WLTP)."
+    },
+    "consumo_combustion_wltp_l100km": {
+      "valor": 6.9,
+      "unidad": "L/100km",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "confianza": "alta",
+      "notas": "Modo combustión con batería agotada (charge-sustaining WLTP). ~6% peor que el 320i (6,5 L/100km) por peso extra batería y motor térmico ligeramente menor en eficiencia térmica pura."
+    },
+    "autonomia_electrica_wltp_km": {
+      "valor": 101,
+      "unidad": "km",
+      "fuente_tipo": "fabricante",
+      "fuente_fecha": "2026-04-21",
+      "verificado": false,
+      "confianza": "alta",
+      "notas": "Autonomía WLTP modo EV puro. Batería 19,5 kWh gross / ~12 kWh útil."
+    },
+    "ratio_electrico_default": {
+      "valor": 0.60,
+      "unidad": "fracción",
+      "fuente_tipo": "estudio_sectorial_utility_factor",
+      "fuente_fecha": "2024-06-01",
+      "verificado": true,
+      "confianza": "media",
+      "fuente_detalle": "ICCT 2024 — PHEV real-world utility factor España. Perfil ponderado: 60% usuarios con cargador casa (ratio medio 0.72), 40% sin cargador accesible (ratio medio 0.24). Autonomía EV 101 km permite cubrir 30 km/día × 4 días/semana con 1 carga.",
+      "notas": "Slider editable por el usuario en la UI; el default 0.60 es el punto central enchufa2. Si el usuario declara >300 días carga/año, mostrar advertencia §2.8.5."
+    },
+    "factor_real_electrico": {
+      "valor": 1.10,
+      "unidad": "multiplicador",
+      "fuente_tipo": "factor_categoria",
+      "fuente_fecha": "2024-06-01",
+      "verificado": true,
+      "confianza": "media",
+      "fuente_detalle": "§2.8.5 — factor canónico enchufa2 para modo EV puro PHEV (similar a BEV pequeño). Basado en EV Database + InsideEVs 2024.",
+      "notas": "18,5 kWh/100km WLTP × 1.10 = 20,4 kWh/100km real en modo EV."
+    },
+    "factor_real_combustion": {
+      "valor": 1.25,
+      "unidad": "multiplicador",
+      "fuente_tipo": "factor_categoria",
+      "fuente_fecha": "2024-06-01",
+      "verificado": true,
+      "confianza": "media",
+      "fuente_detalle": "§2.8.5 — factor canónico enchufa2 para modo combustión PHEV (peor que ICE puro del segmento porque el motor térmico arrastra peso de batería). Basado en ICCT Real-World Fuel Consumption Gap 2024.",
+      "notas": "6,9 L/100km WLTP × 1.25 = 8,6 L/100km real en modo CS. El PHEV en autopista con batería agotada consume sensiblemente más que un ICE hermano."
+    }
+  },
+  "meta": {
+    "fecha_actualizacion": "2026-04-21",
+    "estado": "ficha_poc_v2_borrador",
+    "notas_my": "MY 2026 en comercialización. Generación G20 LCI (2022-actualidad) con pack batería 19,5 kWh (upgrade mid-cycle). POC de metodología v2 §2.8 — todos los campos salvo estudios sectoriales §2.8.5 ICCT tienen verificado: false pendiente de cross-check con BMW España + distribuidor oficial.",
+    "proposito": "POC de metodología TCO v2 §2.8 — primera ficha PHEV del sistema. Valida el schema (consumo_electrico_wltp_kwh100km, consumo_combustion_wltp_l100km, autonomia_electrica_wltp_km, ratio_electrico_default, factor_real_electrico, factor_real_combustion) antes de escalar a los 12 PHEV restantes de F3.4. Referente canónico PHEV para BMW i4 eDrive40 (ver mapeo-equivalente-termico.md §1).",
+    "tco_scaffolded": true,
+    "tco_poblado": true,
+    "tco_activo_en_calculadora": false,
+    "tco_estado": "borrador",
+    "tco_confianza_general": "baja",
+    "tco_revision_requerida": "Cross-check specs fabricante vs BMW España ficha oficial 330e MY2026; Ganvam PHEV segmento D Q1 2026 para depreciación; 3 cotizaciones específicas seguro 330e con perfil enchufa2",
+    "tco_confianza_congelada_fecha": "2026-04-21",
+    "tco_confianza_congelada_motivo": "POC schema v2 — ficha creada para validar molde; NO publicar en calculadora hasta verificación completa de specs fabricante y cotizaciones seguro.",
+    "equivalente_ev_relacion": "hermano_plataforma_phev — misma plataforma CLAR, fábrica Múnich y linaje Serie 3 que el BMW i4 eDrive40 (que es técnicamente un Gran Coupé G26 sobre CLAR modificada). 330e es el análogo electrificado directo del BEV i4."
+  }
+}
