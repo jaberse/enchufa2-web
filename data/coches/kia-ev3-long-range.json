@@ -669,15 +669,6 @@
       "unidad": "€/kWh",
       "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
     },
-    "consumo_real_factor": {
-      "valor": 1.17,
-      "fuente_tipo": "ev_database",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "EV Database + ICCT gap 2024 — BEV C-SUV NMC generalista ~14-20% sobre WLTP. Cd 0.29, SUV compacto, 1.880 kg.",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador"
-    },
     "equivalente_ice": {
       "tipo": "benchmark_segmento",
       "segmento": "C-SUV",

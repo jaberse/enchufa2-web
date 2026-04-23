@@ -22,8 +22,7 @@ import { PARAMS_ENCHUFA2_ESTANDAR, margenConfianza } from './params.mjs';
  * @property {'BEV'|'ICE'} tren               Tipo de tren motriz.
  * @property {number} pvp_eur                 PVP oficial en €.
  * @property {number} [ayuda_eur]             Ayuda Plan Auto+ / MOVES III en € (0 si no aplica o ICE).
- * @property {number} consumo_wltp            Consumo WLTP: kWh/100km (BEV) o L/100km (ICE).
- * @property {number} consumo_real_factor     Factor corrector WLTP → real (ej. 1,12 / 1,20).
+ * @property {number} consumo_wltp            Consumo WLTP: kWh/100km (BEV) o L/100km (ICE). Se usa tal cual (v2.1 — sin factor corrector; ver docs/metodologia-tco.md §2.4).
  * @property {number} depreciacion_pct        Fracción de depreciación al horizonte elegido (0,45 = 45%).
  * @property {DeprecAnchors} [depreciacion_anchors]  Anchors y3/y5/y10 para curvaTCO.
  * @property {number} mantenimiento_anual_eur Mantenimiento €/año (promedio del horizonte).
@@ -63,11 +62,12 @@ export function calcularTCO(coche, overrides = {}) {
   const h = p.horizonte_anios;
   const km_totales = p.km_anual * h;
 
-  const consumo_real = coche.consumo_wltp * coche.consumo_real_factor;
+  // v2.1 — sin factor corrector WLTP→real. Consumo WLTP homologado tal cual.
+  const consumo_real = coche.consumo_wltp;
 
   const depreciacion_eur = coche.pvp_eur * coche.depreciacion_pct;
 
-  // Energía = km × (consumo_real / 100) × precio_unidad
+  // Energía = km × (consumo / 100) × precio_unidad
   const precio_unidad =
     coche.tren === 'BEV' ? p.precio_kwh_eur : p.precio_litro_eur;
   const energia_eur = km_totales * (consumo_real / 100) * precio_unidad;
@@ -192,7 +192,8 @@ function tcoAcumulado(coche, p, t) {
     // En t=0 solo se aplica la ayuda del BEV (crédito fiscal recibido en compra).
     return coche.tren === 'BEV' ? -(coche.ayuda_eur ?? 0) : 0;
   }
-  const consumo_real = coche.consumo_wltp * coche.consumo_real_factor;
+  // v2.1 — WLTP puro, sin factor corrector.
+  const consumo_real = coche.consumo_wltp;
   const km_totales = p.km_anual * t;
 
   const depreciacion = coche.pvp_eur * depreciacionFraccion(coche, t);

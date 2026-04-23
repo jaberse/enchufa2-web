@@ -780,15 +780,6 @@
       "unidad": "€/kWh",
       "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
     },
-    "consumo_real_factor": {
-      "valor": 1.14,
-      "fuente_tipo": "ev_database",
-      "fuente_fecha": "2025-01-15",
-      "fuente_detalle": "EV Database 2025 — Kona Electric 65.4 kWh: 14.7 WLTP → ~16.8 kWh/100km real. Factor 1.14 por eficiencia alta plataforma K3 dedicada.",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador"
-    },
     "equivalente_ice": {
       "tipo": "benchmark_segmento",
       "segmento": "C-SUV",

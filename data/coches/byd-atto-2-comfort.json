@@ -718,16 +718,6 @@
       "unidad": "€/kWh",
       "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
     },
-    "consumo_real_factor": {
-      "valor": 1.18,
-      "fuente_tipo": "factor_categoria",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "ICCT Real-World Energy Consumption 2024 — BEV SUV generalista ~15-22% sobre WLTP. Cd ~0,31 + 1.635 kg + neumáticos 17-18\" penalizan vs sedán aerodinámico (Tesla 1.12).",
-      "verificado": false,
-      "confianza": "media",
-      "unidad": "multiplicador",
-      "notas": "Factor derivado de rango ICCT 15-22% para BEV SUV generalista, no medición específica Atto 2. Confianza media por ser factor de categoría."
-    },
     "equivalente_ice": {
       "tipo": "benchmark_segmento",
       "segmento": "B-SUV",

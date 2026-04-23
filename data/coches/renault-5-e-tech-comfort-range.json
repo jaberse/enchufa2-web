@@ -672,15 +672,6 @@
       "unidad": "€/kWh",
       "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
     },
-    "consumo_real_factor": {
-      "valor": 1.18,
-      "fuente_tipo": "ev_database",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "EV Database 2025 — Renault 5 Comfort Range 52 kWh: 15.2 WLTP → ~17.9 kWh/100km real. Factor 1.18 por formato utilitario alto.",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador"
-    },
     "equivalente_ice": {
       "tipo": "benchmark_segmento",
       "segmento": "B",

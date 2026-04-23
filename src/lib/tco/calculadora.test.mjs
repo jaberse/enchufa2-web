@@ -1,9 +1,13 @@
 // src/lib/tco/calculadora.test.mjs
-// Tests unitarios de la calculadora TCO.
+// Tests unitarios de la calculadora TCO — metodología v2.1 (WLTP puro).
 // Ejecutar: npm run test:tco
 //
 // Validan los tres pilotos manuales documentados en /docs/piloto-{1,2,3}-tco-calculo-manual.md.
 // Tolerancia ±1 € (redondeo decimal en los documentos).
+//
+// v2.1 (2026-04-22): se retira el factor corrector WLTP→real. Los InputCoche
+// ya no llevan `consumo_real_factor`. Los valores esperados son los del
+// recálculo canónico de los pilotos con consumo WLTP homologado.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -38,14 +42,13 @@ function eur(a, b, tol = EUR) {
 // Nota: IVTM uniforme 80 €/año (decisión editorial del piloto 1).
 // ────────────────────────────────────────────────────────────────
 
-test('Piloto 1 — ë-C3 sin Plan Auto+ (TCO 5 años = 19.982 €)', () => {
+test('Piloto 1 — ë-C3 sin Plan Auto+ (TCO 5 años = 19.617 €)', () => {
   const tco = calcularTCO(
     {
       tren: 'BEV',
       pvp_eur: 23_800,
       ayuda_eur: 0,
       consumo_wltp: 15.9,
-      consumo_real_factor: 1.18,
       depreciacion_pct: 0.625,
       mantenimiento_anual_eur: 150,
       seguro_anual_eur: 313,
@@ -53,21 +56,20 @@ test('Piloto 1 — ë-C3 sin Plan Auto+ (TCO 5 años = 19.982 €)', () => {
     { ivtm_bev_eur: 80 },
   );
   eur(tco.depreciacion_eur, 14_875);
-  eur(tco.energia_eur, 2_392, 2); // redondeo consumo_real 18,76
+  eur(tco.energia_eur, 2_027, 2);
   eur(tco.mantenimiento_eur, 750);
   eur(tco.seguro_eur, 1_565);
   eur(tco.impuestos_eur, 400);
-  eur(tco.tco_total_eur, 19_982, 3);
-  eur(tco.tco_por_km_eur, 0.266, 0.001);
+  eur(tco.tco_total_eur, 19_617, 3);
+  eur(tco.tco_por_km_eur, 0.262, 0.001);
 });
 
-test('Piloto 1 — C3 PureTech 100 (TCO 5 años = 19.624 €)', () => {
+test('Piloto 1 — C3 PureTech 100 (TCO 5 años = 18.972 €)', () => {
   const tco = calcularTCO(
     {
       tren: 'ICE',
       pvp_eur: 17_426,
       consumo_wltp: 5.6,
-      consumo_real_factor: 1.10,
       depreciacion_pct: 0.45,
       mantenimiento_anual_eur: 350,
       seguro_anual_eur: 494,
@@ -75,12 +77,12 @@ test('Piloto 1 — C3 PureTech 100 (TCO 5 años = 19.624 €)', () => {
     { ivtm_ice_eur: 80 },
   );
   eur(tco.depreciacion_eur, 7_842, 2);
-  eur(tco.energia_eur, 7_161, 2);
+  eur(tco.energia_eur, 6_510, 2);
   eur(tco.mantenimiento_eur, 1_750);
   eur(tco.seguro_eur, 2_470);
   eur(tco.impuestos_eur, 400);
-  eur(tco.tco_total_eur, 19_623, 3);
-  eur(tco.tco_por_km_eur, 0.262, 0.001);
+  eur(tco.tco_total_eur, 18_972, 3);
+  eur(tco.tco_por_km_eur, 0.253, 0.001);
 });
 
 // ────────────────────────────────────────────────────────────────
@@ -89,45 +91,42 @@ test('Piloto 1 — C3 PureTech 100 (TCO 5 años = 19.624 €)', () => {
 // Usa IVTM 40/90 del perfil enchufa2 estándar.
 // ────────────────────────────────────────────────────────────────
 
-test('Piloto 2 — iX1 xDrive30 (TCO 5 años = 24.580 €, iX1 no elegible >45k€)', () => {
+test('Piloto 2 — iX1 xDrive30 (TCO 5 años = 24.133 €, iX1 no elegible >45k€)', () => {
   const tco = calcularTCO({
     tren: 'BEV',
     pvp_eur: 53_600,
     ayuda_eur: 0,
     consumo_wltp: 17.5,
-    consumo_real_factor: 1.20,
     depreciacion_pct: 0.32,
     mantenimiento_anual_eur: 230,
     seguro_anual_eur: 680,
   });
   eur(tco.depreciacion_eur, 17_152);
-  eur(tco.energia_eur, 2_678, 2);
-  eur(tco.tco_total_eur, 24_580, 3);
-  eur(tco.tco_por_km_eur, 0.328, 0.001);
+  eur(tco.energia_eur, 2_231, 2);
+  eur(tco.tco_total_eur, 24_133, 3);
+  eur(tco.tco_por_km_eur, 0.322, 0.001);
 });
 
-test('Piloto 2 — X1 sDrive18i (TCO 5 años = 34.234 €)', () => {
+test('Piloto 2 — X1 sDrive18i (TCO 5 años = 33.117 €)', () => {
   const tco = calcularTCO({
     tren: 'ICE',
     pvp_eur: 47_636,
     consumo_wltp: 6.4,
-    consumo_real_factor: 1.15,
     depreciacion_pct: 0.42,
     mantenimiento_anual_eur: 450,
     seguro_anual_eur: 594,
   });
   eur(tco.depreciacion_eur, 20_007, 2);
-  eur(tco.energia_eur, 8_557, 2);
-  eur(tco.tco_total_eur, 34_234, 3);
+  eur(tco.energia_eur, 7_440, 2);
+  eur(tco.tco_total_eur, 33_117, 3);
 });
 
-test('Piloto 2 — compararTCO: iX1 ahorra 9.654 € (28,2 %)', () => {
+test('Piloto 2 — compararTCO: iX1 ahorra 8.984 € (27,1 %)', () => {
   const cmp = compararTCO(
     {
       tren: 'BEV',
       pvp_eur: 53_600,
       consumo_wltp: 17.5,
-      consumo_real_factor: 1.20,
       depreciacion_pct: 0.32,
       mantenimiento_anual_eur: 230,
       seguro_anual_eur: 680,
@@ -136,16 +135,15 @@ test('Piloto 2 — compararTCO: iX1 ahorra 9.654 € (28,2 %)', () => {
       tren: 'ICE',
       pvp_eur: 47_636,
       consumo_wltp: 6.4,
-      consumo_real_factor: 1.15,
       depreciacion_pct: 0.42,
       mantenimiento_anual_eur: 450,
       seguro_anual_eur: 594,
     },
   );
-  eur(cmp.ahorro_bev_eur, 9_654, 3);
+  eur(cmp.ahorro_bev_eur, 8_984, 3);
   assert.ok(
-    Math.abs(cmp.ahorro_bev_pct - 0.282) < 0.002,
-    `ahorro_pct esperado ≈0,282, obtenido ${cmp.ahorro_bev_pct.toFixed(3)}`,
+    Math.abs(cmp.ahorro_bev_pct - 0.271) < 0.002,
+    `ahorro_pct esperado ≈0,271, obtenido ${cmp.ahorro_bev_pct.toFixed(3)}`,
   );
 });
 
@@ -154,60 +152,56 @@ test('Piloto 2 — compararTCO: iX1 ahorra 9.654 € (28,2 %)', () => {
 // docs/piloto-3-tco-calculo-manual.md
 // ────────────────────────────────────────────────────────────────
 
-test('Piloto 3 — Tesla Model 3 RWD con Plan Auto+ 3.375 € (TCO 5 años = 19.305 €)', () => {
+test('Piloto 3 — Tesla Model 3 RWD con Plan Auto+ 3.375 € (TCO 5 años = 19.104 €)', () => {
   const tco = calcularTCO({
     tren: 'BEV',
     pvp_eur: 36_990,
     ayuda_eur: 3_375,
     consumo_wltp: 13.2,
-    consumo_real_factor: 1.12,
     depreciacion_pct: 0.45,
     mantenimiento_anual_eur: 90,
     seguro_anual_eur: 700,
   });
-  eur(tco.depreciacion_eur, 16_645, 2);
-  eur(tco.energia_eur, 1_884, 2);
+  eur(tco.depreciacion_eur, 16_646, 2);
+  eur(tco.energia_eur, 1_683, 2);
   eur(tco.ayudas_eur, 3_375);
-  eur(tco.tco_total_eur, 19_304, 3);
+  eur(tco.tco_total_eur, 19_104, 3);
 });
 
-test('Piloto 3 — Tesla Model 3 RWD sin ayuda (TCO 5 años = 22.680 €)', () => {
+test('Piloto 3 — Tesla Model 3 RWD sin ayuda (TCO 5 años = 22.479 €)', () => {
   const tco = calcularTCO({
     tren: 'BEV',
     pvp_eur: 36_990,
     ayuda_eur: 0,
     consumo_wltp: 13.2,
-    consumo_real_factor: 1.12,
     depreciacion_pct: 0.45,
     mantenimiento_anual_eur: 90,
     seguro_anual_eur: 700,
   });
-  eur(tco.tco_total_eur, 22_679, 3);
+  eur(tco.tco_total_eur, 22_479, 3);
 });
 
-test('Piloto 3 — BMW 320i Sedan (TCO 5 años = 36.808 €)', () => {
+test('Piloto 3 — BMW 320i Sedan (TCO 5 años = 35.674 €)', () => {
   const tco = calcularTCO({
     tren: 'ICE',
     pvp_eur: 49_814,
     consumo_wltp: 6.5,
-    consumo_real_factor: 1.15,
     depreciacion_pct: 0.44,
     mantenimiento_anual_eur: 500,
     seguro_anual_eur: 650,
   });
   eur(tco.depreciacion_eur, 21_918, 2);
-  eur(tco.energia_eur, 8_690, 2);
-  eur(tco.tco_total_eur, 36_808, 3);
+  eur(tco.energia_eur, 7_556, 2);
+  eur(tco.tco_total_eur, 35_674, 3);
 });
 
-test('Piloto 3 — compararTCO con ayuda: Tesla ahorra 47,6 %', () => {
+test('Piloto 3 — compararTCO con ayuda: Tesla ahorra 46,5 %', () => {
   const cmp = compararTCO(
     {
       tren: 'BEV',
       pvp_eur: 36_990,
       ayuda_eur: 3_375,
       consumo_wltp: 13.2,
-      consumo_real_factor: 1.12,
       depreciacion_pct: 0.45,
       mantenimiento_anual_eur: 90,
       seguro_anual_eur: 700,
@@ -216,16 +210,15 @@ test('Piloto 3 — compararTCO con ayuda: Tesla ahorra 47,6 %', () => {
       tren: 'ICE',
       pvp_eur: 49_814,
       consumo_wltp: 6.5,
-      consumo_real_factor: 1.15,
       depreciacion_pct: 0.44,
       mantenimiento_anual_eur: 500,
       seguro_anual_eur: 650,
     },
   );
-  eur(cmp.ahorro_bev_eur, 17_503, 3);
+  eur(cmp.ahorro_bev_eur, 16_570, 3);
   assert.ok(
-    Math.abs(cmp.ahorro_bev_pct - 0.476) < 0.002,
-    `ahorro_pct esperado ≈0,476, obtenido ${cmp.ahorro_bev_pct.toFixed(3)}`,
+    Math.abs(cmp.ahorro_bev_pct - 0.465) < 0.002,
+    `ahorro_pct esperado ≈0,465, obtenido ${cmp.ahorro_bev_pct.toFixed(3)}`,
   );
 });
 
@@ -250,9 +243,9 @@ test('Resolver — Tesla Model 3 JSON real + BMW 320i JSON → cifras del Piloto
   const cmp = compararTCO(bevFromJson(tesla), iceFromJson(bmw));
 
   // Coherencia con el Piloto 3 (con ayuda Plan Auto+ aplicada por defecto).
-  eur(cmp.bev.tco_total_eur, 19_304, 5);
-  eur(cmp.ice.tco_total_eur, 36_808, 5);
-  eur(cmp.ahorro_bev_eur, 17_503, 10);
+  eur(cmp.bev.tco_total_eur, 19_104, 5);
+  eur(cmp.ice.tco_total_eur, 35_674, 5);
+  eur(cmp.ahorro_bev_eur, 16_570, 10);
 });
 
 // ────────────────────────────────────────────────────────────────
@@ -264,7 +257,6 @@ test('Propiedad — margen_pct es el máximo de los márgenes individuales', () 
     tren: 'BEV',
     pvp_eur: 30_000,
     consumo_wltp: 15,
-    consumo_real_factor: 1.15,
     depreciacion_pct: 0.4,
     mantenimiento_anual_eur: 150,
     seguro_anual_eur: 500,
@@ -284,7 +276,6 @@ test('Propiedad — horizonte 3 años da km totales 45.000', () => {
       tren: 'BEV',
       pvp_eur: 30_000,
       consumo_wltp: 15,
-      consumo_real_factor: 1.15,
       depreciacion_pct: 0.25,
       mantenimiento_anual_eur: 100,
       seguro_anual_eur: 500,
@@ -301,7 +292,6 @@ test('Propiedad — ICE ignora el campo ayuda_eur (aunque se pase)', () => {
     // @ts-expect-error — ICE no debería aceptar ayuda, pero lo ignora silenciosamente
     ayuda_eur: 5_000,
     consumo_wltp: 6,
-    consumo_real_factor: 1.1,
     depreciacion_pct: 0.4,
     mantenimiento_anual_eur: 300,
     seguro_anual_eur: 400,
@@ -315,7 +305,7 @@ test('Propiedad — ICE ignora el campo ayuda_eur (aunque se pase)', () => {
 
 test('depreciacionFraccion — anchors exactos en t=0, 3, 5, 10', () => {
   const coche = {
-    tren: 'BEV', pvp_eur: 30_000, consumo_wltp: 15, consumo_real_factor: 1.15,
+    tren: 'BEV', pvp_eur: 30_000, consumo_wltp: 15,
     depreciacion_pct: 0.5, mantenimiento_anual_eur: 150, seguro_anual_eur: 500,
     depreciacion_anchors: { y3: 0.36, y5: 0.50, y10: 0.70 },
   };
@@ -328,7 +318,7 @@ test('depreciacionFraccion — anchors exactos en t=0, 3, 5, 10', () => {
 
 test('depreciacionFraccion — interpolación lineal en tramos intermedios', () => {
   const coche = {
-    tren: 'BEV', pvp_eur: 30_000, consumo_wltp: 15, consumo_real_factor: 1.15,
+    tren: 'BEV', pvp_eur: 30_000, consumo_wltp: 15,
     depreciacion_pct: 0.5, mantenimiento_anual_eur: 150, seguro_anual_eur: 500,
     depreciacion_anchors: { y3: 0.30, y5: 0.50, y10: 0.70 },
   };
@@ -358,12 +348,12 @@ test('curvaTCO — coherente con calcularTCO al horizonte del perfil', () => {
 test('curvaTCO — t=0: BEV arranca en −ayuda (Plan Auto+), ICE arranca en 0', () => {
   const bev = {
     tren: 'BEV', pvp_eur: 40_000, ayuda_eur: 4_500, consumo_wltp: 15,
-    consumo_real_factor: 1.15, depreciacion_pct: 0.5,
+    depreciacion_pct: 0.5,
     mantenimiento_anual_eur: 150, seguro_anual_eur: 500,
     depreciacion_anchors: { y3: 0.36, y5: 0.50, y10: 0.70 },
   };
   const ice = {
-    tren: 'ICE', pvp_eur: 30_000, consumo_wltp: 6, consumo_real_factor: 1.1,
+    tren: 'ICE', pvp_eur: 30_000, consumo_wltp: 6,
     depreciacion_pct: 0.5, mantenimiento_anual_eur: 300, seguro_anual_eur: 500,
     depreciacion_anchors: { y3: 0.40, y5: 0.55, y10: 0.75 },
   };
@@ -377,12 +367,12 @@ test('curvaTCO — t=0: BEV arranca en −ayuda (Plan Auto+), ICE arranca en 0',
 test('curvaTCO — monotonicidad: TCO acumulado nunca decrece tras t=0', () => {
   const bev = {
     tren: 'BEV', pvp_eur: 40_000, ayuda_eur: 4_500, consumo_wltp: 15,
-    consumo_real_factor: 1.15, depreciacion_pct: 0.5,
+    depreciacion_pct: 0.5,
     mantenimiento_anual_eur: 150, seguro_anual_eur: 500,
     depreciacion_anchors: { y3: 0.36, y5: 0.50, y10: 0.70 },
   };
   const ice = {
-    tren: 'ICE', pvp_eur: 30_000, consumo_wltp: 6, consumo_real_factor: 1.1,
+    tren: 'ICE', pvp_eur: 30_000, consumo_wltp: 6,
     depreciacion_pct: 0.5, mantenimiento_anual_eur: 300, seguro_anual_eur: 500,
     depreciacion_anchors: { y3: 0.40, y5: 0.55, y10: 0.75 },
   };
@@ -527,7 +517,6 @@ test('curvaUnTren — margen heredado del peor de las 4 confianzas (§4 metodolo
     pvp_eur: 40000,
     ayuda_eur: 0,
     consumo_wltp: 15,
-    consumo_real_factor: 1.15,
     depreciacion_pct: 40,
     mantenimiento_anual_eur: 300,
     seguro_anual_eur: 600,

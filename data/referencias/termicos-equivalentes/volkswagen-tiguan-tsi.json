@@ -289,15 +289,6 @@
       "fuente_tipo": "parametros_calculador",
       "verificado": false,
       "unidad": "€/L"
-    },
-    "consumo_real_factor": {
-      "valor": 1.17,
-      "fuente_tipo": "investigacion_web",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "ICCT gap 2024 — SUV medio MHEV gasolina ~14-20% sobre WLTP. Peso y aerodinámica penalizan en ciclo real.",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador"
     }
   },
   "meta": {

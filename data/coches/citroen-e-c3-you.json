@@ -654,16 +654,6 @@
       "notas": "Perfil estándar enchufa2 (40 años, 15 carnet, zona media, TR franquicia 500€). Valor agregado de mercado EV, no cotización específica ë-C3. Pendiente: 3 cotizaciones específicas.",
       "seguro_cotizaciones": []
     },
-    "consumo_real_factor": {
-      "valor": 1.18,
-      "fuente_tipo": "factor_categoria",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "ICCT Real-World Energy Consumption 2024 (factor estándar EV Europa)",
-      "verificado": false,
-      "confianza": "media",
-      "unidad": "multiplicador",
-      "notas": "Factor estándar ICCT por carrocería, no medición específica ëC3. Confianza media por ser factor de categoría (§2.4 metodología-tco.md)."
-    },
     "equivalente_ice": {
       "tipo": "intra_marca",
       "modelo_id": "citroen-c3-puretech-100",

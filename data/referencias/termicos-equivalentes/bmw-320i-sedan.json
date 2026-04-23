@@ -295,16 +295,6 @@
       "verificado": false,
       "unidad": "€/L",
       "notas": "Se tomará del archivo de parámetros (real-time MITECO)."
-    },
-    "consumo_real_factor": {
-      "valor": 1.15,
-      "fuente_tipo": "investigacion_web",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "ICCT Real-World Fuel Consumption gap 2024 — gasolina turbo premium ~12-18% sobre WLTP",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador",
-      "notas": "Similar a X1 sDrive18i (1.15). Mild hybrid 48V ayuda en ciudad pero no compensa el ciclo real."
     }
   },
   "meta": {

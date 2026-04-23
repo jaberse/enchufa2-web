@@ -308,16 +308,6 @@
       "verificado": false,
       "unidad": "€/L",
       "notas": "Se tomará del archivo de parámetros del calculador (real-time MITECO vía Cloudflare Workers cron)."
-    },
-    "consumo_real_factor": {
-      "valor": 1.15,
-      "fuente_tipo": "investigacion_web",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "ICCT Real-World Fuel Consumption gap 2024 — gasolina turbo compacta ~12-18% sobre WLTP",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador",
-      "notas": "Gap WLTP/real mayor que C3 PureTech (1.10) por mayor peso, tracción FWD con engine stop-start 48V pero ciclo más exigente."
     }
   },
   "meta": {

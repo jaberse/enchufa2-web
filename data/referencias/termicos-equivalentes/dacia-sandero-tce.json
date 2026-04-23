@@ -290,15 +290,6 @@
       "verificado": false,
       "unidad": "€/L",
       "notas": "Gasolina SP95 del parámetro estándar; nota: GLP ~0,95€/L pero TCO calcula contra gasolina por defecto."
-    },
-    "consumo_real_factor": {
-      "valor": 1.1,
-      "fuente_tipo": "investigacion_web",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "ICCT gap 2024 — turbo-gasolina pequeño mass-market ~8-13% sobre WLTP.",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador"
     }
   },
   "meta": {

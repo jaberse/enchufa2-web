@@ -56,13 +56,14 @@ const TOP_20 = [
   'bmw-ix2-xdrive30',
 ];
 
-// Campos obligatorios en specs_tco para que un EV sea activable
+// Campos obligatorios en specs_tco para que un EV sea activable.
+// v2.1 (2026-04-22): consumo_real_factor retirado — WLTP puro tal cual
+// (ver docs/metodologia-tco.md §2.4).
 const CAMPOS_OBLIGATORIOS_EV = [
   'depreciacion_y3_pct',
   'depreciacion_y5_pct',
   'mantenimiento_anual_eur',
   'seguro_anual_eur',
-  'consumo_real_factor',
   'equivalente_ice',
 ];
 
@@ -72,7 +73,6 @@ const CAMPOS_OBLIGATORIOS_ICE = [
   'depreciacion_y5_pct',
   'mantenimiento_anual_eur',
   'seguro_anual_eur',
-  'consumo_real_factor',
 ];
 
 // Metadata que deben tener los campos numéricos con valor
@@ -85,7 +85,6 @@ const RANGOS_RAZONABLES = {
   depreciacion_y10_pct: [0.45, 0.92],       // 45-92% pérdida a 10 años
   mantenimiento_anual_eur: [50, 2500],      // 50€ ë-C3 ... 2500€ Tesla Plaid
   seguro_anual_eur: [200, 2500],            // perfil estándar
-  consumo_real_factor: [1.00, 1.35],        // 0-35% sobre WLTP
 };
 
 const CONFIANZAS_VALIDAS = ['alta', 'media', 'baja'];

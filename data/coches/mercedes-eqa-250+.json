@@ -681,15 +681,6 @@
       "unidad": "€/kWh",
       "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
     },
-    "consumo_real_factor": {
-      "valor": 1.17,
-      "fuente_tipo": "ev_database",
-      "fuente_fecha": "2025-01-15",
-      "fuente_detalle": "EV Database 2025 — EQA 250+ 70.5 kWh útil: 15.9 WLTP → ~18.6 kWh/100km real. Factor 1.17 por SUV premium Rastatt.",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador"
-    },
     "equivalente_ice": {
       "tipo": "benchmark_segmento",
       "segmento": "C-SUV",

@@ -259,7 +259,7 @@ const planAutoOpts = [...new Set(modelos.map(m => m.plan_auto_elegible).filter(B
         <div class="comp-css-carrier" hidden aria-hidden="true">
           <SpecsTable cars={[null, null]} />
           <TCOGrid cols={2} />
-          <TCOCard tren="BEV" nombre="_carrier" input={{ tren: "BEV", pvp_eur: 30000, consumo_wltp: 15, consumo_real_factor: 1.15, depreciacion_pct: 50, mantenimiento_anual_eur: 300, seguro_anual_eur: 500 }} />
+          <TCOCard tren="BEV" nombre="_carrier" input={{ tren: "BEV", pvp_eur: 30000, consumo_wltp: 15, depreciacion_pct: 50, mantenimiento_anual_eur: 300, seguro_anual_eur: 500 }} />
           <SummaryStrip totals={[{ id: "_c", nombre: "_c", total: 0 }]} />
         </div>
 

@@ -329,7 +329,7 @@
       "notas": "Autonomía WLTP modo EV puro. Batería 19,5 kWh gross / ~12 kWh útil."
     },
     "ratio_electrico_default": {
-      "valor": 0.60,
+      "valor": 0.6,
       "unidad": "fracción",
       "fuente_tipo": "estudio_sectorial_utility_factor",
       "fuente_fecha": "2024-06-01",
@@ -337,33 +337,13 @@
       "confianza": "media",
       "fuente_detalle": "ICCT 2024 — PHEV real-world utility factor España. Perfil ponderado: 60% usuarios con cargador casa (ratio medio 0.72), 40% sin cargador accesible (ratio medio 0.24). Autonomía EV 101 km permite cubrir 30 km/día × 4 días/semana con 1 carga.",
       "notas": "Slider editable por el usuario en la UI; el default 0.60 es el punto central enchufa2. Si el usuario declara >300 días carga/año, mostrar advertencia §2.8.5."
-    },
-    "factor_real_electrico": {
-      "valor": 1.10,
-      "unidad": "multiplicador",
-      "fuente_tipo": "factor_categoria",
-      "fuente_fecha": "2024-06-01",
-      "verificado": true,
-      "confianza": "media",
-      "fuente_detalle": "§2.8.5 — factor canónico enchufa2 para modo EV puro PHEV (similar a BEV pequeño). Basado en EV Database + InsideEVs 2024.",
-      "notas": "18,5 kWh/100km WLTP × 1.10 = 20,4 kWh/100km real en modo EV."
-    },
-    "factor_real_combustion": {
-      "valor": 1.25,
-      "unidad": "multiplicador",
-      "fuente_tipo": "factor_categoria",
-      "fuente_fecha": "2024-06-01",
-      "verificado": true,
-      "confianza": "media",
-      "fuente_detalle": "§2.8.5 — factor canónico enchufa2 para modo combustión PHEV (peor que ICE puro del segmento porque el motor térmico arrastra peso de batería). Basado en ICCT Real-World Fuel Consumption Gap 2024.",
-      "notas": "6,9 L/100km WLTP × 1.25 = 8,6 L/100km real en modo CS. El PHEV en autopista con batería agotada consume sensiblemente más que un ICE hermano."
     }
   },
   "meta": {
     "fecha_actualizacion": "2026-04-21",
     "estado": "ficha_poc_v2_borrador",
     "notas_my": "MY 2026 en comercialización. Generación G20 LCI (2022-actualidad) con pack batería 19,5 kWh (upgrade mid-cycle). POC de metodología v2 §2.8 — todos los campos salvo estudios sectoriales §2.8.5 ICCT tienen verificado: false pendiente de cross-check con BMW España + distribuidor oficial.",
-    "proposito": "POC de metodología TCO v2 §2.8 — primera ficha PHEV del sistema. Valida el schema (consumo_electrico_wltp_kwh100km, consumo_combustion_wltp_l100km, autonomia_electrica_wltp_km, ratio_electrico_default, factor_real_electrico, factor_real_combustion) antes de escalar a los 12 PHEV restantes de F3.4. Referente canónico PHEV para BMW i4 eDrive40 (ver mapeo-equivalente-termico.md §1).",
+    "proposito": "POC de metodología TCO v2.1 §2.8 — primera ficha PHEV del sistema. Valida el schema (consumo_electrico_wltp_kwh100km, consumo_combustion_wltp_l100km, autonomia_electrica_wltp_km, ratio_electrico_default) con consumos WLTP puros — sin factores correctores desde v2.1 (2026-04-22). Referente canónico PHEV para BMW i4 eDrive40 (ver mapeo-equivalente-termico.md §1).",
     "tco_scaffolded": true,
     "tco_poblado": true,
     "tco_activo_en_calculadora": false,

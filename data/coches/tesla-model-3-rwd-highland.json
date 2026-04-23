@@ -788,16 +788,6 @@
       "unidad": "€/kWh",
       "notas": "Slider calculador (D10): default 0.17 €/kWh, rango 0.08-0.55."
     },
-    "consumo_real_factor": {
-      "valor": 1.12,
-      "fuente_tipo": "ev_database",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "EV Database + reportes reales usuarios Model 3 Highland RWD: 13.2 WLTP → ~14.8 kWh/100km real. Factor 1.12 gracias a aerodinámica Cd 0.219 + RWD eficiente + pack LFP 60 kWh.",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador",
-      "notas": "Gap WLTP/real más bajo del catálogo junto con ë-C3. Tesla destaca en eficiencia real a velocidad autopista."
-    },
     "equivalente_ice": {
       "tipo": "benchmark_segmento",
       "segmento": "D",

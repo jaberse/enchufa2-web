@@ -669,15 +669,6 @@
       "unidad": "€/kWh",
       "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
     },
-    "consumo_real_factor": {
-      "valor": 1.19,
-      "fuente_tipo": "ev_database",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "EV Database — Dolphin Surf Comfort 43.2 kWh LFP: 16.0 WLTP → ~19.0 kWh/100km real. Factor 1.19 por aerodinámica urbana y 156 CV que invita a acelerar.",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador"
-    },
     "equivalente_ice": {
       "tipo": "benchmark_segmento",
       "segmento": "A",

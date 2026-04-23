@@ -292,15 +292,6 @@
       "fuente_tipo": "parametros_calculador",
       "verificado": false,
       "unidad": "€/L"
-    },
-    "consumo_real_factor": {
-      "valor": 1.13,
-      "fuente_tipo": "investigacion_web",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "ICCT gap 2024 — MHEV 48V gasolina ~10-16% sobre WLTP. MHEV mejora ciudad pero WLTP ya es optimista.",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador"
     }
   },
   "meta": {

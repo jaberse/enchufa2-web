@@ -671,16 +671,6 @@
       "unidad": "€/kWh",
       "notas": "Se tomará del slider del calculador (D10: default 0.17 €/kWh, rango 0.08-0.55)."
     },
-    "consumo_real_factor": {
-      "valor": 1.2,
-      "fuente_tipo": "ev_database",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "BEV AWD compacto 17.5 WLTP → ~21 kWh/100km real (factor 1.20). Coherente con datos reales de usuarios EV Database.",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador",
-      "notas": "Mayor gap que ë-C3 (1.18) por AWD (dos motores) + mayor peso (2.085 kg) + conducción en carretera del usuario promedio premium."
-    },
     "equivalente_ice": {
       "tipo": "intra_marca",
       "modelo_id": "bmw-x1-sdrive18i",

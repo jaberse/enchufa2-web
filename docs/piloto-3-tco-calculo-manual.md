@@ -1,6 +1,6 @@
 # Piloto 3 · TCO manual — Tesla Model 3 RWD Highland vs BMW 320i Sedan (benchmark segmento D)
 
-> **Fecha:** 2026-04-14 · **Autor:** enchufa2 editorial
+> **Fecha:** 2026-04-14 · recalculado 2026-04-22 (metodología v2.1, WLTP puro) · **Autor:** enchufa2 editorial
 > **Propósito:** validar manualmente el caso `benchmark_segmento` — cuando el BEV no tiene ICE intra-marca y se compara contra el default del segmento.
 > **Estado:** borrador — confianza general media. Ver debilidades al final.
 
@@ -16,15 +16,14 @@ Esta rama la usará ~70 % del Top 20 del comparador (todos los BEV sin ICE intra
 
 ```
 tesla-model-3-rwd-highland
-  └─ equivalente_ice.tipo = benchmark_segmento
-      └─ segmento = "D"
-          └─ benchmarks_ice.json → opciones[default] = bmw-320i-sedan
-              └─ data/referencias/ice-equivalentes/bmw-320i-sedan.json ✓
+  └─ equivalente_termico.tipo = ICE (benchmark de segmento D)
+      └─ referente_id = "bmw-320i-sedan"
+          └─ data/referencias/termicos-equivalentes/bmw-320i-sedan.json ✓
 ```
 
 ---
 
-## 2. Parámetros enchufa2 estándar (v1)
+## 2. Parámetros enchufa2 estándar
 
 | Parámetro | Valor | Fuente |
 |---|---|---|
@@ -35,6 +34,8 @@ tesla-model-3-rwd-highland
 | IVTM BEV medio | 40 €/año | Bonificación 50-75 % mayoría grandes municipios |
 | IVTM ICE medio | 90 €/año | Sin bonificación (DGT distintivo ECO) |
 | Perfil seguro | 40 años, 15 carnet, zona media, todo riesgo 500 € | — |
+
+**Nota v2.1:** no se aplica factor corrector WLTP→real. Consumos se usan en valor WLTP homologado.
 
 ---
 
@@ -48,8 +49,6 @@ tesla-model-3-rwd-highland
 | Plan Auto+ 2024-2026 | **3.375 €** (base, sin EEE) | alta | RD Plan Auto+. Ensamblaje China → sin bonus EEE ni batería UE |
 | PVP tras ayuda | 33.615 € | calculado | 36.990 − 3.375 |
 | Consumo WLTP | 13,2 kWh/100km | media | Tesla España (pendiente verificar homologación ES) |
-| Consumo real factor | × 1,12 | alta | LFP + Cd 0,219 + EV Database muestra real |
-| **Consumo real** | **14,78 kWh/100km** | calculado | — |
 | Depreciación y5 | 45 % | media | Motorpasión 2025 + Coches.net muestras 2021 ~75k km |
 | Mantenimiento | 90 €/año | alta | Agirregabiria 163 €/4 años + hibridosyelectricos.com 330 €/5 años |
 | Seguro | 700 €/año | media | Mediana 3 cotizaciones perfil enchufa2 |
@@ -61,8 +60,6 @@ tesla-model-3-rwd-highland
 |---|---|---|---|
 | PVP | 49.814 € | alta | Carwow + quecochemecompro abril 2026 |
 | Consumo WLTP | 6,5 L/100km | alta | BMW España ficha técnica |
-| Consumo real factor | × 1,15 | alta | ICCT Real-World Gap gasolina turbo 48V |
-| **Consumo real** | **7,475 L/100km** | calculado | — |
 | Depreciación y5 | 44 % | media | Proyección sectorial ICE premium D (X1 + 2 pp por motor 2.0) |
 | Mantenimiento | 500 €/año | media | BMW Service Inclusive Next 4y/60k + consumibles ICE |
 | Seguro | 650 €/año | media | Perfil BMW Serie 3 premium D (Rastreator + Kelisto agregado) |
@@ -83,15 +80,15 @@ TCO(horizonte) = Depreciación + Energía + Mantenimiento + Seguro + Impuestos �
 | Concepto | Cálculo | Importe |
 |---|---|---|
 | Depreciación | 36.990 × 0,45 | **16.646 €** |
-| Energía | 15.000 × 5 × 14,78 × 0,17 / 100 | **1.884 €** |
+| Energía | 15.000 × 5 × 13,2 × 0,17 / 100 | **1.683 €** |
 | Mantenimiento | 90 × 5 | **450 €** |
 | Seguro | 700 × 5 | **3.500 €** |
 | Impuestos | 40 × 5 | **200 €** |
 | Ayudas | Plan Auto+ base (sin EEE) | **−3.375 €** |
-| **TCO 5 años** | | **19.305 €** |
-| **€/km** | 19.305 / 75.000 | **0,257 €/km** |
+| **TCO 5 años** | | **19.104 €** |
+| **€/km** | 19.104 / 75.000 | **0,255 €/km** |
 
-**TCO sin Plan Auto+** (para comparación justa del producto sin subvención): 22.680 € · 0,302 €/km
+**TCO sin Plan Auto+** (para comparación justa del producto sin subvención): 22.479 € · 0,300 €/km
 
 ---
 
@@ -100,12 +97,12 @@ TCO(horizonte) = Depreciación + Energía + Mantenimiento + Seguro + Impuestos �
 | Concepto | Cálculo | Importe |
 |---|---|---|
 | Depreciación | 49.814 × 0,44 | **21.918 €** |
-| Energía | 15.000 × 5 × 7,475 × 1,55 / 100 | **8.690 €** |
+| Energía | 15.000 × 5 × 6,5 × 1,55 / 100 | **7.556 €** |
 | Mantenimiento | 500 × 5 | **2.500 €** |
 | Seguro | 650 × 5 | **3.250 €** |
 | Impuestos | 90 × 5 | **450 €** |
-| **TCO 5 años** | | **36.808 €** |
-| **€/km** | 36.808 / 75.000 | **0,491 €/km** |
+| **TCO 5 años** | | **35.674 €** |
+| **€/km** | 35.674 / 75.000 | **0,476 €/km** |
 
 ---
 
@@ -114,10 +111,10 @@ TCO(horizonte) = Depreciación + Energía + Mantenimiento + Seguro + Impuestos �
 | Métrica | Tesla Model 3 RWD | BMW 320i Sedan | Diferencia |
 |---|---|---|---|
 | PVP inicial | 36.990 € | 49.814 € | −12.824 € (Tesla más barato de entrada) |
-| **TCO 5 años (con Plan Auto+)** | **19.305 €** | **36.808 €** | **−17.503 € (Tesla ahorra 47,6 %)** |
-| TCO 5 años (sin ayuda) | 22.680 € | 36.808 € | −14.128 € (Tesla ahorra 38,4 %) |
-| €/km (con ayuda) | 0,257 | 0,491 | −0,234 €/km |
-| Energía 5 años | 1.884 € | 8.690 € | −6.806 € (BEV ahorra 78,3 %) |
+| **TCO 5 años (con Plan Auto+)** | **19.104 €** | **35.674 €** | **−16.570 € (Tesla ahorra 46,5 %)** |
+| TCO 5 años (sin ayuda) | 22.479 € | 35.674 € | −13.195 € (Tesla ahorra 37,0 %) |
+| €/km (con ayuda) | 0,255 | 0,476 | −0,221 €/km |
+| Energía 5 años | 1.683 € | 7.556 € | −5.873 € (BEV ahorra 77,7 %) |
 | Mantenimiento 5 años | 450 € | 2.500 € | −2.050 € (BEV ahorra 82,0 %) |
 | Depreciación 5 años | 16.646 € | 21.918 € | −5.272 € (BEV pierde 24,0 % menos) |
 
@@ -126,9 +123,9 @@ TCO(horizonte) = Depreciación + Energía + Mantenimiento + Seguro + Impuestos �
 El caso Tesla Model 3 vs BMW 320i es el **escenario más favorable al BEV** de los tres pilotos:
 
 1. **PVP de entrada ya 12.800 € más bajo** — algo que no ocurría ni en ë-C3 vs C3 ni en iX1 vs X1. El Tesla parte con una ventaja estructural que el segmento premium ICE no puede igualar a este precio.
-2. **Energía pulveriza al ICE** — 14,78 kWh × 0,17 €/kWh = 2,51 €/100km vs 7,475 L × 1,55 €/L = 11,59 €/100km. A 75.000 km, la gasolina cuesta **4,6 × más** que la electricidad.
+2. **Energía pulveriza al ICE** — 13,2 kWh × 0,17 €/kWh = 2,24 €/100km vs 6,5 L × 1,55 €/L = 10,08 €/100km. A 75.000 km, la gasolina cuesta **4,5 × más** que la electricidad.
 3. **Mantenimiento casi inexistente en Tesla** — 90 €/año es consistente con múltiples casos reales documentados (Agirregabiria 163 € en 4 años; hibridosyelectricos 330 € en 5). Sin aceite, bujías, embrague ni ITV hasta año 4, el Tesla pasa por taller básicamente para neumáticos y frenos.
-4. **Plan Auto+ amplifica la brecha** — el Tesla se ensambla en China, así que solo accede a la base (2.750 €) más el 25 % por coche usado. No suma EEE ni batería UE. Aun así, los 3.375 € empujan el ahorro del 38 % al 48 %.
+4. **Plan Auto+ amplifica la brecha** — el Tesla se ensambla en China, así que solo accede a la base (2.750 €) más el 25 % por coche usado. No suma EEE ni batería UE. Aun así, los 3.375 € empujan el ahorro del 37 % al 46 %.
 
 **Lectura clave para el artículo del comparador:** cuando el BEV compite contra un segmento medio/premium sin hermano ICE directo (Tesla, Polestar, BYD), el ahorro TCO es **estructural**, no depende de la subvención. El Plan Auto+ es un bonus, no el motor del ahorro.
 
@@ -136,7 +133,7 @@ El caso Tesla Model 3 vs BMW 320i es el **escenario más favorable al BEV** de l
 
 ## 8. Test del validador (comportamiento esperado)
 
-Salida real de `npm run data:tco-audit -- --coche tesla-model-3-rwd-highland` (2026-04-14):
+Salida real de `npm run data:tco-audit -- --coche tesla-model-3-rwd-highland` (2026-04-22, v2.1):
 
 ```
 === Tesla Model 3 RWD Highland — TCO ===
@@ -145,8 +142,8 @@ Salida real de `npm run data:tco-audit -- --coche tesla-model-3-rwd-highland` (2
   · depreciacion_y5_pct              0.45 fracción   conf=media
   ✓ mantenimiento_anual_eur            90 €/año      conf=alta
   ✓ seguro_anual_eur                  700 €/año      conf=media
-  ✓ consumo_real_factor              1.12 multiplicador conf=alta
-  ✓ equivalente_ice: tipo=benchmark_segmento D (segmento D → bmw-320i-sedan)
+  ✓ consumo_wltp_kwh100km            13.2 kWh/100km  conf=alta   (v2.1 — WLTP puro)
+  ✓ equivalente_termico: tipo=ICE referente=bmw-320i-sedan (benchmark segmento D)
 ```
 
 El validador resuelve correctamente la cadena `segmento D → bmw-320i-sedan` y valida en cascada el ICE. No activable por `tco_activo_en_calculadora: false` (queda a juicio editorial publicar tras revisar debilidades).
@@ -176,7 +173,8 @@ El validador resuelve correctamente la cadena `segmento D → bmw-320i-sedan` y 
 - **D12** — Horizonte 5 años default.
 - **D13** — Rangos ±8 %/±15 % según confianza.
 - **D14** — Proyección permitida con badge "Datos proyectados".
-- **D-new (Piloto 3)** — benchmark_segmento resuelve a `opciones[default]` de `benchmarks_ice.json`, con override opcional `eq.modelo_id`.
+- **D-new (Piloto 3)** — benchmark segmento se resuelve a través de `equivalente_termico.referente_id` (v2.1: ficha unificada con `tipo`).
+- **v2.1 (2026-04-22)** — consumo energético en WLTP puro, sin factor corrector.
 
 ---
 
@@ -187,5 +185,5 @@ El validador resuelve correctamente la cadena `segmento D → bmw-320i-sedan` y 
 3. ✅ Piloto 3 (Tesla Model 3 vs BMW 320i benchmark D) — validado
 4. ⏳ Escalar specs_tco a los 16 modelos restantes del Top 20 (14 sin scaffold + 2 con errores)
 5. ⏳ Crear benchmarks default para segmentos B-SUV (falta peugeot-2008-puretech), C-SUV, E, E-SUV
-6. ⏳ Implementar `src/lib/tco/calculadora.ts` con los tres pilotos como tests unitarios
-7. ⏳ Build UI `/calculadora-tco` con URL-as-state
+6. ✅ Implementado `src/lib/tco/calculadora.mjs` con los tres pilotos como tests unitarios
+7. ✅ Build UI `/comparador` con URL-as-state

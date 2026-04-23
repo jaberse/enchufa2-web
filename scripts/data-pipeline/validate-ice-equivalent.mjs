@@ -38,9 +38,6 @@ const FUENTE_TIPO_CANONICA = new Set([
   // specs_tco — mantenimiento
   'plan_hermano_fabricante',
   'media_bev_categoria',
-  // specs_tco — consumo real
-  'ev_database',
-  'factor_categoria',
   // v2 (HEV + PHEV, metodología 2026-04-20)
   'factor_hev_sobre_ice',
   'factor_phev_sobre_hev',
@@ -58,7 +55,10 @@ const FUENTE_TIPO_LEGACY = new Map([
   ['estimacion_sectorial', 'media_segmento_unespa / estimacion_bev_sobre_ice'],
   ['estimacion_proyectada', 'curva_bev_categoria'],
   ['comparador_agregado', 'tres_cotizaciones_reales / estimacion_bev_sobre_ice'],
-  ['investigacion_web', 'ev_database / factor_categoria'],
+  // v2.1 — retirados, ya no hay factor corrector (usábamos WLTP puro)
+  ['ev_database', 'retirado — consumo WLTP sin corrección (v2.1)'],
+  ['factor_categoria', 'retirado — consumo WLTP sin corrección (v2.1)'],
+  ['investigacion_web', 'retirado'],
   ['dato_real_usuario', 'fabricante / plan_hermano_fabricante'],
 ]);
 
@@ -80,19 +80,16 @@ const SPECS_TCO_OBLIGATORIOS_COMUNES = [
   'precio_combustible_eur_l',
 ];
 
-// ICE | HEV usan el factor unidimensional
-const SPECS_TCO_OBLIGATORIOS_UNIFACTOR = [
-  'consumo_real_factor',
-];
+// v2.1 — ICE y HEV no tienen campos adicionales de consumo en specs_tco.
+// El consumo se lee directamente de specs.consumo_wltp_l100km (WLTP puro).
+const SPECS_TCO_OBLIGATORIOS_UNIFACTOR = [];
 
-// PHEV tiene consumos separados (§2.8)
+// PHEV tiene consumos separados (§2.8) — v2.1 sin factores correctores
 const SPECS_TCO_OBLIGATORIOS_PHEV = [
   'consumo_electrico_wltp_kwh100km',
   'consumo_combustion_wltp_l100km',
   'autonomia_electrica_wltp_km',
   'ratio_electrico_default',
-  'factor_real_electrico',
-  'factor_real_combustion',
 ];
 
 /**
@@ -204,10 +201,15 @@ function validarArchivo(slug) {
     }
   }
 
-  // Factor real
-  const factor = st.consumo_real_factor?.valor;
-  if (factor != null && (factor < 1.0 || factor > 1.35)) {
-    warnings.push(`consumo_real_factor = ${factor} fuera del rango típico [1.05, 1.30].`);
+  // v2.1 — factor corrector retirado. Si aparece en datos legacy, avisar.
+  if (st.consumo_real_factor != null) {
+    warnings.push(`consumo_real_factor presente — campo retirado en v2.1 (WLTP puro). Elimínalo.`);
+  }
+  if (st.factor_real_electrico != null) {
+    warnings.push(`factor_real_electrico presente — campo retirado en v2.1 (WLTP puro). Elimínalo.`);
+  }
+  if (st.factor_real_combustion != null) {
+    warnings.push(`factor_real_combustion presente — campo retirado en v2.1 (WLTP puro). Elimínalo.`);
   }
 
   // meta

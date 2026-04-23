@@ -73,8 +73,9 @@ export function bevFromJson(json, opts = {}) {
     ? v(json, 'specs', 'ayuda_plan_auto_eur').valor ?? 0
     : 0;
 
+  // v2.1 — consumo WLTP puro, sin factor corrector. La confianza se hereda
+  // del propio envelope de consumo.
   const consumo = v(json, 'specs', 'consumo_wltp_kwh100km');
-  const factor = v(json, 'specs_tco', 'consumo_real_factor');
   const y3 = v(json, 'specs_tco', 'depreciacion_y3_pct');
   const y5 = v(json, 'specs_tco', 'depreciacion_y5_pct');
   const y10 = v(json, 'specs_tco', 'depreciacion_y10_pct');
@@ -98,7 +99,6 @@ export function bevFromJson(json, opts = {}) {
     pvp_eur: Number(pvp),
     ayuda_eur: Number(ayuda) || 0,
     consumo_wltp: Number(consumo.valor),
-    consumo_real_factor: Number(factor.valor),
     depreciacion_pct: Number(deprec.valor),
     depreciacion_anchors: {
       y3: Number(y3.valor),
@@ -110,7 +110,7 @@ export function bevFromJson(json, opts = {}) {
     confianza_depreciacion: deprec.confianza,
     confianza_mantenimiento: mant.confianza,
     confianza_seguro: seguro.confianza,
-    confianza_consumo: factor.confianza,
+    confianza_consumo: consumo.confianza,
   };
 }
 
@@ -126,8 +126,8 @@ export function iceFromJson(json, opts = {}) {
   const horizonte = opts.horizonte_anios ?? 5;
 
   const pvp = v(json, 'specs', 'pvp');
+  // v2.1 — consumo WLTP puro, sin factor corrector.
   const consumo = v(json, 'specs', 'consumo_wltp_l100km');
-  const factor = v(json, 'specs_tco', 'consumo_real_factor');
   const y3 = v(json, 'specs_tco', 'depreciacion_y3_pct');
   const y5 = v(json, 'specs_tco', 'depreciacion_y5_pct');
   const y10 = v(json, 'specs_tco', 'depreciacion_y10_pct');
@@ -148,7 +148,6 @@ export function iceFromJson(json, opts = {}) {
     tren: 'ICE',
     pvp_eur: Number(pvp.valor),
     consumo_wltp: Number(consumo.valor),
-    consumo_real_factor: Number(factor.valor),
     depreciacion_pct: Number(deprec.valor),
     depreciacion_anchors: {
       y3: Number(y3.valor),
@@ -160,6 +159,6 @@ export function iceFromJson(json, opts = {}) {
     confianza_depreciacion: deprec.confianza,
     confianza_mantenimiento: mant.confianza,
     confianza_seguro: seguro.confianza,
-    confianza_consumo: factor.confianza,
+    confianza_consumo: consumo.confianza,
   };
 }

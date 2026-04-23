@@ -1,9 +1,9 @@
-# Metodología TCO enchufa2 — v2
+# Metodología TCO enchufa2 — v2.1
 
 **Estado:** canónico
-**Fecha:** 2026-04-20
+**Fecha:** 2026-04-22
 **Autor:** Javi + Cowork
-**Reemplaza:** v1 (2026-04-15). El v1 queda congelado en el tag `methodology-v1-frozen-2026-04-20`.
+**Reemplaza:** v2 (2026-04-20). El v2 queda congelado en el tag `methodology-v2-frozen-2026-04-22`. El v1 sigue congelado en `methodology-v1-frozen-2026-04-20`.
 
 ---
 
@@ -45,7 +45,7 @@ Todos los campos siguen el mismo esquema de trazabilidad:
 ```jsonc
 {
   "valor": 0.32,
-  "unidad": "fracción",            // o "€/año", "multiplicador", etc.
+  "unidad": "fracción",            // o "€/año", "kWh/100km", etc.
   "fuente_tipo": "…",              // uno de los valores canónicos de §3
   "fuente_fecha": "2026-04-15",    // cuándo se capturó/derivó
   "verificado": true|false,        // true solo si hay fuente primaria ligada
@@ -94,18 +94,26 @@ Todos los campos siguen el mismo esquema de trazabilidad:
 
 **Qué no cuenta como mantenimiento en este campo:** neumáticos, pastillas de freno, ITV desde año 4, batería de arranque. Esos se documentan en el doc de UX pero no entran en el valor de este campo (para no doble contar vs categorías del calculador).
 
-### 2.4 `consumo_real_factor`
+### 2.4 Consumo — WLTP puro, sin factor corrector
 
-**Unidad:** multiplicador sobre el consumo WLTP declarado.
+**Cambio v2.1 (2026-04-22):** se retira el campo `consumo_real_factor` de todo el esquema (BEV, HEV, PHEV). La calculadora usa el **consumo WLTP homologado tal cual**.
 
-**Orden canónico de derivación:**
+**Razón:**
 
-1. **Media observada en EV Database** (`ev-database.org`) para el modelo concreto → `fuente_tipo: "ev_database"`, `confianza: alta` si el modelo tiene ≥20 reportes de usuarios.
-2. **Factor categoría** → para modelos nuevos sin datos, factor por carrocería: urbano 1,12 · C-hatchback 1,18 · C-SUV 1,22 · D-SUV 1,25 · D-berlina 1,20. `fuente_tipo: "factor_categoria"`, `confianza: media`.
+1. WLTP es el único ensayo estandarizado, rodado en banco bajo protocolo regulado europeo. Su ciclo (WLTC Class 3: Low, Medium, High, Extra-High, media 46,5 km/h, pico 131 km/h) es la mejor vara de medir **comparable entre vehículos** disponible hoy.
+2. La diferencia WLTP→real depende primordialmente del **uso** del conductor (perfil urbano/mixto/autovía, velocidad media, estilo de conducción, carga, clima) — variables **extrínsecas** al vehículo, no intrínsecas.
+3. Introducir un factor corrector por vehículo (ej. ×1,18 para un C-hatchback, ×1,25 para un D-SUV) añade una capa subjetiva sobre un dato homologado. Cualquier desviación entre fuentes de terceros (EV Database, InsideEVs, Consumer Reports) se traslada como sesgo al resultado de la calculadora y contamina la comparabilidad.
+4. La aerodinámica (Cx × A) **ya está incorporada en el WLTP**: el coche más eficiente obtiene mejor WLTP, y mantiene ventaja al aplicar el mismo protocolo a todos. Un corrector añadido encima solo dobla esa ventaja sin evidencia robusta.
 
-Este factor es el único campo de `specs_tco` que **no** tiene banda de incertidumbre — varía legítimamente por carrocería y aerodinámica y la banda se absorbe en el slider de precio de electricidad (§2.5).
+**Cómo se calcula la energía:**
 
-Para PHEV ver §2.8.5 — el PHEV no usa un único `consumo_real_factor`, sino dos factores independientes para los modos eléctrico y combustión.
+- **BEV:** `coste_anual = km_anuales × consumo_wltp_kwh_100km / 100 × precio_kWh`.
+- **ICE / HEV:** `coste_anual = km_anuales × consumo_wltp_l_100km / 100 × precio_L`.
+- **PHEV:** fórmula ponderada por ratio eléctrico (§2.8.5).
+
+La confianza de la partida de energía se hereda directamente del envelope del campo `consumo_wltp_*` en `specs` (habitualmente `alta` porque proviene de homologación de fabricante).
+
+**Nota operativa:** el slider de precio de electricidad del calculador (§2.5) sigue siendo la vía por la cual el usuario modela su propio uso (autoconsumo FV, mix casa/pública, 100% rápida). La calibración por perfil de conducción con sliders de ciudad/mixto/autovía queda en el roadmap (§10).
 
 ### 2.5 `precio_electricidad_eur_kwh`
 
@@ -140,7 +148,7 @@ Migración v1 → v2: las entradas `equivalente_ice` existentes se renombran a `
 
 ### 2.7 Campos HEV (auto-recargable, "Full Hybrid")
 
-> Aplica a **HEV auto-recargable** estilo Toyota Hybrid Synergy Drive, Honda e:HEV, Hyundai/Kia HEV, Renault E-Tech hybrid. **NO aplica a mild hybrid 48V** (BMW mild, Mercedes EQ Boost, Stellantis e-Hybrid mild): un mild hybrid se trata como ICE estándar a efectos de TCO — se usan los consumos WLTP de fabricante tal cual, sin factor HEV. No es un eléctrico en ninguna capa del cálculo.
+> Aplica a **HEV auto-recargable** estilo Toyota Hybrid Synergy Drive, Honda e:HEV, Hyundai/Kia HEV, Renault E-Tech hybrid. **NO aplica a mild hybrid 48V** (BMW mild, Mercedes EQ Boost, Stellantis e-Hybrid mild): un mild hybrid se trata como ICE estándar a efectos de TCO — se usan los consumos WLTP de fabricante tal cual. No es un eléctrico en ninguna capa del cálculo.
 
 Los 3 campos principales (`depreciacion_y*_pct`, `mantenimiento_anual_eur`, `seguro_anual_eur`) siguen el esquema de trazabilidad §2, con novedades en el orden de derivación.
 
@@ -171,15 +179,9 @@ Los 3 campos principales (`depreciacion_y*_pct`, `mantenimiento_anual_eur`, `seg
 
 **Sanity range HEV:** 480–1.300 €/año.
 
-#### 2.7.4 `consumo_real_factor` — HEV
+#### 2.7.4 Consumo HEV — WLTP puro
 
-Factor WLTP→real. Valores observados EV Database + InsideEVs + Consumer Reports 2024:
-
-- HEV compacto Toyota (Yaris, Corolla, C-HR): **1.08** (gap pequeño — el ciclo urbano WLTP captura bien la ventaja del modo EV).
-- HEV SUV Toyota/Hyundai/Kia (RAV4, Tucson, Sportage): **1.12**.
-- HEV premium o de alta potencia (Lexus, BMW sin plug-in): **1.15**.
-
-`fuente_tipo: "factor_categoria"`, `confianza: media`. Se permite `ev_database` con `confianza: alta` si el modelo tiene ≥20 reportes.
+El HEV usa el campo `consumo_wltp_l100km` de `specs` tal cual, sin factor corrector (§2.4). Ver razón metodológica en §2.4. La confianza de la partida energía se hereda del envelope del campo WLTP (habitualmente `alta`).
 
 ### 2.8 Campos PHEV (híbrido enchufable)
 
@@ -196,14 +198,14 @@ El PHEV tiene TCO dependiente del comportamiento del usuario. Por tanto su ficha
     "unidad": "kWh/100km",
     "fuente_tipo": "fabricante",
     "confianza": "alta",
-    "notas": "Modo EV puro, batería cargada"
+    "notas": "Modo EV puro WLTP, batería cargada"
   },
   "consumo_combustion_wltp_l100km": {
     "valor": 6.8,
     "unidad": "L/100km",
     "fuente_tipo": "fabricante",
     "confianza": "alta",
-    "notas": "Modo combustión, batería agotada — consumo realista con peso batería"
+    "notas": "Modo combustión WLTP, batería agotada — consumo realista con peso batería"
   },
   "autonomia_electrica_wltp_km": {
     "valor": 75,
@@ -249,19 +251,14 @@ El PHEV tiene TCO dependiente del comportamiento del usuario. Por tanto su ficha
 
 **Sanity range PHEV:** 550–1.500 €/año.
 
-#### 2.8.5 Consumo real PHEV — dos factores independientes
+#### 2.8.5 Cálculo de energía PHEV — WLTP puro ponderado por ratio
 
-El PHEV **no** usa el `consumo_real_factor` unidimensional de §2.4. Usa dos factores:
-
-- `factor_real_electrico` (sobre `consumo_electrico_wltp_kwh100km`): 1.10 típico (modo EV puro similar a BEV pequeño).
-- `factor_real_combustion` (sobre `consumo_combustion_wltp_l100km`): 1.25 típico (peor que ICE puro del segmento porque el motor térmico arrastra peso de batería y suele ser más pequeño para compensar emisiones WLTP).
-
-**Cálculo de energía combinado en la calculadora** (aplicable solo a PHEV):
+Desde v2.1 el PHEV **no** usa factores correctores WLTP→real (se retiran los campos `factor_real_electrico` y `factor_real_combustion`). La calculadora usa los consumos WLTP ponderados por el ratio eléctrico:
 
 ```
 coste_anual_energia =
-    ratio × (kWh/100 × factor_real_e × km_anuales / 100) × precio_kWh
-  + (1 - ratio) × (L/100 × factor_real_c × km_anuales / 100) × precio_L
+    ratio × (consumo_electrico_wltp_kwh100km / 100) × km_anuales × precio_kWh
+  + (1 − ratio) × (consumo_combustion_wltp_l100km / 100) × km_anuales × precio_L
 ```
 
 Donde `ratio` ∈ [0, 1] viene del slider de UI con default `ratio_electrico_default`.
@@ -287,11 +284,9 @@ El tipo de tren (ICE/HEV/PHEV) del referente **no** se expresa en `fuente_tipo` 
 | `tres_cotizaciones_reales` | seguro | alta |
 | `estimacion_bev_sobre_ice` | seguro | media |
 | `media_segmento_unespa` | seguro | baja |
-| `fabricante` | mantenimiento | alta |
+| `fabricante` | mantenimiento, consumo_wltp | alta |
 | `plan_hermano_fabricante` | mantenimiento | media |
 | `media_bev_categoria` | mantenimiento | baja |
-| `ev_database` | consumo_real_factor | alta |
-| `factor_categoria` | consumo_real_factor | media |
 | `parametros_calculador` | precio_electricidad_eur_kwh | — |
 | `decision_editorial` | equivalente_termico (cualquier tipo) | alta |
 | `factor_hev_sobre_ice` | depreciación, manto, seguro HEV | media |
@@ -299,6 +294,8 @@ El tipo de tren (ICE/HEV/PHEV) del referente **no** se expresa en `fuente_tipo` 
 | `media_hev_segmento` | depreciación, manto, seguro HEV | baja |
 | `media_phev_segmento` | depreciación, manto, seguro PHEV | baja |
 | `estudio_sectorial_utility_factor` | ratio_electrico_default PHEV | media |
+
+**Retirados en v2.1:** `ev_database` y `factor_categoria` dejan de ser `fuente_tipo` válidos — solo daban soporte a `consumo_real_factor`, que ya no existe. Si el futuro corrector (§10) los vuelve a necesitar, se reintroducirán con semántica explícita.
 
 **Migración de nombres legacy** (sigue vigente desde v1, ampliada en v2):
 
@@ -310,9 +307,10 @@ El tipo de tren (ICE/HEV/PHEV) del referente **no** se expresa en `fuente_tipo` 
 | `estimacion_sectorial` (seguro) | `media_segmento_unespa` o `estimacion_bev_sobre_ice` |
 | `estimacion_proyectada` | `curva_bev_categoria` |
 | `comparador_agregado` (seguro) | `tres_cotizaciones_reales` si de verdad eran 3 con perfil estándar; `estimacion_bev_sobre_ice` si no |
-| `investigacion_web` | `ev_database` o `factor_categoria` |
+| `investigacion_web` | `factor_hev_sobre_ice` / `factor_phev_sobre_hev` según aplique, o eliminar si era `consumo_real_factor` |
 | `dato_real_usuario` | `fabricante` si era plan oficial, `plan_hermano_fabricante` si era derivado |
 | `equivalente_ice` (clave, no fuente_tipo) | Renombrar a `equivalente_termico` con `tipo: "ICE"` |
+| `ev_database`, `factor_categoria` | Retirados en v2.1 — el campo `consumo_real_factor` ya no existe |
 
 ---
 
@@ -328,9 +326,9 @@ Cada campo central produce una banda min/max según su nivel de confianza:
 
 Las bandas **se propagan** en la calculadora: el TCO total se calcula tres veces (mejor / central / peor) combinando los extremos coherentes de cada partida. La banda total suele ser más estrecha que la suma simple de bandas individuales porque los extremos optimistas/pesimistas tienden a compensarse.
 
-**Excepción:** `consumo_real_factor` no tiene banda propia; se absorbe en el slider del precio de electricidad, que el usuario mueve explícitamente.
-
 **Excepción y10:** siempre se fuerza a `confianza: baja` → banda ±15%, independientemente de cómo se haya derivado el valor central. No hay mercado observable de BEV de 10 años en España.
+
+**Consumo WLTP:** su confianza se hereda del envelope de `specs.consumo_wltp_*` (habitualmente `alta` por provenir de homologación oficial). El margen por uso del conductor se expone al usuario por la vía del slider de precio de electricidad / combustible, no como banda de incertidumbre estructural en el valor central.
 
 ---
 
@@ -476,16 +474,28 @@ Cada trimestre (Q1/Q2/Q3/Q4) se ejecuta una pasada de **sanity check** de muestr
 Toda pieza editorial que cite cifras del calculador debe cumplir:
 
 1. **Mostrar rango o escenarios, no un punto.** Presentar "a 5 años te ahorras 4.050 €" sin banda viola la regla y es causa automática de retirada del artículo.
-2. **Citar la versión de la metodología.** Al pie del artículo: *"Cálculo basado en metodología TCO enchufa2 v2 (abril 2026). Ver docs/metodologia-tco.md."*
+2. **Citar la versión de la metodología.** Al pie del artículo: *"Cálculo basado en metodología TCO enchufa2 v2.1 (abril 2026). Ver docs/metodologia-tco.md."*
 3. **Usar cifras de la calculadora, no propias.** Si un artículo necesita un número que no está en la calculadora, primero se añade el número a la calculadora con su trazabilidad y luego se cita. Nunca al revés.
 4. **No extrapolar más allá del horizonte.** La calculadora cubre 3/5/7/10 años. Un artículo no puede afirmar nada a 15 años.
 5. **Rivales PHEV citados con ratio explícito.** Toda cifra TCO que compare un BEV con un PHEV debe citar el ratio eléctrico asumido ("asumiendo 60% uso eléctrico, consistente con el perfil enchufa2 estándar"). No se publica una comparativa BEV-vs-PHEV con ratio oculto — es causa automática de retirada.
+6. **Consumo reportado = WLTP.** Las cifras de consumo que aparezcan en texto o gráficos de un artículo son las homologadas WLTP. Si un artículo quiere contar sobre la diferencia WLTP→real para un caso concreto, lo hace como análisis explícito y citando muestras reales documentadas — nunca inyectando un factor oculto en el TCO.
 
 ---
 
 ## 9. Historia de versiones y decisiones retrospectivas
 
-**v2 — 2026-04-20**
+**v2.1 — 2026-04-22**
+
+- Retirada del campo `consumo_real_factor` del esquema BEV/HEV/PHEV. La calculadora pasa a usar consumo WLTP puro. Razón: ver §2.4.
+- Retirada de los campos PHEV `factor_real_electrico` y `factor_real_combustion`. La fórmula §2.8.5 pasa a usar WLTP puro ponderado por ratio.
+- Retirados `ev_database` y `factor_categoria` de la tabla canónica `fuente_tipo` de §3 (solo daban soporte a los factores eliminados).
+- §2.4 reescrita como política "WLTP puro". §2.7.4 reducida a nota breve. §2.8.5 simplificada a fórmula sin factores.
+- §4 pierde la excepción específica sobre `consumo_real_factor`; gana nota sobre cómo se hereda la confianza del envelope WLTP.
+- §8 gana punto 6 sobre consistencia WLTP en artículos.
+- Nueva §10 — roadmap del corrector de perfil de conducción con slider (ciudad/mixto/autovía + peso + Cx), condicionado a (a) dataset real, (b) modelo físico validado, (c) ratificación editorial.
+- Código acompañante: `src/lib/tco/calculadora.mjs` y `resolver.mjs` pierden la multiplicación por `consumo_real_factor`; `validate-ice-equivalent.mjs` quita los 3 campos de sus listas obligatorias; tests `calculadora.test.mjs` regenerados con valores WLTP puro; Pilotos 1/2/3 reescritos.
+
+**v2 — 2026-04-20** (congelado en tag `methodology-v2-frozen-2026-04-22`)
 
 - Renombrado `equivalente_ice` a `equivalente_termico` con tipos `ICE` / `HEV` / `PHEV`.
 - Añadidas §2.7 (HEV auto-recargable) y §2.8 (PHEV con slider de ratio eléctrico).
@@ -509,6 +519,30 @@ Toda pieza editorial que cite cifras del calculador debe cumplir:
 - Recalibración trimestral (§7) redefinida como sanity check, no como reemplazo del método.
 
 **Retirado — artículo 008 "El umbral de los 45k"** (commit `f269306`, 2026-04-15). Motivos de retirada: (a) iX1/iX2 con baselines divergentes sin fuente, violando §6 (aún no escrita en el momento); (b) cifra puntual de 16.170 € publicada sin banda de incertidumbre, violando §8.1. No se republica hasta que §2, §4 y §6 estén aplicados a los 20 modelos del artículo.
+
+---
+
+## 10. Roadmap — corrector de perfil de conducción (diferido)
+
+**Estado:** no implementado. Abierto como línea de trabajo futura, sin fecha.
+
+**Objetivo:** permitir al usuario modelar la desviación WLTP→real **según su propio uso**, no según un factor editorial impuesto.
+
+**Variables previstas (inputs de UI):**
+
+- Slider de perfil: **% ciudad / % mixto / % autovía** (suma = 100%).
+- Condiciones: velocidad media autovía (default 110 km/h; rango 90–130).
+- Inputs físicos del vehículo ya presentes en la ficha: `peso_kg`, `Cx` (aerodinámica), `A` (área frontal), `consumo_wltp_*`.
+
+**Modelo previsto:** función física calibrada — energía por km a velocidad `v` proporcional a `Cx × A × v² + C_rr × masa`, con la componente electromotriz/combustión escalada por eficiencia homologada WLTP. El modelo tiene que reproducir, a velocidad WLTP equivalente (46,5 km/h mezcla ciclo), el consumo WLTP homologado — y a velocidades mayores, divergir de forma consistente con lo observado en datos reales.
+
+**Prerrequisitos para activar:**
+
+1. **Dataset real amplio.** ≥100 vehículos distintos con consumos reales validados (EV Database, InsideEVs, muestras propias enchufa2) y condiciones de uso documentadas.
+2. **Calibración del modelo físico.** Ajustar coeficientes del modelo de forma que reproduzca el dataset con error <10% sobre la mediana, sin cherry-picking por marca o segmento.
+3. **Ratificación editorial.** Javi aprueba el modelo y su ventana de error antes de exponerlo en UI como cifra pública.
+
+**Mientras tanto:** el calculador usa WLTP puro y el slider de precio de electricidad/combustible sigue siendo la palanca por la que el usuario ajusta su escenario económico. El lector técnico entiende que WLTP es la vara de medir homologada y común para todos los vehículos.
 
 ---
 

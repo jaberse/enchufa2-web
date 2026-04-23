@@ -305,16 +305,6 @@
       "verificado": false,
       "unidad": "€/L",
       "notas": "Se tomará del archivo de parámetros del calculador (no específico del modelo). Referencia abril 2026: ~1.55 €/L gasolina 95."
-    },
-    "consumo_real_factor": {
-      "valor": 1.1,
-      "fuente_tipo": "investigacion_web",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "ICCT Real-World Fuel Consumption gap 2024 — gasolina moderna ~10% sobre WLTP",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador",
-      "notas": "EV usa 1.18; ICE moderno tiene gap WLTP/real menor"
     }
   },
   "meta": {

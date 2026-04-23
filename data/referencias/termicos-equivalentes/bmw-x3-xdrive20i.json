@@ -290,15 +290,6 @@
       "fuente_tipo": "parametros_calculador",
       "verificado": false,
       "unidad": "€/L"
-    },
-    "consumo_real_factor": {
-      "valor": 1.18,
-      "fuente_tipo": "investigacion_web",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "ICCT gap 2024 — SUV premium AWD gasolina ~15-22% sobre WLTP. Peso 1.860 kg + AWD + transmisión conversor par penalizan ciclo real.",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador"
     }
   },
   "meta": {

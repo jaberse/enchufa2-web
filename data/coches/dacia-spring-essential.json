@@ -767,15 +767,6 @@
       "unidad": "€/kWh",
       "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
     },
-    "consumo_real_factor": {
-      "valor": 1.2,
-      "fuente_tipo": "ev_database",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "EV Database + informes usuarios — Spring Essential 25 kWh: 13.7 WLTP → ~16.4 kWh/100km real. Factor 1.20 alto por aerodinámica limitada y velocidad máxima 125 km/h que penaliza en autopista.",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador"
-    },
     "equivalente_ice": {
       "tipo": "benchmark_segmento",
       "segmento": "A",

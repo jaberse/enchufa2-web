@@ -288,15 +288,6 @@
       "fuente_tipo": "parametros_calculador",
       "verificado": false,
       "unidad": "€/L"
-    },
-    "consumo_real_factor": {
-      "valor": 1.14,
-      "fuente_tipo": "investigacion_web",
-      "fuente_fecha": "2024-10-01",
-      "fuente_detalle": "ICCT gap 2024 — compacto MHEV gasolina ~10-18% sobre WLTP. DSG y MHEV 48V ayudan en ciudad pero penalizan en autopista.",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador"
     }
   },
   "meta": {

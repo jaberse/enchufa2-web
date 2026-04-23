@@ -15,8 +15,8 @@ interface InputCoche {
   tren: 'BEV' | 'ICE';
   pvp_eur: number;
   ayuda_eur?: number;
+  // v2.1 — WLTP puro, sin factor corrector (ver docs/metodologia-tco.md §2.4).
   consumo_wltp: number;
-  consumo_real_factor: number;
   depreciacion_pct: number;
   mantenimiento_anual_eur: number;
   seguro_anual_eur: number;

@@ -682,15 +682,6 @@
       "unidad": "€/kWh",
       "notas": "Slider calculador (D10): default 0,17 €/kWh, rango 0,08-0,55."
     },
-    "consumo_real_factor": {
-      "valor": 1.16,
-      "fuente_tipo": "ev_database",
-      "fuente_fecha": "2025-01-15",
-      "fuente_detalle": "EV Database 2025 — Seal AWD Excellence 82.5 kWh útil: 18.2 WLTP → ~21.1 kWh/100km real. Factor 1.16 por berlina performance 530 CV.",
-      "verificado": true,
-      "confianza": "alta",
-      "unidad": "multiplicador"
-    },
     "equivalente_ice": {
       "tipo": "benchmark_segmento",
       "segmento": "D",
